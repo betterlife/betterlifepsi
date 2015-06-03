@@ -20,6 +20,7 @@ db = SQLAlchemy(app)
 app.config.from_object(__name__)
 
 
+
 class Entry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), unique=False)
