@@ -1,9 +1,9 @@
 # all the imports
-from flask import Flask, request, session, g, redirect, url_for, \
+from database import db_session, init_db
+from flask import Flask
+from models import Entry
+from flask import request, session, redirect, url_for, \
     abort, render_template, flash
-from flask.ext.sqlalchemy import SQLAlchemy
-import os
-
 
 
 # configuration
@@ -11,27 +11,13 @@ DEBUG = True
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
 PASSWORD = 'password'
-SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 
 
 # create our little application :)
 app = Flask(__name__)
-db = SQLAlchemy(app)
 app.config.from_object(__name__)
+init_db()
 
-
-
-class Entry(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(255), unique=False)
-    text = db.Column(db.String(4096), unique=False)
-
-    def __init__(self, title, text):
-        self.title = title
-        self.text = text
-
-    def __repr__(self):
-        return '<Entry %r>' % self.title
 
 if __name__ == '__main__':
     app.run()
@@ -47,6 +33,11 @@ def teardown_request(exception):
     pass
 
 
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db_session.remove()
+
+
 @app.route('/')
 def show_entries():
     entries = Entry.query.all()
@@ -58,8 +49,8 @@ def add_entry():
     if not session.get('logged_in'):
         abort(401)
     entry = Entry(request.form['title'], request.form['text'])
-    db.session.add(entry)
-    db.session.commit()
+    db_session.add(entry)
+    db_session.commit()
     flash('New entry was successfully posted')
     return redirect(url_for('show_entries'))
 
