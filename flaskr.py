@@ -1,52 +1,54 @@
 # all the imports
-import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, \
-     abort, render_template, flash
-from contextlib import closing
+    abort, render_template, flash
+from flask.ext.sqlalchemy import SQLAlchemy
+import os
+
 
 
 # configuration
-DATABASE = '/tmp/flaskr.db'
 DEBUG = True
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
-PASSWORD = 'default'
+PASSWORD = 'password'
+SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+
 
 # create our little application :)
 app = Flask(__name__)
+db = SQLAlchemy(app)
 app.config.from_object(__name__)
 
 
-def connect_db():
-    return sqlite3.connect(app.config['DATABASE'])
+class Entry(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), unique=False)
+    text = db.Column(db.String(4096), unique=False)
+
+    def __init__(self, title, text):
+        self.title = title
+        self.text = text
+
+    def __repr__(self):
+        return '<Entry %r>' % self.title
 
 if __name__ == '__main__':
     app.run()
 
 
-def init_db():
-    with closing(connect_db()) as db:
-        with app.open_resource('schema.sql', mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
-
-
 @app.before_request
 def before_request():
-    g.db = connect_db()
+    pass
 
 
 @app.teardown_request
 def teardown_request(exception):
-    db = getattr(g, 'db', None)
-    if db is not None:
-        db.close()
+    pass
 
 
 @app.route('/')
 def show_entries():
-    cur = g.db.execute('select title, text from entries order by id desc')
-    entries = [dict(title=row[0], text=row[1]) for row in cur.fetchall()]
+    entries = Entry.query.all()
     return render_template('show_entries.html', entries=entries)
 
 
@@ -54,9 +56,9 @@ def show_entries():
 def add_entry():
     if not session.get('logged_in'):
         abort(401)
-    g.db.execute('insert into entries (title, text) values (?, ?)',
-                 [request.form['title'], request.form['text']])
-    g.db.commit()
+    entry = Entry(request.form['title'], request.form['text'])
+    db.session.add(entry)
+    db.session.commit()
     flash('New entry was successfully posted')
     return redirect(url_for('show_entries'))
 

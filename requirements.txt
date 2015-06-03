@@ -5,3 +5,5 @@ Werkzeug==0.10.4
 gunicorn==19.3.0
 itsdangerous==0.24
 wsgiref==0.1.2
+flask-sqlalchemy==2.0
+SQLAlchemy==1.0.4
