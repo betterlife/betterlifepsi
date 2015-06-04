@@ -8,9 +8,9 @@ class Entry(Base):
     title = Column(String(255), unique=False)
     text = Column(String(4096), unique=False)
 
-    def __init__(self, title, text):
-        self.title = title
-        self.text = text
+    # def __init__(self, title, text):
+    #    self.title = title
+    #    self.text = text
 
     def __repr__(self):
         return '<Entry %r>' % self.title

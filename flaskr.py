@@ -4,6 +4,8 @@ from flask import Flask
 from models import Entry
 from flask import request, session, redirect, url_for, \
     abort, render_template, flash
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 
 
 # configuration
@@ -17,7 +19,8 @@ PASSWORD = 'password'
 app = Flask(__name__)
 app.config.from_object(__name__)
 init_db()
-
+admin = Admin(app)
+admin.add_view(ModelView(Entry, db_session))
 
 if __name__ == '__main__':
     app.run()
