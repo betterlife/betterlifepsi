@@ -51,7 +51,9 @@ def show_entries():
 def add_entry():
     if not session.get('logged_in'):
         abort(401)
-    entry = Entry(request.form['title'], request.form['text'])
+    entry = Entry()
+    entry.text = request.form['text']
+    entry.title = request.form['title']
     db_session.add(entry)
     db_session.commit()
     flash('New entry was successfully posted')
