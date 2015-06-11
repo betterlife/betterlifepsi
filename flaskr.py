@@ -1,7 +1,9 @@
 # all the imports
 from database import db_session, init_db
 from flask import Flask
-from models import Entry
+import flask
+from flask.ext.admin.consts import ICON_TYPE_GLYPH
+from models import *
 from flask import request, session, redirect, url_for, \
     abort, render_template, flash
 from flask_admin import Admin
@@ -20,7 +22,26 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 init_db()
 admin = Admin(app)
-admin.add_view(ModelView(Entry, db_session))
+admin.add_view(ModelView(Product, db_session, category='Product',
+                         menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='icon-barcode'))
+admin.add_view(ModelView(ProductCategory, db_session, category='Product',
+                         menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='icon-tags'))
+admin.add_view(ModelView(Supplier, db_session, category='Supplier',
+                         menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='icon-globe'))
+admin.add_view(ModelView(PaymentMethod, db_session, category='Supplier',
+                         menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='icon-transfer'))
+admin.add_view(ModelView(PurchaseOrder, db_session, category='Order'))
+admin.add_view(ModelView(PurchaseOrderLine, db_session, category='Order'))
+admin.add_view(ModelView(SalesOrder, db_session, category='Order'))
+admin.add_view(ModelView(SalesOrderLine, db_session, category='Order'))
+admin.add_view(ModelView(Expense, db_session, category='Financial'))
+admin.add_view(ModelView(Incoming, db_session, category='Financial'))
+admin.add_view(ModelView(ExpenseStatus, db_session, category='Settings'))
+admin.add_view(ModelView(ExpenseCategory, db_session, category='Settings'))
+admin.add_view(ModelView(IncomingStatus, db_session, category='Settings',
+                         menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='icon-usd'))
+admin.add_view(ModelView(IncomingCategory, db_session, category='Settings'))
+
 
 if __name__ == '__main__':
     app.run()

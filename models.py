@@ -1,16 +1,195 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Boolean, Text, DateTime
 from database import Base
+from sqlalchemy.orm import backref, relationship
 
 
-class Entry(Base):
-    __tablename__ = 'entry'
+class ProductCategory(Base):
+    __tablename__ = 'product_category'
     id = Column(Integer, primary_key=True)
-    title = Column(String(255), unique=False)
-    text = Column(String(4096), unique=False)
-
-    # def __init__(self, title, text):
-    #    self.title = title
-    #    self.text = text
+    code = Column(String(8), unique=True, nullable=False)
+    name = Column(String(32), unique=True, nullable=False)
+    parent_id = Column(Integer, ForeignKey('product_category.id'))
+    parent_category = relationship('ProductCategory', remote_side=id,
+                                   backref=backref('sub_categories', lazy='dynamic'))
 
     def __repr__(self):
-        return '<Entry %r>' % self.title
+        return "{0} - {1}".format(self.code, self.name)
+
+
+class Supplier(Base):
+    __tablename__ = 'supplier'
+    id = Column(Integer, primary_key=True)
+    code = Column(String(8), unique=True, nullable=False)
+    name = Column(String(32), unique=True, nullable=False)
+    qq = Column(String(16))
+    phone = Column(String(32))
+    contact = Column(String(16))
+    email = Column(String(64))
+    website = Column(String(64))
+    whole_sale_req = Column(String(32))
+    can_mixed_whole_sale = Column(Boolean)
+    remark = Column(Text)
+
+    def __repr__(self):
+        return self.code + " - " + self.name
+
+
+class Product(Base):
+    __tablename__ = 'product'
+    id = Column(Integer, primary_key=True)
+    code = Column(String(8), unique=True, nullable=False)
+    name = Column(String(32), unique=True, nullable=False)
+    category_id = Column(Integer, ForeignKey('product_category.id'), nullable=False)
+    supplier_id = Column(Integer, ForeignKey('supplier.id'), nullable=False)
+    deliver_day = Column(Integer)
+    lead_day = Column(Integer)
+    distinguishing_feature = Column(Text)
+    spec_link = Column(String(64))
+    purchase_price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
+    retail_price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
+    category = relationship('ProductCategory')
+    supplier = relationship('Supplier')
+
+    def __repr__(self):
+        return self.code + " - " + self.name
+
+
+class PaymentMethod(Base):
+    __tablename__ = 'payment_method'
+    id = Column(Integer, primary_key=True)
+    account_name = Column(String(8), nullable=False)
+    account_number = Column(String(32), nullable=False)
+    bank_name = Column(String(16), nullable=False)
+    bank_branch = Column(String(32))
+    supplier_id = Column(Integer, ForeignKey('supplier.id'), nullable=False)
+    supplier = relationship('Supplier', backref=backref('paymentMethods', lazy='dynamic'))
+    remark = Column(Text)
+
+    def __repr__(self):
+        return "{0} - {1}".format(self.bank_name, self.account_name)
+
+class SalesOrder(Base):
+    __tablename__ = 'sales_order'
+    id = Column(Integer, primary_key=True)
+    logistic_amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
+    order_date = Column(DateTime, nullable=False)
+    remark = Column(Text)
+
+    def __repr__(self):
+        return self.id
+
+class SalesOrderLine(Base):
+    __tablename__ = 'sales_order_line'
+    id = Column(Integer, primary_key=True)
+    unit_price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
+    quantity = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
+    original_amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
+    adjust_amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
+    actual_amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
+    sales_order_id = Column(Integer, ForeignKey('sales_order.id'), nullable=False)
+    sales_order = relationship('SalesOrder', backref=backref('lines', lazy='dynamic'))
+    product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
+    product = relationship('Product')
+    remark = Column(Text)
+
+    def __repr__(self):
+        return self.id
+
+class PurchaseOrder(Base):
+    __tablename__ = 'purchase_order'
+    id = Column(Integer, primary_key=True)
+    logistic_amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
+    other_amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
+    order_date = Column(DateTime, nullable=False)
+    supplier_id = Column(Integer, ForeignKey('supplier.id'), nullable=False)
+    supplier = relationship('Supplier', backref=backref('purchaseOrders', lazy='dynamic'))
+    remark = Column(Text)
+
+    def __repr__(self):
+        return self.id
+
+
+class PurchaseOrderLine(Base):
+    __tablename__ = 'purchase_order_line'
+    id = Column(Integer, primary_key=True)
+    unit_price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
+    quantity = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
+    purchase_order_id = Column(Integer, ForeignKey('purchase_order.id'), nullable=False)
+    purchase_order = relationship('PurchaseOrder')
+    product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
+    product = relationship('Product')
+    remark = Column(Text)
+
+    def __repr__(self):
+        return self.id
+
+class ExpenseStatus(Base):
+    __tablename__ = 'expense_status'
+    id = Column(Integer, primary_key=True)
+    code = Column(String(4), unique=True)
+    display = Column(String(8), nullable=False)
+
+    def __repr__(self):
+        return self.display
+
+class IncomingCategory(Base):
+    __tablename__ = "incoming_category"
+    id = Column(Integer, primary_key=True)
+    code = Column(String(4), unique=True)
+    display = Column(String(8), nullable=False)
+
+    def __repr__(self):
+        return self.display
+
+class IncomingStatus(Base):
+    __tablename__ = 'incoming_status'
+    id = Column(Integer, primary_key=True)
+    code = Column(String(4), unique=True)
+    display = Column(String(8), nullable=False)
+
+    def __repr__(self):
+        return self.display
+
+class ExpenseCategory(Base):
+    __tablename__ = "expense_category"
+    id = Column(Integer, primary_key=True)
+    code = Column(String(4), unique=True)
+    display = Column(String(8), nullable=False)
+
+    def __repr__(self):
+        return self.display
+
+class Expense(Base):
+    __tablename__ = 'expense'
+    id = Column(Integer, primary_key=True)
+    date = Column(DateTime, nullable=False)
+    amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
+    has_invoice = Column(Boolean)
+    status_id = Column(Integer, ForeignKey('expense_status.id'), nullable=False)
+    status = relationship('ExpenseStatus')
+    category_id = Column(Integer, ForeignKey('expense_category.id'), nullable=False)
+    category = relationship('ExpenseCategory')
+    purchase_order_id = Column(Integer, ForeignKey('purchase_order.id'))
+    purchase_order = relationship('PurchaseOrder', backref=backref('lines', lazy='dynamic'))
+    sales_order_id = Column(Integer, ForeignKey('sales_order.id'))
+    sales_order = relationship('SalesOrder', backref=backref('incoming', lazy='dynamic'))
+    remark = Column(Text)
+
+    def __repr__(self):
+        return self.id
+
+class Incoming(Base):
+    __tablename__ = 'incoming'
+    id = Column(Integer, primary_key=True)
+    amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
+    cate = Column(DateTime, nullable=False)
+    category_id = Column(Integer, ForeignKey('incoming_category.id'), nullable=False)
+    category = relationship('IncomingCategory')
+    status_id = Column(Integer, ForeignKey('incoming_status.id'), nullable=False)
+    status = relationship('IncomingStatus')
+    sales_order_id = Column(Integer, ForeignKey('sales_order.id'))
+    sales_order = relationship('SalesOrder')
+    remark = Column(Text)
+
+    def __repr__(self):
+        return self.id
