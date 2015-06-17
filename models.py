@@ -1,6 +1,11 @@
+# encoding: utf-8
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Boolean, Text, DateTime
 from database import Base
 from sqlalchemy.orm import backref, relationship
+
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 
 class ProductCategory(Base):
@@ -12,8 +17,11 @@ class ProductCategory(Base):
     parent_category = relationship('ProductCategory', remote_side=id,
                                    backref=backref('sub_categories', lazy='dynamic'))
 
+    def __unicode__(self):
+        return self.code.encode('utf-8') + " - " + self.name.encode('utf-8')
+
     def __repr__(self):
-        return "{0} - {1}".format(self.code, self.name)
+        return self.code.encode('utf-8') + " - " + self.name.encode('utf-8')
 
 
 class Supplier(Base):
@@ -30,8 +38,8 @@ class Supplier(Base):
     can_mixed_whole_sale = Column(Boolean)
     remark = Column(Text)
 
-    def __repr__(self):
-        return self.code + " - " + self.name
+    def __unicode__(self):
+        return self.name
 
 
 class Product(Base):
@@ -39,19 +47,22 @@ class Product(Base):
     id = Column(Integer, primary_key=True)
     code = Column(String(8), unique=True, nullable=False)
     name = Column(String(32), unique=True, nullable=False)
-    category_id = Column(Integer, ForeignKey('product_category.id'), nullable=False)
-    supplier_id = Column(Integer, ForeignKey('supplier.id'), nullable=False)
     deliver_day = Column(Integer)
     lead_day = Column(Integer)
     distinguishing_feature = Column(Text)
     spec_link = Column(String(64))
     purchase_price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
     retail_price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
-    category = relationship('ProductCategory')
-    supplier = relationship('Supplier')
+    category_id = Column(Integer, ForeignKey('product_category.id'), nullable=False)
+    category = relationship('ProductCategory', backref=backref('products', lazy='dynamic'))
+    supplier_id = Column(Integer, ForeignKey('supplier.id'), nullable=False)
+    supplier = relationship('Supplier', backref=backref('products', lazy='dynamic'))
+
+    def __unicode__(self):
+        return self.code + " - " + self.name
 
     def __repr__(self):
-        return self.code + " - " + self.name
+        return self.__unicode__
 
 
 class PaymentMethod(Base):
@@ -65,7 +76,7 @@ class PaymentMethod(Base):
     supplier = relationship('Supplier', backref=backref('paymentMethods', lazy='dynamic'))
     remark = Column(Text)
 
-    def __repr__(self):
+    def __unicode__(self):
         return "{0} - {1}".format(self.bank_name, self.account_name)
 
 class SalesOrder(Base):
@@ -75,7 +86,7 @@ class SalesOrder(Base):
     order_date = Column(DateTime, nullable=False)
     remark = Column(Text)
 
-    def __repr__(self):
+    def __unicode__(self):
         return self.id
 
 class SalesOrderLine(Base):
@@ -86,13 +97,15 @@ class SalesOrderLine(Base):
     original_amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
     adjust_amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
     actual_amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
+
     sales_order_id = Column(Integer, ForeignKey('sales_order.id'), nullable=False)
     sales_order = relationship('SalesOrder', backref=backref('lines', lazy='dynamic'))
+
     product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
     product = relationship('Product')
     remark = Column(Text)
 
-    def __repr__(self):
+    def __unicode__(self):
         return self.id
 
 class PurchaseOrder(Base):
@@ -105,7 +118,7 @@ class PurchaseOrder(Base):
     supplier = relationship('Supplier', backref=backref('purchaseOrders', lazy='dynamic'))
     remark = Column(Text)
 
-    def __repr__(self):
+    def __unicode__(self):
         return self.id
 
 
@@ -114,49 +127,28 @@ class PurchaseOrderLine(Base):
     id = Column(Integer, primary_key=True)
     unit_price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
     quantity = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
+
     purchase_order_id = Column(Integer, ForeignKey('purchase_order.id'), nullable=False)
-    purchase_order = relationship('PurchaseOrder')
+    purchase_order = relationship('PurchaseOrder', backref=backref('lines', lazy='dynamic'))
+
     product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
     product = relationship('Product')
+
     remark = Column(Text)
 
-    def __repr__(self):
+    def __unicode__(self):
         return self.id
 
-class ExpenseStatus(Base):
-    __tablename__ = 'expense_status'
+class EnumValues(Base):
+    __tablename__ = 'enum_values'
     id = Column(Integer, primary_key=True)
-    code = Column(String(4), unique=True)
-    display = Column(String(8), nullable=False)
+    type_id = Column(Integer, ForeignKey('enum_values.id'))
+    type = relationship('EnumValues', remote_side=id,
+                        backref=backref('type_values', lazy='dynamic'))
+    code = Column(String(16), unique=True)
+    display = Column(String(16), nullable=False)
 
-    def __repr__(self):
-        return self.display
-
-class IncomingCategory(Base):
-    __tablename__ = "incoming_category"
-    id = Column(Integer, primary_key=True)
-    code = Column(String(4), unique=True)
-    display = Column(String(8), nullable=False)
-
-    def __repr__(self):
-        return self.display
-
-class IncomingStatus(Base):
-    __tablename__ = 'incoming_status'
-    id = Column(Integer, primary_key=True)
-    code = Column(String(4), unique=True)
-    display = Column(String(8), nullable=False)
-
-    def __repr__(self):
-        return self.display
-
-class ExpenseCategory(Base):
-    __tablename__ = "expense_category"
-    id = Column(Integer, primary_key=True)
-    code = Column(String(4), unique=True)
-    display = Column(String(8), nullable=False)
-
-    def __repr__(self):
+    def __unicode__(self):
         return self.display
 
 class Expense(Base):
@@ -165,17 +157,18 @@ class Expense(Base):
     date = Column(DateTime, nullable=False)
     amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
     has_invoice = Column(Boolean)
-    status_id = Column(Integer, ForeignKey('expense_status.id'), nullable=False)
-    status = relationship('ExpenseStatus')
-    category_id = Column(Integer, ForeignKey('expense_category.id'), nullable=False)
-    category = relationship('ExpenseCategory')
+
+    status_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
+    status = relationship('EnumValues', foreign_keys=[status_id])
+
+    category_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
+    category = relationship('EnumValues', foreign_keys=[category_id])
+
     purchase_order_id = Column(Integer, ForeignKey('purchase_order.id'))
-    purchase_order = relationship('PurchaseOrder', backref=backref('lines', lazy='dynamic'))
     sales_order_id = Column(Integer, ForeignKey('sales_order.id'))
-    sales_order = relationship('SalesOrder', backref=backref('incoming', lazy='dynamic'))
     remark = Column(Text)
 
-    def __repr__(self):
+    def __unicode__(self):
         return self.id
 
 class Incoming(Base):
@@ -183,13 +176,15 @@ class Incoming(Base):
     id = Column(Integer, primary_key=True)
     amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
     cate = Column(DateTime, nullable=False)
-    category_id = Column(Integer, ForeignKey('incoming_category.id'), nullable=False)
-    category = relationship('IncomingCategory')
-    status_id = Column(Integer, ForeignKey('incoming_status.id'), nullable=False)
-    status = relationship('IncomingStatus')
+
+    category_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
+    category = relationship('EnumValues', foreign_keys=[category_id])
+
+    status_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
+    status = relationship('EnumValues', foreign_keys=[status_id])
+
     sales_order_id = Column(Integer, ForeignKey('sales_order.id'))
-    sales_order = relationship('SalesOrder')
     remark = Column(Text)
 
-    def __repr__(self):
+    def __unicode__(self):
         return self.id

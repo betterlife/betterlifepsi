@@ -1,4 +1,44 @@
 {% extends 'admin/master.html' %}
 {% block body %}
-This is the admin home page.
-{% endblock %}
+{{ super() }}
+<div class="row-fluid">
+    <div class="text-center dashboard-container">
+        <div class="dashboard-row">
+            <div class="btn-group dashboard-cell" role="group">
+                <button type="button" class="btn btn-default btn-lg dashboard-button"><span class="glyphicon glyphicon-usd"></span> 收入</button>
+                <a class="btn btn-default btn-lg" href="/admin/incoming/new">新增 <span class="glyphicon glyphicon-plus"></span></a>
+                <a class="btn btn-default btn-lg" href="/admin/incoming/">查看 <span class="glyphicon glyphicon-list"></span></a>
+            </div>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default btn-lg dashboard-button"><span class="glyphicon glyphicon-minus-sign"></span> 支出</button>
+                <a class="btn btn-default btn-lg" href="/admin/expense/new">新增 <span class="glyphicon glyphicon-plus"></span></a>
+                <a class="btn btn-default btn-lg" href="/admin/expense/">查看 <span class="glyphicon glyphicon-list"></span></a>
+            </div>
+        </div>
+        <div class="dashboard-row">
+            <div class="btn-group dashboard-cell" role="group">
+                <button type="button" class="btn btn-default btn-lg dashboard-button"><span class="glyphicon glyphicon-user"></span> 供应商</button>
+                <a class="btn btn-default btn-lg" href="/admin/supplier/new">新增 <span class="glyphicon glyphicon-plus"></span></a>
+                <a class="btn btn-default btn-lg" href="/admin/supplier/">查看 <span class="glyphicon glyphicon-list"></span></a>
+            </div>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default btn-lg dashboard-button"><span class="glyphicon glyphicon-barcode"></span> 产品</button>
+                <a class="btn btn-default btn-lg" href="/admin/product/new">新增 <span class="glyphicon glyphicon-plus"></span></a>
+                <a class="btn btn-default btn-lg" href="/admin/product/">查看 <span class="glyphicon glyphicon-list"></span></a>
+            </div>
+        </div>
+        <div class="dashboard-row">
+            <div class="btn-group dashboard-cell" role="group">
+                <button type="button" class="btn btn-default btn-lg dashboard-button"><span class="glyphicon glyphicon-shopping-cart"></span> 采购</button>
+                <a class="btn btn-default btn-lg" href="/admin/purchaseorder/new">新增 <span class="glyphicon glyphicon-plus"></span></a>
+                <a class="btn btn-default btn-lg" href="/admin/purchaseorder/">查看 <span class="glyphicon glyphicon-list"></span></a>
+            </div>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default btn-lg dashboard-button"><span class="glyphicon glyphicon-send"></span> 销售</button>
+                <a class="btn btn-default btn-lg" href="/admin/salesorder/new">新增 <span class="glyphicon glyphicon-plus"></span></a>
+                <a class="btn btn-default btn-lg" href="/admin/salesorder/">查看 <span class="glyphicon glyphicon-list"></span></a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}
