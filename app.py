@@ -1,32 +1,21 @@
 # coding=utf-8
-from database import init_database
-from flask import Flask, request, session
-from flask.ext.babelex import Babel
-
-# configuration
-from views import *
-from menus import init_admin_views
-
-DEBUG = True
-SECRET_KEY = 'development key'
-BABEL_DEFAULT_LOCALE = 'zh_CN'
-BABEL_DEFAULT_TIMEZONE = 'CST'
-
+from flask import Flask
 app = Flask(__name__)
-app.config.from_object(__name__)
-db_session = init_database()
-# babel = init_i18n(app)
-babel = Babel(app, default_locale="zh_CN", default_timezone="CST")
-admin = init_admin_views(app)
 
-@babel.localeselector
-def get_locale():
-    override = request.args.get('lang')
-    if override:
-        session['lang'] = override
-    lang = session.get('lang', 'zh_CN')
-    print lang
-    return lang
+import config
+app.config.from_object(config)
+
+from flask.ext.sqlalchemy import SQLAlchemy
+db = SQLAlchemy(app)
+db.init_app(app)
+
+from app_provider import AppInfo
+AppInfo.set_app(app)
+AppInfo.set_db(db)
+
+from views import init_admin_views
+admin = init_admin_views(app, db)
+AppInfo.set_admin(admin)
 
 if __name__ == '__main__':
     app.run()
@@ -43,4 +32,4 @@ def teardown_request(exception):
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
-    db_session.remove()
+    db.session.remove()

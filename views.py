@@ -1,7 +1,9 @@
-from database import db_session
+# coding=utf-8
+from flask.ext.admin import Admin
+from flask.ext.admin.consts import ICON_TYPE_GLYPH
 from flask.ext.admin.contrib.sqla import ModelView
-from models import EnumValues, PaymentMethod, PurchaseOrderLine, SalesOrderLine, Product
-
+from models import Product, Supplier, PurchaseOrder, SalesOrder, Expense, Incoming, EnumValues, ProductCategory
+from app_provider import AppInfo
 
 class ProductCategoryAdmin(ModelView):
     column_exclude_list = ['sub_categories', 'products']
@@ -24,6 +26,7 @@ class ProductAdmin(ModelView):
 
 
 class SupplierAdmin(ModelView):
+    from models import PaymentMethod
     form_excluded_columns = ('purchaseOrders',)
     inline_models = (PaymentMethod,)
     column_editable_list = ['name', 'qq', 'phone', 'contact', 'email', 'website', 'whole_sale_req', 'can_mixed_whole_sale', 'remark']
@@ -35,38 +38,23 @@ class PaymentMethodAdmin(ModelView):
     column_editable_list = ['account_name', 'account_number', 'bank_name', 'bank_branch', 'remark']
 
 class PurchaseOrderAdmin(ModelView):
+    from models import PurchaseOrderLine
     inline_models = (PurchaseOrderLine,)
 
 class SalesOrderAdmin(ModelView):
+    from models import SalesOrderLine
     inline_models = (SalesOrderLine,)
-
-def expense_status_filter():
-    return enum_type_filter('EXP_STATUS')
-
-def expense_type_filter():
-    return enum_type_filter('EXP_TYPE')
-
-def incoming_status_filter():
-    return enum_type_filter('INCOMING_STATUS')
-
-def incoming_type_filter():
-    return enum_type_filter('INCOMING_TYPE')
-
-def enum_type_filter(type_code):
-    return db_session.query(EnumValues).\
-        join(EnumValues.type, aliased=True).\
-        filter_by(code=type_code)
 
 class IncomingAdmin(ModelView):
     form_args = dict(
-        status = dict(query_factory=incoming_status_filter),
-        category = dict(query_factory=incoming_type_filter),
+        status = dict(query_factory=Incoming.status_filter),
+        category = dict(query_factory=Incoming.type_filter),
     )
 
 class ExpenseAdmin(ModelView):
     form_args = dict(
-        status = dict(query_factory=expense_status_filter),
-        category = dict(query_factory=expense_type_filter),
+        status = dict(query_factory=Expense.status_filter),
+        category = dict(query_factory=Expense.type_filter),
     )
 
 class EnumValuesAdmin(ModelView):
@@ -74,3 +62,15 @@ class EnumValuesAdmin(ModelView):
     column_searchable_list = ['code', 'display']
     column_filters = ('code', 'display',)
 
+def init_admin_views(app, db):
+    db_session = db.session
+    admin = Admin(app, u'管理后台', base_template='layout.html', template_mode='bootstrap3')
+    admin.add_view(ProductAdmin(Product, db_session, menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-barcode'))
+    admin.add_view(SupplierAdmin(Supplier, db_session,  menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-globe'))
+    admin.add_view(PurchaseOrderAdmin(PurchaseOrder, db_session, menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-shopping-cart'))
+    admin.add_view(SalesOrderAdmin(SalesOrder, db_session, menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-send'))
+    admin.add_view(ExpenseAdmin(Expense, db_session, menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-usd'))
+    admin.add_view(IncomingAdmin(Incoming, db_session, menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-minus-sign'))
+    admin.add_view(EnumValuesAdmin(EnumValues, db_session, category='Settings', name='基础分类', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-tasks'))
+    admin.add_view(ProductCategoryAdmin(ProductCategory, db_session, category='Settings', name='产品分类', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-tags'))
+    return admin

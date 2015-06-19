@@ -1,0 +1,7 @@
+import os
+
+DEBUG = True
+SECRET_KEY = 'development key'
+BABEL_DEFAULT_LOCALE = 'zh_CN'
+BABEL_DEFAULT_TIMEZONE = 'CST'
+SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']

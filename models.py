@@ -1,14 +1,15 @@
 # encoding: utf-8
+from app_provider import AppInfo
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Boolean, Text, DateTime
-from database import Base
 from sqlalchemy.orm import backref, relationship
 
 import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
+db = AppInfo.get_db()
 
-class ProductCategory(Base):
+class ProductCategory(db.Model):
     __tablename__ = 'product_category'
     id = Column(Integer, primary_key=True)
     code = Column(String(8), unique=True, nullable=False)
@@ -24,7 +25,7 @@ class ProductCategory(Base):
         return self.code.encode('utf-8') + " - " + self.name.encode('utf-8')
 
 
-class Supplier(Base):
+class Supplier(db.Model):
     __tablename__ = 'supplier'
     id = Column(Integer, primary_key=True)
     code = Column(String(8), unique=True, nullable=False)
@@ -42,7 +43,7 @@ class Supplier(Base):
         return self.name
 
 
-class Product(Base):
+class Product(db.Model):
     __tablename__ = 'product'
     id = Column(Integer, primary_key=True)
     code = Column(String(8), unique=True, nullable=False)
@@ -65,7 +66,7 @@ class Product(Base):
         return self.__unicode__
 
 
-class PaymentMethod(Base):
+class PaymentMethod(db.Model):
     __tablename__ = 'payment_method'
     id = Column(Integer, primary_key=True)
     account_name = Column(String(8), nullable=False)
@@ -79,7 +80,7 @@ class PaymentMethod(Base):
     def __unicode__(self):
         return "{0} - {1}".format(self.bank_name, self.account_name)
 
-class SalesOrder(Base):
+class SalesOrder(db.Model):
     __tablename__ = 'sales_order'
     id = Column(Integer, primary_key=True)
     logistic_amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
@@ -89,7 +90,7 @@ class SalesOrder(Base):
     def __unicode__(self):
         return self.id
 
-class SalesOrderLine(Base):
+class SalesOrderLine(db.Model):
     __tablename__ = 'sales_order_line'
     id = Column(Integer, primary_key=True)
     unit_price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
@@ -108,7 +109,7 @@ class SalesOrderLine(Base):
     def __unicode__(self):
         return self.id
 
-class PurchaseOrder(Base):
+class PurchaseOrder(db.Model):
     __tablename__ = 'purchase_order'
     id = Column(Integer, primary_key=True)
     logistic_amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
@@ -122,7 +123,7 @@ class PurchaseOrder(Base):
         return self.id
 
 
-class PurchaseOrderLine(Base):
+class PurchaseOrderLine(db.Model):
     __tablename__ = 'purchase_order_line'
     id = Column(Integer, primary_key=True)
     unit_price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
@@ -139,7 +140,7 @@ class PurchaseOrderLine(Base):
     def __unicode__(self):
         return self.id
 
-class EnumValues(Base):
+class EnumValues(db.Model):
     __tablename__ = 'enum_values'
     id = Column(Integer, primary_key=True)
     type_id = Column(Integer, ForeignKey('enum_values.id'))
@@ -148,10 +149,16 @@ class EnumValues(Base):
     code = Column(String(16), unique=True)
     display = Column(String(16), nullable=False)
 
+    @staticmethod
+    def type_filter(type_code):
+        return AppInfo.get_db().session.query(EnumValues).\
+            join(EnumValues.type, aliased=True).\
+            filter_by(code=type_code)
+
     def __unicode__(self):
         return self.display
 
-class Expense(Base):
+class Expense(db.Model):
     __tablename__ = 'expense'
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, nullable=False)
@@ -168,10 +175,19 @@ class Expense(Base):
     sales_order_id = Column(Integer, ForeignKey('sales_order.id'))
     remark = Column(Text)
 
+    @staticmethod
+    def status_filter():
+        return EnumValues.type_filter('EXP_STATUS')
+
+    @staticmethod
+    def type_filter():
+        return EnumValues.type_filter('EXP_TYPE')
+
+
     def __unicode__(self):
         return self.id
 
-class Incoming(Base):
+class Incoming(db.Model):
     __tablename__ = 'incoming'
     id = Column(Integer, primary_key=True)
     amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
@@ -185,6 +201,14 @@ class Incoming(Base):
 
     sales_order_id = Column(Integer, ForeignKey('sales_order.id'))
     remark = Column(Text)
+
+    @staticmethod
+    def status_filter():
+        return EnumValues.type_filter('INCOMING_STATUS')
+
+    @staticmethod
+    def type_filter():
+        return EnumValues.type_filter('INCOMING_TYPE')
 
     def __unicode__(self):
         return self.id
