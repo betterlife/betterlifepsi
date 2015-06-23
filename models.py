@@ -75,7 +75,8 @@ class PaymentMethod(db.Model):
     bank_name = Column(String(16), nullable=False)
     bank_branch = Column(String(32))
     supplier_id = Column(Integer, ForeignKey('supplier.id'), nullable=False)
-    supplier = relationship('Supplier', backref=backref('paymentMethods', lazy='dynamic'))
+    supplier = relationship('Supplier', backref=backref('paymentMethods',
+                                                        cascade='all, delete-orphan', lazy='dynamic'))
     remark = Column(Text)
 
     def __unicode__(self):
@@ -90,7 +91,7 @@ class SalesOrder(db.Model):
 
     @hybrid_property
     def actual_amount(self):
-        return sum(line.actual_amount for line in self.lines) - self.logistic_amount
+        return sum(line.actual_amount for line in self.lines)
 
     @actual_amount.setter
     def actual_amount(self, value):
@@ -98,7 +99,7 @@ class SalesOrder(db.Model):
 
     @hybrid_property
     def original_amount(self):
-        return sum(line.original_amount for line in self.lines) - self.logistic_amount
+        return sum(line.original_amount for line in self.lines)
 
     @original_amount.setter
     def original_amount(self, value):
@@ -113,7 +114,7 @@ class SalesOrder(db.Model):
         pass
 
     def __unicode__(self):
-        return self.id
+        return str(self.id) + ' - ' + str(self.actual_amount)
 
 class SalesOrderLine(db.Model):
     __tablename__ = 'sales_order_line'
@@ -122,7 +123,8 @@ class SalesOrderLine(db.Model):
     quantity = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
 
     sales_order_id = Column(Integer, ForeignKey('sales_order.id'), nullable=False)
-    sales_order = relationship('SalesOrder', backref=backref('lines', lazy='dynamic'))
+    sales_order = relationship('SalesOrder', backref=backref('lines',
+                                                             cascade='all, delete-orphan', lazy='dynamic'))
 
     product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
     product = relationship('Product')
@@ -169,7 +171,7 @@ class SalesOrderLine(db.Model):
         pass
 
     def __unicode__(self):
-        return self.id
+        return str(self.id) + ' - ' + self.product.name
 
 class PurchaseOrder(db.Model):
     __tablename__ = 'purchase_order'
@@ -190,7 +192,7 @@ class PurchaseOrder(db.Model):
         pass
 
     def __unicode__(self):
-        return self.id
+        return str(self.id) + ' - ' + str(self.supplier.name)
 
 
 class PurchaseOrderLine(db.Model):
@@ -200,7 +202,8 @@ class PurchaseOrderLine(db.Model):
     quantity = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
 
     purchase_order_id = Column(Integer, ForeignKey('purchase_order.id'), nullable=False)
-    purchase_order = relationship('PurchaseOrder', backref=backref('lines', lazy='dynamic'))
+    purchase_order = relationship('PurchaseOrder', backref=backref('lines',
+                                                                   cascade='all, delete-orphan', lazy='dynamic'))
 
     product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
     product = relationship('Product')
@@ -217,7 +220,8 @@ class PurchaseOrderLine(db.Model):
         pass
 
     def __unicode__(self):
-        return self.id
+        return str(self.id) + ' - ' + str(self.product.name)
+
 
 class EnumValues(db.Model):
     __tablename__ = 'enum_values'
@@ -251,7 +255,12 @@ class Expense(db.Model):
     category = relationship('EnumValues', foreign_keys=[category_id])
 
     purchase_order_id = Column(Integer, ForeignKey('purchase_order.id'))
+    purchase_order = relationship('PurchaseOrder', backref=backref('expense',
+                                                                   uselist=False, cascade='all, delete-orphan'))
     sales_order_id = Column(Integer, ForeignKey('sales_order.id'))
+    sales_order = relationship('SalesOrder', backref=backref('expense',
+                                                             uselist=False, cascade='all, delete-orphan'))
+
     remark = Column(Text)
 
     @staticmethod
@@ -262,15 +271,14 @@ class Expense(db.Model):
     def type_filter():
         return EnumValues.type_filter('EXP_TYPE')
 
-
     def __unicode__(self):
-        return self.id
+        return str(self.id) + ' - ' + str(self.amount)
 
 class Incoming(db.Model):
     __tablename__ = 'incoming'
     id = Column(Integer, primary_key=True)
     amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
-    cate = Column(DateTime, nullable=False)
+    date = Column(DateTime, nullable=False)
 
     category_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
     category = relationship('EnumValues', foreign_keys=[category_id])
@@ -279,7 +287,8 @@ class Incoming(db.Model):
     status = relationship('EnumValues', foreign_keys=[status_id])
 
     sales_order_id = Column(Integer, ForeignKey('sales_order.id'))
-    sales_order = relationship('SalesOrder', backref=backref('incoming', lazy='dynamic'))
+    sales_order = relationship('SalesOrder', backref=backref('incoming',
+                                                             uselist=False, cascade='all, delete-orphan'))
 
     remark = Column(Text)
 
@@ -292,4 +301,6 @@ class Incoming(db.Model):
         return EnumValues.type_filter('INCOMING_TYPE')
 
     def __unicode__(self):
-        return self.id
+        if self.amount is not None:
+            return str(self.id) + ' - ' + str(self.amount)
+        return str(self.id) + ' - ' + str(0)

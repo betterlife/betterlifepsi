@@ -1,4 +1,5 @@
 # coding=utf-8
+import app_provider
 from flask.ext.admin import Admin
 from flask.ext.admin.consts import ICON_TYPE_GLYPH
 from flask.ext.admin.contrib.sqla import ModelView
@@ -74,7 +75,8 @@ class SalesOrderLineInlineAdmin(InlineFormAdmin):
 
 class SalesOrderAdmin(ModelView):
     from models import SalesOrderLine
-    column_list = ('logistic_amount','actual_amount', 'original_amount', 'discount_amount', 'order_date', 'remark')
+    column_list = ('id', 'logistic_amount','actual_amount', 'original_amount',
+                   'discount_amount', 'order_date', 'incoming', 'expense', 'remark')
     form_extra_fields = {
         'actual_amount': StringField('Actual Amount'),
         'original_amount': StringField('Original Amount'),
@@ -83,11 +85,53 @@ class SalesOrderAdmin(ModelView):
     form_widget_args = {
         'actual_amount': {'disabled': True},
         'original_amount': {'disabled': True},
-        'discount_amount' : {'disabled': True}
+        'discount_amount': {'disabled': True},
+        'logistic_amount': {'default': 0}
     }
+    form_excluded_columns = ('incoming', 'expense')
     inline_models = (SalesOrderLineInlineAdmin(SalesOrderLine),)
 
+    @staticmethod
+    def create_incoming(model):
+        incoming = model.incoming
+        incoming = SalesOrderAdmin.create_associated_obj(incoming, model, default_obj=Incoming(),
+                                                         status_id_cfg_key='AUTO_INCOMING_STATUS_ID',
+                                                         category_id_cfg_key='AUTO_INCOMING_CATEGORY_ID')
+        incoming.amount = model.actual_amount
+        return incoming
+
+    @staticmethod
+    def create_expense(model):
+        expense = model.expense
+        if (model.logistic_amount is not None) and (model.logistic_amount > 0):
+            expense = SalesOrderAdmin.create_associated_obj(expense, model, default_obj=Expense(),
+                                                            status_id_cfg_key='AUTO_EXPENSE_STATUS_ID',
+                                                            category_id_cfg_key='AUTO_EXPENSE_CATEGORY_ID')
+            expense.amount = model.logistic_amount
+        return expense
+
+    @staticmethod
+    def create_associated_obj(obj, model, default_obj, status_id_cfg_key, category_id_cfg_key):
+        if obj is None:
+            obj = default_obj
+            obj.status_id = app_provider.AppInfo.get_app().config[status_id_cfg_key]
+            obj.category_id = app_provider.AppInfo.get_app().config[category_id_cfg_key]
+        obj.sales_order_id = model.id
+        obj.date = model.order_date
+        return obj
+
+    def after_model_change(self, form, model, is_created):
+        incoming = SalesOrderAdmin.create_incoming(model)
+        expense = SalesOrderAdmin.create_expense(model)
+        if expense is not None:
+            app_provider.AppInfo.get_db().session.add(expense)
+        if incoming is not None:
+            app_provider.AppInfo.get_db().session.add(incoming)
+        app_provider.AppInfo.get_db().session.commit()
+
+
 class IncomingAdmin(ModelView):
+    column_list = ('id', 'date', 'amount', 'status', 'category', 'sales_order', 'remark')
     form_args = dict(
         status=dict(query_factory=Incoming.status_filter),
         category=dict(query_factory=Incoming.type_filter),
@@ -95,12 +139,16 @@ class IncomingAdmin(ModelView):
     form_excluded_columns = ('sales_order',)
 
 class ExpenseAdmin(ModelView):
+    column_list = ('id', 'date', 'amount', 'has_invoice', 'status',
+                   'category', 'purchase_order', 'sales_order', 'remark')
     form_args = dict(
         status=dict(query_factory=Expense.status_filter),
         category=dict(query_factory=Expense.type_filter),
     )
+    form_excluded_columns = ('sales_order', 'purchase_order',)
 
 class EnumValuesAdmin(ModelView):
+    column_list = ('id', 'type', 'code', 'display',)
     column_editable_list = ['display']
     column_searchable_list = ['code', 'display']
     column_filters = ('code', 'display',)
