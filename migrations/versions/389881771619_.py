@@ -71,7 +71,7 @@ def upgrade():
     op.create_table('incoming',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('amount', sa.Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False),
-    sa.Column('cate', sa.DateTime(), nullable=False),
+    sa.Column('date', sa.DateTime(), nullable=False),
     sa.Column('category_id', sa.Integer(), nullable=False),
     sa.Column('status_id', sa.Integer(), nullable=False),
     sa.Column('sales_order_id', sa.Integer(), nullable=True),
