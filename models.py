@@ -88,6 +88,30 @@ class SalesOrder(db.Model):
     order_date = Column(DateTime, nullable=False)
     remark = Column(Text)
 
+    @hybrid_property
+    def actual_amount(self):
+        return sum(line.actual_amount for line in self.lines) - self.logistic_amount
+
+    @actual_amount.setter
+    def actual_amount(self, value):
+        pass
+
+    @hybrid_property
+    def original_amount(self):
+        return sum(line.original_amount for line in self.lines) - self.logistic_amount
+
+    @original_amount.setter
+    def original_amount(self, value):
+        pass
+
+    @hybrid_property
+    def discount_amount(self):
+        return self.original_amount - self.actual_amount
+
+    @discount_amount.setter
+    def discount_amount(self, value):
+        pass
+
     def __unicode__(self):
         return self.id
 
@@ -96,9 +120,6 @@ class SalesOrderLine(db.Model):
     id = Column(Integer, primary_key=True)
     unit_price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
     quantity = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
-    original_amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
-    adjust_amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
-    actual_amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
 
     sales_order_id = Column(Integer, ForeignKey('sales_order.id'), nullable=False)
     sales_order = relationship('SalesOrder', backref=backref('lines', lazy='dynamic'))
@@ -106,6 +127,46 @@ class SalesOrderLine(db.Model):
     product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
     product = relationship('Product')
     remark = Column(Text)
+
+    @hybrid_property
+    def discount_amount(self):
+        return self.original_amount - self.actual_amount
+
+    @discount_amount.setter
+    def discount_amount(self, adjust_amount):
+        pass
+
+    @hybrid_property
+    def actual_amount(self):
+        return self.unit_price * self.quantity
+
+    @actual_amount.setter
+    def actual_amount(self, actual_amount):
+        pass
+
+    @hybrid_property
+    def original_amount(self):
+        return self.product.retail_price * self.quantity
+
+    @original_amount.setter
+    def original_amount(self, original_amount):
+        pass
+
+    @hybrid_property
+    def price_discount(self):
+        return self.product.retail_price - self.unit_price
+
+    @price_discount.setter
+    def price_discount(self, price_adjust):
+        pass
+
+    @hybrid_property
+    def retail_price(self):
+        return self.product.retail_price
+
+    @retail_price.setter
+    def retail_price(self, retail_price):
+        pass
 
     def __unicode__(self):
         return self.id
@@ -218,6 +279,8 @@ class Incoming(db.Model):
     status = relationship('EnumValues', foreign_keys=[status_id])
 
     sales_order_id = Column(Integer, ForeignKey('sales_order.id'))
+    sales_order = relationship('SalesOrder', backref=backref('incoming', lazy='dynamic'))
+
     remark = Column(Text)
 
     @staticmethod

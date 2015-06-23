@@ -4,7 +4,7 @@ from flask.ext.admin.consts import ICON_TYPE_GLYPH
 from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.admin.model import InlineFormAdmin
 from models import Product, Supplier, PurchaseOrder, SalesOrder, Expense, Incoming, EnumValues, ProductCategory
-from wtforms import StringField, TextField
+from wtforms import StringField
 
 
 class ProductCategoryAdmin(ModelView):
@@ -51,9 +51,6 @@ class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
         form.total_amount = ReadOnlyStringField(label='Total Amount')
         return form
 
-    def on_model_change(self, form, model):
-        print model, form
-
 class PurchaseOrderAdmin(ModelView):
     from models import PurchaseOrderLine
     column_list = ('logistic_amount','other_amount', 'total_amount', 'order_date','supplier', 'remark')
@@ -65,15 +62,37 @@ class PurchaseOrderAdmin(ModelView):
     }
     inline_models = (PurchaseOrderLineInlineAdmin(PurchaseOrderLine),)
 
+class SalesOrderLineInlineAdmin(InlineFormAdmin):
+
+    def postprocess_form(self, form):
+        form.retail_price = ReadOnlyStringField(label='Retail Price')
+        form.price_discount = ReadOnlyStringField(label='Price Discount')
+        form.actual_amount = ReadOnlyStringField(label='Actual Amount')
+        form.original_amount = ReadOnlyStringField(label='Original Amount')
+        form.discount_amount = ReadOnlyStringField(label='Discount Amount')
+        return form
+
 class SalesOrderAdmin(ModelView):
     from models import SalesOrderLine
-    inline_models = (SalesOrderLine,)
+    column_list = ('logistic_amount','actual_amount', 'original_amount', 'discount_amount', 'order_date', 'remark')
+    form_extra_fields = {
+        'actual_amount': StringField('Actual Amount'),
+        'original_amount': StringField('Original Amount'),
+        'discount_amount' : StringField('Discount Amount')
+    }
+    form_widget_args = {
+        'actual_amount': {'disabled': True},
+        'original_amount': {'disabled': True},
+        'discount_amount' : {'disabled': True}
+    }
+    inline_models = (SalesOrderLineInlineAdmin(SalesOrderLine),)
 
 class IncomingAdmin(ModelView):
     form_args = dict(
         status=dict(query_factory=Incoming.status_filter),
         category=dict(query_factory=Incoming.type_filter),
     )
+    form_excluded_columns = ('sales_order',)
 
 class ExpenseAdmin(ModelView):
     form_args = dict(
