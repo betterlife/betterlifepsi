@@ -1,6 +1,7 @@
 # encoding: utf-8
 from app_provider import AppInfo
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Boolean, Text, DateTime
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
 import sys
@@ -119,6 +120,14 @@ class PurchaseOrder(db.Model):
     supplier = relationship('Supplier', backref=backref('purchaseOrders', lazy='dynamic'))
     remark = Column(Text)
 
+    @hybrid_property
+    def total_amount(self):
+        return self.logistic_amount + self.other_amount + sum(line.total_amount for line in self.lines)
+
+    @total_amount.setter
+    def total_amount(self, value):
+        pass
+
     def __unicode__(self):
         return self.id
 
@@ -136,6 +145,15 @@ class PurchaseOrderLine(db.Model):
     product = relationship('Product')
 
     remark = Column(Text)
+
+    @hybrid_property
+    def total_amount(self):
+        total_amount= self.unit_price * self.quantity
+        return total_amount
+
+    @total_amount.setter
+    def total_amount(self, value):
+        pass
 
     def __unicode__(self):
         return self.id

@@ -2,8 +2,10 @@
 from flask.ext.admin import Admin
 from flask.ext.admin.consts import ICON_TYPE_GLYPH
 from flask.ext.admin.contrib.sqla import ModelView
+from flask.ext.admin.model import InlineFormAdmin
 from models import Product, Supplier, PurchaseOrder, SalesOrder, Expense, Incoming, EnumValues, ProductCategory
-from app_provider import AppInfo
+from wtforms import StringField, TextField
+
 
 class ProductCategoryAdmin(ModelView):
     column_exclude_list = ['sub_categories', 'products']
@@ -37,9 +39,31 @@ class SupplierAdmin(ModelView):
 class PaymentMethodAdmin(ModelView):
     column_editable_list = ['account_name', 'account_number', 'bank_name', 'bank_branch', 'remark']
 
+class ReadOnlyStringField(StringField):
+    def __call__(self, **kwargs):
+        kwargs['disabled'] = True
+        return super(ReadOnlyStringField, self).__call__(**kwargs)
+
+
+class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
+
+    def postprocess_form(self, form):
+        form.total_amount = ReadOnlyStringField(label='Total Amount')
+        return form
+
+    def on_model_change(self, form, model):
+        print model, form
+
 class PurchaseOrderAdmin(ModelView):
     from models import PurchaseOrderLine
-    inline_models = (PurchaseOrderLine,)
+    column_list = ('logistic_amount','other_amount', 'total_amount', 'order_date','supplier', 'remark')
+    form_extra_fields = {
+        "total_amount": StringField('Total Amount')
+    }
+    form_widget_args = {
+        'total_amount': {'disabled': True},
+    }
+    inline_models = (PurchaseOrderLineInlineAdmin(PurchaseOrderLine),)
 
 class SalesOrderAdmin(ModelView):
     from models import SalesOrderLine
@@ -47,14 +71,14 @@ class SalesOrderAdmin(ModelView):
 
 class IncomingAdmin(ModelView):
     form_args = dict(
-        status = dict(query_factory=Incoming.status_filter),
-        category = dict(query_factory=Incoming.type_filter),
+        status=dict(query_factory=Incoming.status_filter),
+        category=dict(query_factory=Incoming.type_filter),
     )
 
 class ExpenseAdmin(ModelView):
     form_args = dict(
-        status = dict(query_factory=Expense.status_filter),
-        category = dict(query_factory=Expense.type_filter),
+        status=dict(query_factory=Expense.status_filter),
+        category=dict(query_factory=Expense.type_filter),
     )
 
 class EnumValuesAdmin(ModelView):
