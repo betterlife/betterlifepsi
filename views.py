@@ -91,7 +91,7 @@ class SalesOrderAdmin(ModelView):
     from models import SalesOrderLine
     column_list = ('id', 'logistic_amount','actual_amount', 'original_amount',
                    'discount_amount', 'order_date', 'incoming', 'expense', 'remark')
-    column_filters = ('order_date', 'remark', 'logistic_amount','actual_amount')
+    column_filters = ('order_date', 'remark', 'logistic_amount')
     form_extra_fields = {
         'actual_amount': StringField('Actual Amount'),
         'original_amount': StringField('Original Amount'),
