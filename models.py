@@ -1,6 +1,6 @@
 # encoding: utf-8
 from app_provider import AppInfo
-from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Boolean, Text, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Boolean, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
@@ -93,6 +93,11 @@ class SalesOrder(db.Model):
     def actual_amount(self):
         return sum(line.actual_amount for line in self.lines)
 
+    @actual_amount.expression
+    def actual_amount(self):
+        return (select([func.sum(SalesOrderLine.unit_price * SalesOrderLine.quantity)])
+                .where(self.id == SalesOrderLine.sales_order_id).label('actual_amount'))
+
     @actual_amount.setter
     def actual_amount(self, value):
         pass
@@ -100,6 +105,12 @@ class SalesOrder(db.Model):
     @hybrid_property
     def original_amount(self):
         return sum(line.original_amount for line in self.lines)
+
+    @original_amount.expression
+    def original_amount(self):
+        return (select([func.sum(SalesOrderLine.original_amount)])
+                .where(self.id == SalesOrderLine.sales_order_id)
+                .label('original_amount'))
 
     @original_amount.setter
     def original_amount(self, value):
@@ -142,6 +153,10 @@ class SalesOrderLine(db.Model):
     def actual_amount(self):
         return self.unit_price * self.quantity
 
+    @actual_amount.expression
+    def actual_amount(self):
+        return select([self.quantity * self.unit_price]).label('line_actual_amount')
+
     @actual_amount.setter
     def actual_amount(self, actual_amount):
         pass
@@ -149,6 +164,11 @@ class SalesOrderLine(db.Model):
     @hybrid_property
     def original_amount(self):
         return self.product.retail_price * self.quantity
+
+    @original_amount.expression
+    def original_amount(self):
+        return (select([SalesOrderLine.quantity * Product.retail_price])
+                .where(self.product_id == Product.id).label('line_original_amount'))
 
     @original_amount.setter
     def original_amount(self, original_amount):
@@ -238,8 +258,11 @@ class EnumValues(db.Model):
             join(EnumValues.type, aliased=True).\
             filter_by(code=type_code)
 
+    def __repr__(self):
+        return self.display.encode('utf-8')
+
     def __unicode__(self):
-        return self.display
+        return self.display.encode('utf-8')
 
 class Expense(db.Model):
     __tablename__ = 'expense'
@@ -255,7 +278,7 @@ class Expense(db.Model):
     category = relationship('EnumValues', foreign_keys=[category_id])
 
     purchase_order_id = Column(Integer, ForeignKey('purchase_order.id'))
-    purchase_order = relationship('PurchaseOrder', backref=backref('expense',
+    purchase_order = relationship('PurchaseOrder', backref=backref('expenses',
                                                                    uselist=False, cascade='all, delete-orphan'))
     sales_order_id = Column(Integer, ForeignKey('sales_order.id'))
     sales_order = relationship('SalesOrder', backref=backref('expense',

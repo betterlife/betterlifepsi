@@ -23,7 +23,8 @@ class ProductCategoryAdmin(ModelView):
     )
 
 class ProductAdmin(ModelView):
-    column_editable_list = ['name', 'deliver_day', 'lead_day', 'distinguishing_feature', 'spec_link', 'purchase_price', 'retail_price']
+    column_editable_list = ['name', 'deliver_day', 'lead_day', 'distinguishing_feature',
+                            'spec_link', 'purchase_price', 'retail_price']
     column_searchable_list = ('code', 'name', 'supplier.name', 'category.name', 'category.code')
     column_filters = column_searchable_list
 
@@ -32,10 +33,10 @@ class SupplierAdmin(ModelView):
     from models import PaymentMethod
     form_excluded_columns = ('purchaseOrders',)
     inline_models = (PaymentMethod,)
-    column_editable_list = ['name', 'qq', 'phone', 'contact', 'email', 'website', 'whole_sale_req', 'can_mixed_whole_sale', 'remark']
+    column_editable_list = ['name', 'qq', 'phone', 'contact', 'email', 'website',
+                            'whole_sale_req', 'can_mixed_whole_sale', 'remark']
     column_searchable_list = ('code', 'name')
     column_filters = column_searchable_list
-
 
 class PaymentMethodAdmin(ModelView):
     column_editable_list = ['account_name', 'account_number', 'bank_name', 'bank_branch', 'remark']
@@ -44,7 +45,6 @@ class ReadOnlyStringField(StringField):
     def __call__(self, **kwargs):
         kwargs['disabled'] = True
         return super(ReadOnlyStringField, self).__call__(**kwargs)
-
 
 class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
 
@@ -61,7 +61,21 @@ class PurchaseOrderAdmin(ModelView):
     form_widget_args = {
         'total_amount': {'disabled': True},
     }
+
+    @staticmethod
+    def create_expenses(model):
+        expenses = model.expenses
+        for expense in expenses:
+            pass
+
     inline_models = (PurchaseOrderLineInlineAdmin(PurchaseOrderLine),)
+    def after_model_change(self, form, model, is_created):
+        logistic_exp, goods_exp = PurchaseOrderAdmin.create_expenses(model)
+        if logistic_exp is not None:
+            app_provider.AppInfo.get_db().session.add(logistic_exp)
+        if goods_exp is not None:
+            app_provider.AppInfo.get_db().session.add(goods_exp)
+        app_provider.AppInfo.get_db().session.commit()
 
 class SalesOrderLineInlineAdmin(InlineFormAdmin):
 
@@ -77,10 +91,11 @@ class SalesOrderAdmin(ModelView):
     from models import SalesOrderLine
     column_list = ('id', 'logistic_amount','actual_amount', 'original_amount',
                    'discount_amount', 'order_date', 'incoming', 'expense', 'remark')
+    column_filters = ('order_date', 'remark', 'logistic_amount','actual_amount')
     form_extra_fields = {
         'actual_amount': StringField('Actual Amount'),
         'original_amount': StringField('Original Amount'),
-        'discount_amount' : StringField('Discount Amount')
+        'discount_amount': StringField('Discount Amount')
     }
     form_widget_args = {
         'actual_amount': {'disabled': True},
@@ -89,15 +104,16 @@ class SalesOrderAdmin(ModelView):
         'logistic_amount': {'default': 0}
     }
     form_excluded_columns = ('incoming', 'expense')
+    column_sortable_list = ('logistic_amount', 'actual_amount', 'original_amount', 'discount_amount', 'order_date')
     inline_models = (SalesOrderLineInlineAdmin(SalesOrderLine),)
 
     @staticmethod
     def create_incoming(model):
         incoming = model.incoming
         incoming = SalesOrderAdmin.create_associated_obj(incoming, model, default_obj=Incoming(),
+                                                         value=model.actual_amount,
                                                          status_id_cfg_key='AUTO_INCOMING_STATUS_ID',
                                                          category_id_cfg_key='AUTO_INCOMING_CATEGORY_ID')
-        incoming.amount = model.actual_amount
         return incoming
 
     @staticmethod
@@ -105,17 +121,18 @@ class SalesOrderAdmin(ModelView):
         expense = model.expense
         if (model.logistic_amount is not None) and (model.logistic_amount > 0):
             expense = SalesOrderAdmin.create_associated_obj(expense, model, default_obj=Expense(),
+                                                            value=model.logistic_amount,
                                                             status_id_cfg_key='AUTO_EXPENSE_STATUS_ID',
                                                             category_id_cfg_key='AUTO_EXPENSE_CATEGORY_ID')
-            expense.amount = model.logistic_amount
         return expense
 
     @staticmethod
-    def create_associated_obj(obj, model, default_obj, status_id_cfg_key, category_id_cfg_key):
+    def create_associated_obj(obj, model, default_obj, value, status_id_cfg_key, category_id_cfg_key):
         if obj is None:
             obj = default_obj
             obj.status_id = app_provider.AppInfo.get_app().config[status_id_cfg_key]
             obj.category_id = app_provider.AppInfo.get_app().config[category_id_cfg_key]
+        obj.amount = value
         obj.sales_order_id = model.id
         obj.date = model.order_date
         return obj
@@ -132,19 +149,29 @@ class SalesOrderAdmin(ModelView):
 
 class IncomingAdmin(ModelView):
     column_list = ('id', 'date', 'amount', 'status', 'category', 'sales_order', 'remark')
+    column_editable_list = ['date', 'amount',]
     form_args = dict(
         status=dict(query_factory=Incoming.status_filter),
         category=dict(query_factory=Incoming.type_filter),
     )
+    column_labels = dict()
+    column_labels['category.display'] = 'Category'
+    column_filters = ('date','amount','sales_order.remark', 'category.display')
     form_excluded_columns = ('sales_order',)
 
 class ExpenseAdmin(ModelView):
     column_list = ('id', 'date', 'amount', 'has_invoice', 'status',
                    'category', 'purchase_order', 'sales_order', 'remark')
+    column_editable_list = ['date', 'amount', 'has_invoice',]
     form_args = dict(
         status=dict(query_factory=Expense.status_filter),
         category=dict(query_factory=Expense.type_filter),
     )
+    column_sortable_list=('date','amount','has_invoice',('status','status.display'),
+                          ('category', 'category.display'),'remark')
+    column_labels = dict()
+    column_labels['category.display'] = 'Category'
+    column_filters = ('has_invoice','date','amount','category.display',)
     form_excluded_columns = ('sales_order', 'purchase_order',)
 
 class EnumValuesAdmin(ModelView):
