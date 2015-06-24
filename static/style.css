@@ -55,3 +55,10 @@ input[name='_add_another'] {
 .dashboard-cell {
     margin-right: 80px;
 }
+
+.flask-logo {
+    padding-left:5px;
+    padding-top:12px;
+    opacity: 0.2;
+    filter:alpha(opacity=20);
+}

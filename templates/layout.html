@@ -6,3 +6,11 @@
     <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='favicon.ico') }}" rel="icon" type="image/x-icon">
 {% endblock %}
+
+{% block menu_links %}
+  {{ super() }}
+  <a href="http://flask.pocoo.org/" target="_blank">
+    <img src="http://flask.pocoo.org/static/badges/powered-by-flask-s.png"
+         border="0" alt="powered by Flask" title="powered by Flask" class="flask-logo">
+  </a>
+{% endblock %}
