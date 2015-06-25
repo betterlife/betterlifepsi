@@ -12,7 +12,6 @@ from app_provider import AppInfo
 AppInfo.set_app(app)
 AppInfo.set_db(db)
 from models import *
-db.create_all()
 db.init_app(app)
 
 from views import init_admin_views
