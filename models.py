@@ -302,9 +302,9 @@ class Expense(db.Model):
 
     remark = Column(Text)
 
-    def __init__(self, amount, date, status_id, category_id):
+    def __init__(self, amount=0, exp_date=None, status_id=None, category_id=None):
         self.amount = amount
-        self.date = date
+        self.date = exp_date
         self.status_id = status_id
         self.category_id = category_id
         self.has_invoice = False
