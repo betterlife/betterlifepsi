@@ -2,7 +2,10 @@
 from flask import Flask
 from flask.ext.migrate import Migrate, MigrateCommand
 from flask.ext.script import Manager
-# Run 'python manage.py db upgrade' to migrate DB.
+# 'python migrate.py db migrate'
+#   - generate migration script from current schema version.
+# 'python migrate.py db upgrade'
+#   - migrate DB.
 app = Flask(__name__)
 
 import config
