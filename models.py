@@ -1,4 +1,5 @@
 # encoding: utf-8
+from datetime import date
 from app_provider import AppInfo
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Boolean, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -197,18 +198,33 @@ class PurchaseOrder(db.Model):
     __tablename__ = 'purchase_order'
     id = Column(Integer, primary_key=True)
     logistic_amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
-    other_amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
     order_date = Column(DateTime, nullable=False)
     supplier_id = Column(Integer, ForeignKey('supplier.id'), nullable=False)
     supplier = relationship('Supplier', backref=backref('purchaseOrders', lazy='dynamic'))
     remark = Column(Text)
 
     @hybrid_property
+    def all_expenses(self):
+        return ''.join(str(expense.id) + " - " + str(expense.amount) + ", " for expense in self.expenses)
+
+    @all_expenses.setter
+    def all_expenses(self, value):
+        pass
+
+    @hybrid_property
     def total_amount(self):
-        return self.logistic_amount + self.other_amount + sum(line.total_amount for line in self.lines)
+        return self.logistic_amount + self.goods_amount
 
     @total_amount.setter
     def total_amount(self, value):
+        pass
+
+    @hybrid_property
+    def goods_amount(self):
+        return sum(line.total_amount for line in self.lines)
+
+    @goods_amount.setter
+    def goods_amount(self, value):
         pass
 
     def __unicode__(self):
@@ -279,12 +295,19 @@ class Expense(db.Model):
 
     purchase_order_id = Column(Integer, ForeignKey('purchase_order.id'))
     purchase_order = relationship('PurchaseOrder', backref=backref('expenses',
-                                                                   uselist=False, cascade='all, delete-orphan'))
+                                                                   uselist=True, cascade='all, delete-orphan'))
     sales_order_id = Column(Integer, ForeignKey('sales_order.id'))
     sales_order = relationship('SalesOrder', backref=backref('expense',
                                                              uselist=False, cascade='all, delete-orphan'))
 
     remark = Column(Text)
+
+    def __init__(self, amount, date, status_id, category_id):
+        self.amount = amount
+        self.date = date
+        self.status_id = status_id
+        self.category_id = category_id
+        self.has_invoice = False
 
     @staticmethod
     def status_filter():

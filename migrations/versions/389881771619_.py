@@ -113,7 +113,6 @@ def upgrade():
     op.create_table('purchase_order',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('logistic_amount', sa.Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=True),
-    sa.Column('other_amount', sa.Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=True),
     sa.Column('order_date', sa.DateTime(), nullable=False),
     sa.Column('supplier_id', sa.Integer(), nullable=False),
     sa.Column('remark', sa.Text(), nullable=True),

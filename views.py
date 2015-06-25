@@ -54,21 +54,47 @@ class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
 
 class PurchaseOrderAdmin(ModelView):
     from models import PurchaseOrderLine
-    column_list = ('logistic_amount','other_amount', 'total_amount', 'order_date','supplier', 'remark')
+    column_list = ('logistic_amount', 'goods_amount', 'total_amount', 'order_date','supplier', 'all_expenses', 'remark')
     form_extra_fields = {
+        "goods_amount": StringField('Product Amount'),
         "total_amount": StringField('Total Amount')
     }
     form_widget_args = {
+        'goods_amount': {'disabled': True},
         'total_amount': {'disabled': True},
     }
+    form_excluded_columns = ('expenses',)
 
     @staticmethod
     def create_expenses(model):
         expenses = model.expenses
+        logistic_exp = None
+        goods_exp = None
+        if expenses is None:
+            expenses = dict()
         for expense in expenses:
-            pass
+            if (expense.category_id == app_provider.AppInfo.get_app().config['PO_AUTO_LOGISTIC_EXPENSE_CATEGORY_ID']) \
+                    and (model.logistic_amount != 0):
+                logistic_exp = expense
+                logistic_exp.amount = model.logistic_amount
+            elif (expense.category_id == app_provider.AppInfo.get_app().config['PO_AUTO_GOODS_EXPENSE_CATEGORY_ID']) \
+                    and (model.goods_amount != 0):
+                goods_exp = expense
+                goods_exp.amount = model.goods_amount
+        if (logistic_exp is None) and (model.logistic_amount != 0):
+            logistic_exp = Expense(model.logistic_amount, model.order_date,
+                                   app_provider.AppInfo.get_app().config['PO_AUTO_LOGISTIC_EXPENSE_STATUS_ID'],
+                                   app_provider.AppInfo.get_app().config['PO_AUTO_LOGISTIC_EXPENSE_CATEGORY_ID'])
+        if (goods_exp is None) and (model.goods_amount != 0):
+            goods_exp = Expense(model.goods_amount, model.order_date,
+                                app_provider.AppInfo.get_app().config['PO_AUTO_LOGISTIC_EXPENSE_STATUS_ID'],
+                                app_provider.AppInfo.get_app().config['PO_AUTO_GOODS_EXPENSE_CATEGORY_ID'])
+        logistic_exp.purchase_order_id = model.id
+        goods_exp.purchase_order_id = model.id
+        return logistic_exp, goods_exp
 
     inline_models = (PurchaseOrderLineInlineAdmin(PurchaseOrderLine),)
+
     def after_model_change(self, form, model, is_created):
         logistic_exp, goods_exp = PurchaseOrderAdmin.create_expenses(model)
         if logistic_exp is not None:
@@ -112,18 +138,22 @@ class SalesOrderAdmin(ModelView):
         incoming = model.incoming
         incoming = SalesOrderAdmin.create_associated_obj(incoming, model, default_obj=Incoming(),
                                                          value=model.actual_amount,
-                                                         status_id_cfg_key='AUTO_INCOMING_STATUS_ID',
-                                                         category_id_cfg_key='AUTO_INCOMING_CATEGORY_ID')
+                                                         status_id_cfg_key='SO_AUTO_INCOMING_STATUS_ID',
+                                                         category_id_cfg_key='SO_AUTO_INCOMING_CATEGORY_ID')
         return incoming
 
     @staticmethod
     def create_expense(model):
         expense = model.expense
         if (model.logistic_amount is not None) and (model.logistic_amount > 0):
-            expense = SalesOrderAdmin.create_associated_obj(expense, model, default_obj=Expense(),
+            default_obj=Expense(model.logistic_amount, model.order_date,
+                                app_provider.AppInfo.get_app().config['SO_AUTO_EXPENSE_STATUS_ID'],
+                                app_provider.AppInfo.get_app().config['SO_AUTO_EXPENSE_CATEGORY_ID'])
+            expense = SalesOrderAdmin.create_associated_obj(expense, model,
+                                                            default_obj=default_obj,
                                                             value=model.logistic_amount,
-                                                            status_id_cfg_key='AUTO_EXPENSE_STATUS_ID',
-                                                            category_id_cfg_key='AUTO_EXPENSE_CATEGORY_ID')
+                                                            status_id_cfg_key='SO_AUTO_EXPENSE_STATUS_ID',
+                                                            category_id_cfg_key='SO_AUTO_EXPENSE_CATEGORY_ID')
         return expense
 
     @staticmethod
