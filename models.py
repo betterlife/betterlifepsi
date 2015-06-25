@@ -15,7 +15,7 @@ class ProductCategory(db.Model):
     __tablename__ = 'product_category'
     id = Column(Integer, primary_key=True)
     code = Column(String(8), unique=True, nullable=False)
-    name = Column(String(32), unique=True, nullable=False)
+    name = Column(String(128), unique=True, nullable=False)
     parent_id = Column(Integer, ForeignKey('product_category.id'))
     parent_category = relationship('ProductCategory', remote_side=id,
                                    backref=backref('sub_categories', lazy='dynamic'))
@@ -31,13 +31,13 @@ class Supplier(db.Model):
     __tablename__ = 'supplier'
     id = Column(Integer, primary_key=True)
     code = Column(String(8), unique=True, nullable=False)
-    name = Column(String(32), unique=True, nullable=False)
+    name = Column(String(128), unique=True, nullable=False)
     qq = Column(String(16))
     phone = Column(String(32))
-    contact = Column(String(16))
+    contact = Column(String(64))
     email = Column(String(64))
     website = Column(String(64))
-    whole_sale_req = Column(String(32))
+    whole_sale_req = Column(String(128))
     can_mixed_whole_sale = Column(Boolean)
     remark = Column(Text)
 
@@ -49,13 +49,13 @@ class Product(db.Model):
     __tablename__ = 'product'
     id = Column(Integer, primary_key=True)
     code = Column(String(8), unique=True, nullable=False)
-    name = Column(String(32), unique=True, nullable=False)
+    name = Column(String(128), unique=True, nullable=False)
     deliver_day = Column(Integer)
     lead_day = Column(Integer)
     distinguishing_feature = Column(Text)
-    spec_link = Column(String(64))
-    purchase_price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
-    retail_price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
+    spec_link = Column(String(128))
+    purchase_price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
+    retail_price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
     category_id = Column(Integer, ForeignKey('product_category.id'), nullable=False)
     category = relationship('ProductCategory', backref=backref('products', lazy='dynamic'))
     supplier_id = Column(Integer, ForeignKey('supplier.id'), nullable=False)
@@ -71,10 +71,10 @@ class Product(db.Model):
 class PaymentMethod(db.Model):
     __tablename__ = 'payment_method'
     id = Column(Integer, primary_key=True)
-    account_name = Column(String(8), nullable=False)
-    account_number = Column(String(32), nullable=False)
-    bank_name = Column(String(16), nullable=False)
-    bank_branch = Column(String(32))
+    account_name = Column(String(64), nullable=False)
+    account_number = Column(String(64), nullable=False)
+    bank_name = Column(String(64), nullable=False)
+    bank_branch = Column(String(64))
     supplier_id = Column(Integer, ForeignKey('supplier.id'), nullable=False)
     supplier = relationship('Supplier', backref=backref('paymentMethods',
                                                         cascade='all, delete-orphan', lazy='dynamic'))
@@ -265,8 +265,8 @@ class EnumValues(db.Model):
     type_id = Column(Integer, ForeignKey('enum_values.id'))
     type = relationship('EnumValues', remote_side=id,
                         backref=backref('type_values', lazy='dynamic'))
-    code = Column(String(16), unique=True)
-    display = Column(String(16), nullable=False)
+    code = Column(String(32), unique=True, nullable=False)
+    display = Column(String(64), nullable=False)
 
     @staticmethod
     def type_filter(type_code):
@@ -350,3 +350,32 @@ class Incoming(db.Model):
         if self.amount is not None:
             return str(self.id) + ' - ' + str(self.amount)
         return str(self.id) + ' - ' + str(0)
+
+class Preference(db.Model):
+    __tablename__ = 'preference'
+    id = Column(Integer, primary_key=True)
+    def_so_incoming_type_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
+    def_so_incoming_type = relationship('EnumValues', foreign_keys=[def_so_incoming_type_id])
+    def_so_incoming_status_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
+    def_so_incoming_status = relationship('EnumValues', foreign_keys=[def_so_incoming_status_id])
+
+    def_so_exp_type_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
+    def_so_exp_type = relationship('EnumValues', foreign_keys=[def_so_exp_type_id])
+    def_so_exp_status_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
+    def_so_exp_status = relationship('EnumValues', foreign_keys=[def_so_exp_status_id])
+
+    def_po_logistic_exp_status_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
+    def_po_logistic_exp_status = relationship('EnumValues', foreign_keys=[def_po_logistic_exp_status_id])
+    def_po_logistic_exp_type_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
+    def_po_logistic_exp_type = relationship('EnumValues', foreign_keys=[def_po_logistic_exp_type_id])
+
+    def_po_goods_exp_status_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
+    def_po_goods_exp_status = relationship('EnumValues', foreign_keys=[def_po_goods_exp_status_id])
+    def_po_goods_exp_type_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
+    def_po_goods_exp_type = relationship('EnumValues', foreign_keys=[def_po_goods_exp_type_id])
+
+    remark = Column(Text)
+
+    @staticmethod
+    def get():
+        return Preference.query.get(1)

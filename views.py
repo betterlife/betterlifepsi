@@ -4,7 +4,7 @@ from flask.ext.admin import Admin
 from flask.ext.admin.consts import ICON_TYPE_GLYPH
 from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.admin.model import InlineFormAdmin
-from models import Product, Supplier, PurchaseOrder, SalesOrder, Expense, Incoming, EnumValues, ProductCategory
+from models import *
 from wtforms import StringField
 
 
@@ -69,26 +69,23 @@ class PurchaseOrderAdmin(ModelView):
     def create_expenses(model):
         expenses = model.expenses
         logistic_exp = None
+        preference = Preference.get()
         goods_exp = None
         if expenses is None:
             expenses = dict()
         for expense in expenses:
-            if (expense.category_id == app_provider.AppInfo.get_app().config['PO_AUTO_LOGISTIC_EXPENSE_CATEGORY_ID']) \
-                    and (model.logistic_amount != 0):
+            if (expense.category_id == preference.def_po_logistic_exp_type_id) and (model.logistic_amount != 0):
                 logistic_exp = expense
                 logistic_exp.amount = model.logistic_amount
-            elif (expense.category_id == app_provider.AppInfo.get_app().config['PO_AUTO_GOODS_EXPENSE_CATEGORY_ID']) \
-                    and (model.goods_amount != 0):
+            elif (expense.category_id == preference.def_po_goods_exp_type_id) and (model.goods_amount != 0):
                 goods_exp = expense
                 goods_exp.amount = model.goods_amount
         if (logistic_exp is None) and (model.logistic_amount != 0):
-            logistic_exp = Expense(model.logistic_amount, model.order_date,
-                                   app_provider.AppInfo.get_app().config['PO_AUTO_LOGISTIC_EXPENSE_STATUS_ID'],
-                                   app_provider.AppInfo.get_app().config['PO_AUTO_LOGISTIC_EXPENSE_CATEGORY_ID'])
+            logistic_exp = Expense(model.logistic_amount, model.order_date, preference.def_po_logistic_exp_status_id,
+                                   preference.def_po_logistic_exp_type_id)
         if (goods_exp is None) and (model.goods_amount != 0):
-            goods_exp = Expense(model.goods_amount, model.order_date,
-                                app_provider.AppInfo.get_app().config['PO_AUTO_LOGISTIC_EXPENSE_STATUS_ID'],
-                                app_provider.AppInfo.get_app().config['PO_AUTO_GOODS_EXPENSE_CATEGORY_ID'])
+            goods_exp = Expense(model.goods_amount, model.order_date, preference.def_po_goods_exp_status_id,
+                                preference.def_po_goods_exp_type_id)
         logistic_exp.purchase_order_id = model.id
         goods_exp.purchase_order_id = model.id
         return logistic_exp, goods_exp
@@ -136,32 +133,33 @@ class SalesOrderAdmin(ModelView):
     @staticmethod
     def create_incoming(model):
         incoming = model.incoming
+        preference = Preference.get()
         incoming = SalesOrderAdmin.create_associated_obj(incoming, model, default_obj=Incoming(),
                                                          value=model.actual_amount,
-                                                         status_id_cfg_key='SO_AUTO_INCOMING_STATUS_ID',
-                                                         category_id_cfg_key='SO_AUTO_INCOMING_CATEGORY_ID')
+                                                         status_id=preference.def_so_incoming_status_id,
+                                                         type_id=preference.def_so_incoming_type_id)
         return incoming
 
     @staticmethod
     def create_expense(model):
         expense = model.expense
+        preference = Preference.get()
         if (model.logistic_amount is not None) and (model.logistic_amount > 0):
             default_obj=Expense(model.logistic_amount, model.order_date,
-                                app_provider.AppInfo.get_app().config['SO_AUTO_EXPENSE_STATUS_ID'],
-                                app_provider.AppInfo.get_app().config['SO_AUTO_EXPENSE_CATEGORY_ID'])
+                                preference.def_so_exp_status_id, preference.def_so_exp_type_id)
             expense = SalesOrderAdmin.create_associated_obj(expense, model,
                                                             default_obj=default_obj,
                                                             value=model.logistic_amount,
-                                                            status_id_cfg_key='SO_AUTO_EXPENSE_STATUS_ID',
-                                                            category_id_cfg_key='SO_AUTO_EXPENSE_CATEGORY_ID')
+                                                            status_id=preference.def_so_exp_status_id,
+                                                            type_id=preference.def_so_exp_type_id)
         return expense
 
     @staticmethod
-    def create_associated_obj(obj, model, default_obj, value, status_id_cfg_key, category_id_cfg_key):
+    def create_associated_obj(obj, model, default_obj, value, status_id, type_id):
         if obj is None:
             obj = default_obj
-            obj.status_id = app_provider.AppInfo.get_app().config[status_id_cfg_key]
-            obj.category_id = app_provider.AppInfo.get_app().config[category_id_cfg_key]
+            obj.status_id = status_id
+            obj.category_id = type_id
         obj.amount = value
         obj.sales_order_id = model.id
         obj.date = model.order_date
@@ -210,6 +208,34 @@ class EnumValuesAdmin(ModelView):
     column_searchable_list = ['code', 'display']
     column_filters = ('code', 'display',)
 
+class PreferenceAdmin(ModelView):
+    can_create, can_delete = False, False
+    form_args = dict(
+        def_so_incoming_type=dict(query_factory=Incoming.type_filter),
+        def_so_incoming_status=dict(query_factory=Incoming.status_filter),
+        def_so_exp_status=dict(query_factory=Expense.status_filter),
+        def_so_exp_type=dict(query_factory=Expense.type_filter),
+        def_po_logistic_exp_status=dict(query_factory=Expense.status_filter),
+        def_po_logistic_exp_type=dict(query_factory=Expense.type_filter),
+        def_po_goods_exp_status=dict(query_factory=Expense.status_filter),
+        def_po_goods_exp_type=dict(query_factory=Expense.type_filter),
+    )
+    column_list = ('def_so_incoming_type', 'def_so_incoming_status',
+                   'def_so_exp_status', 'def_so_exp_type',
+                   'def_po_logistic_exp_status','def_po_logistic_exp_type',
+                   'def_po_goods_exp_status','def_po_goods_exp_type')
+    column_labels = dict(
+        def_so_incoming_type=u'销售单收入默认类型',
+        def_so_incoming_status=u'销售单收入默认状态',
+        def_so_exp_status=u'销售单物流支出默认状态',
+        def_so_exp_type=u'销售单物流支出默认类型',
+        def_po_logistic_exp_status=u'采购单物流支出默认状态',
+        def_po_logistic_exp_type=u'采购单物流支出默认类型',
+        def_po_goods_exp_status=u'采购单货款支出默认状态',
+        def_po_goods_exp_type=u'采购单货款支出默认类型',
+    )
+
+
 def init_admin_views(app, db):
     db_session = db.session
     admin = Admin(app, u'管理后台', base_template='layout.html', template_mode='bootstrap3')
@@ -221,4 +247,5 @@ def init_admin_views(app, db):
     admin.add_view(IncomingAdmin(Incoming, db_session, menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-minus-sign'))
     admin.add_view(EnumValuesAdmin(EnumValues, db_session, category='Settings', name='基础分类', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-tasks'))
     admin.add_view(ProductCategoryAdmin(ProductCategory, db_session, category='Settings', name='产品分类', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-tags'))
+    admin.add_view(PreferenceAdmin(Preference, db_session, category='Settings', name='系统设定', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-cog'))
     return admin

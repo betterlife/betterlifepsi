@@ -8,11 +8,12 @@ app.config.from_object(config)
 
 from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy(app)
-db.init_app(app)
-
 from app_provider import AppInfo
 AppInfo.set_app(app)
 AppInfo.set_db(db)
+from models import *
+db.create_all()
+db.init_app(app)
 
 from views import init_admin_views
 admin = init_admin_views(app, db)

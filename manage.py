@@ -10,6 +10,13 @@ app.config.from_object(config)
 
 from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy(app)
+from app_provider import AppInfo
+AppInfo.set_app(app)
+AppInfo.set_db(db)
+from models import PaymentMethod, Preference, Product, \
+    ProductCategory, PurchaseOrder, PurchaseOrderLine, \
+    EnumValues, Expense, SalesOrderLine, SalesOrder, \
+    Supplier, Incoming
 db.init_app(app)
 
 migrate = Migrate(app, db)
