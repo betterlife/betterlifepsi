@@ -27,7 +27,7 @@ def hello():
 
 if __name__ == '__main__':
     babel.init_app(app)
-    app.run(port=8000)
+    app.run(port=80)
 
 @app.before_request
 def before_request():
