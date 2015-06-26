@@ -1,5 +1,6 @@
 # encoding: utf-8
 import sys
+from decimal import Decimal, ROUND_HALF_UP
 
 from app_provider import AppInfo
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Boolean, Text, DateTime, select, func
@@ -10,6 +11,9 @@ reload(sys)
 sys.setdefaultencoding("utf-8")
 
 db = AppInfo.get_db()
+
+def format_decimal(value):
+    return Decimal(value.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
 
 class ProductCategory(db.Model):
     __tablename__ = 'product_category'
@@ -92,7 +96,7 @@ class SalesOrder(db.Model):
 
     @hybrid_property
     def actual_amount(self):
-        return sum(line.actual_amount for line in self.lines)
+        return format_decimal(sum(line.actual_amount for line in self.lines))
 
     @actual_amount.expression
     def actual_amount(self):
@@ -105,7 +109,7 @@ class SalesOrder(db.Model):
 
     @hybrid_property
     def original_amount(self):
-        return sum(line.original_amount for line in self.lines)
+        return format_decimal(sum(line.original_amount for line in self.lines))
 
     @original_amount.expression
     def original_amount(self):
@@ -144,7 +148,7 @@ class SalesOrderLine(db.Model):
 
     @hybrid_property
     def discount_amount(self):
-        return self.original_amount - self.actual_amount
+        return format_decimal(self.original_amount - self.actual_amount)
 
     @discount_amount.setter
     def discount_amount(self, adjust_amount):
@@ -152,7 +156,7 @@ class SalesOrderLine(db.Model):
 
     @hybrid_property
     def actual_amount(self):
-        return self.unit_price * self.quantity
+        return format_decimal(self.unit_price * self.quantity)
 
     @actual_amount.expression
     def actual_amount(self):
@@ -164,7 +168,7 @@ class SalesOrderLine(db.Model):
 
     @hybrid_property
     def original_amount(self):
-        return self.product.retail_price * self.quantity
+        return format_decimal(self.product.retail_price * self.quantity)
 
     @original_amount.expression
     def original_amount(self):
@@ -177,7 +181,7 @@ class SalesOrderLine(db.Model):
 
     @hybrid_property
     def price_discount(self):
-        return self.product.retail_price - self.unit_price
+        return format_decimal(self.product.retail_price - self.unit_price)
 
     @price_discount.setter
     def price_discount(self, price_adjust):
@@ -213,7 +217,7 @@ class PurchaseOrder(db.Model):
 
     @hybrid_property
     def total_amount(self):
-        return self.logistic_amount + self.goods_amount
+        return format_decimal(self.logistic_amount + self.goods_amount)
 
     @total_amount.setter
     def total_amount(self, value):
@@ -221,7 +225,7 @@ class PurchaseOrder(db.Model):
 
     @hybrid_property
     def goods_amount(self):
-        return sum(line.total_amount for line in self.lines)
+        return format_decimal(sum(line.total_amount for line in self.lines))
 
     @goods_amount.setter
     def goods_amount(self, value):
@@ -248,8 +252,7 @@ class PurchaseOrderLine(db.Model):
 
     @hybrid_property
     def total_amount(self):
-        total_amount= self.unit_price * self.quantity
-        return total_amount
+        return format_decimal(self.unit_price * self.quantity)
 
     @total_amount.setter
     def total_amount(self, value):

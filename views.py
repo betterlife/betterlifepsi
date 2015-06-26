@@ -88,11 +88,10 @@ class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
         product=dict(label=lazy_gettext('Product')),
         unit_price=dict(label=lazy_gettext('Unit Price')),
         quantity=dict(label=lazy_gettext('Quantity')),
-        total_amount=dict(label=lazy_gettext('Total Amount')),
         remark=dict(label=lazy_gettext('Remark')),
     )
     def postprocess_form(self, form):
-        form.total_amount = ReadOnlyStringField(label='Total Amount')
+        form.total_amount = ReadOnlyStringField(label=lazy_gettext('Total Amount'))
         return form
 
 class PurchaseOrderAdmin(ModelView):
@@ -166,8 +165,8 @@ class SalesOrderLineInlineAdmin(InlineFormAdmin):
     def postprocess_form(self, form):
         form.retail_price = ReadOnlyStringField(label=lazy_gettext('Retail Price'))
         form.price_discount = ReadOnlyStringField(label=lazy_gettext('Price Discount'))
-        form.actual_amount = ReadOnlyStringField(label=lazy_gettext('Actual Amount'))
         form.original_amount = ReadOnlyStringField(label=lazy_gettext('Original Amount'))
+        form.actual_amount = ReadOnlyStringField(label=lazy_gettext('Actual Amount'))
         form.discount_amount = ReadOnlyStringField(label=lazy_gettext('Discount Amount'))
         return form
 
