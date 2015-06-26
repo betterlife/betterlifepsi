@@ -16,6 +16,7 @@ db = SQLAlchemy(app)
 from app_provider import AppInfo
 AppInfo.set_app(app)
 AppInfo.set_db(db)
+from models import *
 db.init_app(app)
 
 migrate = Migrate(app, db)
