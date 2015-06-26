@@ -11,7 +11,7 @@ from wtforms import StringField
 
 class ProductCategoryAdmin(ModelView):
     column_exclude_list = ['sub_categories', 'products']
-    column_sortable_list = ('code', 'name')
+    column_sortable_list = ('id', 'code', 'name')
     column_searchable_list = ('code', 'name')
     # column_filters = ('code','name')
     column_editable_list = ['code', 'name']
@@ -101,6 +101,8 @@ class PurchaseOrderAdmin(ModelView):
         "goods_amount": StringField(label=lazy_gettext('Goods Amount')),
         "total_amount": StringField(label=lazy_gettext('Total Amount')),
     }
+    column_sortable_list = ('id', 'logistic_amount', 'total_amount',
+                            'goods_amount', 'order_date', ('supplier', 'supplier.id'),)
     form_widget_args = {
         'goods_amount': {'disabled': True},
         'total_amount': {'disabled': True},
@@ -187,7 +189,8 @@ class SalesOrderAdmin(ModelView):
         'logistic_amount': {'default': 0}
     }
     form_excluded_columns = ('incoming', 'expense')
-    column_sortable_list = ('logistic_amount', 'actual_amount', 'original_amount', 'discount_amount', 'order_date')
+    column_sortable_list = ('id', 'logistic_amount', 'actual_amount',
+                            'original_amount', 'discount_amount', 'order_date')
     inline_models = (SalesOrderLineInlineAdmin(SalesOrderLine),)
 
     column_labels = {
@@ -255,6 +258,8 @@ class IncomingAdmin(ModelView):
         status=dict(query_factory=Incoming.status_filter),
         category=dict(query_factory=Incoming.type_filter),
     )
+    column_sortable_list = ('id', 'date', 'amount', ('status', 'status.display'),
+                            ('category', 'category.display'), 'remark')
     column_labels = {
         'id': lazy_gettext('id'),
         'amount': lazy_gettext('Amount'),
@@ -276,8 +281,8 @@ class ExpenseAdmin(ModelView):
         status=dict(query_factory=Expense.status_filter),
         category=dict(query_factory=Expense.type_filter),
     )
-    column_sortable_list=('date','amount','has_invoice',('status','status.display'),
-                          ('category', 'category.display'),'remark')
+    column_sortable_list = ('id', 'date', 'amount', 'has_invoice', ('status', 'status.display'),
+                            ('category', 'category.display'), 'remark')
     column_labels = {
         'id': lazy_gettext('id'),
         'amount': lazy_gettext('Amount'),

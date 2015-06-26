@@ -219,6 +219,10 @@ class PurchaseOrder(db.Model):
     def total_amount(self):
         return format_decimal(self.logistic_amount + self.goods_amount)
 
+    @total_amount.expression
+    def total_amount(self):
+        return self.goods_amount + self.logistic_amount
+
     @total_amount.setter
     def total_amount(self, value):
         pass
@@ -226,6 +230,12 @@ class PurchaseOrder(db.Model):
     @hybrid_property
     def goods_amount(self):
         return format_decimal(sum(line.total_amount for line in self.lines))
+
+    @goods_amount.expression
+    def goods_amount(self):
+        return (select([func.sum(PurchaseOrderLine.unit_price * PurchaseOrderLine.quantity)])
+                .where(self.id == PurchaseOrderLine.purchase_order_id)
+                .label('goods_amount'))
 
     @goods_amount.setter
     def goods_amount(self, value):
@@ -253,6 +263,10 @@ class PurchaseOrderLine(db.Model):
     @hybrid_property
     def total_amount(self):
         return format_decimal(self.unit_price * self.quantity)
+
+    @total_amount.expression
+    def total_amount(self):
+        return select([self.unit_price * self.quantity]).label('line_total_amount')
 
     @total_amount.setter
     def total_amount(self, value):
