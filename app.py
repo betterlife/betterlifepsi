@@ -1,5 +1,5 @@
 # coding=utf-8
-from flask import Flask
+from flask import Flask,redirect
 app = Flask(__name__)
 
 import config
@@ -21,9 +21,13 @@ from views import init_admin_views
 admin = init_admin_views(app, db)
 AppInfo.set_admin(admin)
 
+@app.route('/')
+def hello():
+    return redirect("/admin", code=302)
+
 if __name__ == '__main__':
     babel.init_app(app)
-    app.run()
+    app.run(port=8000)
 
 @app.before_request
 def before_request():
@@ -44,3 +48,4 @@ def get_locale():
     # Put your logic here. Application can store locale in
     # user profile, cookie, session, etc.
     return 'zh_CN'
+
