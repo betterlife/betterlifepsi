@@ -13,7 +13,7 @@ class ProductCategoryAdmin(ModelView):
     column_exclude_list = ['sub_categories', 'products']
     column_sortable_list = ('code', 'name')
     column_searchable_list = ('code', 'name')
-    column_filters = ('code','name')
+    # column_filters = ('code','name')
     column_editable_list = ['code', 'name']
     column_labels = {
         'id': lazy_gettext('id'),
@@ -28,7 +28,7 @@ class ProductAdmin(ModelView):
     column_editable_list = ['name', 'deliver_day', 'lead_day', 'distinguishing_feature',
                             'spec_link', 'purchase_price', 'retail_price']
     column_searchable_list = ('code', 'name', 'supplier.name', 'category.name', 'category.code')
-    column_filters = column_searchable_list
+    # column_filters = column_searchable_list
     column_labels = {
         'supplier.name': lazy_gettext('Supplier Name'),
         'category.name': lazy_gettext('Category Name'),
@@ -62,7 +62,7 @@ class SupplierAdmin(ModelView):
     column_editable_list = ['name', 'qq', 'phone', 'contact', 'email', 'website',
                             'whole_sale_req', 'can_mixed_whole_sale', 'remark']
     column_searchable_list = ('code', 'name')
-    column_filters = column_searchable_list
+    # column_filters = column_searchable_list
     column_labels = {
         'id': lazy_gettext('id'),
         'name': lazy_gettext('Name'),
@@ -175,7 +175,7 @@ class SalesOrderAdmin(ModelView):
     from models import SalesOrderLine
     column_list = ('id', 'logistic_amount','actual_amount', 'original_amount',
                    'discount_amount', 'order_date', 'incoming', 'expense', 'remark')
-    column_filters = ('order_date', 'remark', 'logistic_amount')
+    # column_filters = ('order_date', 'remark', 'logistic_amount')
     form_extra_fields = {
         'actual_amount': StringField(label=lazy_gettext('Actual Amount')),
         'original_amount': StringField(label=lazy_gettext('Original Amount')),
@@ -266,7 +266,7 @@ class IncomingAdmin(ModelView):
         'remark': lazy_gettext('Remark'),
         'category.display': lazy_gettext('Category'),
     }
-    column_filters = ('date','amount','sales_order.remark', 'category.display')
+    # column_filters = ('date','amount','sales_order.remark', 'category.display')
     form_excluded_columns = ('sales_order',)
 
 class ExpenseAdmin(ModelView):
@@ -291,14 +291,14 @@ class ExpenseAdmin(ModelView):
         'category.display': lazy_gettext('Category'),
         'has_invoice': lazy_gettext('Has Invoice'),
     }
-    column_filters = ('has_invoice','date','amount','category.display',)
+    # column_filters = ('has_invoice','date','amount','category.display',)
     form_excluded_columns = ('sales_order', 'purchase_order',)
 
 class EnumValuesAdmin(ModelView):
     column_list = ('id', 'type', 'code', 'display',)
     column_editable_list = ['display']
     column_searchable_list = ['code', 'display']
-    column_filters = ('code', 'display',)
+    # column_filters = ('code', 'display',)
     column_labels = {
         'id': lazy_gettext('id'),
         'type': lazy_gettext('Type'),
