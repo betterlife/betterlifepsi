@@ -1,10 +1,13 @@
 # coding=utf-8
 from flask import Flask
-
 app = Flask(__name__)
 
 import config
+
 app.config.from_object(config)
+
+from flask_babelex import Babel
+babel = Babel()
 
 from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy(app)
@@ -19,6 +22,7 @@ admin = init_admin_views(app, db)
 AppInfo.set_admin(admin)
 
 if __name__ == '__main__':
+    babel.init_app(app)
     app.run()
 
 @app.before_request
@@ -34,3 +38,9 @@ def teardown_request(exception):
 @app.teardown_appcontext
 def shutdown_session(exception=None):
     db.session.remove()
+
+@babel.localeselector
+def get_locale():
+    # Put your logic here. Application can store locale in
+    # user profile, cookie, session, etc.
+    return 'zh_CN'

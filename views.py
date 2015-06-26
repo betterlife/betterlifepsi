@@ -4,6 +4,7 @@ from flask.ext.admin import Admin
 from flask.ext.admin.consts import ICON_TYPE_GLYPH
 from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.admin.model import InlineFormAdmin
+from flask.ext.babelex import lazy_gettext
 from models import *
 from wtforms import StringField
 
@@ -14,29 +15,61 @@ class ProductCategoryAdmin(ModelView):
     column_searchable_list = ('code', 'name')
     column_filters = ('code','name')
     column_editable_list = ['code', 'name']
-    form_widget_args = {
-        # 'sub_categories': { 'disabled': True },
-        # 'products' : { 'disabled' : True },
+    column_labels = {
+        'id': lazy_gettext('id'),
+        'name': lazy_gettext('Name'),
+        'code': lazy_gettext('Code'),
+        'parent_category': lazy_gettext('Parent category'),
     }
-    form_args = dict(
-        parent_category = dict(label='Parent',)
-    )
+    form_excluded_columns = ('sub_categories','products')
+
 
 class ProductAdmin(ModelView):
     column_editable_list = ['name', 'deliver_day', 'lead_day', 'distinguishing_feature',
                             'spec_link', 'purchase_price', 'retail_price']
     column_searchable_list = ('code', 'name', 'supplier.name', 'category.name', 'category.code')
     column_filters = column_searchable_list
-
+    column_labels = {
+        'supplier.name': lazy_gettext('Supplier Name'),
+        'category.name': lazy_gettext('Category Name'),
+        'category.code': lazy_gettext('Category Code'),
+        'supplier': lazy_gettext('Supplier'),
+        'name': lazy_gettext('Name'),
+        'code': lazy_gettext('Code'),
+        'category': lazy_gettext('Category'),
+        'deliver_day': lazy_gettext('Deliver day'),
+        'lead_day': lazy_gettext('Lead day'),
+        'distinguishing_feature': lazy_gettext('Distinguishing feature'),
+        'spec_link': lazy_gettext('Spec link'),
+        'purchase_price': lazy_gettext('Purchase price'),
+        'retail_price': lazy_gettext('Retail price')
+    }
 
 class SupplierAdmin(ModelView):
     from models import PaymentMethod
-    form_excluded_columns = ('purchaseOrders',)
+    form_excluded_columns = ('purchaseOrders','products')
     inline_models = (PaymentMethod,)
     column_editable_list = ['name', 'qq', 'phone', 'contact', 'email', 'website',
                             'whole_sale_req', 'can_mixed_whole_sale', 'remark']
     column_searchable_list = ('code', 'name')
     column_filters = column_searchable_list
+    column_labels = {
+        'id': lazy_gettext('id'),
+        'name': lazy_gettext('Name'),
+        'code': lazy_gettext('Code'),
+        'qq': lazy_gettext('QQ'),
+        'phone': lazy_gettext('Phone'),
+        'contact': lazy_gettext('Contact'),
+        'email': lazy_gettext('Email'),
+        'website': lazy_gettext('Website'),
+        'whole_sale_req': lazy_gettext('Whole Sale Req'),
+        'can_mixed_whole_sale': lazy_gettext('Can Mixed Whole Sale'),
+        'remark': lazy_gettext('Remark'),
+        'account_name': lazy_gettext('Account Name'),
+        'account_number': lazy_gettext('Account Number'),
+        'bank_name': lazy_gettext('Bank Name'),
+        'bank_branch': lazy_gettext('Bank Branch'),
+    }
 
 class PaymentMethodAdmin(ModelView):
     column_editable_list = ['account_name', 'account_number', 'bank_name', 'bank_branch', 'remark']
@@ -54,16 +87,26 @@ class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
 
 class PurchaseOrderAdmin(ModelView):
     from models import PurchaseOrderLine
-    column_list = ('logistic_amount', 'goods_amount', 'total_amount', 'order_date','supplier', 'all_expenses', 'remark')
+    column_list = ('id', 'logistic_amount', 'goods_amount', 'total_amount', 'order_date','supplier', 'all_expenses', 'remark')
     form_extra_fields = {
-        "goods_amount": StringField('Product Amount'),
-        "total_amount": StringField('Total Amount')
+        "goods_amount": StringField(label=lazy_gettext('Goods Amount')),
+        "total_amount": StringField(label=lazy_gettext('Total Amount')),
     }
     form_widget_args = {
         'goods_amount': {'disabled': True},
         'total_amount': {'disabled': True},
     }
     form_excluded_columns = ('expenses',)
+    column_labels = {
+        'id': lazy_gettext('id'),
+        'logistic_amount': lazy_gettext('Logistic Amount'),
+        'order_date': lazy_gettext('Order Date'),
+        'supplier': lazy_gettext('Supplier'),
+        'remark': lazy_gettext('Remark'),
+        'all_expenses': lazy_gettext('Related Expenses'),
+        'total_amount': lazy_gettext('Total Amount'),
+        'goods_amount': lazy_gettext('Goods Amount'),
+    }
 
     @staticmethod
     def create_expenses(model):
@@ -116,9 +159,9 @@ class SalesOrderAdmin(ModelView):
                    'discount_amount', 'order_date', 'incoming', 'expense', 'remark')
     column_filters = ('order_date', 'remark', 'logistic_amount')
     form_extra_fields = {
-        'actual_amount': StringField('Actual Amount'),
-        'original_amount': StringField('Original Amount'),
-        'discount_amount': StringField('Discount Amount')
+        'actual_amount': StringField(label=lazy_gettext('Actual Amount')),
+        'original_amount': StringField(label=lazy_gettext('Original Amount')),
+        'discount_amount': StringField(label=lazy_gettext('Discount Amount'))
     }
     form_widget_args = {
         'actual_amount': {'disabled': True},
@@ -129,6 +172,18 @@ class SalesOrderAdmin(ModelView):
     form_excluded_columns = ('incoming', 'expense')
     column_sortable_list = ('logistic_amount', 'actual_amount', 'original_amount', 'discount_amount', 'order_date')
     inline_models = (SalesOrderLineInlineAdmin(SalesOrderLine),)
+
+    column_labels = {
+        'id': lazy_gettext('id'),
+        'logistic_amount': lazy_gettext('Logistic Amount'),
+        'order_date': lazy_gettext('Order Date'),
+        'remark': lazy_gettext('Remark'),
+        'actual_amount': lazy_gettext('Actual Amount'),
+        'original_amount': lazy_gettext('Original Amount'),
+        'discount_amount': lazy_gettext('Discount Amount'),
+        'incoming': lazy_gettext('Relate Incoming'),
+        'expense': lazy_gettext('Relate Expense'),
+    }
 
     @staticmethod
     def create_incoming(model):
@@ -182,8 +237,16 @@ class IncomingAdmin(ModelView):
         status=dict(query_factory=Incoming.status_filter),
         category=dict(query_factory=Incoming.type_filter),
     )
-    column_labels = dict()
-    column_labels['category.display'] = 'Category'
+    column_labels = {
+        'id': lazy_gettext('id'),
+        'amount': lazy_gettext('Amount'),
+        'date': lazy_gettext('Date'),
+        'category': lazy_gettext('Category'),
+        'status': lazy_gettext('Status'),
+        'sales_order': lazy_gettext('Relate Sales Order'),
+        'remark': lazy_gettext('Remark'),
+        'category.display': lazy_gettext('Category'),
+    }
     column_filters = ('date','amount','sales_order.remark', 'category.display')
     form_excluded_columns = ('sales_order',)
 
@@ -197,8 +260,18 @@ class ExpenseAdmin(ModelView):
     )
     column_sortable_list=('date','amount','has_invoice',('status','status.display'),
                           ('category', 'category.display'),'remark')
-    column_labels = dict()
-    column_labels['category.display'] = 'Category'
+    column_labels = {
+        'id': lazy_gettext('id'),
+        'amount': lazy_gettext('Amount'),
+        'date': lazy_gettext('Date'),
+        'category': lazy_gettext('Category'),
+        'status': lazy_gettext('Status'),
+        'sales_order': lazy_gettext('Relate Sales Order'),
+        'purchase_order': lazy_gettext('Relate Purchase Order'),
+        'remark': lazy_gettext('Remark'),
+        'category.display': lazy_gettext('Category'),
+        'has_invoice': lazy_gettext('Has Invoice'),
+    }
     column_filters = ('has_invoice','date','amount','category.display',)
     form_excluded_columns = ('sales_order', 'purchase_order',)
 
@@ -207,6 +280,12 @@ class EnumValuesAdmin(ModelView):
     column_editable_list = ['display']
     column_searchable_list = ['code', 'display']
     column_filters = ('code', 'display',)
+    column_labels = {
+        'id': lazy_gettext('id'),
+        'type': lazy_gettext('Type'),
+        'code': lazy_gettext('Code'),
+        'display': lazy_gettext('Display'),
+    }
 
 class PreferenceAdmin(ModelView):
     can_create, can_delete = False, False
@@ -225,27 +304,36 @@ class PreferenceAdmin(ModelView):
                    'def_po_logistic_exp_status','def_po_logistic_exp_type',
                    'def_po_goods_exp_status','def_po_goods_exp_type')
     column_labels = dict(
-        def_so_incoming_type=u'销售单收入默认类型',
-        def_so_incoming_status=u'销售单收入默认状态',
-        def_so_exp_status=u'销售单物流支出默认状态',
-        def_so_exp_type=u'销售单物流支出默认类型',
-        def_po_logistic_exp_status=u'采购单物流支出默认状态',
-        def_po_logistic_exp_type=u'采购单物流支出默认类型',
-        def_po_goods_exp_status=u'采购单货款支出默认状态',
-        def_po_goods_exp_type=u'采购单货款支出默认类型',
+        def_so_incoming_type=lazy_gettext('Default Sales Order Incoming Type'),
+        def_so_incoming_status=lazy_gettext('Default Sale Order Incoming Status'),
+        def_so_exp_status=lazy_gettext('Default Sale Order Expense Status'),
+        def_so_exp_type=lazy_gettext('Default Sales Order Expense Type'),
+        def_po_logistic_exp_status=lazy_gettext('Default Purchase Order Logistic Expense Status'),
+        def_po_logistic_exp_type=lazy_gettext('Default Purchase Order Logistic Expense Type'),
+        def_po_goods_exp_status=lazy_gettext('Default Purchase Order Goods Expense Status'),
+        def_po_goods_exp_type=lazy_gettext('Default Purchase Order Goods Expense Type'),
+        remark=lazy_gettext('Remark'),
     )
-
 
 def init_admin_views(app, db):
     db_session = db.session
-    admin = Admin(app, u'管理后台', base_template='layout.html', template_mode='bootstrap3')
-    admin.add_view(ProductAdmin(Product, db_session, menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-barcode'))
-    admin.add_view(SupplierAdmin(Supplier, db_session,  menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-globe'))
-    admin.add_view(PurchaseOrderAdmin(PurchaseOrder, db_session, menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-shopping-cart'))
-    admin.add_view(SalesOrderAdmin(SalesOrder, db_session, menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-send'))
-    admin.add_view(ExpenseAdmin(Expense, db_session, menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-usd'))
-    admin.add_view(IncomingAdmin(Incoming, db_session, menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-minus-sign'))
-    admin.add_view(EnumValuesAdmin(EnumValues, db_session, category='Settings', name='基础分类', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-tasks'))
-    admin.add_view(ProductCategoryAdmin(ProductCategory, db_session, category='Settings', name='产品分类', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-tags'))
-    admin.add_view(PreferenceAdmin(Preference, db_session, category='Settings', name='系统设定', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-cog'))
+    admin = Admin(app, lazy_gettext('Brand Name'), base_template='layout.html', template_mode='bootstrap3')
+    admin.add_view(PurchaseOrderAdmin(PurchaseOrder, db_session, name=lazy_gettext("Purchase Order"),
+                                      menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-shopping-cart'))
+    admin.add_view(SalesOrderAdmin(SalesOrder, db_session, name=lazy_gettext("Sales Order"),
+                                   menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-send'))
+    admin.add_view(ExpenseAdmin(Expense, db_session, name=lazy_gettext("Expense"),
+                                menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-usd'))
+    admin.add_view(IncomingAdmin(Incoming, db_session, name=lazy_gettext("Incoming"),
+                                 menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-minus-sign'))
+    admin.add_view(ProductAdmin(Product, db_session, name=lazy_gettext("Product"),
+                                category=u'基础信息', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-barcode'))
+    admin.add_view(SupplierAdmin(Supplier, db_session,name=lazy_gettext("Supplier"),
+                                 category=u'基础信息', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-globe'))
+    admin.add_view(ProductCategoryAdmin(ProductCategory, db_session, name=lazy_gettext("Product Category"),
+                                        category=u'基础信息', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-tags'))
+    admin.add_view(EnumValuesAdmin(EnumValues, db_session, name=lazy_gettext("Enum Values"),
+                                   category=u'基础信息', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-tasks'))
+    admin.add_view(PreferenceAdmin(Preference, db_session, name=lazy_gettext("Preference"),
+                                   category=u'基础信息',  menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-cog'))
     return admin

@@ -1,7 +1,8 @@
-import os
-import app
 import unittest
 import tempfile
+
+import os
+import app
 
 
 class FlaskrTestCase(unittest.TestCase):

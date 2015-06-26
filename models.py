@@ -1,11 +1,11 @@
 # encoding: utf-8
-from datetime import date
+import sys
+
 from app_provider import AppInfo
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Boolean, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
-import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
