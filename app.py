@@ -7,7 +7,8 @@ import config
 app.config.from_object(config)
 
 from flask_babelex import Babel
-babel = Babel()
+babel = Babel(default_locale='zh_Hans_CN')
+babel.init_app(app)
 
 from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy(app)
@@ -26,8 +27,7 @@ def hello():
     return redirect("/admin", code=302)
 
 if __name__ == '__main__':
-    babel.init_app(app)
-    app.run(port=80)
+    app.run()
 
 @app.before_request
 def before_request():
