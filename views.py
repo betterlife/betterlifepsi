@@ -37,18 +37,28 @@ class ProductAdmin(ModelView):
         'name': lazy_gettext('Name'),
         'code': lazy_gettext('Code'),
         'category': lazy_gettext('Category'),
-        'deliver_day': lazy_gettext('Deliver day'),
-        'lead_day': lazy_gettext('Lead day'),
-        'distinguishing_feature': lazy_gettext('Distinguishing feature'),
-        'spec_link': lazy_gettext('Spec link'),
-        'purchase_price': lazy_gettext('Purchase price'),
-        'retail_price': lazy_gettext('Retail price')
+        'deliver_day': lazy_gettext('Deliver Day'),
+        'lead_day': lazy_gettext('Lead Day'),
+        'distinguishing_feature': lazy_gettext('Distinguishing Feature'),
+        'spec_link': lazy_gettext('Spec Link'),
+        'purchase_price': lazy_gettext('Purchase Price'),
+        'retail_price': lazy_gettext('Retail Price')
     }
+
+class PaymentMethodLineInlineAdmin(InlineFormAdmin):
+    # column_editable_list = ['account_name', 'account_number', 'bank_name', 'bank_branch', 'remark']
+    form_args = dict(
+        account_name=dict(label=lazy_gettext('Account Name')),
+        account_number=dict(label=lazy_gettext('Account Number')),
+        bank_name=dict(label=lazy_gettext('Bank Name')),
+        bank_branch=dict(label=lazy_gettext('Bank Branch')),
+        remark=dict(label=lazy_gettext('Remark')),
+    )
 
 class SupplierAdmin(ModelView):
     from models import PaymentMethod
     form_excluded_columns = ('purchaseOrders','products')
-    inline_models = (PaymentMethod,)
+    inline_models = (PaymentMethodLineInlineAdmin(PaymentMethod),)
     column_editable_list = ['name', 'qq', 'phone', 'contact', 'email', 'website',
                             'whole_sale_req', 'can_mixed_whole_sale', 'remark']
     column_searchable_list = ('code', 'name')
@@ -65,14 +75,8 @@ class SupplierAdmin(ModelView):
         'whole_sale_req': lazy_gettext('Whole Sale Req'),
         'can_mixed_whole_sale': lazy_gettext('Can Mixed Whole Sale'),
         'remark': lazy_gettext('Remark'),
-        'account_name': lazy_gettext('Account Name'),
-        'account_number': lazy_gettext('Account Number'),
-        'bank_name': lazy_gettext('Bank Name'),
-        'bank_branch': lazy_gettext('Bank Branch'),
+        'paymentMethods': lazy_gettext('Payment Methods'),
     }
-
-class PaymentMethodAdmin(ModelView):
-    column_editable_list = ['account_name', 'account_number', 'bank_name', 'bank_branch', 'remark']
 
 class ReadOnlyStringField(StringField):
     def __call__(self, **kwargs):
@@ -80,7 +84,13 @@ class ReadOnlyStringField(StringField):
         return super(ReadOnlyStringField, self).__call__(**kwargs)
 
 class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
-
+    form_args=dict(
+        product=dict(label=lazy_gettext('Product')),
+        unit_price=dict(label=lazy_gettext('Unit Price')),
+        quantity=dict(label=lazy_gettext('Quantity')),
+        total_amount=dict(label=lazy_gettext('Total Amount')),
+        remark=dict(label=lazy_gettext('Remark')),
+    )
     def postprocess_form(self, form):
         form.total_amount = ReadOnlyStringField(label='Total Amount')
         return form
@@ -106,6 +116,7 @@ class PurchaseOrderAdmin(ModelView):
         'all_expenses': lazy_gettext('Related Expenses'),
         'total_amount': lazy_gettext('Total Amount'),
         'goods_amount': lazy_gettext('Goods Amount'),
+        'lines': lazy_gettext('Lines'),
     }
 
     @staticmethod
@@ -145,12 +156,19 @@ class PurchaseOrderAdmin(ModelView):
 
 class SalesOrderLineInlineAdmin(InlineFormAdmin):
 
+    form_args=dict(
+        product=dict(label=lazy_gettext('Product')),
+        unit_price=dict(label=lazy_gettext('Unit Price')),
+        quantity=dict(label=lazy_gettext('Quantity')),
+        remark=dict(label=lazy_gettext('Remark')),
+    )
+
     def postprocess_form(self, form):
-        form.retail_price = ReadOnlyStringField(label='Retail Price')
-        form.price_discount = ReadOnlyStringField(label='Price Discount')
-        form.actual_amount = ReadOnlyStringField(label='Actual Amount')
-        form.original_amount = ReadOnlyStringField(label='Original Amount')
-        form.discount_amount = ReadOnlyStringField(label='Discount Amount')
+        form.retail_price = ReadOnlyStringField(label=lazy_gettext('Retail Price'))
+        form.price_discount = ReadOnlyStringField(label=lazy_gettext('Price Discount'))
+        form.actual_amount = ReadOnlyStringField(label=lazy_gettext('Actual Amount'))
+        form.original_amount = ReadOnlyStringField(label=lazy_gettext('Original Amount'))
+        form.discount_amount = ReadOnlyStringField(label=lazy_gettext('Discount Amount'))
         return form
 
 class SalesOrderAdmin(ModelView):
@@ -183,6 +201,7 @@ class SalesOrderAdmin(ModelView):
         'discount_amount': lazy_gettext('Discount Amount'),
         'incoming': lazy_gettext('Relate Incoming'),
         'expense': lazy_gettext('Relate Expense'),
+        'lines': lazy_gettext('Lines'),
     }
 
     @staticmethod
