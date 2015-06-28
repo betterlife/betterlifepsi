@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-06-26 07:25+0800\n"
-"PO-Revision-Date: 2015-06-26 19:37+0800\n"
+"PO-Revision-Date: 2015-06-28 18:38+0800\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -219,3 +219,42 @@ msgstr "数量"
 
 msgid "Payment Methods"
 msgstr "付款方式"
+
+msgid "User"
+msgstr "用户"
+
+msgid "Username"
+msgstr "用户名"
+
+msgid "Password"
+msgstr "密码"
+
+msgid "Role"
+msgstr "角色"
+
+msgid "Welcome to Login"
+msgstr "Betterlife 系统登录"
+
+msgid "Login"
+msgstr "登录系统"
+
+msgid "Login Name"
+msgstr "登录名"
+
+msgid "Active"
+msgstr "活动状态"
+
+msgid "Description"
+msgstr "描述"
+
+msgid "Invalid user"
+msgstr "用户名错误"
+
+msgid "Invalid password"
+msgstr "密码错误"
+
+msgid "User is disabled"
+msgstr "用户被禁止登陆"
+
+msgid "New Password"
+msgstr "新密码"

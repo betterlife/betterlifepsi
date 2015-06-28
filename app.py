@@ -1,5 +1,7 @@
 # coding=utf-8
 from flask import Flask,redirect
+from flask.ext.security import SQLAlchemyUserDatastore, Security, login_required
+
 app = Flask(__name__)
 
 import config
@@ -18,11 +20,16 @@ AppInfo.set_db(db)
 from models import *
 db.init_app(app)
 
+# Setup Flask-Security
+user_datastore = SQLAlchemyUserDatastore(db, User, Role)
+security = Security(app, user_datastore)
+
 from views import init_admin_views
 admin = init_admin_views(app, db)
 AppInfo.set_admin(admin)
 
 @app.route('/')
+@login_required
 def hello():
     return redirect("/admin", code=302)
 

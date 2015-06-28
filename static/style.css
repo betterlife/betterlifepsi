@@ -41,6 +41,7 @@ input[name='_add_another'] {
 
 .dashboard-button, .dashboard-container > div > div > a {
     color: #428bca;
+    width: 120px;
 }
 
 .dashboard-row .btn-default {

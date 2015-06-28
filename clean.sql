@@ -12,3 +12,5 @@ drop table product_category;
 drop table enum_values;
 drop table preference;
 drop table alembic_version;
+-- Update patch version automatically
+-- update alembic_version set version_num = '29b31f4d8de6'
