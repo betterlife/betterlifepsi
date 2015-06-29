@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/betterlife/flask-erp.png?label=ready&title=Ready)](https://waffle.io/betterlife/flask-erp)
 
 # flask-erp
 ERP system using flask 
