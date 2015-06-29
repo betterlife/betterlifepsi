@@ -29,7 +29,6 @@ admin = init_admin_views(app, db)
 AppInfo.set_admin(admin)
 
 @app.route('/')
-@login_required
 def hello():
     return redirect("/admin", code=302)
 
