@@ -374,6 +374,7 @@ class Inventory(db.Model):
     id = Column(Integer, primary_key=True)
     product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
     product = relationship('Product')
+    last_update_date = Column(DateTime, nullable=False)
 
 class InventoryAdjust(db.Model):
     __tablename__ = 'inventory_adjust'
