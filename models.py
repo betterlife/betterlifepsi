@@ -381,6 +381,7 @@ class Inventory(db.Model):
 class InventoryAdjust(db.Model):
     __tablename__ = 'inventory_adjust'
     id = Column(Integer, primary_key=True)
+    quantity = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
 
 class Preference(db.Model):
     __tablename__ = 'preference'
