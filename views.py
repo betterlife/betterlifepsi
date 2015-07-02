@@ -18,11 +18,43 @@ from wtforms import form, fields, validators
 from flask_admin import helpers, expose
 
 
-class ProductCategoryAdmin(ModelView):
-    column_exclude_list = ['sub_categories', 'products']
-
+class ModelViewWithAccess(ModelView):
     def is_accessible(self):
-        return current_user.is_authenticated() and current_user.has_role('admin')
+        return self.can()
+
+    @property
+    def can_create(self):
+        return self.can(operation='create')
+
+    @property
+    def can_delete(self):
+        return self.can(operation='delete')
+
+    @property
+    def can_edit(self):
+        return self.can(operation='edit')
+
+    def can(self, operation='view'):
+        tablename = self.model.__tablename__
+        return current_user.is_authenticated() and (
+            current_user.has_role('admin') or
+            current_user.has_role(tablename + '_' + operation))
+
+    def _handle_view(self, name, **kwargs):
+        """
+        Override builtin _handle_view in order to redirect users when a view is not accessible.
+        """
+        if not self.is_accessible():
+            if current_user.is_authenticated():
+                # permission denied
+                abort(403)
+            else:
+                # login
+                return redirect(url_for('security.login', next=request.url))
+
+
+class ProductCategoryAdmin(ModelViewWithAccess):
+    column_exclude_list = ['sub_categories', 'products']
 
     column_sortable_list = ('id', 'code', 'name')
     column_searchable_list = ('code', 'name')
@@ -37,13 +69,10 @@ class ProductCategoryAdmin(ModelView):
     form_excluded_columns = ('sub_categories', 'products')
 
 
-class ProductAdmin(ModelView):
+class ProductAdmin(ModelViewWithAccess):
     column_editable_list = ['name', 'deliver_day', 'lead_day', 'distinguishing_feature',
                             'spec_link', 'purchase_price', 'retail_price']
     column_searchable_list = ('code', 'name', 'supplier.name', 'category.name', 'category.code')
-
-    def is_accessible(self):
-        return current_user.is_authenticated() and current_user.has_role('admin')
 
     # column_filters = column_searchable_list
     column_labels = {
@@ -74,11 +103,8 @@ class PaymentMethodLineInlineAdmin(InlineFormAdmin):
     )
 
 
-class SupplierAdmin(ModelView):
+class SupplierAdmin(ModelViewWithAccess):
     from models import PaymentMethod
-
-    def is_accessible(self):
-        return current_user.is_authenticated() and current_user.has_role('admin')
 
     form_excluded_columns = ('purchaseOrders', 'products')
     inline_models = (PaymentMethodLineInlineAdmin(PaymentMethod),)
@@ -121,11 +147,8 @@ class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
         return form
 
 
-class PurchaseOrderAdmin(ModelView):
+class PurchaseOrderAdmin(ModelViewWithAccess):
     from models import PurchaseOrderLine
-
-    def is_accessible(self):
-        return current_user.is_authenticated() and current_user.has_role('admin')
 
     column_list = ('id', 'logistic_amount', 'goods_amount',
                    'total_amount', 'order_date', 'supplier', 'all_expenses', 'remark')
@@ -206,11 +229,8 @@ class SalesOrderLineInlineAdmin(InlineFormAdmin):
         return form
 
 
-class SalesOrderAdmin(ModelView):
+class SalesOrderAdmin(ModelViewWithAccess):
     from models import SalesOrderLine
-
-    def is_accessible(self):
-        return current_user.is_authenticated() and current_user.has_role('admin')
 
     column_list = ('id', 'logistic_amount', 'actual_amount', 'original_amount',
                    'discount_amount', 'order_date', 'incoming', 'expense', 'remark')
@@ -289,12 +309,9 @@ class SalesOrderAdmin(ModelView):
         app_provider.AppInfo.get_db().session.commit()
 
 
-class IncomingAdmin(ModelView):
+class IncomingAdmin(ModelViewWithAccess):
     column_list = ('id', 'date', 'amount', 'status', 'category', 'sales_order', 'remark')
     column_editable_list = ['date', 'amount', ]
-
-    def is_accessible(self):
-        return current_user.is_authenticated() and current_user.has_role('admin')
 
     form_args = dict(
         status=dict(query_factory=Incoming.status_filter),
@@ -316,13 +333,10 @@ class IncomingAdmin(ModelView):
     form_excluded_columns = ('sales_order',)
 
 
-class ExpenseAdmin(ModelView):
+class ExpenseAdmin(ModelViewWithAccess):
     column_list = ('id', 'date', 'amount', 'has_invoice', 'status',
                    'category', 'purchase_order', 'sales_order', 'remark')
     column_editable_list = ['date', 'amount', 'has_invoice', ]
-
-    def is_accessible(self):
-        return current_user.is_authenticated() and current_user.has_role('admin')
 
     form_args = dict(
         status=dict(query_factory=Expense.status_filter),
@@ -346,11 +360,8 @@ class ExpenseAdmin(ModelView):
     form_excluded_columns = ('sales_order', 'purchase_order',)
 
 
-class EnumValuesAdmin(ModelView):
+class EnumValuesAdmin(ModelViewWithAccess):
     column_list = ('id', 'type', 'code', 'display',)
-
-    def is_accessible(self):
-        return current_user.is_authenticated() and current_user.has_role('admin')
 
     column_editable_list = ['display']
     column_searchable_list = ['code', 'display']
@@ -363,11 +374,8 @@ class EnumValuesAdmin(ModelView):
     }
 
 
-class PreferenceAdmin(ModelView):
+class PreferenceAdmin(ModelViewWithAccess):
     can_create, can_delete = False, False
-
-    def is_accessible(self):
-        return current_user.is_authenticated() and current_user.has_role('admin')
 
     form_args = dict(
         def_so_incoming_type=dict(query_factory=Incoming.type_filter),
@@ -397,7 +405,7 @@ class PreferenceAdmin(ModelView):
 
 
 # Customized User model for SQL-Admin
-class UserAdmin(ModelView):
+class UserAdmin(ModelViewWithAccess):
     # Don't display the password on the list of Users
     column_exclude_list = list = ('password',)
 
@@ -417,24 +425,6 @@ class UserAdmin(ModelView):
 
     # Automatically display human-readable names for the current and available Roles when creating or editing a User
     column_auto_select_related = True
-
-    # Prevent administration of Users unless the currently logged-in user has the "admin" role
-    def is_accessible(self):
-        return current_user.is_active() \
-               and current_user.is_authenticated() \
-               and current_user.has_role('admin')
-
-    def _handle_view(self, name, **kwargs):
-        """
-        Override builtin _handle_view in order to redirect users when a view is not accessible.
-        """
-        if not self.is_accessible():
-            if current_user.is_authenticated():
-                # permission denied
-                abort(403)
-            else:
-                # login
-                return redirect(url_for('security.login', next=request.url))
 
     # On the form for creating or editing a User, don't display a field corresponding to the model's password field.
     # There are two reasons for this. First, we want to encrypt the password before storing in the database. Second,
@@ -461,7 +451,7 @@ class UserAdmin(ModelView):
 
 
 # Customized Role model for SQL-Admin
-class RoleAdmin(ModelView):
+class RoleAdmin(ModelViewWithAccess):
     # Prevent administration of Roles unless the currently logged-in user has the "admin" role
     column_list = ('id', 'name', 'description',)
     column_labels = dict(
@@ -470,13 +460,10 @@ class RoleAdmin(ModelView):
         description=lazy_gettext('Description'),
         users=lazy_gettext('User')
     )
-    def is_accessible(self):
-        return current_user.is_authenticated() and current_user.has_role('admin')
-
 
 class LoginForm(form.Form):
     login = fields.StringField(validators=[validators.required()],
-                               label=lazy_gettext('Login Name'),)
+                               label=lazy_gettext('Login Name'), )
     password = fields.PasswordField(validators=[validators.required()],
                                     label=lazy_gettext('Password'))
 
@@ -534,27 +521,21 @@ def init_admin_views(app, db):
     adminViews.add_view(SalesOrderAdmin(SalesOrder, db_session, name=lazy_gettext("Sales Order"),
                                         menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-send'))
     adminViews.add_view(ExpenseAdmin(Expense, db_session, name=lazy_gettext("Expense"),
-                                     menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-usd'))
+                                     menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-minus-sign'))
     adminViews.add_view(IncomingAdmin(Incoming, db_session, name=lazy_gettext("Incoming"),
-                                      menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-minus-sign'))
+                                      menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-usd'))
     adminViews.add_view(ProductAdmin(Product, db_session, name=lazy_gettext("Product"),
-                                     category=u'基础信息', menu_icon_type=ICON_TYPE_GLYPH,
-                                     menu_icon_value='glyphicon-barcode'))
+                                     menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-barcode'))
     adminViews.add_view(SupplierAdmin(Supplier, db_session, name=lazy_gettext("Supplier"),
-                                      category=u'基础信息', menu_icon_type=ICON_TYPE_GLYPH,
-                                      menu_icon_value='glyphicon-globe'))
+                                      menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-user'))
     adminViews.add_view(ProductCategoryAdmin(ProductCategory, db_session, name=lazy_gettext("Product Category"),
-                                             category=u'基础信息', menu_icon_type=ICON_TYPE_GLYPH,
-                                             menu_icon_value='glyphicon-tags'))
+                                             menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-tags'))
     adminViews.add_view(EnumValuesAdmin(EnumValues, db_session, name=lazy_gettext("Enum Values"),
-                                        category=u'基础信息', menu_icon_type=ICON_TYPE_GLYPH,
-                                        menu_icon_value='glyphicon-tasks'))
+                                        menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-tasks'))
     adminViews.add_view(PreferenceAdmin(Preference, db_session, name=lazy_gettext("Preference"),
-                                        category=u'基础信息', menu_icon_type=ICON_TYPE_GLYPH,
-                                        menu_icon_value='glyphicon-cog'))
+                                        menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-cog'))
     adminViews.add_view(UserAdmin(User, db_session, name=lazy_gettext('User'),
-                                  category=u'系统管理', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-user'))
+                                  menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-user'))
     adminViews.add_view(RoleAdmin(Role, db_session, name=lazy_gettext("Role"),
-                                  category=u'系统管理', menu_icon_type=ICON_TYPE_GLYPH,
-                                  menu_icon_value='glyphicon-eye-close'))
+                                  menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-eye-close'))
     return adminViews
