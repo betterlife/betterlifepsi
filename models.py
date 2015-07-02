@@ -376,6 +376,7 @@ class Inventory(db.Model):
     product = relationship('Product')
     last_update_date = Column(DateTime, nullable=False)
     in_stock_quantity = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
+    in_transit_quantity = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=True)
 
 class InventoryAdjust(db.Model):
     __tablename__ = 'inventory_adjust'
