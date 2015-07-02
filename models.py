@@ -369,6 +369,14 @@ class Incoming(db.Model):
             return str(self.id) + ' - ' + str(self.amount)
         return str(self.id) + ' - ' + str(0)
 
+class Inventory(db.Model):
+    __tablename__ = 'inventory'
+    id = Column(Integer, primary_key=True)
+
+class InventoryAdjust(db.Model):
+    __tablename__ = 'inventory_adjust'
+    id = Column(Integer, primary_key=True)
+
 class Preference(db.Model):
     __tablename__ = 'preference'
     id = Column(Integer, primary_key=True)
