@@ -372,6 +372,8 @@ class Incoming(db.Model):
 class Inventory(db.Model):
     __tablename__ = 'inventory'
     id = Column(Integer, primary_key=True)
+    product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
+    product = relationship('Product')
 
 class InventoryAdjust(db.Model):
     __tablename__ = 'inventory_adjust'
