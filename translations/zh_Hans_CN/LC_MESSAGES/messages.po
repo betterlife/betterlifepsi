@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-06-26 07:25+0800\n"
-"PO-Revision-Date: 2015-07-02 11:22+0800\n"
+"PO-Revision-Date: 2015-07-07 05:53+0800\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -212,7 +212,7 @@ msgid "Default Purchase Order Goods Expense Type"
 msgstr "采购单货款支出默认类型"
 
 msgid "Lines"
-msgstr "行"
+msgstr "明细行"
 
 msgid "Quantity"
 msgstr "数量"
@@ -258,3 +258,9 @@ msgstr "用户被禁止登陆"
 
 msgid "New Password"
 msgstr "新密码"
+
+msgid "Inventory Transaction Price"
+msgstr "库存变动价格"
+
+msgid "Inventory Transaction Type"
+msgstr "库存变动类型"

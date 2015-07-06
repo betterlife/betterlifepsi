@@ -3,6 +3,7 @@ import app_provider
 from flask import url_for, request
 import flask_admin as admin
 from flask.ext.security import current_user, logout_user, login_user
+from views.login_form import LoginForm
 from werkzeug.utils import redirect
 from flask_admin import helpers, expose
 
