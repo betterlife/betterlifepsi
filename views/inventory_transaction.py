@@ -23,6 +23,8 @@ class InventoryTransactionLineInlineAdmin(InlineFormAdmin):
 class InventoryTransactionAdmin(ModelViewWithAccess):
     column_list = ('id', 'type', 'date', 'total_amount', 'remark')
 
+    column_sortable_list = ('id', ('type', 'type.display'), 'total_amount', 'date',)
+
     column_labels = {
         'id': lazy_gettext('id'),
         'type': lazy_gettext('Inventory Transaction Type'),
