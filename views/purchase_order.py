@@ -2,7 +2,7 @@
 import app_provider
 from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext
-from models import Preference, Expense
+from models import Preference, Expense, PurchaseOrder
 from views import ModelViewWithAccess, ReadOnlyStringField
 from wtforms import StringField
 
@@ -25,13 +25,13 @@ class PurchaseOrderAdmin(ModelViewWithAccess):
     from models import PurchaseOrderLine
 
     column_list = ('id', 'logistic_amount', 'goods_amount',
-                   'total_amount', 'order_date', 'supplier', 'all_expenses', 'remark')
+                   'total_amount', 'order_date', 'supplier', 'status', 'all_expenses', 'remark')
 
     form_extra_fields = {
         "goods_amount": StringField(label=lazy_gettext('Goods Amount')),
         "total_amount": StringField(label=lazy_gettext('Total Amount')),
     }
-    column_sortable_list = ('id', 'logistic_amount', 'total_amount',
+    column_sortable_list = ('id', 'logistic_amount', 'total_amount', ('status', 'status.display'),
                             'goods_amount', 'order_date', ('supplier', 'supplier.id'),)
     form_widget_args = {
         'goods_amount': {'disabled': True},
@@ -44,11 +44,16 @@ class PurchaseOrderAdmin(ModelViewWithAccess):
         'order_date': lazy_gettext('Order Date'),
         'supplier': lazy_gettext('Supplier'),
         'remark': lazy_gettext('Remark'),
+        'status': lazy_gettext('Status'),
         'all_expenses': lazy_gettext('Related Expenses'),
         'total_amount': lazy_gettext('Total Amount'),
         'goods_amount': lazy_gettext('Goods Amount'),
         'lines': lazy_gettext('Lines'),
     }
+
+    form_args = dict(
+        status=dict(query_factory=PurchaseOrder.status_filter),
+    )
 
     @staticmethod
     def create_expenses(model):

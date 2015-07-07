@@ -14,6 +14,15 @@ class PurchaseOrder(db.Model):
     order_date = Column(DateTime, nullable=False)
     supplier_id = Column(Integer, ForeignKey('supplier.id'), nullable=False)
     supplier = relationship('Supplier', backref=backref('purchaseOrders', lazy='dynamic'))
+
+    status_id = Column(Integer, ForeignKey('enum_values.id'), nullable=True)
+    status = relationship('EnumValues', foreign_keys=[status_id])
+
+    @staticmethod
+    def status_filter():
+        from models.enum_values import EnumValues
+        return EnumValues.type_filter('PURCHASE_ORDER_STATUS')
+
     remark = Column(Text)
 
     @hybrid_property
