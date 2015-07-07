@@ -51,7 +51,7 @@ class PurchaseOrder(db.Model):
         pass
 
     def __unicode__(self):
-        return str(self.id) + ' - ' + str(self.supplier.name)
+        return str(self.id) + ' - ' + str(self.supplier.name) + ' - ' + str(self.total_amount)
 
 
 class PurchaseOrderLine(db.Model):
@@ -81,6 +81,12 @@ class PurchaseOrderLine(db.Model):
     def total_amount(self, value):
         pass
 
+    @staticmethod
+    def header_filter(po_id):
+        return AppInfo.get_db().session.query(PurchaseOrderLine).filter_by(purchase_order_id=po_id)
+
     def __unicode__(self):
-        return str(self.id) + ' - ' + str(self.product.name)
+        return 'H:' + str(self.purchase_order_id) + ' - L:' + str(self.id) + ' - ' + str(self.product.name) + \
+               ' - P:' + str(self.unit_price) + ' - Q:' + str(self.quantity)
+
 

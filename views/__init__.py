@@ -1,3 +1,4 @@
+# coding=utf-8
 from base import ModelViewWithAccess
 from custom_fields import ReadOnlyStringField
 from enum_values import EnumValuesAdmin
@@ -24,29 +25,29 @@ def init_admin_views(app, db):
     adminViews = Admin(app, lazy_gettext('Brand Name'), index_view=AdminIndexView(),
                        base_template='layout.html', template_mode='bootstrap3')
     adminViews.add_view(PurchaseOrderAdmin(PurchaseOrder, db_session, name=lazy_gettext("Purchase Order"),
-                                           category='Order', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-shopping-cart'))
+                                           category=u'订单', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-shopping-cart'))
     adminViews.add_view(SalesOrderAdmin(SalesOrder, db_session, name=lazy_gettext("Sales Order"),
-                                        category='Order', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-send'))
-    adminViews.add_view(ExpenseAdmin(Expense, db_session, name=lazy_gettext("Expense"),
-                                     category='Financial', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-minus-sign'))
-    adminViews.add_view(IncomingAdmin(Incoming, db_session, name=lazy_gettext("Incoming"),
-                                      category='Financial', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-usd'))
-    adminViews.add_view(SupplierAdmin(Supplier, db_session, name=lazy_gettext("Supplier"),
-                                      category='Master Data', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-user'))
-    adminViews.add_view(ProductAdmin(Product, db_session, name=lazy_gettext("Product"),
-                                     category='Master Data', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-barcode'))
-    adminViews.add_view(ProductCategoryAdmin(ProductCategory, db_session, name=lazy_gettext("Product Category"),
-                                             category='Master Data', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-tags'))
-    adminViews.add_view(EnumValuesAdmin(EnumValues, db_session, name=lazy_gettext("Enum Values"),
-                                        category='Settings', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-tasks'))
-    adminViews.add_view(PreferenceAdmin(Preference, db_session, name=lazy_gettext("Preference"),
-                                        category='Settings', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-cog'))
-    adminViews.add_view(UserAdmin(User, db_session, name=lazy_gettext('User'),
-                                  category='Security', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-user'))
-    adminViews.add_view(RoleAdmin(Role, db_session, name=lazy_gettext("Role"),
-                                  category='Security', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-eye-close'))
+                                        category=u'订单', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-send'))
     adminViews.add_view(ReceivingAdmin(Receiving, db_session, name=lazy_gettext("Receiving"),
-                                                  category='Inventory', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-transfer'))
+                                                  category=u'库存', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-import'))
     adminViews.add_view(InventoryTransactionAdmin(InventoryTransaction, db_session, name=lazy_gettext("Inventory Transaction"),
-                                                  category='Inventory', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-transfer'))
+                                                  category=u'库存', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-transfer'))
+    adminViews.add_view(ExpenseAdmin(Expense, db_session, name=lazy_gettext("Expense"),
+                                     category=u'财务', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-minus-sign'))
+    adminViews.add_view(IncomingAdmin(Incoming, db_session, name=lazy_gettext("Incoming"),
+                                      category=u'财务', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-usd'))
+    adminViews.add_view(SupplierAdmin(Supplier, db_session, name=lazy_gettext("Supplier"),
+                                      category=u'主数据', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-user'))
+    adminViews.add_view(ProductAdmin(Product, db_session, name=lazy_gettext("Product"),
+                                     category=u'主数据', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-barcode'))
+    adminViews.add_view(ProductCategoryAdmin(ProductCategory, db_session, name=lazy_gettext("Product Category"),
+                                             category=u'主数据', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-tags'))
+    adminViews.add_view(EnumValuesAdmin(EnumValues, db_session, name=lazy_gettext("Enum Values"),
+                                        category=u'设置', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-tasks'))
+    adminViews.add_view(PreferenceAdmin(Preference, db_session, name=lazy_gettext("Preference"),
+                                        category=u'设置', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-cog'))
+    adminViews.add_view(UserAdmin(User, db_session, name=lazy_gettext('User'),
+                                  category=u'安全', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-user'))
+    adminViews.add_view(RoleAdmin(Role, db_session, name=lazy_gettext("Role"),
+                                  category=u'安全', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-eye-close'))
     return adminViews

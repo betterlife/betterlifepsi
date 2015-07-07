@@ -22,7 +22,8 @@ class Product(db.Model):
     supplier = relationship('Supplier', backref=backref('products', lazy='dynamic'))
 
     def __unicode__(self):
-        return self.code + " - " + self.name
+        return self.supplier.name + ' - ' + self.name + ' - P:' \
+               + str(self.purchase_price) + ' - R:' + str(self.retail_price)
 
     def __repr__(self):
         return self.__unicode__
