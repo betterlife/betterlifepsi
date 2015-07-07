@@ -1,7 +1,7 @@
 from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext
 from models import InventoryTransactionLine, InventoryTransaction
-from views import ModelViewWithAccess, ReadOnlyStringField
+from views import ModelViewWithAccess, DisabledStringField
 
 
 class InventoryTransactionLineInlineAdmin(InlineFormAdmin):
@@ -15,7 +15,7 @@ class InventoryTransactionLineInlineAdmin(InlineFormAdmin):
     )
 
     def postprocess_form(self, form):
-        form.total_amount = ReadOnlyStringField(label=lazy_gettext('Total Amount'))
+        form.total_amount = DisabledStringField(label=lazy_gettext('Total Amount'))
         form.receiving_line = None
         form.sales_order_line = None
         return form
@@ -39,7 +39,7 @@ class InventoryTransactionAdmin(ModelViewWithAccess):
     )
 
     form_extra_fields = {
-        'total_amount': ReadOnlyStringField(label=lazy_gettext('Total Amount')),
+        'total_amount': DisabledStringField(label=lazy_gettext('Total Amount')),
     }
 
     inline_models = (InventoryTransactionLineInlineAdmin(InventoryTransactionLine),)

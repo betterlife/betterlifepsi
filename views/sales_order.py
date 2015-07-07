@@ -3,7 +3,7 @@ import app_provider
 from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext
 from models import Preference, Incoming, Expense
-from views import ModelViewWithAccess, ReadOnlyStringField
+from views import ModelViewWithAccess, DisabledStringField
 from wtforms import StringField
 
 class SalesOrderLineInlineAdmin(InlineFormAdmin):
@@ -15,11 +15,11 @@ class SalesOrderLineInlineAdmin(InlineFormAdmin):
     )
 
     def postprocess_form(self, form):
-        form.retail_price = ReadOnlyStringField(label=lazy_gettext('Retail Price'))
-        form.price_discount = ReadOnlyStringField(label=lazy_gettext('Price Discount'))
-        form.original_amount = ReadOnlyStringField(label=lazy_gettext('Original Amount'))
-        form.actual_amount = ReadOnlyStringField(label=lazy_gettext('Actual Amount'))
-        form.discount_amount = ReadOnlyStringField(label=lazy_gettext('Discount Amount'))
+        form.retail_price = DisabledStringField(label=lazy_gettext('Retail Price'))
+        form.price_discount = DisabledStringField(label=lazy_gettext('Price Discount'))
+        form.original_amount = DisabledStringField(label=lazy_gettext('Original Amount'))
+        form.actual_amount = DisabledStringField(label=lazy_gettext('Actual Amount'))
+        form.discount_amount = DisabledStringField(label=lazy_gettext('Discount Amount'))
         form.remark = None
         form.inventory_transaction_line = None
         return form
