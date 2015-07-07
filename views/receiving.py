@@ -1,12 +1,9 @@
 # coding=utf-8
 from functools import partial
-from app_provider import AppInfo
 from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext
-from models import ReceivingLine, Receiving, PurchaseOrderLine
+from models import ReceivingLine, Receiving, PurchaseOrderLine, PurchaseOrder
 from views import ModelViewWithAccess
-from wtforms.ext.sqlalchemy.fields import QuerySelectField
-
 
 class ReceivingLineInlineAdmin(InlineFormAdmin):
     def postprocess_form(self, form):
@@ -33,7 +30,8 @@ class ReceivingAdmin(ModelViewWithAccess):
 
     form_args = dict(
         status=dict(query_factory=Receiving.status_filter),
-    )
+        purchase_order=dict(query_factory=partial(PurchaseOrder.status_filter,
+                                                  ('PURCHASE_ORDER_ISSUED', 'PURCHASE_ORDER_PART_RECEIVED',))))
 
     def on_form_prefill(self, form, id):
         if form is not None and form._obj is not None and form._obj.purchase_order_id is not None:

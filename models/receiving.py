@@ -1,7 +1,7 @@
 # encoding: utf-8
 from app_provider import AppInfo
 from models.enum_values import EnumValues
-from models.purchase_order import PurchaseOrderLine
+from models.purchase_order import PurchaseOrder
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime
 from sqlalchemy.orm import backref, relationship
 
@@ -18,7 +18,6 @@ class Receiving(db.Model):
     purchase_order_id = Column(Integer, ForeignKey('purchase_order.id'), nullable=False)
     purchase_order = relationship('PurchaseOrder', backref=backref('inventory_transactions',
                                                                    uselist=True, cascade='all, delete-orphan'))
-
     @staticmethod
     def status_filter():
         return EnumValues.type_filter('RECEIVING_STATUS')

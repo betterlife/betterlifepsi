@@ -1,5 +1,6 @@
 # encoding: utf-8
 from app_provider import AppInfo
+from models.enum_values import EnumValues
 from util import format_decimal
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -19,8 +20,12 @@ class PurchaseOrder(db.Model):
     status = relationship('EnumValues', foreign_keys=[status_id])
 
     @staticmethod
-    def status_filter():
-        from models.enum_values import EnumValues
+    def status_filter(status_codes):
+        return AppInfo.get_db().session.query(PurchaseOrder)\
+            .join(EnumValues).filter(EnumValues.code.in_(status_codes))
+
+    @staticmethod
+    def status_option_filter():
         return EnumValues.type_filter('PURCHASE_ORDER_STATUS')
 
     remark = Column(Text)
@@ -60,7 +65,10 @@ class PurchaseOrder(db.Model):
         pass
 
     def __unicode__(self):
-        return str(self.id) + ' - ' + str(self.supplier.name) + ' - ' + str(self.total_amount)
+        return str(self.id) + \
+               ' - ' + str(self.supplier.name) + \
+               ' - ' + str(self.total_amount) + \
+               ' - ' + self.status.display
 
 
 class PurchaseOrderLine(db.Model):

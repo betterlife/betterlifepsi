@@ -52,7 +52,7 @@ class PurchaseOrderAdmin(ModelViewWithAccess):
     }
 
     form_args = dict(
-        status=dict(query_factory=PurchaseOrder.status_filter),
+        status=dict(query_factory=PurchaseOrder.status_option_filter),
     )
 
     @staticmethod
