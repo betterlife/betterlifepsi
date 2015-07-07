@@ -9,6 +9,7 @@ from product import Product
 from enum_values import EnumValues
 from expense import Expense
 from incoming import Incoming
+from receiving import Receiving, ReceivingLine
 from inventory_transaction import InventoryTransaction, \
     InventoryTransactionLine
 from preference import Preference

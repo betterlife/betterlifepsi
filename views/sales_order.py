@@ -20,6 +20,8 @@ class SalesOrderLineInlineAdmin(InlineFormAdmin):
         form.original_amount = ReadOnlyStringField(label=lazy_gettext('Original Amount'))
         form.actual_amount = ReadOnlyStringField(label=lazy_gettext('Actual Amount'))
         form.discount_amount = ReadOnlyStringField(label=lazy_gettext('Discount Amount'))
+        form.remark = None
+        form.inventory_transaction_line = None
         return form
 
 

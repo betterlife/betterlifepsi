@@ -16,6 +16,8 @@ class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
 
     def postprocess_form(self, form):
         form.total_amount = ReadOnlyStringField(label=lazy_gettext('Total Amount'))
+        form.remark = None
+        form.inventory_transaction_lines = None
         return form
 
 
@@ -35,7 +37,7 @@ class PurchaseOrderAdmin(ModelViewWithAccess):
         'goods_amount': {'disabled': True},
         'total_amount': {'disabled': True},
     }
-    form_excluded_columns = ('expenses',)
+    form_excluded_columns = ('expenses', 'inventory_transactions')
     column_labels = {
         'id': lazy_gettext('id'),
         'logistic_amount': lazy_gettext('Logistic Amount'),
