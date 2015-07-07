@@ -1,4 +1,4 @@
-"""empty message
+""" Change column definition to extend data size.
 
 Revision ID: 29b31f4d8de6
 Revises: 251c5e751233

@@ -1,5 +1,5 @@
 # coding=utf-8
-"""empty message
+"""Add basic tables.
 
 Revision ID: 389881771619
 Revises: None

@@ -1,4 +1,4 @@
-"""empty message
+"""Add receiving, receiving line, inventory_transaction and inventory_transaction_line table
 
 Revision ID: 1b3411739b82
 Revises: 7b2d863b105
@@ -21,7 +21,7 @@ def upgrade():
     sa.Column('date', sa.DateTime(), nullable=False),
     sa.Column('remark', sa.Text(), nullable=True),
     sa.Column('status_id', sa.Integer(), nullable=False),
-    sa.Column('purchase_order_id', sa.Integer(), nullable=True),
+    sa.Column('purchase_order_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['purchase_order_id'], ['purchase_order.id'], ),
     sa.ForeignKeyConstraint(['status_id'], ['enum_values.id'], ),
     sa.PrimaryKeyConstraint('id')
