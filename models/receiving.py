@@ -39,6 +39,10 @@ class Receiving(db.Model):
     def transient_po(self, val):
         pass
 
+    @staticmethod
+    def filter_by_po_id(po_id):
+        return AppInfo.get_db().session.query(Receiving).filter_by(purchase_order_id=po_id).all()
+
 class ReceivingLine(db.Model):
     __tablename = 'receiving_line'
     id = Column(Integer, primary_key=True)
