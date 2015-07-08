@@ -1,5 +1,6 @@
 # coding=utf-8
 from functools import partial
+from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext
 from models import ReceivingLine, Receiving, PurchaseOrderLine, PurchaseOrder
@@ -25,6 +26,10 @@ class ReceivingAdmin(ModelViewWithAccess):
 
     form_excluded_columns = ('inventory_transaction',)
 
+    form_edit_rules = ('purchase_order', 'status', 'date', 'remark', 'lines')
+
+    form_create_rules = ('purchase_order', 'status', 'date', 'remark')
+
     column_sortable_list = ('id', ('purchase_order', 'id'), ('status', 'status.display'), 'date',)
 
     column_list = ('id', 'purchase_order', 'status', 'date', 'remark')
@@ -38,7 +43,7 @@ class ReceivingAdmin(ModelViewWithAccess):
         'lines': lazy_gettext('Lines'),
     }
 
-    form_columns = ('purchase_order', 'status', 'date', 'remark', 'lines')
+    form_columns = ('purchase_order', 'status', 'date', 'remark', 'lines',)
 
     form_args = dict(
         status=dict(query_factory=Receiving.status_filter),
@@ -46,7 +51,11 @@ class ReceivingAdmin(ModelViewWithAccess):
                                                   ('PURCHASE_ORDER_ISSUED', 'PURCHASE_ORDER_PART_RECEIVED',))))
 
     def on_form_prefill(self, form, id):
-        if form is not None and form._obj is not None and form._obj.purchase_order_id is not None:
+        if form is not None \
+                and form._obj is not None \
+                and form._obj.purchase_order_id is not None\
+                and form.lines is not None\
+                and form.lines.form is not None:
             po_id = form._obj.purchase_order_id
             form.lines.form.purchase_order_line.kwargs['query_factory'] =\
                 partial(PurchaseOrderLine.header_filter, po_id)
