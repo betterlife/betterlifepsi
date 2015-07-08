@@ -1,11 +1,14 @@
 # encoding: utf-8
 from app_provider import AppInfo
+from models.purchase_order import PurchaseOrderLine
 from models.enum_values import EnumValues
-from models.purchase_order import PurchaseOrder
-from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime
+from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
 db = AppInfo.get_db()
+
+
 class Receiving(db.Model):
     __tablename__ = 'receiving'
     id = Column(Integer, primary_key=True)
@@ -18,16 +21,28 @@ class Receiving(db.Model):
     purchase_order_id = Column(Integer, ForeignKey('purchase_order.id'), nullable=False)
     purchase_order = relationship('PurchaseOrder', backref=backref('inventory_transactions',
                                                                    uselist=True, cascade='all, delete-orphan'))
+
     @staticmethod
     def status_filter():
         return EnumValues.type_filter('RECEIVING_STATUS')
+
+    @hybrid_property
+    def transient_po(self):
+        """
+        This design is to display a readonly field containing current
+        Purchase order information in UI but don't allow user to change it.
+        :return: Current purchase order instance as a transient property
+        """
+        return self.purchase_order
+
+    @transient_po.setter
+    def transient_po(self, val):
+        pass
 
 class ReceivingLine(db.Model):
     __tablename = 'receiving_line'
     id = Column(Integer, primary_key=True)
     quantity = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
-    product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
-    product = relationship('Product')
     price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
 
     receiving_id = Column(Integer, ForeignKey('receiving.id'), nullable=False)
@@ -37,3 +52,15 @@ class ReceivingLine(db.Model):
     purchase_order_line = relationship('PurchaseOrderLine',
                                        backref=backref('inventory_transaction_lines',
                                                        uselist=True, cascade='all, delete-orphan'))
+
+    @hybrid_property
+    def product(self):
+        return self.purchase_order_line.product
+
+    @product.setter
+    def product(self, value):
+        pass
+
+    @product.expression
+    def product(self):
+        return select(self.purchase_order_line.product).label('product_id')

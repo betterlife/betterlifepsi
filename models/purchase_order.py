@@ -103,7 +103,8 @@ class PurchaseOrderLine(db.Model):
         return AppInfo.get_db().session.query(PurchaseOrderLine).filter_by(purchase_order_id=po_id)
 
     def __unicode__(self):
-        return 'H:' + str(self.purchase_order_id) + ' - L:' + str(self.id) + ' - ' + str(self.product.name) + \
-               ' - P:' + str(self.unit_price) + ' - Q:' + str(self.quantity)
+        return 'H:' + str(self.purchase_order_id) + \
+               ' - L:' + str(self.id) + ' - N:' + str(self.product.name) + \
+               ' - Q:' + str(self.quantity) + ' - P:' + str(self.unit_price)
 
 
