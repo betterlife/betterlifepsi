@@ -38,7 +38,8 @@ class ReceivingAdmin(ModelViewWithAccess):
                    '</div></div>')
     )
     form_extra_fields = {
-        'create_lines': BooleanField(label=lazy_gettext('Create Lines for unreceived products'), ),
+        'create_lines': BooleanField(label=lazy_gettext('Create Lines for unreceived products'),
+                                     description=u'自动基于该采购单中未收货的行和数量创建收货单的行'),
         'transient_po': DisabledStringField(label=lazy_gettext('Relate Purchase Order'))
     }
     form_widget_args = {
@@ -54,32 +55,37 @@ class ReceivingAdmin(ModelViewWithAccess):
         'lines': lazy_gettext('Lines'),
     }
     form_args = dict(
-        status=dict(query_factory=Receiving.status_filter),
+        status=dict(query_factory=Receiving.status_filter, description=u'该收货单当前的状态'),
         purchase_order=dict(query_factory=partial(PurchaseOrder.status_filter,
                                                   ('PURCHASE_ORDER_ISSUED', 'PURCHASE_ORDER_PART_RECEIVED',))))
     def on_model_change(self, form, model, is_created):
         if is_created:
-            # 1. Find all existing receiving bind with this PO.
-            existing_res = Receiving.filter_by_po_id(model.purchase_order.id)
-            available_info = {}
-            if existing_res is not None:
-                # 2. Calculate all received line and corresponding qty.
-                received_qtys = self.get_received_quantities(existing_res)
-                # 3. Calculate all not received line and corresponding qty
-                for line in model.purchase_order.lines:
-                    quantity = line.quantity
-                    if line.id in received_qtys.keys():
-                        quantity -= received_qtys[line.id]
-                    available_info[line.id] = { 'quantity': quantity,'price': line.unit_price }
-            else:
-                # 3. Calculate all not received line and corresponding qty
-                for line in model.purchase_order.lines:
-                    available_info[line.id] = (line.quantity, line.unit_price)
-             # 4. Create receiving lines based on the calculated result.
+            available_info = self.get_available_lines_info(model)
+            # 4. Check any qty available for receiving?
             if self.all_lines_received(available_info):
                 raise ValidationError(gettext('There\'s no unreceived items in this PO.'))
+            # 5. Create receiving lines based on the calculated result.
             if model.create_lines:
                 model.lines = self.create_receiving_lines(available_info)
+
+    def get_available_lines_info(self, model):
+        # 1. Find all existing receiving bind with this PO.
+        existing_res = Receiving.filter_by_po_id(model.purchase_order.id)
+        available_info = {}
+        if existing_res is not None:
+            # 2. Calculate all received line and corresponding qty.
+            received_qtys = self.get_received_quantities(existing_res)
+            # 3. Calculate all un-received line and corresponding qty
+            for line in model.purchase_order.lines:
+                quantity = line.quantity
+                if line.id in received_qtys.keys():
+                    quantity -= received_qtys[line.id]
+                available_info[line.id] = {'quantity': quantity, 'price': line.unit_price}
+        else:
+            # 3. Calculate un-received line info(qty, price) if there's no existing receiving
+            for line in model.purchase_order.lines:
+                available_info[line.id] = (line.quantity, line.unit_price)
+        return available_info
 
     @staticmethod
     def all_lines_received(available_info):

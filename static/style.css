@@ -63,3 +63,13 @@ input[name='_add_another'] {
     opacity: 0.2;
     filter:alpha(opacity=20);
 }
+
+.help-block {
+    color: #A3A3A3;
+    font-size: smaller;
+    background: url("cueTip.gif") no-repeat left;
+    background-position-y:2px;
+    cursor:pointer;
+    text-decoration: none;
+    padding-left: 15px;
+}
