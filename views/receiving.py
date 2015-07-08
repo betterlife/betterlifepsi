@@ -58,7 +58,7 @@ class ReceivingAdmin(ModelViewWithAccess):
         purchase_order=dict(query_factory=partial(PurchaseOrder.status_filter,
                                                   ('PURCHASE_ORDER_ISSUED', 'PURCHASE_ORDER_PART_RECEIVED',))))
     def on_model_change(self, form, model, is_created):
-        if is_created and model.create_lines:
+        if is_created:
             # 1. Find all existing receiving bind with this PO.
             existing_res = Receiving.filter_by_po_id(model.purchase_order.id)
             available_info = {}
@@ -76,11 +76,17 @@ class ReceivingAdmin(ModelViewWithAccess):
                 for line in model.purchase_order.lines:
                     available_info[line.id] = (line.quantity, line.unit_price)
              # 4. Create receiving lines based on the calculated result.
-            lines = self.create_receiving_lines(available_info)
-            if len(lines) is 0:
+            if self.all_lines_received(available_info):
                 raise ValidationError(gettext('There\'s no unreceived items in this PO.'))
-            else:
-                model.lines = lines
+            if model.create_lines:
+                model.lines = self.create_receiving_lines(available_info)
+
+    @staticmethod
+    def all_lines_received(available_info):
+        for line_id, line_info in available_info.iteritems():
+            if line_info['quantity'] > 0:
+                return False
+        return True
 
     @staticmethod
     def create_receiving_lines(available_info):
