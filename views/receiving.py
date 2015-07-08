@@ -31,11 +31,6 @@ class ReceivingAdmin(ModelViewWithAccess):
     form_edit_rules = ('transient_po', 'status', 'date', 'remark', 'lines')
     form_create_rules = (
         'purchase_order', 'status', 'date', 'remark', 'create_lines',
-        rules.HTML('<div class="form-group">'
-                   '<label for="remark" class="col-md-2 control-label">帮助</label>'
-                   '<div class="col-md-10">'
-                   '<input class="form-control" disabled="disabled" value="请先选择关联采购单后点击保存按钮，然后再增加收货明细行">'
-                   '</div></div>')
     )
     form_extra_fields = {
         'create_lines': BooleanField(label=lazy_gettext('Create Lines for unreceived products'),
@@ -56,7 +51,8 @@ class ReceivingAdmin(ModelViewWithAccess):
     }
     form_args = dict(
         status=dict(query_factory=Receiving.status_filter, description=u'该收货单当前的状态'),
-        purchase_order=dict(query_factory=partial(PurchaseOrder.status_filter,
+        purchase_order=dict(description=u'请先选择关联采购单后点击保存按钮，然后再增加收货明细行',
+                            query_factory=partial(PurchaseOrder.status_filter,
                                                   ('PURCHASE_ORDER_ISSUED', 'PURCHASE_ORDER_PART_RECEIVED',))))
     def on_model_change(self, form, model, is_created):
         if is_created:

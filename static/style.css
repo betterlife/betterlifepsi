@@ -65,7 +65,9 @@ input[name='_add_another'] {
 }
 
 .help-block {
-    color: #A3A3A3;
+    color: #737373;
+    /*font-family: 'Microsoft YaHei', sans-serif; */
+    font-style: italic;
     font-size: smaller;
     background: url("cueTip.gif") no-repeat left;
     background-position-y:2px;
