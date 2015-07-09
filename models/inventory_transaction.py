@@ -79,7 +79,15 @@ class InventoryTransactionLine(db.Model):
 
     @hybrid_property
     def total_amount(self):
-        return format_decimal(self.price * (self.quantity + self.in_transit_quantity))
+        if self.quantity is None:
+            q = 0
+        else:
+            q = self.quantity
+        if self.in_transit_quantity is None:
+            i_t_q = 0
+        else:
+            i_t_q = self.in_transit_quantity
+        return format_decimal(self.price * (q + i_t_q))
 
     @total_amount.expression
     def total_amount(self):
