@@ -30,7 +30,9 @@ class InventoryTransaction(db.Model):
 
     @total_amount.expression
     def total_amount(self):
-        return (select([func.sum(InventoryTransactionLine.price * InventoryTransactionLine.quantity)])
+        return (select([func.sum(InventoryTransactionLine.price
+                                 * (InventoryTransactionLine.in_transit_quantity
+                                    + InventoryTransactionLine.quantity))])
                 .where(self.id == InventoryTransactionLine.inventory_transaction_id)
                 .label('total_amount'))
 
@@ -41,7 +43,8 @@ class InventoryTransaction(db.Model):
 class InventoryTransactionLine(db.Model):
     __tablename = 'inventory_transaction_line'
     id = Column(Integer, primary_key=True)
-    quantity = Column( Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
+    in_transit_quantity = Column( Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=True)
+    quantity = Column( Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=True)
     product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
     product = relationship('Product')
     price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
@@ -57,6 +60,7 @@ class InventoryTransactionLine(db.Model):
     sales_order_line = relationship('SalesOrderLine',
                                     backref=backref('inventory_transaction_line',
                                                     uselist=False, cascade='all, delete-orphan'))
+
     @hybrid_property
     def type(self):
         return self.inventory_transaction.type
@@ -75,11 +79,12 @@ class InventoryTransactionLine(db.Model):
 
     @hybrid_property
     def total_amount(self):
-        return format_decimal(self.price * self.quantity)
+        return format_decimal(self.price * (self.quantity + self.in_transit_quantity))
 
     @total_amount.expression
     def total_amount(self):
-        return select([self.price * self.quantity]).label('line_total_amount')
+        return select([self.price * (self.quantity + self.in_transit_quantity)])\
+            .label('line_total_amount')
 
     @total_amount.setter
     def total_amount(self, value):

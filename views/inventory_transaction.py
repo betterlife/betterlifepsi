@@ -9,8 +9,14 @@ class InventoryTransactionLineInlineAdmin(InlineFormAdmin):
     form_args = dict(
         id=dict(label=lazy_gettext('id')),
         product=dict(label=lazy_gettext('Product')),
-        price=dict(label=lazy_gettext('Inventory Transaction Price')),
-        quantity=dict(label=lazy_gettext('Quantity')),
+        price=dict(label=lazy_gettext('Inventory Transaction Price'),
+                   description=lazy_gettext('For sales, it should be sell price, '
+                                            'for item lost or broken, should be purchase price plus logistic expend')),
+        in_transit_quantity=dict(label=lazy_gettext('In Transit Quantity'),
+                                 description=lazy_gettext('Quantity of product ordered but still on the way')),
+        quantity=dict(label=lazy_gettext('Actual Quantity Change'),
+                      description=lazy_gettext('This quantity should be a negative number '
+                                               'for sales, item lost or item broken')),
         remark=dict(label=lazy_gettext('Remark')),
     )
 
@@ -18,9 +24,13 @@ class InventoryTransactionLineInlineAdmin(InlineFormAdmin):
         form.total_amount = DisabledStringField(label=lazy_gettext('Total Amount'))
         form.receiving_line = None
         form.sales_order_line = None
+        form.remark = None
         return form
 
 class InventoryTransactionAdmin(ModelViewWithAccess):
+
+    can_delete = False
+
     column_list = ('id', 'type', 'date', 'total_amount', 'remark')
 
     column_sortable_list = ('id', ('type', 'type.display'), 'total_amount', 'date',)

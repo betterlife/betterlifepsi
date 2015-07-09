@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-06-26 07:25+0800\n"
-"PO-Revision-Date: 2015-07-09 09:44+0800\n"
+"PO-Revision-Date: 2015-07-09 21:16+0800\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -291,3 +291,18 @@ msgstr "该收货单当前的状态"
 
 msgid "Create receiving lines based on not yet received products in the purchase order"
 msgstr "自动基于该采购单中未收货的行创建收货单的行，收货数量默认为未收货的数量"
+
+msgid "This quantity should be a negative number for sales, item lost or item broken"
+msgstr "该数量对于销售出库、商品丢失或损毁，应该是一个负数"
+
+msgid "For sales, it should be sell price, for item lost or broken, should be purchase price plus logistic expend"
+msgstr "对于销售出库，该价格应该为卖价，对于商品丢失或损毁，该价格应该为采购价加上分摊到该商品的采购物流费用"
+
+msgid "Quantity of product ordered but still on the way"
+msgstr "已经订货，但是还在运输途中的数量"
+
+msgid "In Transit Quantity"
+msgstr "在途数量"
+
+msgid "Actual Quantity Change"
+msgstr "实际库存变化数量"
