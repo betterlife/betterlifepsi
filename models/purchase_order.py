@@ -1,4 +1,5 @@
 # encoding: utf-8
+from decimal import Decimal
 from app_provider import AppInfo
 from models.enum_values import EnumValues
 from util import format_decimal
@@ -16,7 +17,7 @@ class PurchaseOrder(db.Model):
     supplier_id = Column(Integer, ForeignKey('supplier.id'), nullable=False)
     supplier = relationship('Supplier', backref=backref('purchaseOrders', lazy='dynamic'))
 
-    status_id = Column(Integer, ForeignKey('enum_values.id'), nullable=True)
+    status_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
     status = relationship('EnumValues', foreign_keys=[status_id])
 
     @staticmethod
@@ -31,6 +32,19 @@ class PurchaseOrder(db.Model):
     remark = Column(Text)
 
     @hybrid_property
+    def transient_supplier(self):
+        """
+        This design is to display a readonly field containing current
+        Supplier information in UI but don't allow user to change it.
+        :return: Current supplier instance as a transient property
+        """
+        return self.supplier
+
+    @transient_supplier.setter
+    def transient_supplier(self, val):
+        pass
+
+    @hybrid_property
     def all_expenses(self):
         return ''.join(str(expense.id) + " - " + str(expense.amount) + ", " for expense in self.expenses)
 
@@ -40,7 +54,15 @@ class PurchaseOrder(db.Model):
 
     @hybrid_property
     def total_amount(self):
-        return format_decimal(self.logistic_amount + self.goods_amount)
+        if self.logistic_amount is None:
+            l_a = 0
+        else:
+            l_a = self.logistic_amount
+        if self.goods_amount is None:
+            g_a = 0
+        else:
+            g_a = self.goods_amount
+        return format_decimal(Decimal(l_a + g_a))
 
     @total_amount.expression
     def total_amount(self):
@@ -52,7 +74,7 @@ class PurchaseOrder(db.Model):
 
     @hybrid_property
     def goods_amount(self):
-        return format_decimal(sum(line.total_amount for line in self.lines))
+        return format_decimal(Decimal(sum(line.total_amount for line in self.lines)))
 
     @goods_amount.expression
     def goods_amount(self):

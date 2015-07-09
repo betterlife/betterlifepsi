@@ -1,4 +1,4 @@
-"""empty message
+"""Changes to receiving, inventory_transaction_line and purchase table.
 
 Revision ID: 17787b170888
 Revises: 2673ce30fb12
@@ -23,6 +23,7 @@ def upgrade():
                     existing_type=sa.NUMERIC(precision=8, scale=2), nullable=True)
     op.alter_column('receiving', 'purchase_order_id',
                     existing_type=sa.INTEGER(), nullable=False)
+    op.alter_column('purchase_order', 'status_id', existing_type=sa.INTEGER(), nullable=False)
     ### end Alembic commands ###
 
 
@@ -32,4 +33,5 @@ def downgrade():
     op.alter_column('inventory_transaction_line', 'quantity', existing_type=sa.NUMERIC(precision=8, scale=2),
                     nullable=False)
     op.drop_column('inventory_transaction_line', 'in_transit_quantity')
+    op.alter_column('purchase_order', 'status_id', existing_type=sa.INTEGER(), nullable=True)
     ### end Alembic commands ###

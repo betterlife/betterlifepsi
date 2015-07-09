@@ -21,6 +21,10 @@ class Product(db.Model):
     supplier_id = Column(Integer, ForeignKey('supplier.id'), nullable=False)
     supplier = relationship('Supplier', backref=backref('products', lazy='dynamic'))
 
+    @staticmethod
+    def supplier_filter(s_id):
+        return AppInfo.get_db().session.query(Product).filter_by(supplier_id=s_id)
+
     def __unicode__(self):
         return self.supplier.name + ' - ' + self.name + ' - P:' \
                + str(self.purchase_price) + ' - R:' + str(self.retail_price)
