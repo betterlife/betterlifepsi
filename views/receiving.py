@@ -1,10 +1,12 @@
 # coding=utf-8
 from functools import partial
+from app_provider import AppInfo
 from flask.ext.admin.contrib.sqla import validators, ModelView
 from flask.ext.admin.form import rules
 from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext, gettext
-from models import ReceivingLine, Receiving, PurchaseOrderLine, PurchaseOrder
+from models import ReceivingLine, Receiving, PurchaseOrderLine, PurchaseOrder, InventoryTransaction, EnumValues, \
+    InventoryTransactionLine
 from views import ModelViewWithAccess, DisabledStringField
 from wtforms import BooleanField
 from wtforms.validators import ValidationError
@@ -23,6 +25,7 @@ class ReceivingLineInlineAdmin(InlineFormAdmin):
         form.product = DisabledStringField(label=lazy_gettext('Product'))
         return form
 
+
 class ReceivingAdmin(ModelViewWithAccess):
     inline_models = (ReceivingLineInlineAdmin(ReceivingLine),)
     column_list = ('id', 'purchase_order', 'status', 'date', 'remark')
@@ -34,7 +37,8 @@ class ReceivingAdmin(ModelViewWithAccess):
     )
     form_extra_fields = {
         'create_lines': BooleanField(label=lazy_gettext('Create Lines for unreceived products'),
-                                     description=u'自动基于该采购单中未收货的行和数量创建收货单的行'),
+                                     description=lazy_gettext(
+                                         'Create receiving lines based on not yet received products in the purchase order')),
         'transient_po': DisabledStringField(label=lazy_gettext('Relate Purchase Order'))
     }
     form_widget_args = {
@@ -50,10 +54,13 @@ class ReceivingAdmin(ModelViewWithAccess):
         'lines': lazy_gettext('Lines'),
     }
     form_args = dict(
-        status=dict(query_factory=Receiving.status_filter, description=u'该收货单当前的状态'),
-        purchase_order=dict(description=u'请先选择关联采购单后点击保存按钮，然后再增加收货明细行',
-                            query_factory=partial(PurchaseOrder.status_filter,
-                                                  ('PURCHASE_ORDER_ISSUED', 'PURCHASE_ORDER_PART_RECEIVED',))))
+        status=dict(query_factory=Receiving.status_filter,
+                    description=lazy_gettext('Current status of the receiving document')),
+        purchase_order=dict(description=lazy_gettext(
+            'Please select a purchase order and save the form, then add receiving lines accordingly'),
+            query_factory=partial(PurchaseOrder.status_filter,
+                                  ('PURCHASE_ORDER_ISSUED', 'PURCHASE_ORDER_PART_RECEIVED',))))
+
     def on_model_change(self, form, model, is_created):
         if is_created:
             available_info = self.get_available_lines_info(model)
@@ -61,8 +68,32 @@ class ReceivingAdmin(ModelViewWithAccess):
             if self.all_lines_received(available_info):
                 raise ValidationError(gettext('There\'s no unreceived items in this PO.'))
             # 5. Create receiving lines based on the calculated result.
+
             if model.create_lines:
                 model.lines = self.create_receiving_lines(available_info)
+            inv_trans = self.create_receiving_inventory_transaction(model)
+            AppInfo.get_db().session.add(inv_trans)
+
+    @staticmethod
+    def create_receiving_inventory_transaction(model):
+        inv_trans = InventoryTransaction()
+        type = EnumValues.find_one_by_code('PURCHASE_IN')
+        inv_trans.type = type
+        inv_trans.type_id = type.id
+        inv_trans.date = model.date
+        inv_trans.receiving = model
+        inv_trans.receiving_id = model.id
+        for line in model.lines:
+            inv_line = InventoryTransactionLine()
+            inv_line.product = line.product
+            inv_line.inventory_transaction = inv_trans
+            inv_line.price = line.price
+            inv_line.quantity = line.quantity
+            inv_line.receiving_line = line
+            inv_line.receiving_line_id = line.id
+            inv_line.inventory_transaction = inv_trans
+            inv_line.inventory_transaction_id = inv_trans.id
+        return inv_trans
 
     def get_available_lines_info(self, model):
         # 1. Find all existing receiving bind with this PO.
@@ -129,4 +160,3 @@ class ReceivingAdmin(ModelViewWithAccess):
 
     def on_form_prefill(self, form, id):
         pass
-

@@ -71,7 +71,6 @@ input[name='_add_another'] {
     font-size: smaller;
     background: url("cueTip.gif") no-repeat left;
     background-position-y:2px;
-    cursor:pointer;
     text-decoration: none;
     padding-left: 15px;
 }

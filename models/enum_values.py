@@ -16,6 +16,11 @@ class EnumValues(db.Model):
     display = Column(String(64), nullable=False)
 
     @staticmethod
+    def find_one_by_code(v_code):
+        v_l = EnumValues.query.filter_by(code=v_code).all()
+        return v_l[0]
+
+    @staticmethod
     def type_filter(type_code):
         return AppInfo.get_db().session.query(EnumValues).\
             join(EnumValues.type, aliased=True).\
