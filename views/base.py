@@ -1,9 +1,12 @@
 # coding=utf-8
-from flask import url_for, request
+from flask import url_for, request, flash
+from flask.ext.admin._compat import as_unicode
 from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.security import current_user
 from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
+from wtforms import ValidationError
+
 
 class ModelViewWithAccess(ModelView):
     def is_accessible(self):
@@ -26,6 +29,12 @@ class ModelViewWithAccess(ModelView):
         return current_user.is_authenticated() and (
             current_user.has_role('admin') or
             current_user.has_role(tablename + '_' + operation))
+
+    def handle_view_exception(self, exc):
+        if isinstance(exc, ValidationError):
+            flash(as_unicode(exc), category='error')
+            return True
+        return super(ModelView, self).handle_view_exception(exc)
 
     def _handle_view(self, name, **kwargs):
         """

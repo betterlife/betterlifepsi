@@ -1,12 +1,13 @@
 # coding=utf-8
 from functools import partial
 from app_provider import AppInfo
-from flask.ext.admin.contrib.sqla import validators, ModelView
-from flask.ext.admin.form import rules
+from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext, gettext
 from models import ReceivingLine, Receiving, PurchaseOrderLine, PurchaseOrder, InventoryTransaction, EnumValues, \
     InventoryTransactionLine
+from sqlalchemy import event
+from sqlalchemy.orm.attributes import get_history
 from views import ModelViewWithAccess, DisabledStringField
 from wtforms import BooleanField
 from wtforms.validators import ValidationError
@@ -64,6 +65,9 @@ class ReceivingAdmin(ModelViewWithAccess):
             query_factory=partial(PurchaseOrder.status_filter,
                                   ('PURCHASE_ORDER_ISSUED', 'PURCHASE_ORDER_PART_RECEIVED',))))
 
+    def on_model_delete(self, model):
+        ReceivingAdmin.validate_status_for_change(model)
+
     def on_model_change(self, form, model, is_created):
         if is_created:
             available_info = self.get_available_lines_info(model)
@@ -74,6 +78,11 @@ class ReceivingAdmin(ModelViewWithAccess):
             if model.create_lines:
                 model.lines = self.create_receiving_lines(available_info)
         self.operate_inv_trans_by_recv_status(model)
+
+    @staticmethod
+    def validate_status_for_change(model):
+        if model.status.code == u'RECEIVING_COMPLETE':
+            raise ValidationError(gettext('Receiving document can not be update nor delete on complete status'))
 
     def operate_inv_trans_by_recv_status(self, model):
         inv_trans = None
@@ -173,12 +182,22 @@ class ReceivingAdmin(ModelViewWithAccess):
     def edit_form(self, obj=None):
         form = super(ModelView, self).edit_form(obj)
         po_id = obj.transient_po.id
-
+        # Set query_factory for newly added line
         form.lines.form.purchase_order_line.kwargs['query_factory'] =\
             partial(PurchaseOrderLine.header_filter, po_id)
 
+        # Set query option for old lines
         line_entries = form.lines.entries
         po_lines = PurchaseOrderLine.header_filter(po_id).all()
         for sub_line in line_entries:
             sub_line.form.purchase_order_line.query = po_lines
         return form
+
+@event.listens_for(Receiving, 'before_update')
+def receive_before_update(mapper, connection, target):
+    unchanged_status = get_history(target, 'status')[1]
+    # Change status from RECEIVING_COMPLETE to others or
+    # Change other fields when status is RECEIVING_COMPLETE
+    if (len(unchanged_status) == 0 and get_history(target, 'status').deleted[0].code == u'RECEIVING_COMPLETE') \
+            or (len(unchanged_status) > 0 and unchanged_status[0].code == u'RECEIVING_COMPLETE'):
+        raise ValidationError(gettext('Receiving document can not be update nor delete on complete status'))
