@@ -17,40 +17,43 @@ class ReceivingLineInlineAdmin(InlineFormAdmin):
         purchase_order_line=dict(label=lazy_gettext('Purchase Order Line')),
         quantity=dict(label=lazy_gettext('Quantity')),
         price=dict(label=lazy_gettext('Receiving Price')),
+        total_amount=dict(label=lazy_gettext('Total Amount')),
     )
 
     def postprocess_form(self, form):
         form.remark = None
         form.inventory_transaction_line = None
+        form.total_amount = DisabledStringField(label=lazy_gettext('Total Amount'))
         form.product = DisabledStringField(label=lazy_gettext('Product'))
         return form
 
 
 class ReceivingAdmin(ModelViewWithAccess):
     inline_models = (ReceivingLineInlineAdmin(ReceivingLine),)
-    column_list = ('id', 'purchase_order', 'status', 'date', 'remark')
+    column_list = ('id', 'purchase_order', 'status', 'date', 'total_amount', 'remark')
     form_excluded_columns = ('inventory_transaction',)
-    form_columns = ('purchase_order', 'transient_po', 'status', 'date', 'remark', 'lines', 'create_lines')
-    form_edit_rules = ('transient_po', 'status', 'date', 'remark', 'lines')
-    form_create_rules = (
-        'purchase_order', 'status', 'date', 'remark', 'create_lines',
-    )
+    form_columns = ('purchase_order', 'transient_po', 'status', 'date',
+                    'total_amount', 'remark', 'lines', 'create_lines')
+    form_edit_rules = ('transient_po', 'status', 'date', 'total_amount', 'remark', 'lines',)
+    form_create_rules = ('purchase_order', 'status', 'date', 'remark', 'create_lines',)
     form_extra_fields = {
         'create_lines': BooleanField(label=lazy_gettext('Create Lines for unreceived products'),
-                                     description=lazy_gettext(
-                                         'Create receiving lines based on not yet received products in the purchase order')),
-        'transient_po': DisabledStringField(label=lazy_gettext('Relate Purchase Order'))
+                                     description=lazy_gettext('Create receiving lines based on '
+                                                              'not yet received products in the purchase order')),
+        'transient_po': DisabledStringField(label=lazy_gettext('Relate Purchase Order')),
+        "total_amount": DisabledStringField(label=lazy_gettext('Total Amount')),
     }
     form_widget_args = {
         'create_lines': {'default': True},
     }
-    column_sortable_list = ('id', ('purchase_order', 'id'), ('status', 'status.display'), 'date',)
+    column_sortable_list = ('id', ('purchase_order', 'id'), ('status', 'status.display'), 'date', 'total_amount')
     column_labels = {
         'id': lazy_gettext('id'),
         'purchase_order': lazy_gettext('Relate Purchase Order'),
         'status': lazy_gettext('Status'),
         'date': lazy_gettext('Date'),
         'remark': lazy_gettext('Remark'),
+        'total_amount': lazy_gettext('Total Amount'),
         'lines': lazy_gettext('Lines'),
     }
     form_args = dict(
@@ -170,11 +173,12 @@ class ReceivingAdmin(ModelViewWithAccess):
     def edit_form(self, obj=None):
         form = super(ModelView, self).edit_form(obj)
         po_id = obj.transient_po.id
+
+        form.lines.form.purchase_order_line.kwargs['query_factory'] =\
+            partial(PurchaseOrderLine.header_filter, po_id)
+
         line_entries = form.lines.entries
         po_lines = PurchaseOrderLine.header_filter(po_id).all()
         for sub_line in line_entries:
             sub_line.form.purchase_order_line.query = po_lines
         return form
-
-    def on_form_prefill(self, form, id):
-        pass

@@ -1,8 +1,9 @@
 # encoding: utf-8
+from decimal import Decimal
 from app_provider import AppInfo
-from models.purchase_order import PurchaseOrderLine
+from models.util import format_decimal
 from models.enum_values import EnumValues
-from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select
+from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
@@ -39,6 +40,19 @@ class Receiving(db.Model):
     def transient_po(self, val):
         pass
 
+    @hybrid_property
+    def total_amount(self):
+        return format_decimal(Decimal(sum(line.total_amount for line in self.lines)))
+
+    @total_amount.expression
+    def total_amount(self):
+        return (select([func.sum(ReceivingLine.price * ReceivingLine.quantity)])
+                .where(self.id == ReceivingLine.receiving_id).label('total_amount'))
+
+    @total_amount.setter
+    def total_amount(self, value):
+        pass
+
     @staticmethod
     def filter_by_po_id(po_id):
         return AppInfo.get_db().session.query(Receiving).filter_by(purchase_order_id=po_id).all()
@@ -68,3 +82,19 @@ class ReceivingLine(db.Model):
     @product.expression
     def product(self):
         return select(self.purchase_order_line.product).label('product_id')
+
+    @hybrid_property
+    def total_amount(self):
+        if self.quantity is None:
+            q = 0
+        else:
+            q = self.quantity
+        return format_decimal(Decimal(self.price * q))
+
+    @total_amount.expression
+    def total_amount(self):
+        return select([self.price * self.quantity]).label('line_total_amount')
+
+    @total_amount.setter
+    def total_amount(self, value):
+        pass
