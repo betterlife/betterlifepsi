@@ -74,3 +74,21 @@ input[name='_add_another'] {
     text-decoration: none;
     padding-left: 15px;
 }
+
+.inline-field-list a {
+    color: #000000;
+    text-decoration: none;
+}
+.accordion-toggle:before {
+    /* symbol for "opening" panels */
+    font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
+    content: "\e114";
+    float: left;
+    color: grey;
+    padding-right: 20px;
+    padding-top:4px;
+}
+.accordion-toggle.collapsed:before {
+    /* symbol for "collapsed" panels */
+    content: "\e080";
+}
