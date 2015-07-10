@@ -47,3 +47,9 @@ class ModelViewWithAccess(ModelView):
             else:
                 # login
                 return redirect(url_for('security.login', next=request.url))
+
+class DeleteValidator(object):
+    @staticmethod
+    def validate_status_for_change(model, status_code, error_msg):
+        if model.status.code == status_code:
+            raise ValidationError(error_msg)

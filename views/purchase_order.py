@@ -3,10 +3,14 @@ from functools import partial
 import app_provider
 from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.admin.model import InlineFormAdmin
-from flask.ext.babelex import lazy_gettext
+from flask.ext.babelex import lazy_gettext, gettext
 from models import Preference, Expense, PurchaseOrder, Product
+from sqlalchemy import event
+from sqlalchemy.orm.attributes import get_history
 from views import ModelViewWithAccess, DisabledStringField
-from wtforms import StringField
+from views.base import DeleteValidator
+from wtforms import StringField, ValidationError
+
 
 class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
     form_args = dict(
@@ -23,7 +27,7 @@ class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
         return form
 
 
-class PurchaseOrderAdmin(ModelViewWithAccess):
+class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
     from models import PurchaseOrderLine
 
     column_list = ('id', 'logistic_amount', 'goods_amount',
@@ -114,3 +118,15 @@ class PurchaseOrderAdmin(ModelViewWithAccess):
         for sub_line in line_entries:
             sub_line.form.product.query = products
         return form
+
+    def on_model_delete(self, model):
+        DeleteValidator.validate_status_for_change(model, u'PURCHASE_ORDER_RECEIVED',
+                                                   gettext('Purchase order can not be '
+                                                           'update nor delete on received status'))
+
+@event.listens_for(PurchaseOrder, 'before_update')
+def receive_before_update(mapper, connection, target):
+    unchanged_status = get_history(target, 'status')[1]
+    if (len(unchanged_status) == 0 and get_history(target, 'status').deleted[0].code == u'PURCHASE_ORDER_RECEIVED') \
+            or (len(unchanged_status) > 0 and unchanged_status[0].code == u'PURCHASE_ORDER_RECEIVED'):
+        raise ValidationError(gettext('Purchase order can not be update nor delete on received status'))

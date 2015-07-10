@@ -9,6 +9,7 @@ from models import ReceivingLine, Receiving, PurchaseOrderLine, PurchaseOrder, I
 from sqlalchemy import event
 from sqlalchemy.orm.attributes import get_history
 from views import ModelViewWithAccess, DisabledStringField
+from views.base import DeleteValidator
 from wtforms import BooleanField
 from wtforms.validators import ValidationError
 
@@ -29,7 +30,7 @@ class ReceivingLineInlineAdmin(InlineFormAdmin):
         return form
 
 
-class ReceivingAdmin(ModelViewWithAccess):
+class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
     inline_models = (ReceivingLineInlineAdmin(ReceivingLine),)
     column_list = ('id', 'purchase_order', 'status', 'date', 'total_amount', 'remark')
     form_excluded_columns = ('inventory_transaction',)
@@ -66,7 +67,9 @@ class ReceivingAdmin(ModelViewWithAccess):
                                   ('PURCHASE_ORDER_ISSUED', 'PURCHASE_ORDER_PART_RECEIVED',))))
 
     def on_model_delete(self, model):
-        ReceivingAdmin.validate_status_for_change(model)
+        DeleteValidator.validate_status_for_change(model, u'RECEIVING_COMPLETE',
+                                                   gettext('Receiving document can not be update '
+                                                           'nor delete on complete status'))
 
     def on_model_change(self, form, model, is_created):
         if is_created:
@@ -78,11 +81,6 @@ class ReceivingAdmin(ModelViewWithAccess):
             if model.create_lines:
                 model.lines = self.create_receiving_lines(available_info)
         self.operate_inv_trans_by_recv_status(model)
-
-    @staticmethod
-    def validate_status_for_change(model):
-        if model.status.code == u'RECEIVING_COMPLETE':
-            raise ValidationError(gettext('Receiving document can not be update nor delete on complete status'))
 
     def operate_inv_trans_by_recv_status(self, model):
         inv_trans = None

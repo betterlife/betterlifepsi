@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-06-26 07:25+0800\n"
-"PO-Revision-Date: 2015-07-09 23:17+0800\n"
+"PO-Revision-Date: 2015-07-10 19:17+0800\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -312,3 +312,6 @@ msgstr "请先选择供应商、当前状态、订单时间及备注等信息后
 
 msgid "Receiving document can not be update nor delete on complete status"
 msgstr "处于完成状态的收货单无法被修改或删除"
+
+msgid "Purchase order can not be update nor delete on received status"
+msgstr "处于“收货完成”状态的采购单无法被修改或删除"
