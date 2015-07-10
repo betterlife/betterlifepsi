@@ -40,16 +40,12 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
     form_create_rules = ('supplier', 'status', 'order_date', 'logistic_amount', 'remark',)
 
     form_extra_fields = {
-        "goods_amount": StringField(label=lazy_gettext('Goods Amount')),
-        "total_amount": StringField(label=lazy_gettext('Total Amount')),
+        "goods_amount": DisabledStringField(label=lazy_gettext('Goods Amount')),
+        "total_amount": DisabledStringField(label=lazy_gettext('Total Amount')),
         'transient_supplier': DisabledStringField(label=lazy_gettext('Supplier'))
     }
     column_sortable_list = ('id', 'logistic_amount', 'total_amount', ('status', 'status.display'),
                             'goods_amount', 'order_date', ('supplier', 'supplier.id'),)
-    form_widget_args = {
-        'goods_amount': {'disabled': True},
-        'total_amount': {'disabled': True},
-    }
     form_excluded_columns = ('expenses', 'inventory_transactions')
     column_labels = {
         'id': lazy_gettext('id'),
