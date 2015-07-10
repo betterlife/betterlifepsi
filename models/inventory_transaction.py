@@ -1,6 +1,6 @@
 # encoding: utf-8
 from app_provider import AppInfo
-from models import EnumValues
+from models.enum_values import EnumValues
 from util import format_decimal
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -46,7 +46,7 @@ class InventoryTransactionLine(db.Model):
     in_transit_quantity = Column( Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=True)
     quantity = Column( Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=True)
     product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
-    product = relationship('Product')
+    product = relationship('Product', backref=backref('inventory_transaction_lines'))
     price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
     remark = Column(Text)
     inventory_transaction_id = Column(Integer, ForeignKey('inventory_transaction.id'), nullable=False)
