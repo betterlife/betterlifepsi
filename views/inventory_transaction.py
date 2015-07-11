@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext
 from models import InventoryTransactionLine, InventoryTransaction
@@ -32,8 +33,9 @@ class InventoryTransactionAdmin(ModelViewWithAccess):
     can_delete = False
 
     column_list = ('id', 'type', 'date', 'total_amount', 'it_receiving', 'it_shipping', 'remark')
-
     column_sortable_list = ('id', ('type', 'type.display'), 'total_amount', 'date',)
+    form_columns = ('type', 'date', 'total_amount', 'remark', 'lines')
+    form_create_rules = ('type', 'date', 'remark', 'lines',)
 
     column_labels = {
         'id': lazy_gettext('id'),
@@ -50,6 +52,7 @@ class InventoryTransactionAdmin(ModelViewWithAccess):
 
     form_args = dict(
         type=dict(query_factory=InventoryTransaction.type_filter),
+        date=dict(default=datetime.now()),
     )
 
     form_extra_fields = {

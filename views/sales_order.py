@@ -5,7 +5,6 @@ from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext
 from models import Preference, Incoming, Expense
 from views import ModelViewWithAccess, DisabledStringField
-from wtforms import StringField
 
 class SalesOrderLineInlineAdmin(InlineFormAdmin):
     form_args = dict(
@@ -32,6 +31,13 @@ class SalesOrderAdmin(ModelViewWithAccess):
     column_list = ('id', 'logistic_amount', 'actual_amount', 'original_amount',
                    'discount_amount', 'order_date', 'incoming', 'expense', 'so_shippings', 'remark')
     # column_filters = ('order_date', 'remark', 'logistic_amount')
+
+    form_columns = ('logistic_amount', 'order_date', 'remark', 'actual_amount', 'original_amount',
+                    'discount_amount', 'lines')
+    form_edit_rules = ('logistic_amount', 'order_date', 'remark', 'actual_amount',
+                       'original_amount', 'discount_amount', 'lines')
+    form_create_rules = ('logistic_amount', 'order_date', 'remark', 'lines',)
+
     form_extra_fields = {
         'actual_amount': DisabledStringField(label=lazy_gettext('Actual Amount')),
         'original_amount': DisabledStringField(label=lazy_gettext('Original Amount')),
@@ -42,8 +48,8 @@ class SalesOrderAdmin(ModelViewWithAccess):
         order_date=dict(default=datetime.now())
     )
     form_excluded_columns = ('incoming', 'expense', 'so_shippings')
-    column_sortable_list = ('id', 'logistic_amount', 'actual_amount',
-                            'original_amount', 'discount_amount', 'order_date')
+    column_sortable_list = ('id', 'logistic_amount', 'actual_amount', 'original_amount', 'discount_amount',
+                            'order_date')
     inline_models = (SalesOrderLineInlineAdmin(SalesOrderLine),)
 
     column_labels = {

@@ -5,7 +5,7 @@ import app_provider
 from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext, gettext
-from models import Preference, Expense, PurchaseOrder, Product
+from models import Preference, Expense, PurchaseOrder, Product, EnumValues
 from sqlalchemy import event
 from sqlalchemy.orm.attributes import get_history
 from views import ModelViewWithAccess, DisabledStringField
@@ -63,11 +63,12 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
     }
 
     form_args = dict(
-        status=dict(query_factory=PurchaseOrder.status_option_filter),
+        status=dict(query_factory=PurchaseOrder.status_option_filter,
+                    default=EnumValues.find_one_by_code('PURCHASE_ORDER_DRAFT')),
         supplier=dict(description=lazy_gettext('Please select a supplier and save the form, '
                                                'then add purchase order lines accordingly')),
         logistic_amount=dict(default=0),
-        order_date=dict(default=datetime.now())
+        order_date=dict(default=datetime.now()),
     )
 
     @staticmethod

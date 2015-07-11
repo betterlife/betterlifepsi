@@ -1,4 +1,5 @@
 # coding=utf-8
+from datetime import datetime
 from flask.ext.babelex import lazy_gettext
 from models import Incoming
 from views import ModelViewWithAccess
@@ -10,6 +11,7 @@ class IncomingAdmin(ModelViewWithAccess):
     form_args = dict(
         status=dict(query_factory=Incoming.status_filter),
         category=dict(query_factory=Incoming.type_filter),
+        date=dict(default=datetime.now()),
     )
     column_sortable_list = ('id', 'date', 'amount', ('status', 'status.display'),
                             ('category', 'category.display'), 'remark')

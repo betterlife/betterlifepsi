@@ -1,4 +1,5 @@
 # coding=utf-8
+from datetime import datetime
 from functools import partial
 from app_provider import AppInfo
 from flask.ext.admin.contrib.sqla import ModelView
@@ -66,7 +67,9 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
         purchase_order=dict(description=lazy_gettext(
             'Please select a purchase order and save the form, then add receiving lines accordingly'),
             query_factory=partial(PurchaseOrder.status_filter,
-                                  ('PURCHASE_ORDER_ISSUED', 'PURCHASE_ORDER_PART_RECEIVED',))))
+                                  ('PURCHASE_ORDER_ISSUED', 'PURCHASE_ORDER_PART_RECEIVED',))),
+        date=dict(default=datetime.now()),
+    )
 
     def on_model_delete(self, model):
         DeleteValidator.validate_status_for_change(model, u'RECEIVING_COMPLETE',

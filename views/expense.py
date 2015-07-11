@@ -1,4 +1,5 @@
 # coding=utf-8
+from datetime import datetime
 from flask.ext.babelex import lazy_gettext
 from models import Expense
 from views import ModelViewWithAccess
@@ -11,6 +12,7 @@ class ExpenseAdmin(ModelViewWithAccess):
     form_args = dict(
         status=dict(query_factory=Expense.status_filter),
         category=dict(query_factory=Expense.type_filter),
+        date=dict(default=datetime.now()),
     )
     column_sortable_list = ('id', 'date', 'amount', 'has_invoice', ('status', 'status.display'),
                             ('category', 'category.display'), 'remark')
