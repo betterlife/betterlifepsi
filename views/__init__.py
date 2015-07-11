@@ -30,6 +30,8 @@ def init_admin_views(app, db):
                                         category=u'订单', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-send'))
     adminViews.add_view(ReceivingAdmin(Receiving, db_session, name=lazy_gettext("Receiving"),
                                                   category=u'库存', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-import'))
+    adminViews.add_view(ModelViewWithAccess(Shipping, db_session, name=lazy_gettext("Shipping"),
+                                                  category=u'库存', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-export'))
     adminViews.add_view(InventoryTransactionAdmin(InventoryTransaction, db_session, name=lazy_gettext("Inventory Transaction"),
                                                   category=u'库存', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-transfer'))
     adminViews.add_view(ExpenseAdmin(Expense, db_session, name=lazy_gettext("Expense"),

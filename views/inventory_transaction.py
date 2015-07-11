@@ -22,16 +22,16 @@ class InventoryTransactionLineInlineAdmin(InlineFormAdmin):
 
     def postprocess_form(self, form):
         form.total_amount = DisabledStringField(label=lazy_gettext('Total Amount'))
-        form.receiving_line = None
-        form.sales_order_line = None
+        form.itl_receiving_line = None
         form.remark = None
+        form.itl_shipping_line = None
         return form
 
 class InventoryTransactionAdmin(ModelViewWithAccess):
 
     can_delete = False
 
-    column_list = ('id', 'type', 'date', 'total_amount', 'it_receiving', 'remark')
+    column_list = ('id', 'type', 'date', 'total_amount', 'it_receiving', 'it_shipping', 'remark')
 
     column_sortable_list = ('id', ('type', 'type.display'), 'total_amount', 'date',)
 
@@ -43,9 +43,10 @@ class InventoryTransactionAdmin(ModelViewWithAccess):
         'remark': lazy_gettext('Remark'),
         'lines': lazy_gettext('Lines'),
         'it_receiving': lazy_gettext('Related Receiving'),
+        'it_shipping': lazy_gettext('Related Shipping'),
     }
 
-    form_excluded_columns = ('receiving',)
+    form_excluded_columns = ('it_shipping', 'it_receiving')
 
     form_args = dict(
         type=dict(query_factory=InventoryTransaction.type_filter),

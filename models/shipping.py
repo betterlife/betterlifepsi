@@ -10,8 +10,8 @@ from sqlalchemy.orm import backref, relationship
 db = AppInfo.get_db()
 
 
-class Receiving(db.Model):
-    __tablename__ = 'receiving'
+class Shipping(db.Model):
+    __tablename__ = 'shipping'
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, nullable=False)
     remark = Column(Text)
@@ -19,29 +19,29 @@ class Receiving(db.Model):
     status_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
     status = relationship('EnumValues', foreign_keys=[status_id])
 
-    purchase_order_id = Column(Integer, ForeignKey('purchase_order.id'), nullable=False)
-    purchase_order = relationship('PurchaseOrder', backref=backref('po_receivings',
-                                                                   uselist=True, cascade='all, delete-orphan'))
+    sales_order_id = Column(Integer, ForeignKey('sales_order.id'), nullable=False)
+    sales_order = relationship('SalesOrder', backref=backref('so_shippings',
+                                                             uselist=True, cascade='all, delete-orphan'))
 
     inventory_transaction_id = Column(Integer, ForeignKey('inventory_transaction.id'), nullable=True)
     inventory_transaction = relationship('InventoryTransaction',
-                                         backref=backref('it_receiving', uselist=False, cascade='all, delete-orphan'))
+                                         backref=backref('it_shipping', uselist=False,))
 
     @staticmethod
     def status_filter():
-        return EnumValues.type_filter('RECEIVING_STATUS')
+        return EnumValues.type_filter('SHIPPING_STATUS')
 
     @hybrid_property
-    def transient_po(self):
+    def transient_so(self):
         """
         This design is to display a readonly field containing current
         Purchase order information in UI but don't allow user to change it.
         :return: Current purchase order instance as a transient property
         """
-        return self.purchase_order
+        return self.sales_order
 
-    @transient_po.setter
-    def transient_po(self, val):
+    @transient_so.setter
+    def transient_so(self, val):
         pass
 
     @hybrid_property
@@ -50,8 +50,8 @@ class Receiving(db.Model):
 
     @total_amount.expression
     def total_amount(self):
-        return (select([func.sum(ReceivingLine.price * ReceivingLine.quantity)])
-                .where(self.id == ReceivingLine.receiving_id).label('total_amount'))
+        return (select([func.sum(ShippingLine.price * ShippingLine.quantity)])
+                .where(self.id == Shipping.shipping_id).label('total_amount'))
 
     @total_amount.setter
     def total_amount(self, value):
@@ -59,33 +59,28 @@ class Receiving(db.Model):
 
     @staticmethod
     def filter_by_po_id(po_id):
-        return AppInfo.get_db().session.query(Receiving).filter_by(purchase_order_id=po_id).all()
+        return AppInfo.get_db().session.query(Shipping).filter_by(sales_order_id=po_id).all()
 
-    def __unicode__(self):
-        return str(self.id) + ' - ' + str(self.total_amount)
-
-class ReceivingLine(db.Model):
-    __tablename = 'receiving_line'
+class ShippingLine(db.Model):
+    __tablename = 'shipping_line'
     id = Column(Integer, primary_key=True)
     quantity = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
     price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
 
-    receiving_id = Column(Integer, ForeignKey('receiving.id'), nullable=False)
-    receiving = relationship('Receiving', backref=backref('lines', uselist=True, cascade='all, delete-orphan'))
+    shipping_id = Column(Integer, ForeignKey('shipping.id'), nullable=False)
+    shipping = relationship('Shipping', backref=backref('lines', uselist=True, cascade='all, delete-orphan'))
 
-    purchase_order_line_id = Column(Integer, ForeignKey('purchase_order_line.id'), nullable=False)
-    purchase_order_line = relationship('PurchaseOrderLine',
-                                       backref=backref('pol_receiving_lines', uselist=True,
-                                                       cascade='all, delete-orphan'))
+    sales_order_line_id = Column(Integer, ForeignKey('sales_order_line.id'), nullable=False)
+    sales_order_line = relationship('SalesOrderLine', backref=backref('sol_shipping_lines',
+                                                                      uselist=True, cascade='all, delete-orphan'))
 
     inventory_transaction_line_id = Column(Integer, ForeignKey('inventory_transaction_line.id'), nullable=True)
-    inventory_transaction_line = relationship('InventoryTransactionLine',
-                                              backref=backref('itl_receiving_line', uselist=False,
-                                                              cascade='all, delete-orphan'))
+    inventory_transaction_line = relationship('InventoryTransactionLine', backref=backref('itl_shipping_line',
+                                                                                          uselist=False,))
 
     @hybrid_property
     def product(self):
-        return self.purchase_order_line.product
+        return self.sales_order_line.product
 
     @product.setter
     def product(self, value):
@@ -93,7 +88,7 @@ class ReceivingLine(db.Model):
 
     @product.expression
     def product(self):
-        return select(self.purchase_order_line.product).label('product_id')
+        return select(self.sales_order_line.product).label('product_id')
 
     @hybrid_property
     def total_amount(self):
