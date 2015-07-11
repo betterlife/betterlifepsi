@@ -96,3 +96,7 @@ input[name='_add_another'] {
 .col-id {
     width:80px;
 }
+
+.model-list .col-md-1 {
+    width:90px;
+}
