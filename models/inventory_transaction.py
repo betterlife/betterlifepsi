@@ -1,4 +1,5 @@
 # encoding: utf-8
+from decimal import Decimal
 from app_provider import AppInfo
 from models.enum_values import EnumValues
 from util import format_decimal
@@ -22,7 +23,7 @@ class InventoryTransaction(db.Model):
 
     @hybrid_property
     def total_amount(self):
-        return format_decimal(sum(line.total_amount for line in self.lines))
+        return format_decimal(Decimal(abs(sum(line.total_amount for line in self.lines))))
 
     @total_amount.expression
     def total_amount(self):
@@ -79,7 +80,7 @@ class InventoryTransactionLine(db.Model):
             i_t_q = 0
         else:
             i_t_q = self.in_transit_quantity
-        return format_decimal(self.price * (q + i_t_q))
+        return format_decimal(Decimal(abs(self.price * (q + i_t_q))))
 
     @total_amount.expression
     def total_amount(self):

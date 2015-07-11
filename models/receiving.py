@@ -69,6 +69,9 @@ class ReceivingLine(db.Model):
     quantity = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
     price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
 
+    product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
+    product = relationship('Product', backref=backref('receiving_lines'))
+
     receiving_id = Column(Integer, ForeignKey('receiving.id'), nullable=False)
     receiving = relationship('Receiving', backref=backref('lines', uselist=True, cascade='all, delete-orphan'))
 

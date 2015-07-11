@@ -13,11 +13,12 @@ from sales_order import SalesOrderAdmin
 from security import UserAdmin, RoleAdmin
 from supplier import SupplierAdmin
 from receiving import ReceivingAdmin
+from shipping import ShippingAdmin
+from inventory_transaction import InventoryTransactionAdmin
 from flask.ext.babelex import lazy_gettext
 from models import *
 from flask.ext.admin import Admin
 from flask.ext.admin.consts import ICON_TYPE_GLYPH
-from views.inventory_transaction import InventoryTransactionAdmin
 
 
 def init_admin_views(app, db):
@@ -30,7 +31,7 @@ def init_admin_views(app, db):
                                         category=u'订单', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-send'))
     adminViews.add_view(ReceivingAdmin(Receiving, db_session, name=lazy_gettext("Receiving"),
                                                   category=u'库存', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-import'))
-    adminViews.add_view(ModelViewWithAccess(Shipping, db_session, name=lazy_gettext("Shipping"),
+    adminViews.add_view(ShippingAdmin(Shipping, db_session, name=lazy_gettext("Shipping"),
                                                   category=u'库存', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-export'))
     adminViews.add_view(InventoryTransactionAdmin(InventoryTransaction, db_session, name=lazy_gettext("Inventory Transaction"),
                                                   category=u'库存', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-transfer'))

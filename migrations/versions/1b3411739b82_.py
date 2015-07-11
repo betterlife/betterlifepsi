@@ -52,6 +52,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('quantity', sa.Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False),
     sa.Column('price', sa.Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False),
+    sa.Column('product_id', sa.Integer(), nullable=False),
     sa.Column('receiving_id', sa.Integer(), nullable=False),
     sa.Column('purchase_order_line_id', sa.Integer(), nullable=False),
     sa.Column('inventory_transaction_line_id', sa.Integer(), nullable=True),
@@ -77,11 +78,13 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('quantity', sa.Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False),
     sa.Column('price', sa.Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False),
+    sa.Column('product_id', sa.Integer(), nullable=False),
     sa.Column('shipping_id', sa.Integer(), nullable=False),
     sa.Column('sales_order_line_id', sa.Integer(), nullable=False),
     sa.Column('inventory_transaction_line_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['inventory_transaction_line_id'], ['inventory_transaction_line.id'], ),
     sa.ForeignKeyConstraint(['sales_order_line_id'], ['sales_order_line.id'], ),
+    sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
     sa.ForeignKeyConstraint(['shipping_id'], ['shipping.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

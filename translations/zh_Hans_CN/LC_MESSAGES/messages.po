@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-06-26 07:25+0800\n"
-"PO-Revision-Date: 2015-07-11 17:07+0800\n"
+"PO-Revision-Date: 2015-07-11 22:49+0800\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -330,3 +330,9 @@ msgstr "销售发货"
 
 msgid "Type Values"
 msgstr "值列表"
+
+msgid "Related Sales Order Line"
+msgstr "相关销售订单行"
+
+msgid "Modify shipping document directly is not allowed, please modify the related sales order and this shipping document will be changed accordingly"
+msgstr "禁止直接修改发货单，请修改与本发货单关联的销售订单，修改后本发货单也会相应被修改"

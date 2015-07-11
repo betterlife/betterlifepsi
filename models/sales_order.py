@@ -53,7 +53,7 @@ class SalesOrder(db.Model):
 
     @hybrid_property
     def all_shippings(self):
-        return ''.join(s.__unicode__() + ", " for s in self.so_shippings)
+        return self.so_shipping.__unicode__()
 
     def __unicode__(self):
         return str(self.id) + ' - ' + str(self.actual_amount)

@@ -96,15 +96,15 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
             inv_trans = self.save_inv_trans(model, inv_trans=model.inventory_transaction,
                                             set_qty_func=ReceivingAdmin.set_qty_draft)
         if inv_trans is not None:
+            model.inventory_transaction = inv_trans
             AppInfo.get_db().session.add(inv_trans)
 
     @staticmethod
     def save_inv_trans(model, inv_trans, set_qty_func):
+        inv_type = EnumValues.find_one_by_code('PURCHASE_IN')
         if inv_trans is None:
             inv_trans = InventoryTransaction()
-            inv_type = EnumValues.find_one_by_code('PURCHASE_IN')
             inv_trans.type_id = inv_type.id
-            inv_trans.receiving_id = model.id
         inv_trans.date = model.date
         for line in model.lines:
             inv_line = line.inventory_transaction_line
@@ -140,7 +140,9 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
                 quantity = line.quantity
                 if line.id in received_qtys.keys():
                     quantity -= received_qtys[line.id]
-                available_info[line.id] = {'quantity': quantity, 'price': line.unit_price}
+                available_info[line.id] = {
+                    'quantity': quantity, 'price': line.unit_price, 'product_id': line.product_id
+                }
         else:
             # 3. Calculate un-received line info(qty, price) if there's no existing receiving
             for line in model.purchase_order.lines:
@@ -161,7 +163,8 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
             if line_info['quantity'] > 0:
                 r_line = ReceivingLine()
                 r_line.purchase_order_line_id = line_id
-                r_line.quantity, r_line.price = line_info['quantity'], line_info['price']
+                r_line.quantity, r_line.price, r_line.product_id = \
+                    line_info['quantity'], line_info['price'], line_info['product_id']
                 lines.append(r_line)
         return lines
 

@@ -3,7 +3,7 @@ from datetime import datetime
 import app_provider
 from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext
-from models import Preference, Incoming, Expense
+from models import Preference, Incoming, Expense, Shipping, ShippingLine, EnumValues
 from views import ModelViewWithAccess, DisabledStringField
 
 class SalesOrderLineInlineAdmin(InlineFormAdmin):
@@ -21,7 +21,7 @@ class SalesOrderLineInlineAdmin(InlineFormAdmin):
         form.actual_amount = DisabledStringField(label=lazy_gettext('Actual Amount'))
         form.discount_amount = DisabledStringField(label=lazy_gettext('Discount Amount'))
         form.remark = None
-        form.sol_shipping_lines = None
+        form.sol_shipping_line = None
         return form
 
 
@@ -29,7 +29,7 @@ class SalesOrderAdmin(ModelViewWithAccess):
     from models import SalesOrderLine
 
     column_list = ('id', 'logistic_amount', 'actual_amount', 'original_amount',
-                   'discount_amount', 'order_date', 'incoming', 'expense', 'so_shippings', 'remark')
+                   'discount_amount', 'order_date', 'incoming', 'expense', 'so_shipping', 'remark')
     # column_filters = ('order_date', 'remark', 'logistic_amount')
 
     form_columns = ('logistic_amount', 'order_date', 'remark', 'actual_amount', 'original_amount',
@@ -47,7 +47,7 @@ class SalesOrderAdmin(ModelViewWithAccess):
         logistic_amount=dict(default=0),
         order_date=dict(default=datetime.now())
     )
-    form_excluded_columns = ('incoming', 'expense', 'so_shippings')
+    form_excluded_columns = ('incoming', 'expense', 'so_shipping')
     column_sortable_list = ('id', 'logistic_amount', 'actual_amount', 'original_amount', 'discount_amount',
                             'order_date')
     inline_models = (SalesOrderLineInlineAdmin(SalesOrderLine),)
@@ -62,12 +62,12 @@ class SalesOrderAdmin(ModelViewWithAccess):
         'discount_amount': lazy_gettext('Discount Amount'),
         'incoming': lazy_gettext('Related Incoming'),
         'expense': lazy_gettext('Related Expense'),
-        'so_shippings': lazy_gettext('Related Shipping'),
+        'so_shipping': lazy_gettext('Related Shipping'),
         'lines': lazy_gettext('Lines'),
     }
 
     @staticmethod
-    def create_incoming(model):
+    def create_or_update_incoming(model):
         incoming = model.incoming
         preference = Preference.get()
         incoming = SalesOrderAdmin.create_associated_obj(incoming, model, default_obj=Incoming(),
@@ -77,7 +77,7 @@ class SalesOrderAdmin(ModelViewWithAccess):
         return incoming
 
     @staticmethod
-    def create_expense(model):
+    def create_or_update_expense(model):
         expense = model.expense
         preference = Preference.get()
         if (model.logistic_amount is not None) and (model.logistic_amount > 0):
@@ -101,11 +101,44 @@ class SalesOrderAdmin(ModelViewWithAccess):
         obj.date = model.order_date
         return obj
 
+    @staticmethod
+    def create_or_update_shipping(model):
+        status = EnumValues.find_one_by_code('SHIPPING_COMPLETE')
+        shipping = model.so_shipping
+        if shipping is None:
+            shipping = Shipping()
+        shipping.date = model.order_date
+        shipping.sales_order = model
+        shipping.status = status
+        for line in model.lines:
+            new_sl = None
+            for old_sl in shipping.lines:
+                if old_sl.sales_order_line_id == line.id:
+                    new_sl = old_sl
+                    break
+            new_sl = SalesOrderAdmin.copy_sales_order_line_to_shipping_line(line, new_sl)
+            new_sl.shipping = shipping
+        shipping.create_or_update_inventory_transaction()
+        return shipping
+
+    @staticmethod
+    def copy_sales_order_line_to_shipping_line(sales_order_line, sl):
+        if sl is None:
+            sl = ShippingLine()
+        sl.quantity = sales_order_line.quantity
+        sl.price = sales_order_line.unit_price
+        sl.product_id = sales_order_line.product_id
+        sl.sales_order_line_id = sales_order_line.id
+        return sl
+
     def after_model_change(self, form, model, is_created):
-        incoming = SalesOrderAdmin.create_incoming(model)
-        expense = SalesOrderAdmin.create_expense(model)
+        incoming = SalesOrderAdmin.create_or_update_incoming(model)
+        expense = SalesOrderAdmin.create_or_update_expense(model)
+        shipping = SalesOrderAdmin.create_or_update_shipping(model)
         if expense is not None:
             app_provider.AppInfo.get_db().session.add(expense)
         if incoming is not None:
             app_provider.AppInfo.get_db().session.add(incoming)
+        if shipping is not None:
+            app_provider.AppInfo.get_db().session.add(shipping)
         app_provider.AppInfo.get_db().session.commit()

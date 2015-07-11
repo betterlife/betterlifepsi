@@ -1,6 +1,8 @@
 # encoding: utf-8
 from decimal import Decimal
 from app_provider import AppInfo
+import app_provider
+from models.inventory_transaction import InventoryTransactionLine, InventoryTransaction
 from models.util import format_decimal
 from models.enum_values import EnumValues
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
@@ -20,8 +22,7 @@ class Shipping(db.Model):
     status = relationship('EnumValues', foreign_keys=[status_id])
 
     sales_order_id = Column(Integer, ForeignKey('sales_order.id'), nullable=False)
-    sales_order = relationship('SalesOrder', backref=backref('so_shippings',
-                                                             uselist=True, cascade='all, delete-orphan'))
+    sales_order = relationship('SalesOrder', backref=backref('so_shipping', uselist=False))
 
     inventory_transaction_id = Column(Integer, ForeignKey('inventory_transaction.id'), nullable=True)
     inventory_transaction = relationship('InventoryTransaction',
@@ -32,26 +33,13 @@ class Shipping(db.Model):
         return EnumValues.type_filter('SHIPPING_STATUS')
 
     @hybrid_property
-    def transient_so(self):
-        """
-        This design is to display a readonly field containing current
-        Purchase order information in UI but don't allow user to change it.
-        :return: Current purchase order instance as a transient property
-        """
-        return self.sales_order
-
-    @transient_so.setter
-    def transient_so(self, val):
-        pass
-
-    @hybrid_property
     def total_amount(self):
         return format_decimal(Decimal(sum(line.total_amount for line in self.lines)))
 
     @total_amount.expression
     def total_amount(self):
         return (select([func.sum(ShippingLine.price * ShippingLine.quantity)])
-                .where(self.id == Shipping.shipping_id).label('total_amount'))
+                .where(self.id == ShippingLine.shipping_id).label('total_amount'))
 
     @total_amount.setter
     def total_amount(self, value):
@@ -64,35 +52,44 @@ class Shipping(db.Model):
     def __unicode__(self):
         return str(self.id) + ' - ' + str(self.total_amount)
 
+    def create_or_update_inventory_transaction(self):
+        it_type = EnumValues.find_one_by_code('SALES_OUT')
+        it = self.inventory_transaction
+        if it is None:
+            it = InventoryTransaction()
+            it.type = it_type
+            self.inventory_transaction = it
+        it.date = self.date
+        for line in self.lines:
+            itl = line.inventory_transaction_line
+            if itl is None:
+                itl = InventoryTransactionLine()
+            itl.quantity = -line.quantity
+            itl.product_id = line.product_id
+            itl.price = line.price
+            itl.in_transit_quantity = 0
+            itl.inventory_transaction = it
+            line.inventory_transaction_line = itl
+        app_provider.AppInfo.get_db().session.add(it)
+
 class ShippingLine(db.Model):
     __tablename = 'shipping_line'
     id = Column(Integer, primary_key=True)
     quantity = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
     price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
 
+    product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
+    product = relationship('Product', backref=backref('shipping_lines'))
+
     shipping_id = Column(Integer, ForeignKey('shipping.id'), nullable=False)
     shipping = relationship('Shipping', backref=backref('lines', uselist=True, cascade='all, delete-orphan'))
 
     sales_order_line_id = Column(Integer, ForeignKey('sales_order_line.id'), nullable=False)
-    sales_order_line = relationship('SalesOrderLine', backref=backref('sol_shipping_lines',
-                                                                      uselist=True, cascade='all, delete-orphan'))
+    sales_order_line = relationship('SalesOrderLine', backref=backref('sol_shipping_line', uselist=False,))
 
     inventory_transaction_line_id = Column(Integer, ForeignKey('inventory_transaction_line.id'), nullable=True)
     inventory_transaction_line = relationship('InventoryTransactionLine', backref=backref('itl_shipping_line',
                                                                                           uselist=False,))
-
-    @hybrid_property
-    def product(self):
-        return self.sales_order_line.product
-
-    @product.setter
-    def product(self, value):
-        pass
-
-    @product.expression
-    def product(self):
-        return select(self.sales_order_line.product).label('product_id')
-
     @hybrid_property
     def total_amount(self):
         if self.quantity is None:
