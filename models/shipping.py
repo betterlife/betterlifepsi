@@ -58,8 +58,11 @@ class Shipping(db.Model):
         pass
 
     @staticmethod
-    def filter_by_po_id(po_id):
-        return AppInfo.get_db().session.query(Shipping).filter_by(sales_order_id=po_id).all()
+    def filter_by_so_id(so_id):
+        return AppInfo.get_db().session.query(Shipping).filter_by(sales_order_id=so_id).all()
+
+    def __unicode__(self):
+        return str(self.id) + ' - ' + str(self.total_amount)
 
 class ShippingLine(db.Model):
     __tablename = 'shipping_line'

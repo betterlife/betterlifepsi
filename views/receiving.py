@@ -42,7 +42,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
         'create_lines': BooleanField(label=lazy_gettext('Create Lines for unreceived products'),
                                      description=lazy_gettext('Create receiving lines based on '
                                                               'not yet received products in the purchase order')),
-        'transient_po': DisabledStringField(label=lazy_gettext('Relate Purchase Order')),
+        'transient_po': DisabledStringField(label=lazy_gettext('Related Purchase Order')),
         "total_amount": DisabledStringField(label=lazy_gettext('Total Amount')),
     }
     form_widget_args = {
@@ -51,7 +51,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
     column_sortable_list = ('id', ('purchase_order', 'id'), ('status', 'status.display'), 'date', 'total_amount')
     column_labels = {
         'id': lazy_gettext('id'),
-        'purchase_order': lazy_gettext('Relate Purchase Order'),
+        'purchase_order': lazy_gettext('Related Purchase Order'),
         'status': lazy_gettext('Status'),
         'date': lazy_gettext('Date'),
         'remark': lazy_gettext('Remark'),

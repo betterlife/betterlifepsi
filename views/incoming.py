@@ -19,7 +19,7 @@ class IncomingAdmin(ModelViewWithAccess):
         'date': lazy_gettext('Date'),
         'category': lazy_gettext('Category'),
         'status': lazy_gettext('Status'),
-        'sales_order': lazy_gettext('Relate Sales Order'),
+        'sales_order': lazy_gettext('Related Sales Order'),
         'remark': lazy_gettext('Remark'),
         'category.display': lazy_gettext('Category'),
     }

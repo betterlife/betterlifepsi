@@ -29,20 +29,17 @@ class SalesOrderAdmin(ModelViewWithAccess):
     from models import SalesOrderLine
 
     column_list = ('id', 'logistic_amount', 'actual_amount', 'original_amount',
-                   'discount_amount', 'order_date', 'incoming', 'expense', 'remark')
+                   'discount_amount', 'order_date', 'incoming', 'expense', 'so_shippings', 'remark')
     # column_filters = ('order_date', 'remark', 'logistic_amount')
     form_extra_fields = {
-        'actual_amount': StringField(label=lazy_gettext('Actual Amount')),
-        'original_amount': StringField(label=lazy_gettext('Original Amount')),
-        'discount_amount': StringField(label=lazy_gettext('Discount Amount'))
+        'actual_amount': DisabledStringField(label=lazy_gettext('Actual Amount')),
+        'original_amount': DisabledStringField(label=lazy_gettext('Original Amount')),
+        'discount_amount': DisabledStringField(label=lazy_gettext('Discount Amount'))
     }
     form_widget_args = {
-        'actual_amount': {'disabled': True},
-        'original_amount': {'disabled': True},
-        'discount_amount': {'disabled': True},
         'logistic_amount': {'default': 0}
     }
-    form_excluded_columns = ('incoming', 'expense')
+    form_excluded_columns = ('incoming', 'expense', 'so_shippings')
     column_sortable_list = ('id', 'logistic_amount', 'actual_amount',
                             'original_amount', 'discount_amount', 'order_date')
     inline_models = (SalesOrderLineInlineAdmin(SalesOrderLine),)
@@ -55,8 +52,9 @@ class SalesOrderAdmin(ModelViewWithAccess):
         'actual_amount': lazy_gettext('Actual Amount'),
         'original_amount': lazy_gettext('Original Amount'),
         'discount_amount': lazy_gettext('Discount Amount'),
-        'incoming': lazy_gettext('Relate Incoming'),
-        'expense': lazy_gettext('Relate Expense'),
+        'incoming': lazy_gettext('Related Incoming'),
+        'expense': lazy_gettext('Related Expense'),
+        'so_shippings': lazy_gettext('Related Shipping'),
         'lines': lazy_gettext('Lines'),
     }
 

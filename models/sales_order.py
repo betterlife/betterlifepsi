@@ -50,6 +50,10 @@ class SalesOrder(db.Model):
     def discount_amount(self, value):
         pass
 
+    @hybrid_property
+    def all_shippings(self):
+        return ''.join(s.__unicode__() + ", " for s in self.so_shippings)
+
     def __unicode__(self):
         return str(self.id) + ' - ' + str(self.actual_amount)
 

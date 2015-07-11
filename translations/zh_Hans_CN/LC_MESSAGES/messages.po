@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-06-26 07:25+0800\n"
-"PO-Revision-Date: 2015-07-11 16:09+0800\n"
+"PO-Revision-Date: 2015-07-11 16:21+0800\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -157,16 +157,16 @@ msgstr "折前金额"
 msgid "Discount Amount"
 msgstr "折扣金额"
 
-msgid "Relate Incoming"
+msgid "Related Incoming"
 msgstr "相关收入"
 
-msgid "Relate Expense"
+msgid "Related Expense"
 msgstr "相关支出"
 
-msgid "Relate Sales Order"
+msgid "Related Sales Order"
 msgstr "相关销售单"
 
-msgid "Relate Purchase Order"
+msgid "Related Purchase Order"
 msgstr "相关采购单"
 
 msgid "Amount"
@@ -324,3 +324,6 @@ msgstr "相关收货单"
 
 msgid "Related Shipping"
 msgstr "相关发货单"
+
+msgid "Shipping"
+msgstr "销售发货"
