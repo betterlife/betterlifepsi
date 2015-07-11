@@ -20,8 +20,7 @@ class Receiving(db.Model):
     status = relationship('EnumValues', foreign_keys=[status_id])
 
     purchase_order_id = Column(Integer, ForeignKey('purchase_order.id'), nullable=False)
-    purchase_order = relationship('PurchaseOrder', backref=backref('po_receivings',
-                                                                   uselist=True, cascade='all, delete-orphan'))
+    purchase_order = relationship('PurchaseOrder', backref=backref('po_receivings', uselist=True,))
 
     inventory_transaction_id = Column(Integer, ForeignKey('inventory_transaction.id'), nullable=True)
     inventory_transaction = relationship('InventoryTransaction',
@@ -74,9 +73,7 @@ class ReceivingLine(db.Model):
     receiving = relationship('Receiving', backref=backref('lines', uselist=True, cascade='all, delete-orphan'))
 
     purchase_order_line_id = Column(Integer, ForeignKey('purchase_order_line.id'), nullable=False)
-    purchase_order_line = relationship('PurchaseOrderLine',
-                                       backref=backref('pol_receiving_lines', uselist=True,
-                                                       cascade='all, delete-orphan'))
+    purchase_order_line = relationship('PurchaseOrderLine', backref=backref('pol_receiving_lines', uselist=True))
 
     inventory_transaction_line_id = Column(Integer, ForeignKey('inventory_transaction_line.id'), nullable=True)
     inventory_transaction_line = relationship('InventoryTransactionLine',
