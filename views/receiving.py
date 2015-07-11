@@ -61,7 +61,8 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
     }
     form_args = dict(
         status=dict(query_factory=Receiving.status_filter,
-                    description=lazy_gettext('Current status of the receiving document')),
+                    description=lazy_gettext('Current status of the receiving document, '
+                                             'completed receiving can not be updated or deleted')),
         purchase_order=dict(description=lazy_gettext(
             'Please select a purchase order and save the form, then add receiving lines accordingly'),
             query_factory=partial(PurchaseOrder.status_filter,
