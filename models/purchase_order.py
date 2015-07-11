@@ -48,6 +48,10 @@ class PurchaseOrder(db.Model):
     def all_expenses(self):
         return ''.join(str(expense.id) + " - " + str(expense.amount) + ", " for expense in self.expenses)
 
+    @hybrid_property
+    def all_receivings(self):
+        return ''.join(r.__unicode__() + ", " for r in self.po_receivings)
+
     @all_expenses.setter
     def all_expenses(self, value):
         pass

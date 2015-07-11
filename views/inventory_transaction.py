@@ -31,7 +31,7 @@ class InventoryTransactionAdmin(ModelViewWithAccess):
 
     can_delete = False
 
-    column_list = ('id', 'type', 'date', 'total_amount', 'remark')
+    column_list = ('id', 'type', 'date', 'total_amount', 'it_receiving', 'remark')
 
     column_sortable_list = ('id', ('type', 'type.display'), 'total_amount', 'date',)
 
@@ -41,7 +41,8 @@ class InventoryTransactionAdmin(ModelViewWithAccess):
         'date': lazy_gettext('Date'),
         'total_amount': lazy_gettext('Total Amount'),
         'remark': lazy_gettext('Remark'),
-        'lines': lazy_gettext('Lines')
+        'lines': lazy_gettext('Lines'),
+        'it_receiving': lazy_gettext('Related Receiving'),
     }
 
     form_excluded_columns = ('receiving',)

@@ -92,3 +92,7 @@ input[name='_add_another'] {
     /* symbol for "collapsed" panels */
     content: "\e080";
 }
+
+.col-id {
+    width:80px;
+}

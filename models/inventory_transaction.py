@@ -16,10 +16,6 @@ class InventoryTransaction(db.Model):
     type = relationship('EnumValues', foreign_keys=[type_id])
     remark = Column(Text)
 
-    receiving_id = Column(Integer, ForeignKey('receiving.id'), nullable=True)
-    receiving = relationship('Receiving', backref=backref('inventory_transaction',
-                                                          uselist=False, cascade='all, delete-orphan'))
-
     @staticmethod
     def type_filter():
         return EnumValues.type_filter('INVENTORY_TRANSACTION_TYPE')
@@ -40,6 +36,10 @@ class InventoryTransaction(db.Model):
     def total_amount(self, value):
         pass
 
+    def __unicode__(self):
+        return str(self.id)
+
+
 class InventoryTransactionLine(db.Model):
     __tablename = 'inventory_transaction_line'
     id = Column(Integer, primary_key=True)
@@ -52,14 +52,6 @@ class InventoryTransactionLine(db.Model):
     inventory_transaction_id = Column(Integer, ForeignKey('inventory_transaction.id'), nullable=False)
     inventory_transaction = relationship('InventoryTransaction',
                                          backref=backref('lines', cascade='all, delete-orphan'))
-    receiving_line_id = Column(Integer, ForeignKey('receiving_line.id'), nullable=True)
-    receiving_line = relationship('ReceivingLine',
-                                  backref=backref('inventory_transaction_line',
-                                                  uselist=False, cascade='all, delete-orphan'))
-    sales_order_line_id = Column(Integer, ForeignKey('sales_order_line.id'), nullable=True)
-    sales_order_line = relationship('SalesOrderLine',
-                                    backref=backref('inventory_transaction_line',
-                                                    uselist=False, cascade='all, delete-orphan'))
 
     @hybrid_property
     def type(self):

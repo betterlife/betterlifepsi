@@ -20,8 +20,12 @@ class Receiving(db.Model):
     status = relationship('EnumValues', foreign_keys=[status_id])
 
     purchase_order_id = Column(Integer, ForeignKey('purchase_order.id'), nullable=False)
-    purchase_order = relationship('PurchaseOrder', backref=backref('inventory_transactions',
+    purchase_order = relationship('PurchaseOrder', backref=backref('po_receivings',
                                                                    uselist=True, cascade='all, delete-orphan'))
+
+    inventory_transaction_id = Column(Integer, ForeignKey('inventory_transaction.id'), nullable=False)
+    inventory_transaction = relationship('InventoryTransaction',
+                                         backref=backref('it_receiving', uselist=False, cascade='all, delete-orphan'))
 
     @staticmethod
     def status_filter():
@@ -57,6 +61,9 @@ class Receiving(db.Model):
     def filter_by_po_id(po_id):
         return AppInfo.get_db().session.query(Receiving).filter_by(purchase_order_id=po_id).all()
 
+    def __unicode__(self):
+        return str(self.id) + ' - ' + str(self.total_amount)
+
 class ReceivingLine(db.Model):
     __tablename = 'receiving_line'
     id = Column(Integer, primary_key=True)
@@ -68,8 +75,13 @@ class ReceivingLine(db.Model):
 
     purchase_order_line_id = Column(Integer, ForeignKey('purchase_order_line.id'), nullable=False)
     purchase_order_line = relationship('PurchaseOrderLine',
-                                       backref=backref('inventory_transaction_lines',
-                                                       uselist=True, cascade='all, delete-orphan'))
+                                       backref=backref('pol_receiving_lines', uselist=True,
+                                                       cascade='all, delete-orphan'))
+
+    inventory_transaction_line_id = Column(Integer, ForeignKey('inventory_transaction_line.id'), nullable=True)
+    inventory_transaction_line = relationship('InventoryTransactionLine',
+                                              backref=backref('itl_receiving_line', uselist=False,
+                                                              cascade='all, delete-orphan'))
 
     @hybrid_property
     def product(self):

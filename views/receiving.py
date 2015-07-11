@@ -32,7 +32,7 @@ class ReceivingLineInlineAdmin(InlineFormAdmin):
 
 class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
     inline_models = (ReceivingLineInlineAdmin(ReceivingLine),)
-    column_list = ('id', 'purchase_order', 'status', 'date', 'total_amount', 'remark')
+    column_list = ('id', 'purchase_order', 'status', 'date', 'total_amount', 'inventory_transaction', 'remark')
     form_excluded_columns = ('inventory_transaction',)
     form_columns = ('purchase_order', 'transient_po', 'status', 'date',
                     'total_amount', 'remark', 'lines', 'create_lines')
@@ -56,6 +56,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
         'date': lazy_gettext('Date'),
         'remark': lazy_gettext('Remark'),
         'total_amount': lazy_gettext('Total Amount'),
+        'inventory_transaction': lazy_gettext('Inventory Transaction'),
         'lines': lazy_gettext('Lines'),
     }
     form_args = dict(

@@ -23,15 +23,15 @@ class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
     def postprocess_form(self, form):
         form.total_amount = DisabledStringField(label=lazy_gettext('Total Amount'))
         form.remark = None
-        form.inventory_transaction_lines = None
+        form.receiving_lines = None
         return form
 
 
 class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
     from models import PurchaseOrderLine
 
-    column_list = ('id', 'logistic_amount', 'goods_amount',
-                   'total_amount', 'order_date', 'supplier', 'status', 'all_expenses', 'remark')
+    column_list = ('id', 'logistic_amount', 'goods_amount', 'total_amount', 'order_date', 'supplier',
+                   'status', 'all_expenses', 'all_receivings', 'remark')
 
     form_columns = ('supplier', 'transient_supplier', 'status', 'logistic_amount', 'order_date',
                     'goods_amount', 'total_amount', 'remark', 'lines')
@@ -46,7 +46,7 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
     }
     column_sortable_list = ('id', 'logistic_amount', 'total_amount', ('status', 'status.display'),
                             'goods_amount', 'order_date', ('supplier', 'supplier.id'),)
-    form_excluded_columns = ('expenses', 'inventory_transactions')
+    form_excluded_columns = ('expenses', 'receivings')
     column_labels = {
         'id': lazy_gettext('id'),
         'logistic_amount': lazy_gettext('Logistic Amount'),
@@ -55,6 +55,7 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
         'remark': lazy_gettext('Remark'),
         'status': lazy_gettext('Status'),
         'all_expenses': lazy_gettext('Related Expenses'),
+        'all_receivings': lazy_gettext('Related Receiving'),
         'total_amount': lazy_gettext('Total Amount'),
         'goods_amount': lazy_gettext('Goods Amount'),
         'lines': lazy_gettext('Lines'),
