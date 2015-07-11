@@ -1,4 +1,5 @@
 # coding=utf-8
+from datetime import datetime
 import app_provider
 from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext
@@ -21,7 +22,7 @@ class SalesOrderLineInlineAdmin(InlineFormAdmin):
         form.actual_amount = DisabledStringField(label=lazy_gettext('Actual Amount'))
         form.discount_amount = DisabledStringField(label=lazy_gettext('Discount Amount'))
         form.remark = None
-        form.inventory_transaction_line = None
+        form.sol_shipping_lines = None
         return form
 
 
@@ -36,9 +37,10 @@ class SalesOrderAdmin(ModelViewWithAccess):
         'original_amount': DisabledStringField(label=lazy_gettext('Original Amount')),
         'discount_amount': DisabledStringField(label=lazy_gettext('Discount Amount'))
     }
-    form_widget_args = {
-        'logistic_amount': {'default': 0}
-    }
+    form_args = dict(
+        logistic_amount=dict(default=0),
+        order_date=dict(default=datetime.now())
+    )
     form_excluded_columns = ('incoming', 'expense', 'so_shippings')
     column_sortable_list = ('id', 'logistic_amount', 'actual_amount',
                             'original_amount', 'discount_amount', 'order_date')

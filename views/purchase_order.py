@@ -1,4 +1,5 @@
 # coding=utf-8
+from datetime import datetime
 from functools import partial
 import app_provider
 from flask.ext.admin.contrib.sqla import ModelView
@@ -23,7 +24,7 @@ class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
     def postprocess_form(self, form):
         form.total_amount = DisabledStringField(label=lazy_gettext('Total Amount'))
         form.remark = None
-        form.receiving_lines = None
+        form.pol_receiving_lines = None
         return form
 
 
@@ -64,7 +65,9 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
     form_args = dict(
         status=dict(query_factory=PurchaseOrder.status_option_filter),
         supplier=dict(description=lazy_gettext('Please select a supplier and save the form, '
-                                               'then add purchase order lines accordingly'))
+                                               'then add purchase order lines accordingly')),
+        logistic_amount=dict(default=0),
+        order_date=dict(default=datetime.now())
     )
 
     @staticmethod

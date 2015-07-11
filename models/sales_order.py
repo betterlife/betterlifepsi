@@ -1,4 +1,5 @@
 # encoding: utf-8
+from decimal import Decimal
 from app_provider import AppInfo
 from util import format_decimal
 from product import Product
@@ -17,7 +18,7 @@ class SalesOrder(db.Model):
 
     @hybrid_property
     def actual_amount(self):
-        return format_decimal(sum(line.actual_amount for line in self.lines))
+        return format_decimal(Decimal(sum(line.actual_amount for line in self.lines)))
 
     @actual_amount.expression
     def actual_amount(self):
