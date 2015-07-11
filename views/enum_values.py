@@ -13,4 +13,5 @@ class EnumValuesAdmin(ModelViewWithAccess):
         'type': lazy_gettext('Type'),
         'code': lazy_gettext('Code'),
         'display': lazy_gettext('Display'),
+        'type_values': lazy_gettext('Type Values'),
     }
