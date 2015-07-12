@@ -95,6 +95,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
         elif model.status.code == u'RECEIVING_DRAFT':
             inv_trans = self.save_inv_trans(model, inv_trans=model.inventory_transaction,
                                             set_qty_func=ReceivingAdmin.set_qty_draft)
+
         if inv_trans is not None:
             model.inventory_transaction = inv_trans
             AppInfo.get_db().session.add(inv_trans)

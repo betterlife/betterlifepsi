@@ -1,5 +1,6 @@
 # coding=utf-8
 from flask.ext.babelex import lazy_gettext
+from views.formatter import supplier_formatter
 from views.base import ModelViewWithAccess
 from views.custom_fields import  DisabledStringField
 
@@ -36,6 +37,10 @@ class ProductAdmin(ModelViewWithAccess):
     form_extra_fields = {
         'available_quantity': DisabledStringField(label=lazy_gettext('Available Quantity')),
         'in_transit_quantity': DisabledStringField(label=lazy_gettext('In Transit Quantity')),
+    }
+
+    column_formatters = {
+        'supplier': supplier_formatter
     }
 
     column_list = ('id', 'supplier', 'category', 'code', 'name', 'deliver_day', 'lead_day', 'purchase_price',

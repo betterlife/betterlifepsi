@@ -10,7 +10,8 @@ from sqlalchemy import event
 from sqlalchemy.orm.attributes import get_history
 from views import ModelViewWithAccess, DisabledStringField
 from views.base import DeleteValidator
-from wtforms import StringField, ValidationError
+from views.formatter import supplier_formatter
+from wtforms import ValidationError
 
 
 class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
@@ -60,6 +61,10 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
         'total_amount': lazy_gettext('Total Amount'),
         'goods_amount': lazy_gettext('Goods Amount'),
         'lines': lazy_gettext('Lines'),
+    }
+
+    column_formatters = {
+        'supplier': supplier_formatter
     }
 
     form_args = dict(
