@@ -129,6 +129,9 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
             inv_trans = self.save_inv_trans(model, inv_trans=model.inventory_transaction,
                                             set_qty_func=ReceivingAdmin.set_qty_completed)
         elif model.status.code == u'RECEIVING_DRAFT':
+            for line in model.lines:
+                line.price = line.purchase_order_line.unit_price
+                line.product_id = line.purchase_order_line.product_id
             inv_trans = self.save_inv_trans(model, inv_trans=model.inventory_transaction,
                                             set_qty_func=ReceivingAdmin.set_qty_draft)
 
