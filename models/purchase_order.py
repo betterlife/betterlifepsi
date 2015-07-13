@@ -108,8 +108,7 @@ class PurchaseOrderLine(db.Model):
     quantity = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
 
     purchase_order_id = Column(Integer, ForeignKey('purchase_order.id'), nullable=False)
-    purchase_order = relationship('PurchaseOrder', backref=backref('lines',
-                                                                   cascade='all, delete-orphan', lazy='dynamic'))
+    purchase_order = relationship('PurchaseOrder', backref=backref('lines', cascade='all, delete-orphan'))
 
     product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
     product = relationship('Product')

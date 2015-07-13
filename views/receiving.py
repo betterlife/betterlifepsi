@@ -10,7 +10,7 @@ from models import ReceivingLine, Receiving, PurchaseOrderLine, PurchaseOrder, I
 from sqlalchemy import event
 from sqlalchemy.orm.attributes import get_history
 from views import ModelViewWithAccess, DisabledStringField
-from formatter import supplier_formatter, purchase_order_formatter
+from formatter import supplier_formatter, purchase_order_formatter, inventory_transaction_formatter
 from views.base import DeleteValidator
 from wtforms import BooleanField
 from wtforms.validators import ValidationError
@@ -78,6 +78,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
     column_formatters = {
         'supplier': supplier_formatter,
         'purchase_order': purchase_order_formatter,
+        'inventory_transaction': inventory_transaction_formatter,
     }
 
     def on_model_delete(self, model):

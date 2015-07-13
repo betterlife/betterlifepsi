@@ -92,18 +92,6 @@ class ReceivingLine(db.Model):
                                                               cascade='all, delete-orphan'))
 
     @hybrid_property
-    def product(self):
-        return self.purchase_order_line.product
-
-    @product.setter
-    def product(self, value):
-        pass
-
-    @product.expression
-    def product(self):
-        return select(self.purchase_order_line.product).label('product_id')
-
-    @hybrid_property
     def total_amount(self):
         if self.quantity is None:
             q = 0

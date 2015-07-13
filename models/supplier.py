@@ -22,6 +22,9 @@ class Supplier(db.Model):
     def __unicode__(self):
         return self.name
 
+    def __str__(self):
+        return self.__unicode__()
+
 class PaymentMethod(db.Model):
     __tablename__ = 'payment_method'
     id = Column(Integer, primary_key=True)

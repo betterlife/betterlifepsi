@@ -4,7 +4,7 @@ from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext, gettext
 from models import ShippingLine, Shipping
 from views import ModelViewWithAccess, DisabledStringField
-from views.base import DeleteValidator
+from formatter import inventory_transaction_formatter, sales_order_formatter
 from wtforms import ValidationError
 
 
@@ -55,6 +55,11 @@ class ShippingAdmin(ModelViewWithAccess):
                                                   'please modify the related sales order and this shipping document '
                                                   'will be changed accordingly'))
     )
+
+    column_formatters = {
+        'inventory_transaction': inventory_transaction_formatter,
+        'sales_order': sales_order_formatter,
+    }
 
     def on_model_change(self, form, model, is_created):
         raise ValidationError(gettext('Modify shipping document directly is not allowed, '

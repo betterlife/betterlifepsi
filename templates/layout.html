@@ -12,7 +12,8 @@
   <script>
   $(document).ready(function(){
       $('[data-toggle="popover"]').popover({
-          html: true,  placement: "bottom"
+          html: true,  placement: "bottom",
+          viewport: {selector: 'body', padding: 5}
       })
   });
   $('body').on('click', function (e) {

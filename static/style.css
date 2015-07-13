@@ -102,5 +102,9 @@ input[name='_add_another'] {
 }
 
 .popover {
-    max-width:400px;
+    max-width: 750px;
+}
+
+.bottom-spacing {
+    margin-bottom: 15px;
 }

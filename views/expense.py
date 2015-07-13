@@ -3,6 +3,8 @@ from datetime import datetime
 from flask.ext.babelex import lazy_gettext
 from models import Expense
 from views import ModelViewWithAccess
+from formatter import sales_order_formatter, purchase_order_formatter
+
 
 class ExpenseAdmin(ModelViewWithAccess):
     column_list = ('id', 'date', 'amount', 'has_invoice', 'status',
@@ -30,3 +32,8 @@ class ExpenseAdmin(ModelViewWithAccess):
     }
     # column_filters = ('has_invoice','date','amount','category.display',)
     form_excluded_columns = ('sales_order', 'purchase_order',)
+
+    column_formatters = {
+        'sales_order': sales_order_formatter,
+        'purchase_order': purchase_order_formatter,
+    }

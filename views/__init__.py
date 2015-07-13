@@ -15,7 +15,6 @@ from supplier import SupplierAdmin
 from receiving import ReceivingAdmin
 from shipping import ShippingAdmin
 from inventory_transaction import InventoryTransactionAdmin
-from flask.ext.babelex import lazy_gettext
 from formatter import *
 from models import *
 from flask.ext.admin import Admin

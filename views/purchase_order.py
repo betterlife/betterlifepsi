@@ -32,8 +32,8 @@ class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
 class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
     from models import PurchaseOrderLine
 
-    column_list = ('id', 'order_date', 'supplier', 'all_expenses', 'all_receivings', 'logistic_amount',
-                   'goods_amount', 'total_amount', 'status', 'remark')
+    column_list = ('id', 'order_date', 'supplier', 'logistic_amount', 'goods_amount', 'total_amount',
+                   'status', 'all_expenses', 'all_receivings', 'remark')
 
     form_columns = ('supplier', 'transient_supplier', 'status', 'logistic_amount', 'order_date',
                     'goods_amount', 'total_amount', 'remark', 'lines')
