@@ -31,7 +31,7 @@ class SalesOrder(db.Model):
 
     @hybrid_property
     def original_amount(self):
-        return format_decimal(sum(line.original_amount for line in self.lines))
+        return format_decimal(Decimal(sum(line.original_amount for line in self.lines)))
 
     @original_amount.expression
     def original_amount(self):
@@ -65,8 +65,7 @@ class SalesOrderLine(db.Model):
     quantity = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
 
     sales_order_id = Column(Integer, ForeignKey('sales_order.id'), nullable=False)
-    sales_order = relationship('SalesOrder', backref=backref('lines',
-                                                             cascade='all, delete-orphan', lazy='dynamic'))
+    sales_order = relationship('SalesOrder', backref=backref('lines', cascade='all, delete-orphan'))
 
     product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
     product = relationship('Product')
