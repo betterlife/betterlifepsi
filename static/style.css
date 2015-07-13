@@ -68,7 +68,7 @@ input[name='_add_another'] {
     color: #737373;
     /*font-family: 'Microsoft YaHei', sans-serif; */
     font-style: italic;
-    font-size: smaller;
+    font-size: small;
     background: url("cueTip.gif") no-repeat left;
     background-position-y:2px;
     text-decoration: none;
