@@ -5,6 +5,8 @@ from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext
 from models import Preference, Incoming, Expense, Shipping, ShippingLine, EnumValues
 from views import ModelViewWithAccess, DisabledStringField
+from formatter import expenses_formatter, incoming_formatter, shipping_formatter
+
 
 class SalesOrderLineInlineAdmin(InlineFormAdmin):
     form_args = dict(
@@ -51,6 +53,12 @@ class SalesOrderAdmin(ModelViewWithAccess):
     column_sortable_list = ('id', 'logistic_amount', 'actual_amount', 'original_amount', 'discount_amount',
                             'order_date')
     inline_models = (SalesOrderLineInlineAdmin(SalesOrderLine),)
+
+    column_formatters = {
+        'expense': expenses_formatter,
+        'incoming': incoming_formatter,
+        'so_shipping': shipping_formatter,
+    }
 
     column_labels = {
         'id': lazy_gettext('id'),

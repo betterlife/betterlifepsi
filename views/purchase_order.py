@@ -10,7 +10,7 @@ from sqlalchemy import event
 from sqlalchemy.orm.attributes import get_history
 from views import ModelViewWithAccess, DisabledStringField
 from views.base import DeleteValidator
-from views.formatter import supplier_formatter
+from views.formatter import supplier_formatter, expenses_formatter, receivings_formatter
 from wtforms import ValidationError
 
 
@@ -32,8 +32,8 @@ class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
 class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
     from models import PurchaseOrderLine
 
-    column_list = ('id', 'logistic_amount', 'goods_amount', 'total_amount', 'order_date', 'supplier',
-                   'status', 'all_expenses', 'all_receivings', 'remark')
+    column_list = ('id', 'order_date', 'supplier', 'all_expenses', 'all_receivings', 'logistic_amount',
+                   'goods_amount', 'total_amount', 'status', 'remark')
 
     form_columns = ('supplier', 'transient_supplier', 'status', 'logistic_amount', 'order_date',
                     'goods_amount', 'total_amount', 'remark', 'lines')
@@ -56,7 +56,7 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
         'supplier': lazy_gettext('Supplier'),
         'remark': lazy_gettext('Remark'),
         'status': lazy_gettext('Status'),
-        'all_expenses': lazy_gettext('Related Expenses'),
+        'all_expenses': lazy_gettext('Related Expense'),
         'all_receivings': lazy_gettext('Related Receiving'),
         'total_amount': lazy_gettext('Total Amount'),
         'goods_amount': lazy_gettext('Goods Amount'),
@@ -64,7 +64,9 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
     }
 
     column_formatters = {
-        'supplier': supplier_formatter
+        'supplier': supplier_formatter,
+        'all_expenses': expenses_formatter,
+        'all_receivings': receivings_formatter,
     }
 
     form_args = dict(

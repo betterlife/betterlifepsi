@@ -10,6 +10,7 @@ from models import ReceivingLine, Receiving, PurchaseOrderLine, PurchaseOrder, I
 from sqlalchemy import event
 from sqlalchemy.orm.attributes import get_history
 from views import ModelViewWithAccess, DisabledStringField
+from formatter import supplier_formatter, purchase_order_formatter
 from views.base import DeleteValidator
 from wtforms import BooleanField
 from wtforms.validators import ValidationError
@@ -33,7 +34,8 @@ class ReceivingLineInlineAdmin(InlineFormAdmin):
 
 class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
     inline_models = (ReceivingLineInlineAdmin(ReceivingLine),)
-    column_list = ('id', 'purchase_order', 'status', 'date', 'total_amount', 'inventory_transaction', 'remark')
+    column_list = ('id', 'purchase_order', 'supplier', 'date', 'status', 'total_amount', 'inventory_transaction',
+                   'remark')
     form_excluded_columns = ('inventory_transaction',)
     form_columns = ('purchase_order', 'transient_po', 'status', 'date',
                     'total_amount', 'remark', 'lines', 'create_lines')
@@ -49,10 +51,12 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
     form_widget_args = {
         'create_lines': {'default': True},
     }
-    column_sortable_list = ('id', ('purchase_order', 'id'), ('status', 'status.display'), 'date', 'total_amount')
+    column_sortable_list = ('id', ('supplier', 'id'), ('purchase_order', 'id'), ('status', 'status.display'), 'date',
+                            'total_amount')
     column_labels = {
         'id': lazy_gettext('id'),
         'purchase_order': lazy_gettext('Related Purchase Order'),
+        'supplier': lazy_gettext('Supplier'),
         'status': lazy_gettext('Status'),
         'date': lazy_gettext('Date'),
         'remark': lazy_gettext('Remark'),
@@ -70,6 +74,11 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
                                   ('PURCHASE_ORDER_ISSUED', 'PURCHASE_ORDER_PART_RECEIVED',))),
         date=dict(default=datetime.now()),
     )
+
+    column_formatters = {
+        'supplier': supplier_formatter,
+        'purchase_order': purchase_order_formatter,
+    }
 
     def on_model_delete(self, model):
         DeleteValidator.validate_status_for_change(model, u'RECEIVING_COMPLETE',

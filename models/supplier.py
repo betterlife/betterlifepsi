@@ -30,9 +30,7 @@ class PaymentMethod(db.Model):
     bank_name = Column(String(64), nullable=False)
     bank_branch = Column(String(64))
     supplier_id = Column(Integer, ForeignKey('supplier.id'), nullable=False)
-    supplier = relationship('Supplier',
-                            backref=backref('paymentMethods',
-                                            cascade='all, delete-orphan', lazy='dynamic'))
+    supplier = relationship('Supplier', backref=backref('paymentMethods', cascade='all, delete-orphan'))
     remark = Column(Text)
 
     def __unicode__(self):

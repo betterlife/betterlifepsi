@@ -44,6 +44,14 @@ class Receiving(db.Model):
         pass
 
     @hybrid_property
+    def supplier(self):
+        return self.purchase_order.supplier
+
+    @supplier.setter
+    def supplier(self, val):
+        pass
+
+    @hybrid_property
     def total_amount(self):
         return format_decimal(Decimal(sum(line.total_amount for line in self.lines)))
 
