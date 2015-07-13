@@ -71,7 +71,8 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
 
     form_args = dict(
         status=dict(query_factory=PurchaseOrder.status_option_filter,
-                    default=EnumValues.find_one_by_code('PURCHASE_ORDER_DRAFT')),
+                    description=lazy_gettext('Purchase order can only be created in draft status, and partially '
+                                             'received & received status are driven by associated receiving document')),
         supplier=dict(description=lazy_gettext('Please select a supplier and save the form, '
                                                'then add purchase order lines accordingly')),
         logistic_amount=dict(default=0),
@@ -120,6 +121,9 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
         supplier_id = obj.transient_supplier.id
         # Set query_factory for newly added line
         form.lines.form.product.kwargs['query_factory'] = partial(Product.supplier_filter, supplier_id)
+        # Set option list of status available
+        form.status.query = [EnumValues.find_one_by_code('PURCHASE_ORDER_DRAFT'),
+                             EnumValues.find_one_by_code('PURCHASE_ORDER_ISSUED')]
         # Set query option for old lines
         line_entries = form.lines.entries
         products = Product.supplier_filter(supplier_id).all()
@@ -127,14 +131,19 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
             sub_line.form.product.query = products
         return form
 
+    def create_form(self, obj=None):
+        form = super(ModelView, self).create_form(obj)
+        form.status.query = [EnumValues.find_one_by_code('PURCHASE_ORDER_DRAFT')]
+        return form
+
     def on_model_delete(self, model):
         DeleteValidator.validate_status_for_change(model, u'PURCHASE_ORDER_RECEIVED',
                                                    gettext('Purchase order can not be '
                                                            'update nor delete on received status'))
 
-@event.listens_for(PurchaseOrder, 'before_update')
-def receive_before_update(mapper, connection, target):
-    unchanged_status = get_history(target, 'status')[1]
+@event.listens_for(PurchaseOrder, 'before_update')#
+def receive_before_update(mapper, connection, target):#
+    unchanged_status = get_history(target, 'status')[1]#
     if (len(unchanged_status) == 0 and get_history(target, 'status').deleted[0].code == u'PURCHASE_ORDER_RECEIVED') \
             or (len(unchanged_status) > 0 and unchanged_status[0].code == u'PURCHASE_ORDER_RECEIVED'):
         raise ValidationError(gettext('Purchase order can not be update nor delete on received status'))
