@@ -28,7 +28,8 @@ class ReceivingLineInlineAdmin(InlineFormAdmin):
         form.remark = None
         form.inventory_transaction_line = None
         form.total_amount = DisabledStringField(label=lazy_gettext('Total Amount'))
-        form.product = DisabledStringField(label=lazy_gettext('Product'))
+        form.product = None
+        form.transient_product = DisabledStringField(label=lazy_gettext('Product'))
         return form
 
 
@@ -96,6 +97,29 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
             if model.create_lines:
                 model.lines = self.create_receiving_lines(available_info)
         self.operate_inv_trans_by_recv_status(model)
+        self.update_purchase_order_status(model)
+        AppInfo.get_db().session.commit()
+
+    def update_purchase_order_status(self, model):
+        if model.status.code == u'RECEIVING_COMPLETE':
+            po = model.purchase_order
+            finished = False
+            started = False
+            for line in po.lines:
+                receiving_lines = line.pol_receiving_lines
+                rd_qty = 0
+                for rl in receiving_lines:
+                    rd_qty += rl.quantity
+                if rd_qty > 0:
+                    started = True
+                if rd_qty != line.quantity:
+                    finished = True
+            if finished is False:
+                po.status = EnumValues.find_one_by_code('PURCHASE_ORDER_RECEIVED')
+            elif started is True:
+                po.status = EnumValues.find_one_by_code('PURCHASE_ORDER_PART_RECEIVED')
+            AppInfo.get_db().session.add(po)
+
 
     def operate_inv_trans_by_recv_status(self, model):
         inv_trans = None
@@ -209,12 +233,3 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
         for sub_line in line_entries:
             sub_line.form.purchase_order_line.query = po_lines
         return form
-
-@event.listens_for(Receiving, 'before_update')
-def receive_before_update(mapper, connection, target):
-    unchanged_status = get_history(target, 'status')[1]
-    # Change status from RECEIVING_COMPLETE to others or
-    # Change other fields when status is RECEIVING_COMPLETE
-    if (len(unchanged_status) == 0 and get_history(target, 'status').deleted[0].code == u'RECEIVING_COMPLETE') \
-            or (len(unchanged_status) > 0 and unchanged_status[0].code == u'RECEIVING_COMPLETE'):
-        raise ValidationError(gettext('Receiving document can not be update nor delete on complete status'))
