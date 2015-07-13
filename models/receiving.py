@@ -109,13 +109,16 @@ class ReceivingLine(db.Model):
 
     @hybrid_property
     def transient_product(self):
-        """
-        This design is to display a readonly field containing current
-        Purchase order information in UI but don't allow user to change it.
-        :return: Current purchase order instance as a transient property
-        """
         return self.product
 
     @transient_product.setter
     def transient_product(self, val):
+        pass
+
+    @hybrid_property
+    def transient_price(self):
+        return self.price
+
+    @transient_price.setter
+    def transient_price(self, val):
         pass

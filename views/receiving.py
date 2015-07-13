@@ -7,8 +7,6 @@ from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext, gettext
 from models import ReceivingLine, Receiving, PurchaseOrderLine, PurchaseOrder, InventoryTransaction, EnumValues, \
     InventoryTransactionLine
-from sqlalchemy import event
-from sqlalchemy.orm.attributes import get_history
 from views import ModelViewWithAccess, DisabledStringField
 from formatter import supplier_formatter, purchase_order_formatter, inventory_transaction_formatter
 from views.base import DeleteValidator
@@ -20,16 +18,20 @@ class ReceivingLineInlineAdmin(InlineFormAdmin):
     form_args = dict(
         purchase_order_line=dict(label=lazy_gettext('Purchase Order Line')),
         quantity=dict(label=lazy_gettext('Quantity')),
-        price=dict(label=lazy_gettext('Receiving Price')),
         total_amount=dict(label=lazy_gettext('Total Amount')),
     )
 
     def postprocess_form(self, form):
         form.remark = None
         form.inventory_transaction_line = None
-        form.total_amount = DisabledStringField(label=lazy_gettext('Total Amount'))
         form.product = None
+        form.transient_price = DisabledStringField(label=lazy_gettext('Receiving Price'),
+                                                   description=lazy_gettext('Receiving price is brought from purchase '
+                                                                            'order and can not be modified in '
+                                                                            'receiving line'))
+        form.total_amount = DisabledStringField(label=lazy_gettext('Total Amount'))
         form.transient_product = DisabledStringField(label=lazy_gettext('Product'))
+        form.price = None
         return form
 
 
