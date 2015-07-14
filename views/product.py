@@ -2,7 +2,7 @@
 from flask.ext.babelex import lazy_gettext
 from views.formatter import supplier_formatter
 from views.base import ModelViewWithAccess
-from views.custom_fields import  DisabledStringField
+from views.custom_fields import  DisabledStringField, CKTextAreaField
 
 
 class ProductAdmin(ModelViewWithAccess):
@@ -43,8 +43,18 @@ class ProductAdmin(ModelViewWithAccess):
         'supplier': supplier_formatter
     }
 
-    column_list = ('id', 'supplier', 'category', 'code', 'name', 'deliver_day', 'lead_day', 'purchase_price',
-                   'retail_price', 'available_quantity', 'in_transit_quantity')
+    form_overrides = dict(distinguishing_feature=CKTextAreaField)
 
-    form_columns = ('category', 'supplier', 'code', 'name', 'deliver_day', 'lead_day', 'distinguishing_feature',
-                    'spec_link', 'purchase_price', 'retail_price', 'available_quantity', 'in_transit_quantity',)
+    form_args = dict(
+        distinguishing_feature=dict(description=lazy_gettext('Distinguishing feature of this product, useful for '
+                                                             'introduce the product to our customer')),
+        deliver_day=dict(description=lazy_gettext('Days for the product from shipped to arrive the store')),
+        lead_day=dict(description=lazy_gettext('Days from the day we contact supplier to the day they begin to '
+                                               'ship product'))
+    )
+
+    column_list = ('id', 'supplier', 'category', 'code', 'name', 'lead_day', 'deliver_day', 'purchase_price',
+                   'retail_price', 'available_quantity', 'in_transit_quantity',)
+
+    form_columns = ('category', 'supplier', 'code', 'name', 'lead_day', 'deliver_day', 'spec_link', 'purchase_price',
+                    'retail_price', 'available_quantity', 'in_transit_quantity', 'distinguishing_feature')
