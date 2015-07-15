@@ -108,3 +108,7 @@ input[name='_add_another'] {
 .bottom-spacing {
     margin-bottom: 15px;
 }
+
+.input-errors ul {
+    list-style: none;
+}
