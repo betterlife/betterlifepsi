@@ -27,7 +27,7 @@ class ShippingLineInlineAdmin(InlineFormAdmin):
 class ShippingAdmin(ModelViewWithAccess):
     inline_models = (ShippingLineInlineAdmin(ShippingLine),)
     column_list = ('id', 'status', 'date', 'total_amount', 'sales_order', 'inventory_transaction', 'remark')
-
+    column_editable_list = ('remark',)
     can_edit = True
     can_create = False
     can_delete = False

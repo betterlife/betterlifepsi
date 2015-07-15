@@ -9,7 +9,7 @@ from formatter import sales_order_formatter, purchase_order_formatter
 class ExpenseAdmin(ModelViewWithAccess):
     column_list = ('id', 'date', 'amount', 'has_invoice', 'status',
                    'category', 'purchase_order', 'sales_order', 'remark')
-    column_editable_list = ['date', 'amount', 'has_invoice', ]
+    column_editable_list = ['date', 'amount', 'has_invoice', 'remark']
 
     form_args = dict(
         status=dict(query_factory=Expense.status_filter),

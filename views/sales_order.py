@@ -39,6 +39,7 @@ class SalesOrderAdmin(ModelViewWithAccess):
     form_edit_rules = ('logistic_amount', 'order_date', 'remark', 'actual_amount',
                        'original_amount', 'discount_amount', 'lines')
     form_create_rules = ('logistic_amount', 'order_date', 'remark', 'lines',)
+    column_editable_list = ('remark',)
 
     form_extra_fields = {
         'actual_amount': DisabledStringField(label=lazy_gettext('Actual Amount')),

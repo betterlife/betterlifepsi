@@ -11,6 +11,8 @@ class UserAdmin(ModelViewWithAccess):
 
     column_list = ('id', 'login', 'display', 'email', 'active',)
 
+    column_editable_list = ('display', 'email', 'active')
+
     column_labels = dict(
         id=lazy_gettext('id'),
         login=lazy_gettext('Login Name'),
@@ -22,6 +24,10 @@ class UserAdmin(ModelViewWithAccess):
 
     # Don't include the standard password field when creating or editing a User (but see below)
     form_excluded_columns = ('password',)
+
+    form_args = dict(
+        active=dict(description=lazy_gettext('Un-check this checkbox to disable a user from login to the system')),
+    )
 
     # Automatically display human-readable names for the current and available Roles when creating or editing a User
     column_auto_select_related = True
@@ -36,7 +42,9 @@ class UserAdmin(ModelViewWithAccess):
         form_class = super(UserAdmin, self).scaffold_form()
 
         # Add a password field, naming it "password2" and labeling it "New Password".
-        form_class.password2 = PasswordField(label=lazy_gettext('New Password'))
+        form_class.password2 = PasswordField(label=lazy_gettext('New Password'),
+                                             description=lazy_gettext('Left blank if you don\'t want to change it, '
+                                                                      'input the new password to change it'))
         return form_class
 
     # This callback executes when the user saves changes to a newly-created or edited User -- before the changes are
@@ -59,3 +67,4 @@ class RoleAdmin(ModelViewWithAccess):
         description=lazy_gettext('Description'),
         users=lazy_gettext('User')
     )
+    column_editable_list = ('description',)

@@ -8,7 +8,7 @@ from formatter import sales_order_formatter
 
 class IncomingAdmin(ModelViewWithAccess):
     column_list = ('id', 'date', 'amount', 'status', 'category', 'sales_order', 'remark')
-    column_editable_list = ['date', 'amount', ]
+    column_editable_list = ['date', 'amount', 'remark']
 
     form_args = dict(
         status=dict(query_factory=Incoming.status_filter),

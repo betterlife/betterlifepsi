@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-06-26 07:25+0800\n"
-"PO-Revision-Date: 2015-07-14 10:45+0800\n"
+"PO-Revision-Date: 2015-07-15 23:07+0800\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -348,3 +348,9 @@ msgstr "从供应商发货到门店收到货物的一般天数"
 
 msgid "Days from the day we contact supplier to the day they begin to ship product"
 msgstr "从采购人员开始联系该供应商到该供应商开始发货的天数"
+
+msgid "Left blank if you don't want to change it, input the new password to change it"
+msgstr "如果不修改密码请留空，如果修改密码，请在此处输入新密码"
+
+msgid "Un-check this checkbox to disable a user from login to the system"
+msgstr "取消本选择框来将用户禁用，并禁止其登陆系统"

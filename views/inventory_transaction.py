@@ -37,6 +37,7 @@ class InventoryTransactionAdmin(ModelViewWithAccess):
     column_sortable_list = ('id', ('type', 'type.display'), 'total_amount', 'date',)
     form_columns = ('type', 'date', 'total_amount', 'remark', 'lines')
     form_create_rules = ('type', 'date', 'remark', 'lines',)
+    column_editable_list = ('remark',)
 
     column_labels = {
         'id': lazy_gettext('id'),

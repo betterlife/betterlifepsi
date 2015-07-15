@@ -43,6 +43,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
     form_columns = ('purchase_order', 'transient_po', 'status', 'date',
                     'total_amount', 'remark', 'lines', 'create_lines')
     form_edit_rules = ('transient_po', 'status', 'date', 'total_amount', 'remark', 'lines',)
+    column_editable_list = ('remark',)
     form_create_rules = ('purchase_order', 'status', 'date', 'remark', 'create_lines',)
     form_extra_fields = {
         'create_lines': BooleanField(label=lazy_gettext('Create Lines for unreceived products'),

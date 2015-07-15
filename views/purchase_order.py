@@ -35,6 +35,8 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
     column_list = ('id', 'order_date', 'supplier', 'logistic_amount', 'goods_amount', 'total_amount',
                    'status', 'all_expenses', 'all_receivings', 'remark')
 
+    column_editable_list = ('remark',)
+
     form_columns = ('supplier', 'transient_supplier', 'status', 'logistic_amount', 'order_date',
                     'goods_amount', 'total_amount', 'remark', 'lines')
     form_edit_rules = ('transient_supplier', 'status', 'logistic_amount', 'order_date',
