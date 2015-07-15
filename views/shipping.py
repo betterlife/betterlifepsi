@@ -14,13 +14,13 @@ class ShippingLineInlineAdmin(InlineFormAdmin):
         quantity=dict(label=lazy_gettext('Quantity')),
         price=dict(label=lazy_gettext('Unit Price')),
         total_amount=dict(label=lazy_gettext('Total Amount')),
+        product=dict(label=lazy_gettext('Product')),
     )
 
     def postprocess_form(self, form):
         form.remark = None
         form.inventory_transaction_line = None
         form.total_amount = DisabledStringField(label=lazy_gettext('Total Amount'))
-        form.product = DisabledStringField(label=lazy_gettext('Product'))
         return form
 
 
@@ -51,9 +51,9 @@ class ShippingAdmin(ModelViewWithAccess):
     form_args = dict(
         status=dict(query_factory=Shipping.status_filter,),
         date=dict(default=datetime.now()),
-        sales_order=dict(description=lazy_gettext('Modify shipping document directly is not allowed, '
-                                                  'please modify the related sales order and this shipping document '
-                                                  'will be changed accordingly'))
+        lines=dict(description=lazy_gettext('Modify shipping document directly is not allowed, '
+                                            'please modify the related sales order and this shipping document '
+                                            'will be changed accordingly')),
     )
 
     column_formatters = {

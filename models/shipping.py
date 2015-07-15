@@ -98,6 +98,10 @@ class ShippingLine(db.Model):
             q = self.quantity
         return format_decimal(Decimal(self.price * q))
 
+    @total_amount.setter
+    def total_amount(self, val):
+        pass
+
     @total_amount.expression
     def total_amount(self):
         return select([self.price * self.quantity]).label('line_total_amount')
