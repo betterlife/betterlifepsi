@@ -4,6 +4,7 @@ from functools import partial
 import app_provider
 from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.admin.model import InlineFormAdmin
+import const
 from flask.ext.babelex import lazy_gettext, gettext
 from models import Preference, Expense, PurchaseOrder, Product, EnumValues
 from sqlalchemy import event
@@ -125,13 +126,13 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
         # Set query_factory for newly added line
         form.lines.form.product.kwargs['query_factory'] = partial(Product.supplier_filter, supplier_id)
         # Set option list of status available
-        if obj.status.code == u'PURCHASE_ORDER_RECEIVED':
-            form.status.query = [EnumValues.find_one_by_code(u'PURCHASE_ORDER_RECEIVED')]
-        elif obj.status.code == u'PURCHASE_ORDER_PART_RECEIVED':
-            form.status.query = [EnumValues.find_one_by_code(u'PURCHASE_ORDER_PART_RECEIVED')]
+        if obj.status.code == const.PO_RECEIVED_STATUS_KEY:
+            form.status.query = [EnumValues.find_one_by_code(const.PO_RECEIVED_STATUS_KEY)]
+        elif obj.status.code == const.PO_PART_RECEIVED_STATUS_KEY:
+            form.status.query = [EnumValues.find_one_by_code(const.PO_PART_RECEIVED_STATUS_KEY)]
         else:
-            form.status.query = [EnumValues.find_one_by_code(u'PURCHASE_ORDER_DRAFT'),
-                                 EnumValues.find_one_by_code(u'PURCHASE_ORDER_ISSUED')]
+            form.status.query = [EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY),
+                                 EnumValues.find_one_by_code(const.PO_ISSUED_STATUS_KEY)]
         # Set query option for old lines
         line_entries = form.lines.entries
         products = Product.supplier_filter(supplier_id).all()
@@ -141,12 +142,12 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
 
     def create_form(self, obj=None):
         form = super(ModelView, self).create_form(obj)
-        form.status.query = [EnumValues.find_one_by_code(u'PURCHASE_ORDER_DRAFT'),
-                             EnumValues.find_one_by_code(u'PURCHASE_ORDER_ISSUED')]
+        form.status.query = [EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY),
+                             EnumValues.find_one_by_code(const.PO_ISSUED_STATUS_KEY)]
         return form
 
     def on_model_delete(self, model):
-        DeleteValidator.validate_status_for_change(model, u'PURCHASE_ORDER_RECEIVED',
+        DeleteValidator.validate_status_for_change(model, const.PO_RECEIVED_STATUS_KEY,
                                                    gettext('Purchase order can not be '
                                                            'update nor delete on received status'))
 
@@ -155,6 +156,6 @@ def receive_before_update(mapper, connection, target):#
     unchanged_status = get_history(target, 'status')[1]#
     if (len(unchanged_status) == 0 and
                 len(get_history(target, 'status').deleted) != 0 and
-                get_history(target, 'status').deleted[0].code == u'PURCHASE_ORDER_RECEIVED') \
-            or (len(unchanged_status) > 0 and unchanged_status[0].code == u'PURCHASE_ORDER_RECEIVED'):
+                get_history(target, 'status').deleted[0].code == const.PO_RECEIVED_STATUS_KEY) \
+            or (len(unchanged_status) > 0 and unchanged_status[0].code == const.PO_RECEIVED_STATUS_KEY):
         raise ValidationError(gettext('Purchase order can not be update nor delete on received status'))

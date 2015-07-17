@@ -9,6 +9,7 @@ from sqlalchemy.orm import backref, relationship
 
 db = AppInfo.get_db()
 
+
 class PurchaseOrder(db.Model):
     __tablename__ = 'purchase_order'
     id = Column(Integer, primary_key=True)
@@ -27,7 +28,7 @@ class PurchaseOrder(db.Model):
 
     @staticmethod
     def status_option_filter():
-        return EnumValues.type_filter('PURCHASE_ORDER_STATUS')
+        return EnumValues.type_filter(const.PO_STATUS_KEY)
 
     remark = Column(Text)
 

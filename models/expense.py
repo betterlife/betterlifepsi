@@ -1,11 +1,13 @@
 # encoding: utf-8
 
 from app_provider import AppInfo
+import const
 from models.enum_values import EnumValues
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Boolean, Text, DateTime
 from sqlalchemy.orm import backref, relationship
 
 db = AppInfo.get_db()
+
 
 class Expense(db.Model):
     __tablename__ = 'expense'
@@ -38,11 +40,11 @@ class Expense(db.Model):
 
     @staticmethod
     def status_filter():
-        return EnumValues.type_filter('EXP_STATUS')
+        return EnumValues.type_filter(const.EXP_STATUS_KEY)
 
     @staticmethod
     def type_filter():
-        return EnumValues.type_filter('EXP_TYPE')
+        return EnumValues.type_filter(const.EXP_TYPE_KEY)
 
     def __unicode__(self):
         return str(self.id) + ' - ' + str(self.amount)
