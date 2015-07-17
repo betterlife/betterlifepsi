@@ -146,6 +146,8 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
 @event.listens_for(PurchaseOrder, 'before_update')#
 def receive_before_update(mapper, connection, target):#
     unchanged_status = get_history(target, 'status')[1]#
-    if (len(unchanged_status) == 0 and get_history(target, 'status').deleted[0].code == u'PURCHASE_ORDER_RECEIVED') \
+    if (len(unchanged_status) == 0 and
+                len(get_history(target, 'status').deleted) != 0 and
+                get_history(target, 'status').deleted[0].code == u'PURCHASE_ORDER_RECEIVED') \
             or (len(unchanged_status) > 0 and unchanged_status[0].code == u'PURCHASE_ORDER_RECEIVED'):
         raise ValidationError(gettext('Purchase order can not be update nor delete on received status'))
