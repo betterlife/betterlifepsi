@@ -97,6 +97,7 @@ class PurchaseOrder(db.Model):
     def __unicode__(self):
         return str(self.id) + \
                ' - ' + str(self.supplier.name) + \
+               ' - ' + str(self.order_date) + \
                ' - ' + str(self.total_amount) + \
                ' - ' + self.status.display
 

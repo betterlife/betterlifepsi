@@ -124,8 +124,13 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
         # Set query_factory for newly added line
         form.lines.form.product.kwargs['query_factory'] = partial(Product.supplier_filter, supplier_id)
         # Set option list of status available
-        form.status.query = [EnumValues.find_one_by_code('PURCHASE_ORDER_DRAFT'),
-                             EnumValues.find_one_by_code('PURCHASE_ORDER_ISSUED')]
+        if obj.status.code == u'PURCHASE_ORDER_RECEIVED':
+            form.status.query = [EnumValues.find_one_by_code(u'PURCHASE_ORDER_RECEIVED')]
+        elif obj.status.code == u'PURCHASE_ORDER_PART_RECEIVED':
+            form.status.query = [EnumValues.find_one_by_code(u'PURCHASE_ORDER_PART_RECEIVED')]
+        else:
+            form.status.query = [EnumValues.find_one_by_code(u'PURCHASE_ORDER_DRAFT'),
+                                 EnumValues.find_one_by_code(u'PURCHASE_ORDER_ISSUED')]
         # Set query option for old lines
         line_entries = form.lines.entries
         products = Product.supplier_filter(supplier_id).all()
@@ -135,7 +140,8 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
 
     def create_form(self, obj=None):
         form = super(ModelView, self).create_form(obj)
-        form.status.query = [EnumValues.find_one_by_code('PURCHASE_ORDER_DRAFT')]
+        form.status.query = [EnumValues.find_one_by_code(u'PURCHASE_ORDER_DRAFT'),
+                             EnumValues.find_one_by_code(u'PURCHASE_ORDER_ISSUED')]
         return form
 
     def on_model_delete(self, model):
