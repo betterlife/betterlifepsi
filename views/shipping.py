@@ -4,7 +4,7 @@ from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext, gettext
 from models import ShippingLine, Shipping
 from views import ModelViewWithAccess, DisabledStringField
-from formatter import inventory_transaction_formatter, sales_order_formatter
+from formatter import inventory_transaction_formatter, sales_order_formatter, default_date_formatter
 from wtforms import ValidationError
 
 
@@ -59,6 +59,7 @@ class ShippingAdmin(ModelViewWithAccess):
     column_formatters = {
         'inventory_transaction': inventory_transaction_formatter,
         'sales_order': sales_order_formatter,
+        'date': default_date_formatter,
     }
 
     def on_model_change(self, form, model, is_created):

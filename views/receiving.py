@@ -8,7 +8,8 @@ from flask.ext.babelex import lazy_gettext, gettext
 from models import ReceivingLine, Receiving, PurchaseOrderLine, PurchaseOrder, InventoryTransaction, EnumValues, \
     InventoryTransactionLine
 from views import ModelViewWithAccess, DisabledStringField
-from formatter import supplier_formatter, purchase_order_formatter, inventory_transaction_formatter
+from formatter import supplier_formatter, purchase_order_formatter, inventory_transaction_formatter, \
+    default_date_formatter
 from views.base import DeleteValidator
 from wtforms import BooleanField
 from wtforms.validators import ValidationError
@@ -83,6 +84,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
         'supplier': supplier_formatter,
         'purchase_order': purchase_order_formatter,
         'inventory_transaction': inventory_transaction_formatter,
+        'date': default_date_formatter,
     }
 
     def on_model_delete(self, model):

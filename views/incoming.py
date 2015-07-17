@@ -3,7 +3,7 @@ from datetime import datetime
 from flask.ext.babelex import lazy_gettext
 from models import Incoming
 from views import ModelViewWithAccess
-from formatter import sales_order_formatter
+from formatter import sales_order_formatter, default_date_formatter
 
 
 class IncomingAdmin(ModelViewWithAccess):
@@ -31,4 +31,5 @@ class IncomingAdmin(ModelViewWithAccess):
     form_excluded_columns = ('sales_order',)
     column_formatters = {
         'sales_order': sales_order_formatter,
+        'date': default_date_formatter,
     }

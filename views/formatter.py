@@ -183,3 +183,9 @@ def inventory_transaction_formatter(view, context, model, name):
         return _obj_formatter(view, context, model, value=s, model_name='inventorytransaction', title=str(s.id),
                               args=args, detail_args=detail_args, detail_field='lines')
     return ''
+
+def default_date_formatter(view, context, model, name):
+    value = getattr(model, name)
+    if value is not None:
+        return value.strftime("%Y/%m/%d")
+    return ''

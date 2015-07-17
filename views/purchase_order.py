@@ -10,7 +10,7 @@ from sqlalchemy import event
 from sqlalchemy.orm.attributes import get_history
 from views import ModelViewWithAccess, DisabledStringField
 from views.base import DeleteValidator
-from views.formatter import supplier_formatter, expenses_formatter, receivings_formatter
+from views.formatter import supplier_formatter, expenses_formatter, receivings_formatter, default_date_formatter
 from wtforms import ValidationError
 
 
@@ -69,6 +69,7 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
         'supplier': supplier_formatter,
         'all_expenses': expenses_formatter,
         'all_receivings': receivings_formatter,
+        'order_date': default_date_formatter,
     }
 
     form_args = dict(
