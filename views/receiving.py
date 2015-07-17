@@ -229,6 +229,11 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
                     received_qtys[line_no] = received_qty
         return received_qtys
 
+    def create_form(self):
+        form = super(ModelView, self).create_form()
+        form.status.query = [EnumValues.find_one_by_code(const.RECEIVING_DRAFT_STATUS_KEY),]
+        return form
+
     def edit_form(self, obj=None):
         form = super(ModelView, self).edit_form(obj)
         po_id = obj.transient_po.id
