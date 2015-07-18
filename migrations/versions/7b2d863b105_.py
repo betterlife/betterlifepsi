@@ -1,4 +1,4 @@
-"""empty message
+"""Add role seed data for flask-security
 
 Revision ID: 7b2d863b105
 Revises: 2a3fee7de8d4

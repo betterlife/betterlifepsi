@@ -1,4 +1,4 @@
-"""empty message
+"""Add table and seed user/role (admin) for flask_security
 
 Revision ID: 2a3fee7de8d4
 Revises: 29b31f4d8de6

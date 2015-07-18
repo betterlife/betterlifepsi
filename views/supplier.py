@@ -1,0 +1,39 @@
+# coding=utf-8
+from flask.ext.admin.model import InlineFormAdmin
+from flask.ext.babelex import lazy_gettext
+from views import ModelViewWithAccess
+
+class PaymentMethodLineInlineAdmin(InlineFormAdmin):
+    # column_editable_list = ['account_name', 'account_number', 'bank_name', 'bank_branch', 'remark']
+    form_args = dict(
+        account_name=dict(label=lazy_gettext('Account Name')),
+        account_number=dict(label=lazy_gettext('Account Number')),
+        bank_name=dict(label=lazy_gettext('Bank Name')),
+        bank_branch=dict(label=lazy_gettext('Bank Branch')),
+        remark=dict(label=lazy_gettext('Remark')),
+    )
+
+
+class SupplierAdmin(ModelViewWithAccess):
+    from models import PaymentMethod
+
+    form_excluded_columns = ('purchaseOrders', 'products')
+    inline_models = (PaymentMethodLineInlineAdmin(PaymentMethod),)
+    column_editable_list = ['name', 'qq', 'phone', 'contact', 'email', 'website',
+                            'whole_sale_req', 'can_mixed_whole_sale', 'remark']
+    column_searchable_list = ('code', 'name')
+    # column_filters = column_searchable_list
+    column_labels = {
+        'id': lazy_gettext('id'),
+        'name': lazy_gettext('Name'),
+        'code': lazy_gettext('Code'),
+        'qq': lazy_gettext('QQ'),
+        'phone': lazy_gettext('Phone'),
+        'contact': lazy_gettext('Contact'),
+        'email': lazy_gettext('Email'),
+        'website': lazy_gettext('Website'),
+        'whole_sale_req': lazy_gettext('Whole Sale Req'),
+        'can_mixed_whole_sale': lazy_gettext('Can Mixed Whole Sale'),
+        'remark': lazy_gettext('Remark'),
+        'paymentMethods': lazy_gettext('Payment Methods'),
+    }

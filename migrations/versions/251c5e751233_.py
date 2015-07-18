@@ -1,4 +1,4 @@
-"""empty message
+"""Add preference table and seed setting for default preference.
 
 Revision ID: 251c5e751233
 Revises: 389881771619

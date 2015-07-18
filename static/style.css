@@ -63,3 +63,52 @@ input[name='_add_another'] {
     opacity: 0.2;
     filter:alpha(opacity=20);
 }
+
+.help-block {
+    color: #737373;
+    /*font-family: 'Microsoft YaHei', sans-serif; */
+    font-style: italic;
+    font-size: small;
+    background: url("cueTip.gif") no-repeat left;
+    background-position-y:2px;
+    text-decoration: none;
+    padding-left: 15px;
+}
+
+.inline-field-list a {
+    color: #000000;
+    text-decoration: none;
+}
+.accordion-toggle:before {
+    /* symbol for "opening" panels */
+    font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
+    content: "\e114";
+    float: left;
+    color: grey;
+    padding-right: 20px;
+    padding-top:4px;
+}
+.accordion-toggle.collapsed:before {
+    /* symbol for "collapsed" panels */
+    content: "\e080";
+}
+
+.col-id {
+    width:70px;
+}
+
+.model-list .col-md-1 {
+    width:90px;
+}
+
+.popover {
+    max-width: 750px;
+}
+
+.bottom-spacing {
+    margin-bottom: 15px;
+}
+
+.input-errors ul {
+    list-style: none;
+}

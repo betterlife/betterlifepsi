@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-06-26 07:25+0800\n"
-"PO-Revision-Date: 2015-07-02 11:22+0800\n"
+"PO-Revision-Date: 2015-07-15 23:07+0800\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -95,7 +95,7 @@ msgid "Parent category"
 msgstr "上级分类"
 
 msgid "id"
-msgstr "系统编号"
+msgstr "编号"
 
 msgid "QQ"
 msgstr "QQ"
@@ -139,9 +139,6 @@ msgstr "物流费用"
 msgid "Order Date"
 msgstr "订单时间"
 
-msgid "Related Expenses"
-msgstr "相关费用"
-
 msgid "Total Amount"
 msgstr "总金额"
 
@@ -157,16 +154,16 @@ msgstr "折前金额"
 msgid "Discount Amount"
 msgstr "折扣金额"
 
-msgid "Relate Incoming"
+msgid "Related Incoming"
 msgstr "相关收入"
 
-msgid "Relate Expense"
+msgid "Related Expense"
 msgstr "相关支出"
 
-msgid "Relate Sales Order"
+msgid "Related Sales Order"
 msgstr "相关销售单"
 
-msgid "Relate Purchase Order"
+msgid "Related Purchase Order"
 msgstr "相关采购单"
 
 msgid "Amount"
@@ -212,7 +209,7 @@ msgid "Default Purchase Order Goods Expense Type"
 msgstr "采购单货款支出默认类型"
 
 msgid "Lines"
-msgstr "行"
+msgstr "明细行"
 
 msgid "Quantity"
 msgstr "数量"
@@ -258,3 +255,102 @@ msgstr "用户被禁止登陆"
 
 msgid "New Password"
 msgstr "新密码"
+
+msgid "Inventory Transaction Price"
+msgstr "库存变动价格"
+
+msgid "Inventory Transaction Type"
+msgstr "库存变动类型"
+
+msgid "Receiving"
+msgstr "采购收货"
+
+msgid "Inventory Transaction"
+msgstr "库存变动明细"
+
+msgid "Receiving Price"
+msgstr "收货价格"
+
+msgid "Purchase Order Line"
+msgstr "采购单行"
+
+msgid "Create Lines for unreceived products"
+msgstr "自动创建收货行"
+
+msgid "There's no unreceived items in this PO."
+msgstr "该采购单中所有的商品均已收货，无法创建收货单，请在已创建的收货单上进行修改操作"
+
+msgid "Please select a purchase order and save the form, then add receiving lines accordingly"
+msgstr "请先选择关联采购单后点击保存按钮，然后再增加收货明细行，只有状态为未收货完成的采购单会在此处显示"
+
+msgid "Current status of the receiving document, completed receiving can not be updated or deleted"
+msgstr "收货单处于草稿状态时，其收货数量在库存报表中体现为“在途数量”，收货单完成后，变为“可用数量”，完成状态的收货单无法被修改或删除"
+
+msgid "Create receiving lines based on not yet received products in the purchase order"
+msgstr "自动基于该采购单中未收货的行创建收货单的行，收货数量默认为未收货的数量"
+
+msgid "This quantity should be a negative number for sales, item lost or item broken"
+msgstr "该数量对于销售出库、商品丢失或损毁，应该是一个负数"
+
+msgid "For sales, it should be sell price, for item lost or broken, should be purchase price plus logistic expend"
+msgstr "对于销售出库，该价格应该为卖价，对于商品丢失或损毁，该价格应该为采购价加上分摊到该商品的采购物流费用"
+
+msgid "Quantity of product ordered but still on the way"
+msgstr "已经订货，但是还在运输途中的数量"
+
+msgid "In Transit Quantity"
+msgstr "在途数量"
+
+msgid "Actual Quantity Change"
+msgstr "实际库存变化数量"
+
+msgid "Available Quantity"
+msgstr "可用库存"
+
+msgid "Please select a supplier and save the form, then add purchase order lines accordingly"
+msgstr "请先选择供应商、当前状态、订单时间及备注等信息后，点击保存按钮，然后再增加采购单明细行"
+
+msgid "Receiving document can not be update nor delete on complete status"
+msgstr "处于完成状态的收货单无法被修改或删除"
+
+msgid "Purchase order can not be update nor delete on received status"
+msgstr "处于“收货完成”状态的采购单无法被修改或删除"
+
+msgid "Related Receiving"
+msgstr "相关收货单"
+
+msgid "Related Shipping"
+msgstr "相关发货单"
+
+msgid "Shipping"
+msgstr "销售发货"
+
+msgid "Type Values"
+msgstr "值列表"
+
+msgid "Related Sales Order Line"
+msgstr "相关销售订单行"
+
+msgid "Modify shipping document directly is not allowed, please modify the related sales order and this shipping document will be changed accordingly"
+msgstr "禁止直接修改发货单，请修改与本发货单关联的销售订单，修改后本发货单也会相应被修改"
+
+msgid "Purchase order can only be created in draft status, and partially received & received status are driven by associated receiving document"
+msgstr "只能创建状态为“草稿”的采购单，其后续状态是由与其关联的收货单决定的，当采购单中的商品通过关联收货单，部分或者完全收货后，采购单的状态会相应发生变化"
+
+msgid "Receiving price is brought from purchase order and can not be modified in receiving line"
+msgstr "收货单行中的收货价格从采购单中自动带入，且无法进行修改"
+
+msgid "Distinguishing feature of this product, useful for introduce the product to our customer"
+msgstr "该产品的独到之处，可用于在销售时向顾客进行推荐，请认真填写"
+
+msgid "Days for the product from shipped to arrive the store"
+msgstr "从供应商发货到门店收到货物的一般天数"
+
+msgid "Days from the day we contact supplier to the day they begin to ship product"
+msgstr "从采购人员开始联系该供应商到该供应商开始发货的天数"
+
+msgid "Left blank if you don't want to change it, input the new password to change it"
+msgstr "如果不修改密码请留空，如果修改密码，请在此处输入新密码"
+
+msgid "Un-check this checkbox to disable a user from login to the system"
+msgstr "取消本选择框来将用户禁用，并禁止其登陆系统"
