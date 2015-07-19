@@ -1,6 +1,7 @@
 # encoding: utf-8
 from decimal import Decimal
 from app_provider import AppInfo
+import const
 from models.enum_values import EnumValues
 from util import format_decimal
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
@@ -19,7 +20,7 @@ class InventoryTransaction(db.Model):
 
     @staticmethod
     def type_filter():
-        return EnumValues.type_filter('INVENTORY_TRANSACTION_TYPE')
+        return EnumValues.type_filter(const.INVENTORY_TRANSACTION_TYPE_KEY)
 
     @hybrid_property
     def total_amount(self):

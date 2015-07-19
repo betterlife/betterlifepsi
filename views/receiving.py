@@ -4,11 +4,13 @@ from functools import partial
 from app_provider import AppInfo
 from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.admin.model import InlineFormAdmin
+import const
 from flask.ext.babelex import lazy_gettext, gettext
 from models import ReceivingLine, Receiving, PurchaseOrderLine, PurchaseOrder, InventoryTransaction, EnumValues, \
     InventoryTransactionLine
 from views import ModelViewWithAccess, DisabledStringField
-from formatter import supplier_formatter, purchase_order_formatter, inventory_transaction_formatter
+from formatter import supplier_formatter, purchase_order_formatter, inventory_transaction_formatter, \
+    default_date_formatter
 from views.base import DeleteValidator
 from wtforms import BooleanField
 from wtforms.validators import ValidationError
@@ -75,7 +77,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
         purchase_order=dict(description=lazy_gettext(
             'Please select a purchase order and save the form, then add receiving lines accordingly'),
             query_factory=partial(PurchaseOrder.status_filter,
-                                  ('PURCHASE_ORDER_ISSUED', 'PURCHASE_ORDER_PART_RECEIVED',))),
+                                  (const.PO_ISSUED_STATUS_KEY, const.PO_PART_RECEIVED_STATUS_KEY,))),
         date=dict(default=datetime.now()),
     )
 
@@ -83,10 +85,11 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
         'supplier': supplier_formatter,
         'purchase_order': purchase_order_formatter,
         'inventory_transaction': inventory_transaction_formatter,
+        'date': default_date_formatter,
     }
 
     def on_model_delete(self, model):
-        DeleteValidator.validate_status_for_change(model, u'RECEIVING_COMPLETE',
+        DeleteValidator.validate_status_for_change(model, const.RECEIVING_COMPLETE_STATUS_KEY,
                                                    gettext('Receiving document can not be update '
                                                            'nor delete on complete status'))
 
@@ -104,7 +107,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
         AppInfo.get_db().session.commit()
 
     def update_purchase_order_status(self, model):
-        if model.status.code == u'RECEIVING_COMPLETE':
+        if model.status.code == const.RECEIVING_COMPLETE_STATUS_KEY:
             po = model.purchase_order
             finished = False
             started = False
@@ -118,18 +121,18 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
                 if rd_qty != line.quantity:
                     finished = True
             if finished is False:
-                po.status = EnumValues.find_one_by_code('PURCHASE_ORDER_RECEIVED')
+                po.status = EnumValues.find_one_by_code(const.PO_RECEIVED_STATUS_KEY)
             elif started is True:
-                po.status = EnumValues.find_one_by_code('PURCHASE_ORDER_PART_RECEIVED')
+                po.status = EnumValues.find_one_by_code(const.PO_PART_RECEIVED_STATUS_KEY)
             AppInfo.get_db().session.add(po)
 
 
     def operate_inv_trans_by_recv_status(self, model):
         inv_trans = None
-        if model.status.code == u'RECEIVING_COMPLETE':
+        if model.status.code == const.RECEIVING_COMPLETE_STATUS_KEY:
             inv_trans = self.save_inv_trans(model, inv_trans=model.inventory_transaction,
                                             set_qty_func=ReceivingAdmin.set_qty_completed)
-        elif model.status.code == u'RECEIVING_DRAFT':
+        elif model.status.code == const.RECEIVING_DRAFT_STATUS_KEY:
             for line in model.lines:
                 line.price = line.purchase_order_line.unit_price
                 line.product_id = line.purchase_order_line.product_id
@@ -142,7 +145,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
 
     @staticmethod
     def save_inv_trans(model, inv_trans, set_qty_func):
-        inv_type = EnumValues.find_one_by_code('PURCHASE_IN')
+        inv_type = EnumValues.find_one_by_code(const.PURCHASE_IN_INV_TRANS_KEY)
         if inv_trans is None:
             inv_trans = InventoryTransaction()
             inv_trans.type_id = inv_type.id
@@ -225,6 +228,12 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
                         received_qty += line.quantity
                     received_qtys[line_no] = received_qty
         return received_qtys
+
+    def create_form(self):
+        form = super(ModelView, self).create_form()
+        form.status.query = [EnumValues.find_one_by_code(const.RECEIVING_DRAFT_STATUS_KEY),]
+        form.create_lines.data = True
+        return form
 
     def edit_form(self, obj=None):
         form = super(ModelView, self).edit_form(obj)

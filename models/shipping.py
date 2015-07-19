@@ -2,12 +2,14 @@
 from decimal import Decimal
 from app_provider import AppInfo
 import app_provider
+import const
 from models.inventory_transaction import InventoryTransactionLine, InventoryTransaction
 from models.util import format_decimal
 from models.enum_values import EnumValues
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
+
 
 db = AppInfo.get_db()
 
@@ -30,7 +32,7 @@ class Shipping(db.Model):
 
     @staticmethod
     def status_filter():
-        return EnumValues.type_filter('SHIPPING_STATUS')
+        return EnumValues.type_filter(const.SHIPPING_STATUS_KEY)
 
     @hybrid_property
     def total_amount(self):
@@ -53,7 +55,7 @@ class Shipping(db.Model):
         return str(self.id) + ' - ' + str(self.total_amount)
 
     def create_or_update_inventory_transaction(self):
-        it_type = EnumValues.find_one_by_code('SALES_OUT')
+        it_type = EnumValues.find_one_by_code(const.SALES_OUT_INV_TRANS_TYPE_KEY)
         it = self.inventory_transaction
         if it is None:
             it = InventoryTransaction()

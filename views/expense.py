@@ -3,7 +3,7 @@ from datetime import datetime
 from flask.ext.babelex import lazy_gettext
 from models import Expense
 from views import ModelViewWithAccess
-from formatter import sales_order_formatter, purchase_order_formatter
+from formatter import sales_order_formatter, purchase_order_formatter, default_date_formatter
 
 
 class ExpenseAdmin(ModelViewWithAccess):
@@ -36,4 +36,5 @@ class ExpenseAdmin(ModelViewWithAccess):
     column_formatters = {
         'sales_order': sales_order_formatter,
         'purchase_order': purchase_order_formatter,
+        'date': default_date_formatter,
     }

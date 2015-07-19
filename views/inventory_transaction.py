@@ -3,7 +3,7 @@ from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext
 from models import InventoryTransactionLine, InventoryTransaction
 from views import ModelViewWithAccess, DisabledStringField
-from formatter import receivings_formatter, shipping_formatter
+from formatter import receivings_formatter, shipping_formatter, default_date_formatter
 
 
 class InventoryTransactionLineInlineAdmin(InlineFormAdmin):
@@ -64,6 +64,7 @@ class InventoryTransactionAdmin(ModelViewWithAccess):
     column_formatters = {
         'it_receiving': receivings_formatter,
         'it_shipping': shipping_formatter,
+        'date': default_date_formatter,
     }
 
     inline_models = (InventoryTransactionLineInlineAdmin(InventoryTransactionLine),)

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-06-26 07:25+0800\n"
-"PO-Revision-Date: 2015-07-15 23:07+0800\n"
+"PO-Revision-Date: 2015-07-17 23:40+0800\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -281,7 +281,7 @@ msgid "There's no unreceived items in this PO."
 msgstr "该采购单中所有的商品均已收货，无法创建收货单，请在已创建的收货单上进行修改操作"
 
 msgid "Please select a purchase order and save the form, then add receiving lines accordingly"
-msgstr "请先选择关联采购单后点击保存按钮，然后再增加收货明细行，只有状态为未收货完成的采购单会在此处显示"
+msgstr "请先选择关联采购单后点击保存按钮，然后再增加收货明细行，只有状态为“部分收货”和“已发出”的采购单会在此处显示"
 
 msgid "Current status of the receiving document, completed receiving can not be updated or deleted"
 msgstr "收货单处于草稿状态时，其收货数量在库存报表中体现为“在途数量”，收货单完成后，变为“可用数量”，完成状态的收货单无法被修改或删除"
@@ -335,7 +335,7 @@ msgid "Modify shipping document directly is not allowed, please modify the relat
 msgstr "禁止直接修改发货单，请修改与本发货单关联的销售订单，修改后本发货单也会相应被修改"
 
 msgid "Purchase order can only be created in draft status, and partially received & received status are driven by associated receiving document"
-msgstr "只能创建状态为“草稿”的采购单，其后续状态是由与其关联的收货单决定的，当采购单中的商品通过关联收货单，部分或者完全收货后，采购单的状态会相应发生变化"
+msgstr "只能创建状态为“草稿”或“已发出”的采购单，其后续状态是由与其关联的收货单决定的，当采购单中的商品通过关联收货单，部分或者完全收货后，采购单的状态会相应变为“部分收货”或“收货完成”"
 
 msgid "Receiving price is brought from purchase order and can not be modified in receiving line"
 msgstr "收货单行中的收货价格从采购单中自动带入，且无法进行修改"
