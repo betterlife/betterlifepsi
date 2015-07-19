@@ -232,6 +232,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
     def create_form(self):
         form = super(ModelView, self).create_form()
         form.status.query = [EnumValues.find_one_by_code(const.RECEIVING_DRAFT_STATUS_KEY),]
+        form.create_lines.data = True
         return form
 
     def edit_form(self, obj=None):

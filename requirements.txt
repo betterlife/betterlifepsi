@@ -13,4 +13,4 @@ Flask_BabelEx==0.9.2
 Flask-Migrate==1.4.0
 newrelic==2.52.0.40
 Flask-Security==1.7.4
--e git+https://github.com/betterlife/flask-admin.git@9246a205a2b19794739ceb2ad27d3abdde9eaaa0#egg=Flask_Admin-master
+-e git+https://github.com/betterlife/flask-admin.git@9d2c3923485362902f28ac6a3d8cc4da1dd28066#egg=Flask_Admin
