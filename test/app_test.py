@@ -11,7 +11,7 @@ class FlaskrTestCase(unittest.TestCase):
         self.db_fd, app.app.config['DATABASE'] = tempfile.mkstemp()
         app.app.config['TESTING'] = True
         self.app = app.app.test_client()
-        app.init_database()
+        # app.init_database()
 
     def tearDown(self):
         os.close(self.db_fd)
