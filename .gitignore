@@ -2,3 +2,4 @@ venv
 *.pyc
 .idea
 newrelic.ini
+.coverage

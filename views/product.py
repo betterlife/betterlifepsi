@@ -1,4 +1,5 @@
 # coding=utf-8
+from flask.ext.admin.form import rules
 from flask.ext.babelex import lazy_gettext
 from views.formatter import supplier_formatter
 from views.base import ModelViewWithAccess
@@ -56,5 +57,12 @@ class ProductAdmin(ModelViewWithAccess):
     column_list = ('id', 'supplier', 'category', 'code', 'name', 'lead_day', 'deliver_day', 'purchase_price',
                    'retail_price', 'available_quantity', 'in_transit_quantity',)
 
-    form_columns = ('category', 'supplier', 'code', 'name', 'lead_day', 'deliver_day', 'spec_link', 'purchase_price',
-                    'retail_price', 'available_quantity', 'in_transit_quantity', 'distinguishing_feature')
+    form_columns = ('category', 'supplier', 'code', 'name', 'lead_day', 'deliver_day', 'purchase_price',
+                    'retail_price', 'available_quantity', 'in_transit_quantity', 'spec_link', 'distinguishing_feature')
+
+    create_template = 'rule_create.html'
+
+    form_create_rules = (
+        'category', 'supplier', 'code', 'name', 'lead_day', 'deliver_day',
+        'purchase_price', 'retail_price', 'spec_link', 'distinguishing_feature',
+    )
