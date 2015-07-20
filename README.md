@@ -2,7 +2,7 @@
 # Betterlife Intelligent PSI 
 [![Requirements Status](https://requires.io/github/betterlife/flask-erp/requirements.svg?branch=master)](https://requires.io/github/betterlife/flask-erp/requirements/?branch=master) 
 [![Code Climate](https://codeclimate.com/github/betterlife/flask-erp/badges/gpa.svg)](https://codeclimate.com/github/betterlife/flask-erp)
-[![Coverage Status](https://coveralls.io/repos/betterlife/flask-erp/badge.svg?branch=enhance%2Fbadges&service=github)](https://coveralls.io/github/betterlife/flask-erp?branch=HEAD)
+[![Coverage Status](https://coveralls.io/repos/betterlife/flask-erp/badge.svg?branch=HEAD&service=github)](https://coveralls.io/github/betterlife/flask-erp?branch=HEAD)
 [![Codeship Status for betterlife/flask-erp](https://codeship.com/projects/9db8e7f0-fc6b-0132-1131-46c0998097e0/status?branch=master)](https://codeship.com/projects/87463)
 
 Flask based Intelligent PSI(Purchase, Sales and Inventory) system
