@@ -60,8 +60,6 @@ class ProductAdmin(ModelViewWithAccess):
     form_columns = ('category', 'supplier', 'code', 'name', 'lead_day', 'deliver_day', 'purchase_price',
                     'retail_price', 'available_quantity', 'in_transit_quantity', 'spec_link', 'distinguishing_feature')
 
-    create_template = 'rule_create.html'
-
     form_create_rules = (
         'category', 'supplier', 'code', 'name', 'lead_day', 'deliver_day',
         'purchase_price', 'retail_price', 'spec_link', 'distinguishing_feature',
