@@ -1,6 +1,7 @@
 # coding=utf-8
 from datetime import datetime
 import app_provider
+from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext
 from models import Preference, Incoming, Expense, Shipping, ShippingLine, EnumValues
@@ -75,6 +76,15 @@ class SalesOrderAdmin(ModelViewWithAccess):
         'so_shipping': lazy_gettext('Related Shipping'),
         'lines': lazy_gettext('Lines'),
     }
+
+    def create_form(self, obj=None):
+        form = super(ModelView, self).create_form(obj)
+        form.lines.form.actual_amount = None
+        form.lines.form.discount_amount = None
+        form.lines.form.original_amount = None
+        form.lines.form.price_discount = None
+        form.lines.form.retail_price = None
+        return form
 
     @staticmethod
     def create_or_update_incoming(model):
