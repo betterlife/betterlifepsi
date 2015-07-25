@@ -37,8 +37,8 @@ def init_admin_views(app, db):
     adminViews.add_view(InventoryTransactionAdmin(InventoryTransaction, db_session, name=lazy_gettext("Inventory Transaction"),
                                                   category=u'库存', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-transfer'))
     adminViews.add_view(ProductInventoryView(Product, db_session, name=lazy_gettext("Product Inventory"),
-                                             category=u'库存', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-transfer',
-                                             endpoint='/product_inventory'))
+                                             category=u'库存', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-piggy-bank',
+                                             endpoint='product_inventory'))
     adminViews.add_view(ExpenseAdmin(Expense, db_session, name=lazy_gettext("Expense"),
                                      category=u'财务', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-minus-sign'))
     adminViews.add_view(IncomingAdmin(Incoming, db_session, name=lazy_gettext("Incoming"),
