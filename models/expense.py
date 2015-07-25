@@ -29,7 +29,7 @@ class Expense(db.Model):
     sales_order = relationship('SalesOrder', backref=backref('expense',
                                                              uselist=False, cascade='all, delete-orphan'))
 
-    remark = Column(Text)
+    remark = Column(Text, nullable=False)
 
     def __init__(self, amount=0, exp_date=None, status_id=None, category_id=None):
         self.amount = amount
