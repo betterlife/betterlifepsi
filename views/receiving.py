@@ -118,9 +118,9 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
                     rd_qty += rl.quantity
                 if rd_qty > 0:
                     started = True
-                if rd_qty != line.quantity:
+                if rd_qty >= line.quantity:
                     finished = True
-            if finished is False:
+            if finished is True:
                 po.status = EnumValues.find_one_by_code(const.PO_RECEIVED_STATUS_KEY)
             elif started is True:
                 po.status = EnumValues.find_one_by_code(const.PO_PART_RECEIVED_STATUS_KEY)
