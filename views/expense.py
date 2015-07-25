@@ -11,6 +11,10 @@ class ExpenseAdmin(ModelViewWithAccess):
                    'category', 'purchase_order', 'sales_order', 'remark')
     column_editable_list = ['date', 'amount', 'has_invoice', 'remark']
 
+    edit_modal = True
+
+    create_modal = True
+
     form_args = dict(
         status=dict(query_factory=Expense.status_filter),
         category=dict(query_factory=Expense.type_filter),
