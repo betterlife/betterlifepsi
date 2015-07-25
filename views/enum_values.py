@@ -3,7 +3,7 @@ from flask.ext.babelex import lazy_gettext
 from views import ModelViewWithAccess
 
 class EnumValuesAdmin(ModelViewWithAccess):
-    column_list = ('id', 'type', 'code', 'display',)
+    column_list = ('id', 'code', 'display', 'type')
 
     column_editable_list = ['display']
     column_searchable_list = ['code', 'display']
