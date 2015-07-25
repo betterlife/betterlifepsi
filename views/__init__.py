@@ -15,6 +15,7 @@ from supplier import SupplierAdmin
 from receiving import ReceivingAdmin
 from shipping import ShippingAdmin
 from inventory_transaction import InventoryTransactionAdmin
+from product_inventory import ProductInventoryView
 from formatter import *
 from models import *
 from flask.ext.admin import Admin
@@ -35,6 +36,9 @@ def init_admin_views(app, db):
                                                   category=u'库存', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-export'))
     adminViews.add_view(InventoryTransactionAdmin(InventoryTransaction, db_session, name=lazy_gettext("Inventory Transaction"),
                                                   category=u'库存', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-transfer'))
+    adminViews.add_view(ProductInventoryView(Product, db_session, name=lazy_gettext("Product Inventory"),
+                                             category=u'库存', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-transfer',
+                                             endpoint='/product_inventory'))
     adminViews.add_view(ExpenseAdmin(Expense, db_session, name=lazy_gettext("Expense"),
                                      category=u'财务', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-minus-sign'))
     adminViews.add_view(IncomingAdmin(Incoming, db_session, name=lazy_gettext("Incoming"),
