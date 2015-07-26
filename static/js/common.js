@@ -1,6 +1,6 @@
 $(document).ready(function(){
      $('[data-toggle="popover"]').popover({
-         html: true,  placement: "bottom",
+         html: true,  placement: "auto",
          viewport: {selector: 'body', padding: 5}
      })
  });
