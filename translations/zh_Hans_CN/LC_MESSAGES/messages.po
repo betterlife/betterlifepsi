@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-06-26 07:25+0800\n"
-"PO-Revision-Date: 2015-07-25 12:19+0800\n"
+"PO-Revision-Date: 2015-07-26 11:16+0800\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -357,3 +357,9 @@ msgstr "取消本选择框来将用户禁用，并禁止其登陆系统"
 
 msgid "Product Inventory"
 msgstr "产品库存"
+
+msgid "Average purchase price"
+msgstr "平均采购价"
+
+msgid "Average retail price"
+msgstr "平均零售价"
