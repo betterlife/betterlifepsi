@@ -113,7 +113,23 @@ input[name='_add_another'] {
     list-style: none;
 }
 
-.a_q_warning,  .a_q_error{
+.a_q_warning,  .a_q_error, .i_a_number {
     font-weight: bolder;
-    font-size:16px
+    /*font-size:16px;*/
+    padding: 5px;
+    border-radius: 4px;
+    font-family: verdana, sans-serif;
+}
+
+.a_q_warning, .i_a_warning {
+    background-color: yellow;
+}
+
+.a_q_error {
+    background-color: rgba(255, 0, 0, .65);
+    color: white
+}
+
+.col-inventory_advice {
+    width:400px;
 }

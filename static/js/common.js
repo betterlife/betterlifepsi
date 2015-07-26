@@ -29,6 +29,3 @@ $(document).ready(function(){
          }
      });
  });
-
- $("td:has(span.a_q_warning)").css("background", "yellow");
- $("td:has(span.a_q_error)").css("background", "rgba(255, 0, 0, 0.65)").css('color', 'white');

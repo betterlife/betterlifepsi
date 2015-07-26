@@ -8,6 +8,8 @@ goods_amount_field = {'label': lazy_gettext('Goods Amount'), 'field': 'goods_amo
 unit_price_field = {'label': lazy_gettext('Unit Price'), 'field': 'unit_price'}
 price_field = {'label': lazy_gettext('Unit Price'), 'field': 'price'}
 code_field = {'label': lazy_gettext('Code'), 'field': 'code'}
+lead_day_field = {'label': lazy_gettext('Lead Day'), 'field': 'lead_day'}
+deliver_day_field = {'label': lazy_gettext('Deliver Day'), 'field': 'deliver_day'}
 spec_link_field = {'label': lazy_gettext('Spec Link'), 'field': 'spec_link'}
 distinguishing_feature_field = {'label': lazy_gettext('Distinguishing Feature'), 'field': 'distinguishing_feature'}
 retail_price_field = {'label': lazy_gettext('Retail Price'), 'field': 'retail_price'}
@@ -200,7 +202,8 @@ def inventory_transaction_formatter(view, context, model, name):
 
 
 def product_formatter(view, context, model, name):
-    args = (id_field, code_field, supplier_field, category_field, spec_link_field, distinguishing_feature_field)
+    args = (id_field, code_field, lead_day_field, deliver_day_field, supplier_field, category_field, spec_link_field,
+            distinguishing_feature_field)
     return _obj_formatter(view, context, model, value=model, model_name='product', title=model.name, args=args)
 
 
@@ -219,3 +222,10 @@ def available_quantity_formatter(view, context, model, name):
         return '<span class="a_q_warning">' + str(value) + '</span>'
     else:
         return str(value)
+
+
+def default_decimal_formatter(view, context, model, name):
+    value = getattr(model, name)
+    if value == 0 or value == 0.00 or value is None:
+        return '-'
+    return value

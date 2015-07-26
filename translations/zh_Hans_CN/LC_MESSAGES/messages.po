@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-06-26 07:25+0800\n"
-"PO-Revision-Date: 2015-07-26 12:13+0800\n"
+"PO-Revision-Date: 2015-07-26 14:16+0800\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -84,6 +84,9 @@ msgstr "收入"
 
 msgid "Enum Values"
 msgstr "枚举字段"
+
+msgid "Product Name"
+msgstr "商品名称"
 
 msgid "Product Category"
 msgstr "商品分类"
@@ -366,3 +369,12 @@ msgstr "平均零售价"
 
 msgid "Average unit profit"
 msgstr "平均利润"
+
+msgid "Weekly sold quantity"
+msgstr "周售量"
+
+msgid "Weekly average profit"
+msgstr "周利润"
+
+msgid "Management advice"
+msgstr "运营诊断"
