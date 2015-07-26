@@ -1,8 +1,12 @@
 # coding=utf-8
 import app_provider
 from flask import url_for, request
+from flask.ext.admin.consts import ICON_TYPE_GLYPH
+from flask.ext.babelex import lazy_gettext
 import flask_admin as admin
 from flask.ext.security import current_user, logout_user, login_user
+from models import Product
+from views.product_inventory import ProductInventoryView
 from views.login_form import LoginForm
 from werkzeug.utils import redirect
 from flask_admin import helpers, expose
@@ -12,7 +16,7 @@ class AdminIndexView(admin.AdminIndexView):
     def index(self):
         if not current_user.is_authenticated():
             return redirect(url_for('.login_view'))
-        return super(AdminIndexView, self).index()
+        return redirect(url_for('product_inventory.index_view'))
 
     @expose('/login/', methods=('GET', 'POST'))
     def login_view(self):
