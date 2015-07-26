@@ -209,3 +209,13 @@ def default_date_formatter(view, context, model, name):
     if value is not None:
         return value.strftime("%Y/%m/%d")
     return ''
+
+
+def available_quantity_formatter(view, context, model, name):
+    value = getattr(model, name)
+    if value < 0:
+        return '<span class="a_q_error">' + str(value) + '</span>'
+    elif value == 0:
+        return '<span class="a_q_warning">' + str(value) + '</span>'
+    else:
+        return str(value)

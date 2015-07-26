@@ -1,6 +1,6 @@
 from flask.ext.babelex import lazy_gettext
 from views import ModelViewWithAccess, DisabledStringField
-from formatter import supplier_formatter, product_formatter
+from formatter import supplier_formatter, product_formatter, available_quantity_formatter
 
 
 class ProductInventoryView(ModelViewWithAccess):
@@ -33,4 +33,5 @@ class ProductInventoryView(ModelViewWithAccess):
     column_formatters = {
         'supplier': supplier_formatter,
         'name': product_formatter,
+        'available_quantity': available_quantity_formatter,
     }

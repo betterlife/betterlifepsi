@@ -112,3 +112,8 @@ input[name='_add_another'] {
 .input-errors ul {
     list-style: none;
 }
+
+.a_q_warning,  .a_q_error{
+    font-weight: bolder;
+    font-size:16px
+}
