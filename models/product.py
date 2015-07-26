@@ -2,6 +2,7 @@
 from decimal import Decimal
 from app_provider import AppInfo
 import const
+from enum_values import EnumValues
 from models.util import format_decimal
 from models.inventory_transaction import InventoryTransactionLine, InventoryTransaction
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text, select, func
@@ -9,6 +10,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
 db = AppInfo.get_db()
+
 
 class Product(db.Model):
     __tablename__ = 'product'
@@ -84,7 +86,6 @@ class Product(db.Model):
                        and InventoryTransaction.type_id == EnumValues.id
                        and EnumValues.code == const.PURCHASE_IN_INV_TRANS_KEY)
                 .label('average_purchase_price'))
-        # return self.inv_trans_average_expression(const.PURCHASE_IN_INV_TRANS_KEY, 'average_purchase_price')
 
     @hybrid_property
     def average_retail_price(self):
@@ -105,15 +106,27 @@ class Product(db.Model):
                        and EnumValues.code == const.SALES_OUT_INV_TRANS_TYPE_KEY)
                 .label('average_retail_price'))
 
-    def inv_trans_average_expression(self, inv_trans_type_code, label):
-        from models import EnumValues
-        return (select([func.sum(InventoryTransactionLine.quantity * InventoryTransactionLine.price) /
+    @hybrid_property
+    def average_unit_profit(self):
+        if self.average_purchase_price != '-' and self.average_retail_price != '-' \
+                and self.average_purchase_price != 0 and self.average_retail_price != 0:
+            return self.average_retail_price - self.average_purchase_price
+        return '-'
+
+    @average_unit_profit.setter
+    def average_unit_profile(self):
+        pass
+
+    @average_unit_profit.expression
+    def average_unit_profile(self):
+        return (select([-func.sum(InventoryTransactionLine.quantity * InventoryTransactionLine.price) /
                         func.sum(InventoryTransactionLine.quantity)])
                 .where(self.id == InventoryTransactionLine.product_id
                        and InventoryTransactionLine.inventory_transaction_id == InventoryTransaction.id
                        and InventoryTransaction.type_id == EnumValues.id
-                       and EnumValues.code == inv_trans_type_code)
-                .label(label))
+                       and (EnumValues.code == const.SALES_OUT_INV_TRANS_TYPE_KEY or
+                            EnumValues.code == const.PURCHASE_IN_INV_TRANS_KEY)))\
+            .label('average_unit_profile')
 
     def cal_inv_trans_average(self, transaction_type):
         i_ts = self.inventory_transaction_lines
@@ -127,7 +140,7 @@ class Product(db.Model):
                         tot_amt += abs(l.quantity) * l.price
         if tot_amt != 0 and tot_qty != 0:
             return format_decimal(tot_amt / tot_qty)
-        return 0
+        return '-'
 
     @staticmethod
     def supplier_filter(s_id):

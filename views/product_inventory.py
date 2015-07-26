@@ -9,13 +9,14 @@ class ProductInventoryView(ModelViewWithAccess):
     can_delete = False
     can_create = False
 
-    column_list = ('name', 'supplier', 'lead_day', 'deliver_day',
-                   'available_quantity', 'in_transit_quantity', 'average_purchase_price', 'average_retail_price')
+    column_list = ('name', 'supplier', 'lead_day', 'deliver_day', 'available_quantity', 'in_transit_quantity',
+                   'average_purchase_price', 'average_retail_price', 'average_unit_profit')
 
     column_searchable_list = ('name', 'supplier.name',)
 
     column_sortable_list = ('name', ('supplier', 'id'), 'deliver_day', 'lead_day', 'available_quantity',
-                            'in_transit_quantity', 'average_purchase_price', 'average_retail_price')
+                            'in_transit_quantity', 'average_purchase_price', 'average_retail_price',
+                            'average_unit_profit',)
 
     # column_filters = column_searchable_list
     column_labels = {
@@ -28,6 +29,7 @@ class ProductInventoryView(ModelViewWithAccess):
         'in_transit_quantity': lazy_gettext('In Transit Quantity'),
         'average_purchase_price': lazy_gettext('Average purchase price'),
         'average_retail_price': lazy_gettext('Average retail price'),
+        'average_unit_profit': lazy_gettext('Average unit profit'),
     }
 
     column_formatters = {
