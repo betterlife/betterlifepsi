@@ -5,3 +5,4 @@ omit =
     *__init__*
     */migrations/*
     */venv/*
+    */.virtualenv/*

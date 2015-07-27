@@ -1,9 +1,10 @@
 # coding=utf-8
 from flask.ext.admin.form import rules
 from flask.ext.babelex import lazy_gettext
+from models.product import Product
 from views.formatter import supplier_formatter
 from views.base import ModelViewWithAccess
-from views.custom_fields import  DisabledStringField, CKTextAreaField
+from views.custom_fields import  DisabledStringField, CKTextAreaField, ReadonlyStringField
 
 
 class ProductAdmin(ModelViewWithAccess):
@@ -44,14 +45,15 @@ class ProductAdmin(ModelViewWithAccess):
         'supplier': supplier_formatter
     }
 
-    form_overrides = dict(distinguishing_feature=CKTextAreaField)
+    form_overrides = dict(distinguishing_feature=CKTextAreaField, code=ReadonlyStringField)
 
     form_args = dict(
         distinguishing_feature=dict(description=lazy_gettext('Distinguishing feature of this product, useful for '
                                                              'introduce the product to our customer')),
         deliver_day=dict(description=lazy_gettext('Days for the product from shipped to arrive the store')),
         lead_day=dict(description=lazy_gettext('Days from the day we contact supplier to the day they begin to '
-                                               'ship product'))
+                                               'ship product')),
+        code=dict(description=lazy_gettext('Product code is generated automatically'))
     )
 
     column_list = ('id', 'supplier', 'category', 'code', 'name', 'lead_day', 'deliver_day', 'purchase_price',
@@ -64,3 +66,8 @@ class ProductAdmin(ModelViewWithAccess):
         'category', 'supplier', 'code', 'name', 'lead_day', 'deliver_day',
         'purchase_price', 'retail_price', 'spec_link', 'distinguishing_feature',
     )
+
+    def create_form(self, obj=None):
+        form = super(ModelViewWithAccess, self).create_form(obj)
+        form.code.data = Product.get_next_code()
+        return form

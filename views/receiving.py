@@ -118,9 +118,9 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
                     rd_qty += rl.quantity
                 if rd_qty > 0:
                     started = True
-                if rd_qty != line.quantity:
+                if rd_qty >= line.quantity:
                     finished = True
-            if finished is False:
+            if finished is True:
                 po.status = EnumValues.find_one_by_code(const.PO_RECEIVED_STATUS_KEY)
             elif started is True:
                 po.status = EnumValues.find_one_by_code(const.PO_PART_RECEIVED_STATUS_KEY)
@@ -156,8 +156,8 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
                 inv_line = InventoryTransactionLine()
                 inv_line.product = line.product
                 inv_line.inventory_transaction = inv_trans
-                inv_line.receiving_line_id = line.id
                 inv_line.inventory_transaction_id = inv_trans.id
+                line.inventory_transaction_line = inv_line
             inv_line.price = line.price
             set_qty_func(inv_line, line)
         return inv_trans
@@ -185,7 +185,8 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
                 if line.id in received_qtys.keys():
                     quantity -= received_qtys[line.id]
                 available_info[line.id] = {
-                    'quantity': quantity, 'price': line.unit_price, 'product_id': line.product_id
+                    'line': line, 'quantity': quantity,
+                    'price': line.unit_price, 'product_id': line.product_id
                 }
         else:
             # 3. Calculate un-received line info(qty, price) if there's no existing receiving
@@ -203,12 +204,12 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
     @staticmethod
     def create_receiving_lines(available_info):
         lines = []
-        for line_id, line_info in available_info.iteritems():
-            if line_info['quantity'] > 0:
+        for id, info in available_info.iteritems():
+            if info['quantity'] > 0:
                 r_line = ReceivingLine()
-                r_line.purchase_order_line_id = line_id
-                r_line.quantity, r_line.price, r_line.product_id = \
-                    line_info['quantity'], line_info['price'], line_info['product_id']
+                r_line.purchase_order_line_id = id
+                r_line.purchase_order_line, r_line.quantity, r_line.price, r_line.product_id = \
+                    info['line'], info['quantity'], info['price'], info['product_id']
                 lines.append(r_line)
         return lines
 
@@ -229,8 +230,8 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
                     received_qtys[line_no] = received_qty
         return received_qtys
 
-    def create_form(self):
-        form = super(ModelView, self).create_form()
+    def create_form(self, obj=None):
+        form = super(ModelView, self).create_form(obj)
         form.status.query = [EnumValues.find_one_by_code(const.RECEIVING_DRAFT_STATUS_KEY),]
         form.create_lines.data = True
         return form
@@ -241,7 +242,8 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
         # Set query_factory for newly added line
         form.lines.form.purchase_order_line.kwargs['query_factory'] =\
             partial(PurchaseOrderLine.header_filter, po_id)
-
+        if obj is not None and obj.status is not None and obj.status.code == const.RECEIVING_COMPLETE_STATUS_KEY:
+            form.status.query = [EnumValues.find_one_by_code(const.RECEIVING_COMPLETE_STATUS_KEY),]
         # Set query option for old lines
         line_entries = form.lines.entries
         po_lines = PurchaseOrderLine.header_filter(po_id).all()

@@ -6,13 +6,11 @@ from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.admin.model import InlineFormAdmin
 import const
 from flask.ext.babelex import lazy_gettext, gettext
-from models import Preference, Expense, PurchaseOrder, Product, EnumValues
-from sqlalchemy import event
-from sqlalchemy.orm.attributes import get_history
+from models import Preference, Expense, PurchaseOrder, Product, EnumValues, Receiving, ReceivingLine, \
+    InventoryTransaction, InventoryTransactionLine
 from views import ModelViewWithAccess, DisabledStringField
 from views.base import DeleteValidator
 from views.formatter import supplier_formatter, expenses_formatter, receivings_formatter, default_date_formatter
-from wtforms import ValidationError
 
 
 class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
@@ -112,12 +110,30 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
 
     inline_models = (PurchaseOrderLineInlineAdmin(PurchaseOrderLine),)
 
+    @staticmethod
+    def create_receiving_if_not_exist(model):
+        """
+        Draft receiving document is created from purchase order only
+         if there's no associated receiving exists for this PO.
+        :param model: the Purchase order model
+        :return: Receiving document if a new one created, or None
+        """
+        receivings = model.po_receivings
+        if receivings is None or len(receivings) == 0:
+            recv = Receiving.create_draft_recv_from_po(model)
+            return recv
+        return None
+
     def after_model_change(self, form, model, is_created):
         logistic_exp, goods_exp = PurchaseOrderAdmin.create_expenses(model)
         if logistic_exp is not None:
             app_provider.AppInfo.get_db().session.add(logistic_exp)
         if goods_exp is not None:
             app_provider.AppInfo.get_db().session.add(goods_exp)
+        if model.status.code == const.PO_ISSUED_STATUS_KEY:
+            receiving = PurchaseOrderAdmin.create_receiving_if_not_exist(model)
+            if receiving is not None:
+                app_provider.AppInfo.get_db().session.add(receiving)
         app_provider.AppInfo.get_db().session.commit()
 
     def edit_form(self, obj=None):
@@ -127,13 +143,15 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
         form.lines.form.product.kwargs['query_factory'] = partial(Product.supplier_filter, supplier_id)
         # Set option list of status available
         if obj.status.code == const.PO_RECEIVED_STATUS_KEY:
-            form.status.query = [EnumValues.find_one_by_code(const.PO_RECEIVED_STATUS_KEY)]
+            form.status.query = [EnumValues.find_one_by_code(const.PO_RECEIVED_STATUS_KEY),]
         elif obj.status.code == const.PO_PART_RECEIVED_STATUS_KEY:
-            form.status.query = [EnumValues.find_one_by_code(const.PO_PART_RECEIVED_STATUS_KEY)]
-        else:
-            form.status.query = [EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY),
-                                 EnumValues.find_one_by_code(const.PO_ISSUED_STATUS_KEY)]
-        # Set query option for old lines
+            form.status.query = [EnumValues.find_one_by_code(const.PO_PART_RECEIVED_STATUS_KEY),]
+        elif obj.status.code == const.PO_ISSUED_STATUS_KEY:
+            form.status.query = [EnumValues.find_one_by_code(const.PO_ISSUED_STATUS_KEY),]
+        elif obj.status.code == const.PO_DRAFT_STATUS_KEY:
+            form.status.query = [EnumValues.find_one_by_code(const.PO_ISSUED_STATUS_KEY),
+                                 EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY),]
+        # Set product query option for old lines(forbid to change product for existing line)
         line_entries = form.lines.entries
         products = Product.supplier_filter(supplier_id).all()
         for sub_line in line_entries:
@@ -142,20 +160,15 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
 
     def create_form(self, obj=None):
         form = super(ModelView, self).create_form(obj)
-        form.status.query = [EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY),
-                             EnumValues.find_one_by_code(const.PO_ISSUED_STATUS_KEY)]
+        form.status.query = [EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY),]
         return form
+
+    def on_model_change(self, form, model, is_created):
+        DeleteValidator.validate_status_for_change(model, const.PO_RECEIVED_STATUS_KEY,
+                                                   gettext('Purchase order can not be update nor delete '
+                                                           'on received status'))
 
     def on_model_delete(self, model):
         DeleteValidator.validate_status_for_change(model, const.PO_RECEIVED_STATUS_KEY,
                                                    gettext('Purchase order can not be '
                                                            'update nor delete on received status'))
-
-@event.listens_for(PurchaseOrder, 'before_update')#
-def receive_before_update(mapper, connection, target):#
-    unchanged_status = get_history(target, 'status')[1]#
-    if (len(unchanged_status) == 0 and
-                len(get_history(target, 'status').deleted) != 0 and
-                get_history(target, 'status').deleted[0].code == const.PO_RECEIVED_STATUS_KEY) \
-            or (len(unchanged_status) > 0 and unchanged_status[0].code == const.PO_RECEIVED_STATUS_KEY):
-        raise ValidationError(gettext('Purchase order can not be update nor delete on received status'))

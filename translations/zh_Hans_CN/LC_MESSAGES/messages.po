@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-06-26 07:25+0800\n"
-"PO-Revision-Date: 2015-07-17 23:40+0800\n"
+"PO-Revision-Date: 2015-07-27 19:20+0800\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -84,6 +84,9 @@ msgstr "收入"
 
 msgid "Enum Values"
 msgstr "枚举字段"
+
+msgid "Product Name"
+msgstr "商品名称"
 
 msgid "Product Category"
 msgstr "商品分类"
@@ -335,7 +338,7 @@ msgid "Modify shipping document directly is not allowed, please modify the relat
 msgstr "禁止直接修改发货单，请修改与本发货单关联的销售订单，修改后本发货单也会相应被修改"
 
 msgid "Purchase order can only be created in draft status, and partially received & received status are driven by associated receiving document"
-msgstr "只能创建状态为“草稿”或“已发出”的采购单，其后续状态是由与其关联的收货单决定的，当采购单中的商品通过关联收货单，部分或者完全收货后，采购单的状态会相应变为“部分收货”或“收货完成”"
+msgstr "只能创建状态为“草稿”的采购单，其后续状态是由与其关联的收货单决定的，当采购单中的商品通过关联收货单，部分或者完全收货后，采购单的状态会相应变为“部分收货”或“收货完成”"
 
 msgid "Receiving price is brought from purchase order and can not be modified in receiving line"
 msgstr "收货单行中的收货价格从采购单中自动带入，且无法进行修改"
@@ -354,3 +357,27 @@ msgstr "如果不修改密码请留空，如果修改密码，请在此处输入
 
 msgid "Un-check this checkbox to disable a user from login to the system"
 msgstr "取消本选择框来将用户禁用，并禁止其登陆系统"
+
+msgid "Product Inventory"
+msgstr "产品库存"
+
+msgid "Average purchase price"
+msgstr "平均采购价"
+
+msgid "Average retail price"
+msgstr "平均零售价"
+
+msgid "Average unit profit"
+msgstr "平均利润"
+
+msgid "Weekly sold quantity"
+msgstr "周售量"
+
+msgid "Weekly average profit"
+msgstr "周利润"
+
+msgid "Management advice"
+msgstr "运营诊断"
+
+msgid "Product code is generated automatically"
+msgstr "产品编码是由系统自动生成的"

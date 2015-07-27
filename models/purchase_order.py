@@ -1,6 +1,7 @@
 # encoding: utf-8
 from decimal import Decimal
 from app_provider import AppInfo
+import const
 from models.enum_values import EnumValues
 from util import format_decimal
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func

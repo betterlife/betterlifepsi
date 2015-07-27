@@ -1,6 +1,7 @@
 # encoding: utf-8
 from decimal import Decimal
 from app_provider import AppInfo
+import const
 from models.util import format_decimal
 from models.enum_values import EnumValues
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
@@ -70,6 +71,39 @@ class Receiving(db.Model):
 
     def __unicode__(self):
         return str(self.id) + ' - ' + str(self.total_amount)
+
+    @staticmethod
+    def create_draft_recv_from_po(po):
+        recv_draft_status = EnumValues.find_one_by_code(const.RECEIVING_DRAFT_STATUS_KEY)
+        purchase_in_trans_type = EnumValues.find_one_by_code(const.PURCHASE_IN_INV_TRANS_KEY)
+        recv = Receiving()
+        recv.purchase_order = po
+        recv.purchase_order_id = po.id
+        recv.date = po.order_date
+        recv.status = recv_draft_status
+        recv.supplier = po.supplier
+        from models import InventoryTransaction
+        trans = InventoryTransaction()
+        trans.date = recv.date
+        trans.type = purchase_in_trans_type
+        recv.inventory_transaction = trans
+        for line in po.lines:
+            recv_l = ReceivingLine()
+            recv_l.receiving = recv
+            recv_l.price = line.unit_price
+            recv_l.product = line.product
+            recv_l.quantity = line.quantity
+            recv_l.purchase_order_line = line
+            from models import InventoryTransactionLine
+            trans_l = InventoryTransactionLine()
+            trans_l.price = recv_l.price
+            trans_l.in_transit_quantity = recv_l.quantity
+            trans_l.product = recv_l.product
+            trans_l.quantity = 0
+            trans_l.inventory_transaction = trans
+            recv_l.inventory_transaction_line = trans_l
+        return recv
+
 
 class ReceivingLine(db.Model):
     __tablename = 'receiving_line'

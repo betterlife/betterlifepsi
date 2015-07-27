@@ -7,6 +7,11 @@ has_invoice_field = {'label': lazy_gettext('Has Invoice'), 'field': 'has_invoice
 goods_amount_field = {'label': lazy_gettext('Goods Amount'), 'field': 'goods_amount'}
 unit_price_field = {'label': lazy_gettext('Unit Price'), 'field': 'unit_price'}
 price_field = {'label': lazy_gettext('Unit Price'), 'field': 'price'}
+code_field = {'label': lazy_gettext('Code'), 'field': 'code'}
+lead_day_field = {'label': lazy_gettext('Lead Day'), 'field': 'lead_day'}
+deliver_day_field = {'label': lazy_gettext('Deliver Day'), 'field': 'deliver_day'}
+spec_link_field = {'label': lazy_gettext('Spec Link'), 'field': 'spec_link'}
+distinguishing_feature_field = {'label': lazy_gettext('Distinguishing Feature'), 'field': 'distinguishing_feature'}
 retail_price_field = {'label': lazy_gettext('Retail Price'), 'field': 'retail_price'}
 price_discount_field = {'label': lazy_gettext('Price Discount'), 'field': 'price_discount'}
 quantity_field = {"label": lazy_gettext('Quantity'), "field": 'quantity'}
@@ -26,6 +31,7 @@ date_field = {'label': lazy_gettext('Date'), 'field': 'date'}
 order_date_field = {'label': lazy_gettext('Order Date'), 'field': 'order_date'}
 id_field = {'label': lazy_gettext('id'), 'field': 'id'}
 supplier_field = {'label': lazy_gettext('Supplier'), 'field': 'supplier'}
+
 
 def _obj_formatter_str(view, context, model, value=None, model_name=None, title=None, args=None,
                        detail_args=None, detail_field=None):
@@ -69,11 +75,13 @@ def _obj_formatter_str(view, context, model, value=None, model_name=None, title=
                % ('#', title, url_for(model_name + '.edit_view', id=value.id), str_result, title)
     return ''
 
+
 def _obj_formatter(view, context, model, value=None, model_name=None, title=None, args=None,
                    detail_args=None, detail_field=None):
         str_markup = _obj_formatter_str(view, context, model, value, model_name, title, args,
                                         detail_args, detail_field)
         return Markup(str_markup)
+
 
 def _objs_formatter(view, context, model, values, model_name, title_field='id', args=None,
                     detail_args=None, detail_field=None):
@@ -89,6 +97,7 @@ def _objs_formatter(view, context, model, values, model_name, title_field='id', 
                 result += _obj_formatter_str(view, context, model, s, model_name, title, args,
                                              detail_args, detail_field)
     return Markup(result)
+
 
 def supplier_formatter(view, context, model, name):
     s = model.supplier
@@ -112,6 +121,7 @@ def supplier_formatter(view, context, model, name):
     return _obj_formatter(view, context, model, value=s, model_name='supplier',
                           title=s.name, args=args, detail_args=detail_args, detail_field='paymentMethods')
 
+
 def expenses_formatter(view, context, model, name):
     if hasattr(model, 'expenses'):
         expenses = model.expenses
@@ -119,6 +129,7 @@ def expenses_formatter(view, context, model, name):
         expenses = [model.expense]
     args = (id_field, date_field, amount_field, has_invoice_field, status_field, category_field, remark_field)
     return _objs_formatter(view, context, model, values=expenses, model_name='expense', args=args)
+
 
 def receivings_formatter(view, context, model, name):
     if hasattr(model, 'po_receivings'):
@@ -132,6 +143,7 @@ def receivings_formatter(view, context, model, name):
     return _objs_formatter(view, context, model, values=receivings, model_name='receiving',
                            args=args, detail_field='lines', detail_args=detail_args)
 
+
 def incoming_formatter(view, context, model, name):
     i = model.incoming
     if i is not None:
@@ -139,6 +151,7 @@ def incoming_formatter(view, context, model, name):
         return _obj_formatter(view, context, model, value=i, model_name='incoming',
                               title=str(i.id) + ' - ' + str(i.amount), args=args)
     return ''
+
 
 def shipping_formatter(view, context, model, name):
     s = None
@@ -153,6 +166,7 @@ def shipping_formatter(view, context, model, name):
                               args=args, detail_args=detail_args, detail_field='lines')
     return ''
 
+
 def purchase_order_formatter(view, context, model, name):
     s = model.purchase_order
     if s is not None:
@@ -162,6 +176,7 @@ def purchase_order_formatter(view, context, model, name):
         return _obj_formatter(view, context, model, value=s, model_name='purchaseorder', title=str(s.id),
                               args=args, detail_args=detail_args, detail_field='lines')
     return ''
+
 
 def sales_order_formatter(view, context, model, name):
     s = model.sales_order
@@ -174,6 +189,7 @@ def sales_order_formatter(view, context, model, name):
                               args=args, detail_args=detail_args, detail_field='lines')
     return ''
 
+
 def inventory_transaction_formatter(view, context, model, name):
     s = model.inventory_transaction
     if s is not None:
@@ -184,8 +200,32 @@ def inventory_transaction_formatter(view, context, model, name):
                               args=args, detail_args=detail_args, detail_field='lines')
     return ''
 
+
+def product_formatter(view, context, model, name):
+    args = (id_field, code_field, lead_day_field, deliver_day_field, supplier_field, category_field, spec_link_field,
+            distinguishing_feature_field)
+    return _obj_formatter(view, context, model, value=model, model_name='product', title=model.name, args=args)
+
+
 def default_date_formatter(view, context, model, name):
     value = getattr(model, name)
     if value is not None:
         return value.strftime("%Y/%m/%d")
     return ''
+
+
+def available_quantity_formatter(view, context, model, name):
+    value = getattr(model, name)
+    if value < 0:
+        return '<span class="a_q_error">' + str(value) + '</span>'
+    elif value == 0:
+        return '<span class="a_q_warning">' + str(value) + '</span>'
+    else:
+        return str(value)
+
+
+def default_decimal_formatter(view, context, model, name):
+    value = getattr(model, name)
+    if value == 0 or value == 0.00 or value is None:
+        return '-'
+    return value
