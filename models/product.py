@@ -5,7 +5,7 @@ import const
 from enum_values import EnumValues
 from models.util import format_decimal, get_weeks_between
 from models.inventory_transaction import InventoryTransactionLine, InventoryTransaction
-from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text, select, func
+from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text, select, func, desc
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
@@ -219,6 +219,12 @@ class Product(db.Model):
         can_sell_day = format_decimal(self.available_quantity / self.weekly_sold_qty)
         days_without_prd = (self.get_lead_deliver_day() - can_sell_day)
         return self.average_unit_profit * self.weekly_sold_qty * days_without_prd / 7
+
+    @staticmethod
+    def get_next_code():
+        prd = AppInfo.get_db().session.query(Product).order_by(desc(Product.id)).first()
+        return '{0:06d}'.format(1 + int(prd.code))
+
 
     def __unicode__(self):
         return self.supplier.name + ' - ' + self.name + ' - P:' \
