@@ -37,6 +37,7 @@ class Expense(db.Model):
         self.status_id = status_id
         self.category_id = category_id
         self.has_invoice = False
+        self.remark = ''
 
     @staticmethod
     def status_filter():
