@@ -1,4 +1,4 @@
-class AppInfo():
+class AppInfo(object):
 
     _app = None
     _db = None
