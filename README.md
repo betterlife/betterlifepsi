@@ -1,9 +1,11 @@
 
-# Betterlife Intelligent PSI 
+# Betterlife Intelligent PSI
 [![Codeship](https://img.shields.io/codeship/d6c1ddd0-16a3-0132-5f85-2e35c05e22b1/master.svg)](https://codeship.com/projects/87463)
 [![Requirements Status](https://requires.io/github/betterlife/flask-psi/requirements.svg?branch=master)](https://requires.io/github/betterlife/flask-psi/requirements/?branch=master)
 [![Code Climate](https://codeclimate.com/github/betterlife/flask-erp/badges/gpa.svg)](https://codeclimate.com/github/betterlife/flask-erp)
 [![Coverage Status](https://coveralls.io/repos/betterlife/flask-erp/badge.svg?branch=HEAD&service=github)](https://coveralls.io/github/betterlife/flask-erp?branch=HEAD)
+[![Code Health](https://landscape.io/github/betterlife/flask-psi/master/landscape.svg?style=flat)](https://landscape.io/github/betterlife/flask-psi/master)
+
 
 Flask based Intelligent PSI(Purchase, Sales and Inventory) system
 
@@ -25,5 +27,3 @@ Documents
   - [Flask-Admin](http://flask-admin.readthedocs.org/en/latest/)
   - [SQLAlchemy](http://docs.sqlalchemy.org/en/rel_1_0/)
   - [WTForms](http://wtforms.readthedocs.org/en/latest/forms.html)
-
-
