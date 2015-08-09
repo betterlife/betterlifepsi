@@ -7,7 +7,8 @@ Create Date: 2015-06-27 01:53:52.021040
 """
 
 # revision identifiers, used by Alembic.
-from werkzeug.security import generate_password_hash
+from flask.ext.security.utils import encrypt_password
+
 
 revision = '2a3fee7de8d4'
 down_revision = '29b31f4d8de6'
@@ -42,7 +43,8 @@ def upgrade():
     )
     op.bulk_insert(user_table, [
         {'id': 1, 'login': 'admin', 'display': 'Administrator',
-         'email': 'support@betterlife.io', 'password': generate_password_hash('password'), 'active': True},
+         'email': 'support@betterlife.io',
+         'password': encrypt_password('password'), 'active': True},
     ],multiinsert=False)
     op.get_bind().execute(text("ALTER SEQUENCE user_id_seq RESTART WITH 2;"))
     roles_users_table = op.create_table('roles_users',
