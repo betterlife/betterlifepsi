@@ -26,4 +26,5 @@ Documents
   - [Flask](http://flask.pocoo.org/docs/dev/)
   - [Flask-Admin](http://flask-admin.readthedocs.org/en/latest/)
   - [SQLAlchemy](http://docs.sqlalchemy.org/en/rel_1_0/)
+  - [Flask-SQLAlchemy](https://pythonhosted.org/Flask-SQLAlchemy/index.html)
   - [WTForms](http://wtforms.readthedocs.org/en/latest/forms.html)
