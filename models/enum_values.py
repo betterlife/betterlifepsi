@@ -6,6 +6,7 @@ from sqlalchemy.orm import backref, relationship
 
 db = AppInfo.get_db()
 
+
 class EnumValues(db.Model):
     __tablename__ = 'enum_values'
     id = Column(Integer, primary_key=True)

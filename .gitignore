@@ -5,3 +5,4 @@ newrelic.ini
 .coverage
 reports
 nosetests.xml
+.ropeproject

@@ -15,7 +15,7 @@ Flask based Intelligent PSI(Purchase, Sales and Inventory) system
 Links:
 
   - [CI Server(Codeship)](https://codeship.com/projects/87463)
-  - [Feature cards(blossom.io)](https://www.blossom.io/app/rqcbha2bizepjjw27h3ztqa7ke/fxnyifnw4zbo5bqt56cwgzlhpi/board)
+  - [Feature cards(atlassian)](https://betterlife.atlassian.net)
   - [Code coverage(coveralls.io)](https://coveralls.io/github/betterlife/flask-erp)
   - [Dev environment(Heroku)](http://betterlife-flask-dev.herokuapp.com/)
   - [SIT environment(Heroku)](http://betterlife-flask.herokuapp.com/)

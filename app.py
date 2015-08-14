@@ -1,6 +1,6 @@
 # coding=utf-8
 from flask import Flask,redirect
-from flask.ext.security import SQLAlchemyUserDatastore, Security, login_required
+from flask_security import SQLAlchemyUserDatastore, Security, login_required
 
 app = Flask(__name__)
 
@@ -12,7 +12,7 @@ from flask_babelex import Babel
 babel = Babel(default_locale='zh_Hans_CN')
 babel.init_app(app)
 
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy(app)
 from app_provider import AppInfo
 AppInfo.set_app(app)
