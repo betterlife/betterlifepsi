@@ -21,7 +21,7 @@ Links:
 
   - [CI Server(Codeship)](https://codeship.com/projects/87463)
   - [Feature cards(atlassian)](https://betterlife.atlassian.net)
-  - [Code coverage(codecov)]()
+  - [Code coverage(codecov)](https://codecov.io/github/betterlife/flask-psi)
   - [Dev environment(Heroku)](http://betterlife-flask-dev.herokuapp.com/)
   - [SIT environment(Heroku)](http://betterlife-flask.herokuapp.com/)
 
