@@ -1,0 +1,12 @@
+dependencies:
+  pre:
+    - pip install -r test_requirements.txt
+database:
+  override:
+    - python manage.py db upgrade
+test:
+  override:
+    - nosetests -w test --with-coverage --cover-erase --with-xunit --xunit-file=$CIRCLE_TEST_REPORTS/results.xml
+  post:
+    - coverage html -d $CIRCLE_ARTIFACTS/coverage_html
+    - bash <(curl -s https://codecov.io/bash) -t b0607487-ef58-48c2-9efa-8538b24fcdfd
