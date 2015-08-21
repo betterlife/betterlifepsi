@@ -1,0 +1,9 @@
+venv
+*.pyc
+.idea
+newrelic.ini
+.coverage
+reports
+nosetests.xml
+.ropeproject
+coverage.xml
