@@ -1,7 +1,7 @@
 # coding=utf-8
 import unittest
 
-import config
+import app.config as config
 import os
 
 
@@ -11,9 +11,9 @@ class TestCases(unittest.TestCase):
         config.DATABASE_URL = os.environ.get('TEST_DATABASE_URL') or \
                               'postgres://flask_sit:flask_sit@localhost:5432/flask_sit'
         config.WTF_CSRF_ENABLED = False
-        from app import app
-        app.db = app.init_db_security_admin()
-        self.test_client = app.app.test_client()
+        import start
+        start.db = start.init_db_security_admin()
+        self.test_client = start.app.test_client()
 
     def tearDown(self):
         pass
