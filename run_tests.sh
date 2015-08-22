@@ -1,7 +1,7 @@
 pip install -q -r test_requirements.txt
 mkdir -p reports/coverage_html
-nosetests -w test --with-coverage
-nosetests -w test --with-coverage --cover-erase --with-xunit --with-json-extended
+nosetests -w tests --with-coverage
+nosetests -w tests --with-coverage --cover-erase --with-xunit --with-json-extended
 coverage html -d reports/coverage_html
 
 # For coveralls.io service(This is disabled by now)

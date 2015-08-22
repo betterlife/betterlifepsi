@@ -12,11 +12,5 @@ test:
     - bash <(curl -s https://codecov.io/bash) -t b0607487-ef58-48c2-9efa-8538b24fcdfd
 deployment:
   staging:
-    branch: master
     heroku:
       appname: betterlife-flask
-  development:
-    branch: /feature.*/
-    heroku:
-      appname: betterlife-flask-dev
-
