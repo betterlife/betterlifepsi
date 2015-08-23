@@ -4,50 +4,62 @@
         width: 100%
     }
 }
+
 @media (min-width: 992px) {
     .container {
-        min-width: 970px width: 100%
+        min-width: 970px width : 100 %
     }
 }
+
 @media (min-width: 1200px) {
     .container {
-        min-width: 1170px width: 100%
+        min-width: 1170px width : 100 %
     }
 }
+
 .glyphicon-pencil {
     margin-right: 10px;
 }
+
 input[name='_continue_editing'], input[name='_add_another'] {
     margin-left: 20px;
     margin-right: 20px;
 }
-#admin-navbar-collapse>.glyphicon {
+
+#admin-navbar-collapse > .glyphicon {
     padding-right: 10px;
 }
+
 .dashboard-container {
     margin-top: 150px;
     margin-bottom: 100px;
 }
+
 .dashboard-button, .dashboard-container > div > div > a {
     color: #428bca;
     width: 120px;
 }
+
 .dashboard-row .btn-default {
     border-color: #428bca;
     background-image: none;
 }
+
 .dashboard-row {
     margin-bottom: 80px;
 }
+
 .dashboard-cell {
     margin-right: 80px;
 }
+
 .flask-logo {
     padding-left: 5px;
     padding-top: 12px;
     opacity: 0.2;
     filter: alpha(opacity=20);
 }
+
 .help-block {
     color: #737373;
     /*font-family: 'Microsoft YaHei', sans-serif; */
@@ -58,10 +70,12 @@ input[name='_continue_editing'], input[name='_add_another'] {
     text-decoration: none;
     padding-left: 15px;
 }
+
 .inline-field-list a {
     color: #000000;
     text-decoration: none;
 }
+
 .accordion-toggle:before {
     /* symbol for "opening" panels */
     font-family: 'Glyphicons Halflings';
@@ -72,25 +86,32 @@ input[name='_continue_editing'], input[name='_add_another'] {
     padding-right: 20px;
     padding-top: 4px;
 }
+
 .accordion-toggle.collapsed:before {
     /* symbol for "collapsed" panels */
     content: "\e080";
 }
+
 .col-id {
     width: 70px;
 }
+
 .model-list .col-md-1 {
     width: 90px;
 }
+
 .popover {
     max-width: 750px;
 }
+
 .bottom-spacing {
     margin-bottom: 15px;
 }
+
 .input-errors ul {
     list-style: none;
 }
+
 .a_q_warning, .a_q_error, .i_a_number {
     font-weight: bolder;
     /*font-size:16px;*/
@@ -98,26 +119,32 @@ input[name='_continue_editing'], input[name='_add_another'] {
     border-radius: 4px;
     font-family: verdana, sans-serif;
 }
+
 .a_q_warning, .i_a_warning {
     background-color: yellow;
 }
+
 .a_q_error {
     background-color: rgba(255, 0, 0, .65);
     color: white
 }
+
 .col-inventory_advice {
     width: 400px;
 }
+
 #login-panel {
     margin: auto;
     margin-top: 50px;
 }
+
 #login-panel h1 {
     text-align: center;
     font-size: 36px;
     padding-bottom: 20px;
     font-family: "宋体";
 }
+
 #login-panel label[for="email"], #login-panel label[for="password"] {
     width: 200px;
     display: block;
@@ -127,22 +154,77 @@ input[name='_continue_editing'], input[name='_add_another'] {
 
 #login-panel label[for="remember"] {
     padding-right: 10px;
-    font-size:18px;
+    font-size: 18px;
     padding-top: 10px;
 }
 
 #login-panel input[type="text"], #login-panel input[type="password"] {
     width: 500px;
-    height:48px;
+    height: 48px;
     line-height: 48px;
     font-size: 24px;
     padding-left: 10px;
 }
 
- #login-panel input[type="submit"] {
-     width: 500px;
-     height:48px;
-     line-height: 48px;
-     font-size:24px;
-     padding-top: 0px;
- }
+#login-panel input[type="submit"] {
+    width: 500px;
+    height: 48px;
+    line-height: 48px;
+    font-size: 24px;
+    padding-top: 0;
+}
+
+#filedrag {
+    font-weight: bold;
+    text-align: center;
+    margin: auto;
+    margin-top: 20px;
+    color: #EDEDED;
+    border: 3px dashed #BBBBBB;
+    border-radius: 7px;
+    cursor: default;
+    width: 50%;
+    height: 220px;
+}
+
+#filedrag .glyphicon {
+    padding-right: 10px;
+    font-size: 80px;
+}
+
+#filedrag .filedrag-inner {
+    padding-top: 60px;
+    padding-bottom: 40px
+}
+
+#filedrag .drag-file-here {
+    font-size: 40px;
+    vertical-align: top;
+    display: inline-block;
+    line-height: 40px;
+    padding-top: 20px;
+}
+
+#file-drag-message {
+    font-size: 14px;
+    color: rgb(92, 184, 92);
+}
+
+#filedrag.hover {
+    border-color: #f00;
+    border-style: solid;
+    box-shadow: inset 0 3px 4px #888;
+}
+
+#triggerFile, #do-upload {
+    width: 51%;
+    margin: 20px auto;
+    border: 1px solid #DDD;
+    background: #EFEFEF;
+}
+
+.load-data-info-panel {
+    text-align: left;
+    width: 52%;
+    margin: auto auto 10px;
+}

@@ -4,7 +4,7 @@ from custom_fields import DisabledStringField
 from enum_values import EnumValuesAdmin
 from expense import ExpenseAdmin
 from incoming import IncomingAdmin
-from index import AdminIndexView
+from index import AdminIndexView, ImportStoreDataView
 from preference import PreferenceAdmin
 from product import ProductAdmin
 from product_category import ProductCategoryAdmin
@@ -49,6 +49,9 @@ def init_admin_views(app, db):
                                      category=u'主数据', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-barcode'))
     adminViews.add_view(ProductCategoryAdmin(ProductCategory, db_session, name=lazy_gettext("Product Category"),
                                              category=u'主数据', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-tags'))
+    adminViews.add_view(ImportStoreDataView(name=lazy_gettext("Import Store Data"), category=u'数据维护',
+                                         menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-shopping-cart',
+                                         endpoint='import_store_data'))
     adminViews.add_view(EnumValuesAdmin(EnumValues, db_session, name=lazy_gettext("Enum Values"),
                                         category=u'设置', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-tasks'))
     adminViews.add_view(PreferenceAdmin(Preference, db_session, name=lazy_gettext("Preference"),
