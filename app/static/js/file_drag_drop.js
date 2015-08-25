@@ -52,7 +52,7 @@ var g_files = [];
             if (f.type != "text/csv") {
                 alert('当前系统只支持CSV文件的导入');
             } else if (f.size > max_size) {
-                alert('上传文件超过系统允许的最大文件大小: ' + (parseFloat(max_size/1024/1024)).toFixed(1) + "MB");
+                alert('上传文件超过系统允许的最大文件大小: ' + (parseFloat(max_size / 1024 / 1024)).toFixed(1) + "MB");
             } else {
                 g_files.push(f);
                 ParseFile(f);
@@ -61,12 +61,25 @@ var g_files = [];
     }
 
     function UploadFile(file) {
-        var xhr = new XMLHttpRequest();
-        if (xhr.upload) {
-            xhr.open("POST", $("#upload-form").attr('action'), true);
-            xhr.setRequestHeader("X_FILENAME", encodeURIComponent(file.name));
-            xhr.send(file);
-        }
+        var reader = new FileReader();
+        reader.onload = (function (f) {
+            return function (e) {
+                $.ajax({
+                    url: $("#upload-form").attr('action'),
+                    method: 'POST',
+                    data: {content: e.target.result}
+                }).done(function (data) {
+                    var return_msg_div = $('#upload-return-message');
+                    return_msg_div.html(data);
+                    return_msg_div.show().delay(2000).hide(500);
+                });
+            };
+        })(file);
+        reader.readAsText(file);
+
+        //xhr.open("POST", $("#upload-form").attr('action'), true);
+        //xhr.setRequestHeader("X_FILENAME", encodeURIComponent(file.name));
+        //xhr.send(file);
     }
 
     function ParseFile(file) {

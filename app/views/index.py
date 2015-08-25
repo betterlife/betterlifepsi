@@ -25,4 +25,6 @@ class ImportStoreDataView(BaseView):
         if request.method == 'GET':
             return self.render('data_loading/legacy.html')
         elif request.method == 'POST':
-            return self.render('data_loading/legacy.html')
+            csv = request.form['content']
+            message = u'文件上传并导入成功'
+            return message

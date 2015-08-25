@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 {% block body %}
   <div style="padding-top: 30px;">
-    <div class="panel panel-success load-data-info-panel">
+    <div class="panel panel-info load-data-info-panel">
       <div class="panel-heading text-center panel-title">导入店铺运营数据</div>
       <div class="panel-body">
         <div class="help-block">对于不存在的供应商、商品，系统会自动创建</div>
@@ -36,13 +36,15 @@
       </div>
       <div class="form-group">
         <div class="text-center center-block">
+          <div id="upload-return-message"
+               class="glyphicon glyphicon-ok alert alert-success" role="alert" style="display:none">
+          </div>
           <button id="do-upload" class="btn-lg btn-default">
             然后，点这里导入数据
             <span class="glyphicon glyphicon-play"></span>
           </button>
         </div>
       </div>
-      <div id="messages"></div>
     </form>
   </div>
 {% endblock %}
