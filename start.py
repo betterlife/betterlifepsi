@@ -1,6 +1,9 @@
 # coding=utf-8
+import os
 from flask import Flask, redirect
 from flask_security import SQLAlchemyUserDatastore, Security
+from flask.ext.debugtoolbar import DebugToolbarExtension
+from raven.contrib.flask import Sentry
 
 app = Flask(__name__, template_folder='app/templates', static_folder='app/static')
 
@@ -13,14 +16,16 @@ from flask_babelex import Babel
 babel = Babel(default_locale='zh_Hans_CN')
 babel.init_app(app)
 
+toolbar = DebugToolbarExtension(app)
+
 db = None
 
 
 def init_db_security_admin():
-    if db is None:
+    from app.app_provider import AppInfo
+    if AppInfo.get_db() is None:
         from flask_sqlalchemy import SQLAlchemy
         v_db = SQLAlchemy(app)
-        from app.app_provider import AppInfo
         AppInfo.set_app(app)
         AppInfo.set_db(v_db)
         from app.models import User, Role
@@ -39,6 +44,10 @@ def init_db_security_admin():
 
 if not app.config['TESTING']:
     db = init_db_security_admin()
+
+# Init Sentry if not in debug mode
+if app.config['DEBUG'] is not True:
+    sentry = Sentry(app)
 
 
 @app.route('/')
