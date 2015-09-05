@@ -1,4 +1,5 @@
 # coding=utf-8
+import StringIO
 
 from flask import url_for, request
 from flask.ext.admin import BaseView
@@ -26,5 +27,9 @@ class ImportStoreDataView(BaseView):
             return self.render('data_loading/legacy.html')
         elif request.method == 'POST':
             csv = request.form['content']
+            f = StringIO.StringIO(csv)
+            reader = csv.reader(f, delimiter=',')
+            for row in reader:
+                print '\t'.join(row)
             message = u'文件上传并导入成功'
             return message

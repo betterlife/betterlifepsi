@@ -46,6 +46,11 @@ if not app.config['TESTING']:
 # Init Sentry if not in debug mode
 if app.config['DEBUG'] is not True:
     sentry = Sentry(app)
+else:
+    import logging
+    # Disable werkzeug log
+    log = logging.getLogger('werkzeug')
+    log.setLevel(logging.ERROR)
 
 
 @app.route('/')
