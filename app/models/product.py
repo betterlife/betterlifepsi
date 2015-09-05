@@ -17,6 +17,7 @@ class Product(db.Model):
     id = Column(Integer, primary_key=True)
     code = Column(String(8), unique=True, nullable=False)
     name = Column(String(128), unique=True, nullable=False)
+    external_id = Column(String(), nullable=True)
     deliver_day = Column(Integer, nullable=False)
     lead_day = Column(Integer, nullable=False)
     distinguishing_feature = Column(Text)

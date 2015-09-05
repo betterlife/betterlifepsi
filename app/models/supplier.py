@@ -5,11 +5,13 @@ from sqlalchemy.orm import backref, relationship
 
 db = AppInfo.get_db()
 
+
 class Supplier(db.Model):
     __tablename__ = 'supplier'
     id = Column(Integer, primary_key=True)
     code = Column(String(8), unique=True, nullable=False)
     name = Column(String(128), unique=True, nullable=False)
+    external_id = Column(String(), nullable=True)
     qq = Column(String(16))
     phone = Column(String(32))
     contact = Column(String(64))
@@ -24,6 +26,7 @@ class Supplier(db.Model):
 
     def __str__(self):
         return self.__unicode__()
+
 
 class PaymentMethod(db.Model):
     __tablename__ = 'payment_method'

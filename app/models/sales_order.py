@@ -4,17 +4,19 @@ from decimal import Decimal
 from app.app_provider import AppInfo
 from util import format_decimal
 from product import Product
-from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
+from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func, String
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
 db = AppInfo.get_db()
+
 
 class SalesOrder(db.Model):
     __tablename__ = 'sales_order'
     id = Column(Integer, primary_key=True)
     logistic_amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
     order_date = Column(DateTime, nullable=False)
+    external_id = Column(String(), nullable=True)
     remark = Column(Text)
 
     @hybrid_property
@@ -59,6 +61,7 @@ class SalesOrder(db.Model):
     def __unicode__(self):
         return str(self.id) + ' - ' + str(self.actual_amount)
 
+
 class SalesOrderLine(db.Model):
     __tablename__ = 'sales_order_line'
     id = Column(Integer, primary_key=True)
@@ -70,6 +73,7 @@ class SalesOrderLine(db.Model):
 
     product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
     product = relationship('Product')
+    external_id = Column(String(), nullable=True)
     remark = Column(Text)
 
     @hybrid_property
