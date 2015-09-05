@@ -156,10 +156,11 @@ class SalesOrderAdmin(ModelViewWithAccess):
         incoming = SalesOrderAdmin.create_or_update_incoming(model)
         expense = SalesOrderAdmin.create_or_update_expense(model)
         shipping = SalesOrderAdmin.create_or_update_shipping(model)
+        db = app_provider.AppInfo.get_db()
         if expense is not None:
-            app_provider.AppInfo.get_db().session.add(expense)
+            db.session.add(expense)
         if incoming is not None:
-            app_provider.AppInfo.get_db().session.add(incoming)
+            db.session.add(incoming)
         if shipping is not None:
-            app_provider.AppInfo.get_db().session.add(shipping)
-        app_provider.AppInfo.get_db().session.commit()
+            db.session.add(shipping)
+        db.session.commit()

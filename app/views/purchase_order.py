@@ -126,15 +126,16 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
 
     def after_model_change(self, form, model, is_created):
         logistic_exp, goods_exp = PurchaseOrderAdmin.create_expenses(model)
+        db = app_provider.AppInfo.get_db()
         if logistic_exp is not None:
-            app_provider.AppInfo.get_db().session.add(logistic_exp)
+            db.session.add(logistic_exp)
         if goods_exp is not None:
-            app_provider.AppInfo.get_db().session.add(goods_exp)
+            db.session.add(goods_exp)
         if model.status.code == const.PO_ISSUED_STATUS_KEY:
             receiving = PurchaseOrderAdmin.create_receiving_if_not_exist(model)
             if receiving is not None:
-                app_provider.AppInfo.get_db().session.add(receiving)
-        app_provider.AppInfo.get_db().session.commit()
+                db.session.add(receiving)
+        db.session.commit()
 
     def edit_form(self, obj=None):
         form = super(ModelView, self).edit_form(obj)

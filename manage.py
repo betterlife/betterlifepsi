@@ -18,12 +18,11 @@ from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy(app)
 from app.app_provider import AppInfo
 
-AppInfo.set_app(app)
 AppInfo.set_db(db)
 db.init_app(app)
 
 # Init Sentry if not in debug mode
-if app.config['DEBUG'] is not True:
+if not app.config.get('DEBUG'):
     sentry = Sentry(app)
 
 if __name__ == '__main__':

@@ -16,6 +16,7 @@ from app.views.base import DeleteValidator
 from wtforms import BooleanField
 from wtforms.validators import ValidationError
 
+db = AppInfo.get_db()
 
 class ReceivingLineInlineAdmin(InlineFormAdmin):
     form_args = dict(
@@ -105,7 +106,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
                 model.lines = self.create_receiving_lines(available_info)
         self.operate_inv_trans_by_recv_status(model)
         self.update_purchase_order_status(model)
-        AppInfo.get_db().session.commit()
+        db.session.commit()
 
     def update_purchase_order_status(self, model):
         if model.status.code == const.RECEIVING_COMPLETE_STATUS_KEY:
@@ -125,7 +126,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
                 po.status = EnumValues.find_one_by_code(const.PO_RECEIVED_STATUS_KEY)
             elif started is True:
                 po.status = EnumValues.find_one_by_code(const.PO_PART_RECEIVED_STATUS_KEY)
-            AppInfo.get_db().session.add(po)
+            db.session.add(po)
 
 
     def operate_inv_trans_by_recv_status(self, model):
@@ -142,7 +143,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
 
         if inv_trans is not None:
             model.inventory_transaction = inv_trans
-            AppInfo.get_db().session.add(inv_trans)
+            db.session.add(inv_trans)
 
     @staticmethod
     def save_inv_trans(model, inv_trans, set_qty_func):

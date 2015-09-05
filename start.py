@@ -26,7 +26,6 @@ def init_db_security_admin():
     if AppInfo.get_db() is None:
         from flask_sqlalchemy import SQLAlchemy
         v_db = SQLAlchemy(app)
-        AppInfo.set_app(app)
         AppInfo.set_db(v_db)
         from app.models import User, Role
         v_db.init_app(app)
@@ -36,8 +35,7 @@ def init_db_security_admin():
         Security(app, user_datastore)
 
         from app.views import init_admin_views
-        admin = init_admin_views(app, v_db)
-        AppInfo.set_admin(admin)
+        init_admin_views(app, v_db)
         return v_db
     return db
 
@@ -56,7 +54,7 @@ def hello():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=app.config['DEBUG'] or True, use_reloader=False)
 
 
 @app.before_request
