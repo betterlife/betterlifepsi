@@ -73,7 +73,6 @@ class SalesOrderLine(db.Model):
 
     product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
     product = relationship('Product')
-    external_id = Column(String(), nullable=True)
     remark = Column(Text)
 
     @hybrid_property

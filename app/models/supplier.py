@@ -11,7 +11,7 @@ class Supplier(db.Model):
     id = Column(Integer, primary_key=True)
     code = Column(String(8), unique=True, nullable=False)
     name = Column(String(128), unique=True, nullable=False)
-    external_id = Column(String(), nullable=True)
+    external_id = Column(String(), nullable=True, unique=True)
     qq = Column(String(16))
     phone = Column(String(32))
     contact = Column(String(64))

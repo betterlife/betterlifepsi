@@ -17,7 +17,7 @@ class Product(db.Model):
     id = Column(Integer, primary_key=True)
     code = Column(String(8), unique=True, nullable=False)
     name = Column(String(128), unique=True, nullable=False)
-    external_id = Column(String(), nullable=True)
+    external_id = Column(String(), nullable=True, unique=True)
     deliver_day = Column(Integer, nullable=False)
     lead_day = Column(Integer, nullable=False)
     distinguishing_feature = Column(Text)
@@ -125,7 +125,7 @@ class Product(db.Model):
                        and InventoryTransactionLine.inventory_transaction_id == InventoryTransaction.id
                        and InventoryTransaction.type_id == EnumValues.id
                        and (EnumValues.code == const.SALES_OUT_INV_TRANS_TYPE_KEY or
-                            EnumValues.code == const.PURCHASE_IN_INV_TRANS_KEY)))\
+                            EnumValues.code == const.PURCHASE_IN_INV_TRANS_KEY))) \
             .label('average_unit_profit')
 
     @hybrid_property
@@ -140,7 +140,7 @@ class Product(db.Model):
 
     @hybrid_property
     def inventory_advice(self):
-            return InventoryAdvice.advice(self)
+        return InventoryAdvice.advice(self)
 
     @inventory_advice.setter
     def inventory_advice(self, value):
@@ -223,9 +223,8 @@ class Product(db.Model):
 
     @staticmethod
     def get_next_code():
-        prd = AppInfo.get_db().session.query(Product).order_by(desc(Product.id)).first()
+        prd = db.session.query(Product).order_by(desc(Product.id)).first()
         return '{0:06d}'.format(1 + int(prd.code))
-
 
     def __unicode__(self):
         return self.supplier.name + ' - ' + self.name + ' - P:' \

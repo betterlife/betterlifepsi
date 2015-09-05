@@ -25,7 +25,7 @@ class PurchaseOrder(db.Model):
 
     @staticmethod
     def status_filter(status_codes):
-        return AppInfo.get_db().session.query(PurchaseOrder) \
+        return db.session.query(PurchaseOrder) \
             .join(EnumValues).filter(EnumValues.code.in_(status_codes))
 
     @staticmethod
@@ -133,7 +133,7 @@ class PurchaseOrderLine(db.Model):
 
     @staticmethod
     def header_filter(po_id):
-        return AppInfo.get_db().session.query(PurchaseOrderLine).filter_by(purchase_order_id=po_id)
+        return db.session.query(PurchaseOrderLine).filter_by(purchase_order_id=po_id)
 
     def __unicode__(self):
         return 'H:' + str(self.purchase_order_id) + \
