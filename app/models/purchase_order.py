@@ -25,7 +25,7 @@ class PurchaseOrder(db.Model):
 
     @staticmethod
     def status_filter(status_codes):
-        return AppInfo.get_db().session.query(PurchaseOrder)\
+        return AppInfo.get_db().session.query(PurchaseOrder) \
             .join(EnumValues).filter(EnumValues.code.in_(status_codes))
 
     @staticmethod
@@ -60,7 +60,7 @@ class PurchaseOrder(db.Model):
         return ''.join(r.__unicode__() + ", " for r in self.po_receivings)
 
     @all_receivings.setter
-    def all_expenses(self, value):
+    def all_receivings(self, value):
         pass
 
     @hybrid_property
@@ -139,5 +139,3 @@ class PurchaseOrderLine(db.Model):
         return 'H:' + str(self.purchase_order_id) + \
                ' - L:' + str(self.id) + ' - N:' + str(self.product.name) + \
                ' - Q:' + str(self.quantity) + ' - P:' + str(self.unit_price)
-
-
