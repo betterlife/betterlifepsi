@@ -1,14 +1,19 @@
 var g_files = [];
+var is_uploading = false;
 (function ($) {
+    var do_upload_button = $("#do-upload");
     $('#triggerFile').on('click', function (e) {
         e.preventDefault();
         $("#csv-file").trigger('click')
     });
-
-    $('#do-upload').on('click', function (e) {
+    do_upload_button.on('click', function (e) {
         e.preventDefault();
-        for (var i = 0; i < g_files.length; i++) {
-            UploadFile(g_files[i]);
+        if (!is_uploading) {
+            is_uploading = true;
+            do_upload_button.attr('disabled', 'disabled');
+            for (var i = 0; i < g_files.length; i++) {
+                UploadFile(g_files[i]);
+            }
         }
     });
     // call initialization file
@@ -71,7 +76,9 @@ var g_files = [];
                 }).done(function (data) {
                     var return_msg_div = $('#upload-return-message');
                     return_msg_div.html(data);
-                    return_msg_div.show().delay(2000).hide(500);
+                    return_msg_div.show().delay(5000).hide(500);
+                    is_uploading = false;
+                    do_upload_button.removeAttr('disabled');
                 });
             };
         })(file);
