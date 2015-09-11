@@ -18,6 +18,17 @@ babel.init_app(app)
 
 toolbar = DebugToolbarExtension(app)
 
+import logging
+from logging.handlers import RotatingFileHandler
+from logging import Formatter
+import os.path as op
+
+log_file = op.join(op.dirname(__file__), 'flask-psi-main.log')
+file_handler = RotatingFileHandler(filename=log_file, maxBytes=1024 * 1024 * 10, encoding='UTF-8')
+file_handler.setLevel(logging.DEBUG)
+app.logger.addHandler(file_handler)
+file_handler.setFormatter(Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
+
 db = None
 
 
