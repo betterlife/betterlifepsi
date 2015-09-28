@@ -42,5 +42,6 @@ Code Coverage History
 Special Thanks
 
   - Atlassian for providing open source license for Jira and Confluence
+  - Jetbrains for providing open source license for PyCharm(Really a charming tool)
     
 Betterlife PSI uses [MIT License](https://github.com/betterlife/flask-psi/blob/master/LICENSE)

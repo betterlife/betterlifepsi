@@ -7,3 +7,4 @@ flask_psi/reports
 nosetests.xml
 .ropeproject
 coverage.xml
+reports
