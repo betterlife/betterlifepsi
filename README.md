@@ -16,6 +16,10 @@ Try to answer follow questions:
   - Which product generates the most revenue/profit in my store and what's the data?
   - When do I need to replenish the stock and how much do I lost if that's not done?
   - What is the optimized quantity/date for replenish the stock?
+  
+How to run?
+  - For development, run python start.py
+  - For testing, run ./run_tests.py
 
 Links:
 
