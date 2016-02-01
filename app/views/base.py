@@ -26,7 +26,7 @@ class ModelViewWithAccess(ModelView):
 
     def can(self, operation='view'):
         tablename = self.model.__tablename__
-        return current_user.is_authenticated() and (
+        return current_user.is_authenticated and (
             current_user.has_role('admin') or
             current_user.has_role(tablename + '_' + operation))
 
@@ -41,7 +41,7 @@ class ModelViewWithAccess(ModelView):
         Override builtin _handle_view in order to redirect users when a view is not accessible.
         """
         if not self.is_accessible():
-            if current_user.is_authenticated():
+            if current_user.is_authenticated:
                 # permission denied
                 abort(403)
             else:

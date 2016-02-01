@@ -1,4 +1,4 @@
-"""Add external_id to product, sales_order, sales_Order_line and supplier for 3rd party system integration
+"""Add external_id to product, sales_order and supplier for 3rd party system integration
 
 Revision ID: 38571f2c12fc
 Revises: 428a1c2e88b2

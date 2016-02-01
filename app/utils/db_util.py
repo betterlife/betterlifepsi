@@ -24,14 +24,24 @@ def get_by_external_id(object_type, external_id):
     return db.session.query(object_type).filter_by(external_id=external_id).first()
 
 
+def get_by_name(object_type, val):
+    """
+    Get the first model object via query condition of name field
+    :param object_type: Object type
+    :param val: value of the name
+    :return: The object if found, otherwise None
+    """
+    return db.session.query(object_type).filter_by(name=val).first()
+
+
 def save_objects_commit(*objects):
     """
     Save object and commit to database
     :param objects: Objects to save
     """
     for obj in objects:
-        AppInfo.get_db().session.add(obj)
-    AppInfo.get_db().session.commit()
+        db.session.add(obj)
+    db.session.commit()
 
 
 def delete_by_id(obj_type, id_to_del):
@@ -41,5 +51,5 @@ def delete_by_id(obj_type, id_to_del):
     :type id_to_del: int
     """
     obj = obj_type.query.get(id_to_del)
-    AppInfo.get_db().session.delete(obj)
-    AppInfo.get_db().session.commit()
+    db.session.delete(obj)
+    db.session.commit()

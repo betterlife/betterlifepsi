@@ -1,7 +1,7 @@
 pip install -q -r test_requirements.txt
 mkdir -p reports/html
 nosetests -w tests --with-coverage --cover-html  --cover-html-dir=../reports/html --cover-branches
-nosetests -w tests --with-coverage --cover-erase --with-xunit --with-json-extended --cover-branches
+nosetests -w tests --with-coverage --cover-erase --with-xunit --cover-branches
 
 # For coveralls.io service(This is disabled by now)
 # Please make sure environment variable COVERALLS_REPO_TOKEN exists and is correct.
