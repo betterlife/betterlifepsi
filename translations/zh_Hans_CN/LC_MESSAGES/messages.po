@@ -387,3 +387,9 @@ msgstr "导入店铺运营数据"
 
 msgid "Upload and import into system successfully"
 msgstr "上传文件并导入成功"
+
+msgid "Need running advice for this product?"
+msgstr "需要针对本产品提供运营建议?"
+
+msgid "Need Running Advice"
+msgstr "需要运营建议"

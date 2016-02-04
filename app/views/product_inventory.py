@@ -1,22 +1,22 @@
 from flask.ext.babelex import lazy_gettext
 from app.views import ModelViewWithAccess
 from formatter import supplier_formatter, product_formatter, available_quantity_formatter, default_decimal_formatter
+from sqlalchemy import func
 
 
 class ProductInventoryView(ModelViewWithAccess):
-
     can_edit = False
     can_delete = False
     can_create = False
 
-    column_list = ('name', 'supplier', 'available_quantity', 'in_transit_quantity',
+    column_list = ('name', 'available_quantity', 'in_transit_quantity',
                    'average_purchase_price', 'average_retail_price', 'average_unit_profit', 'weekly_sold_qty',
                    'weekly_average_profit', 'inventory_advice')
 
     column_searchable_list = ('name', 'supplier.name',)
 
-    column_sortable_list = ('name', ('supplier', 'id'), 'available_quantity', 'in_transit_quantity',
-                            'average_purchase_price', 'average_retail_price', 'average_unit_profit',)
+    column_sortable_list = ('name', 'available_quantity', 'in_transit_quantity', 'average_purchase_price',
+                            'average_retail_price', 'average_unit_profit',)
 
     # column_filters = column_searchable_list
     column_labels = {
@@ -43,3 +43,9 @@ class ProductInventoryView(ModelViewWithAccess):
         'weekly_sold_qty': default_decimal_formatter,
         'weekly_average_profit': default_decimal_formatter
     }
+
+    def get_query(self):
+        return self.session.query(self.model).filter(self.model.need_advice == True)
+
+    def get_count_query(self):
+        return self.session.query(func.count('*')).filter(self.model.need_advice == True)

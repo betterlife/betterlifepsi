@@ -5,7 +5,7 @@ from app import const
 from enum_values import EnumValues
 from app.models.util import format_decimal, get_weeks_between
 from app.models.inventory_transaction import InventoryTransactionLine, InventoryTransaction
-from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text, select, func, desc
+from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text, select, func, desc, Boolean
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
@@ -28,6 +28,7 @@ class Product(db.Model):
     category = relationship('ProductCategory', backref=backref('products', lazy='dynamic'))
     supplier_id = Column(Integer, ForeignKey('supplier.id'), nullable=False)
     supplier = relationship('Supplier', backref=backref('products', lazy='dynamic'))
+    need_advice = Column(Boolean)
 
     @hybrid_property
     def in_transit_quantity(self):

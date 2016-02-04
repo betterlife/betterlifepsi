@@ -5,6 +5,7 @@ from sqlalchemy.orm import backref, relationship
 
 db = AppInfo.get_db()
 
+
 class ProductCategory(db.Model):
     __tablename__ = 'product_category'
     id = Column(Integer, primary_key=True)

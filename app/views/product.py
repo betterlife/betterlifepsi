@@ -3,7 +3,7 @@ from flask.ext.babelex import lazy_gettext
 from app.models.product import Product
 from app.views.formatter import supplier_formatter
 from app.views.base import ModelViewWithAccess
-from app.views.custom_fields import  DisabledStringField, CKTextAreaField, ReadonlyStringField
+from app.views.custom_fields import DisabledStringField, CKTextAreaField, ReadonlyStringField
 
 
 class ProductAdmin(ModelViewWithAccess):
@@ -33,6 +33,7 @@ class ProductAdmin(ModelViewWithAccess):
         'retail_price': lazy_gettext('Retail Price'),
         'available_quantity': lazy_gettext('Available Quantity'),
         'in_transit_quantity': lazy_gettext('In Transit Quantity'),
+        'need_advice': lazy_gettext('Need Running Advice'),
     }
 
     form_extra_fields = {
@@ -52,14 +53,16 @@ class ProductAdmin(ModelViewWithAccess):
         deliver_day=dict(description=lazy_gettext('Days for the product from shipped to arrive the store')),
         lead_day=dict(description=lazy_gettext('Days from the day we contact supplier to the day they begin to '
                                                'ship product')),
-        code=dict(description=lazy_gettext('Product code is generated automatically'))
+        code=dict(description=lazy_gettext('Product code is generated automatically')),
+        need_advice=dict(description=lazy_gettext('Need running advice for this product?'))
     )
 
     column_list = ('id', 'supplier', 'category', 'code', 'name', 'lead_day', 'deliver_day', 'purchase_price',
                    'retail_price', 'available_quantity', 'in_transit_quantity',)
 
     form_columns = ('category', 'supplier', 'code', 'name', 'lead_day', 'deliver_day', 'purchase_price',
-                    'retail_price', 'available_quantity', 'in_transit_quantity', 'spec_link', 'distinguishing_feature')
+                    'retail_price', 'available_quantity', 'in_transit_quantity', 'spec_link', 'need_advice',
+                    'distinguishing_feature',)
 
     form_create_rules = (
         'category', 'supplier', 'code', 'name', 'lead_day', 'deliver_day',
