@@ -19,8 +19,8 @@
     }
 }
 
-.glyphicon-pencil {
-    margin-right: 10px;
+.glyphicon-pencil, .glyphicon-eye-open {
+    margin-right: 5px;
 }
 
 input[name='_continue_editing'], input[name='_add_another'] {

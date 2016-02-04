@@ -24,6 +24,14 @@ class ModelViewWithAccess(ModelView):
     def can_edit(self):
         return self.can(operation='edit')
 
+    @property
+    def can_export(self):
+        return False
+
+    @property
+    def can_view_details(self):
+        return True
+
     def can(self, operation='view'):
         tablename = self.model.__tablename__
         return current_user.is_authenticated and (
@@ -47,6 +55,7 @@ class ModelViewWithAccess(ModelView):
             else:
                 # login
                 return redirect(url_for('security.login', next=request.url))
+
 
 class DeleteValidator(object):
     @staticmethod
