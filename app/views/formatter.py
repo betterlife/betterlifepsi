@@ -71,8 +71,11 @@ def _obj_formatter_str(view, context, model, value=None, model_name=None, title=
                     detail_str += '</tr>'
                 detail_str += '</table>'
         str_result += detail_str
-        return "<a href='%s' data-toggle='popover' title='[ %s ] 详情 <span style=\"float:right\"><a href=\"%s\" target=\"_blank\">编辑</a></span>' data-content='%s'>[ %s ]</a>"\
-               % ('#', title, url_for(model_name + '.edit_view', id=value.id), str_result, title)
+        return "<a href='%s' data-toggle='popover' title='[ %s ] 详情 <span style=\"float:right\">" \
+               "<a href=\"%s\" target=\"_blank\"><span class=\"fa fa-eye glyphicon glyphicon-eye-open\"></span></a>&nbsp;&nbsp;" \
+               "<a href=\"%s\" target=\"_blank\"><span class=\"fa fa-pencil glyphicon glyphicon-pencil\"></span></a>" \
+               "</span>' data-content='%s'>[ %s ]</a>"\
+               % ('#', title, url_for(model_name + '.details_view', id=value.id), url_for(model_name + '.edit_view', id=value.id), str_result, title)
     return ''
 
 
