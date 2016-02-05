@@ -4,7 +4,7 @@ import csv
 from datetime import datetime
 from decimal import Decimal
 
-import const
+from app import const
 from app import config
 from app.models import Supplier, Product, SalesOrder, SalesOrderLine, Shipping, ShippingLine, InventoryTransaction, \
     InventoryTransactionLine, \

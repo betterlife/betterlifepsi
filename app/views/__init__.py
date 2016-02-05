@@ -20,7 +20,7 @@ from formatter import *
 from app.models import *
 from flask.ext.admin import Admin
 from flask.ext.admin.consts import ICON_TYPE_GLYPH
-from views.import_store_data import ImportStoreDataView
+from import_store_data import ImportStoreDataView
 
 
 def init_admin_views(app, db):
