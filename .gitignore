@@ -8,3 +8,4 @@ nosetests.xml
 .ropeproject
 coverage.xml
 reports
+*.log

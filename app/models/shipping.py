@@ -27,7 +27,7 @@ class Shipping(db.Model):
 
     inventory_transaction_id = Column(Integer, ForeignKey('inventory_transaction.id'), nullable=True)
     inventory_transaction = relationship('InventoryTransaction',
-                                         backref=backref('it_shipping', uselist=False,))
+                                         backref=backref('it_shipping', uselist=False, ))
 
     @staticmethod
     def status_filter():
@@ -71,7 +71,8 @@ class Shipping(db.Model):
             itl.in_transit_quantity = 0
             itl.inventory_transaction = it
             line.inventory_transaction_line = itl
-        app_provider.AppInfo.get_db().session.add(it)
+        AppInfo.get_db().session.add(it)
+
 
 class ShippingLine(db.Model):
     __tablename = 'shipping_line'
@@ -86,11 +87,12 @@ class ShippingLine(db.Model):
     shipping = relationship('Shipping', backref=backref('lines', uselist=True, cascade='all, delete-orphan'))
 
     sales_order_line_id = Column(Integer, ForeignKey('sales_order_line.id'), nullable=False)
-    sales_order_line = relationship('SalesOrderLine', backref=backref('sol_shipping_line', uselist=False,))
+    sales_order_line = relationship('SalesOrderLine', backref=backref('sol_shipping_line', uselist=False, ))
 
     inventory_transaction_line_id = Column(Integer, ForeignKey('inventory_transaction_line.id'), nullable=True)
     inventory_transaction_line = relationship('InventoryTransactionLine', backref=backref('itl_shipping_line',
-                                                                                          uselist=False,))
+                                                                                          uselist=False, ))
+
     @hybrid_property
     def total_amount(self):
         if self.quantity is None:

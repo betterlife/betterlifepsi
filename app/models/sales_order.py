@@ -55,7 +55,7 @@ class SalesOrder(db.Model):
         pass
 
     @hybrid_property
-    def all_shippings(self):
+    def so_shipping_str(self):
         return self.so_shipping.__unicode__()
 
     def __unicode__(self):
@@ -70,6 +70,8 @@ class SalesOrderLine(db.Model):
 
     sales_order_id = Column(Integer, ForeignKey('sales_order.id'), nullable=False)
     sales_order = relationship('SalesOrder', backref=backref('lines', cascade='all, delete-orphan'))
+
+    external_id = Column(String(), nullable=True)
 
     product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
     product = relationship('Product')

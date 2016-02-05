@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship
 
 db = AppInfo.get_db()
 
+
 class Preference(db.Model):
     __tablename__ = 'preference'
     id = Column(Integer, primary_key=True)

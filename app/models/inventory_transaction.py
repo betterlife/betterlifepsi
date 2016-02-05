@@ -11,6 +11,7 @@ from sqlalchemy.orm import backref, relationship
 
 db = AppInfo.get_db()
 
+
 class InventoryTransaction(db.Model):
     __tablename__ = 'inventory_transaction'
     id = Column(Integer, primary_key=True)
@@ -46,8 +47,8 @@ class InventoryTransaction(db.Model):
 class InventoryTransactionLine(db.Model):
     __tablename = 'inventory_transaction_line'
     id = Column(Integer, primary_key=True)
-    in_transit_quantity = Column( Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=True)
-    quantity = Column( Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=True)
+    in_transit_quantity = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=True)
+    quantity = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=True)
     product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
     product = relationship('Product', backref=backref('inventory_transaction_lines'))
     price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
@@ -86,7 +87,7 @@ class InventoryTransactionLine(db.Model):
 
     @total_amount.expression
     def total_amount(self):
-        return select([self.price * (self.quantity + self.in_transit_quantity)])\
+        return select([self.price * (self.quantity + self.in_transit_quantity)]) \
             .label('line_total_amount')
 
     @total_amount.setter
