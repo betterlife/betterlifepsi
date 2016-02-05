@@ -9,13 +9,13 @@ from app.views.custom_fields import DisabledStringField, CKTextAreaField, Readon
 class ProductAdmin(ModelViewWithAccess):
     column_editable_list = ['name', 'deliver_day', 'lead_day', 'distinguishing_feature',
                             'spec_link', 'purchase_price', 'retail_price']
-    column_searchable_list = ('code', 'name', 'supplier.name', 'category.name', 'category.code')
+    column_searchable_list = ['code', 'name', 'supplier.name', 'category.name', 'category.code']
 
     column_sortable_list = ('id', 'code', 'name', ('supplier', 'id'), ('category', 'code'),
                             'deliver_day', 'lead_day', 'purchase_price', 'retail_price',
                             'available_quantity', 'in_transit_quantity',)
 
-    # column_filters = column_searchable_list
+    column_filters = column_searchable_list
     column_labels = {
         'id': lazy_gettext('id'),
         'supplier.name': lazy_gettext('Supplier Name'),
