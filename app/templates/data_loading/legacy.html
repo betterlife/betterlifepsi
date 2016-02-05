@@ -1,0 +1,54 @@
+{% extends 'layout.html' %}
+{% block body %}
+  <div style="padding-top: 30px;">
+    <div class="panel panel-info load-data-info-panel">
+      <div class="panel-heading text-center panel-title">导入店铺运营数据</div>
+      <div class="panel-body">
+        <div class="help-block">对于不存在的供应商、商品，系统会自动创建</div>
+        <div class="help-block">
+          系统会根据店铺运营数据创建如下的对象
+          <ul>
+            <li>销售订单及销售单行</li>
+            <li>发货单及发货单行</li>
+            <li>收入</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <form action="{{ url_for('import_store_data.index') }}" method="POST" id="upload-form"
+          class="admin-form form-horizontal" enctype="multipart/form-data">
+      <div class="text-center">
+        <input type="hidden" name="MAX_FILE_SIZE" id="MAX_FILE_SIZE" value="10240000"/>
+        <input type="file" name="csv-file" id="csv-file" class="hide" style="display:none"/>
+        <button id="triggerFile" class="btn-lg btn-default">
+          <span class="glyphicon glyphicon-upload"></span>
+          点这里选择文件，或者直接
+        </button>
+      </div>
+      <div class="form-group">
+        <div id="filedrag">
+          <div class="filedrag-inner">
+            <span class="glyphicon glyphicon-paperclip"></span>
+            <span class="drag-file-here">把文件拖到这里</span>
+          </div>
+          <div id="file-drag-message"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="text-center center-block">
+          <div id="upload-return-message"
+               class="glyphicon glyphicon-ok alert alert-success" role="alert" style="display:none">
+          </div>
+          <button id="do-upload" class="btn-lg btn-default">
+            然后，点这里导入数据
+            <span class="glyphicon glyphicon-play"></span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock %}
+{% block tail %}
+  {{ super() }}
+  <script src="{{ url_for('static', filename='js/file_drag_drop.js') }}"></script>
+{% endblock %}

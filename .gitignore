@@ -3,7 +3,9 @@ venv
 .idea
 newrelic.ini
 .coverage
-reports
+flask_psi/reports
 nosetests.xml
 .ropeproject
 coverage.xml
+reports
+*.log

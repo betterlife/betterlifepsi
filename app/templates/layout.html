@@ -1,0 +1,31 @@
+{% import 'admin/layout.html' as layout with context -%}
+{% extends 'admin/base.html' %}
+
+{% block head_tail %}
+  {{ super() }}
+  <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='favicon.ico') }}" rel="icon" type="image/x-icon">
+{% endblock %}
+
+{% block tail %}
+  {{ super() }}
+  <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+{% endblock %}
+
+{% block access_control %}
+  {% if current_user.is_authenticated %}
+    <ul class="nav navbar-nav pull-right">
+      <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)">
+          <i class="glyphicon glyphicon-user"></i> {{ current_user.display }} <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+          <li>
+            <a href="{{ url_for_security('logout') }}"><i class='glyphicon glyphicon-log-out'></i> Log out</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  {% endif %}
+{% endblock %}

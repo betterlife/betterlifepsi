@@ -9,28 +9,28 @@ from flask.ext.script import Manager
 #   - migrate DB.
 app = Flask(__name__)
 
-import config
+import app.config as config
+
 app.config.from_object(config)
 
 from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy(app)
-from app_provider import AppInfo
-AppInfo.set_app(app)
+from app.app_provider import AppInfo
+
 AppInfo.set_db(db)
-from models import *
+from app.models import *
 db.init_app(app)
 
-migrate = Migrate(app, db)
-manager = Manager(app)
-manager.add_command('db', MigrateCommand)
-
 # Init Sentry if not in debug mode
-if app.config['DEBUG'] is not True:
-    app.config['SENTRY_DSN'] = 'https://9f6d2c7e33f24b77baba8a3e17a6dcfa:0afc65c1b9124c61adae430fad653718@app.getsentry.com/50555'
+if not app.config.get('DEBUG'):
     sentry = Sentry(app)
 
 if __name__ == '__main__':
+    migrate = Migrate(app, db)
+    manager = Manager(app)
+    manager.add_command('db', MigrateCommand)
     manager.run()
+
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
