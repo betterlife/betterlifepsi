@@ -13,6 +13,8 @@ class UserAdmin(ModelViewWithAccess):
 
     column_editable_list = ('display', 'email', 'active')
 
+    column_details_list = ('id', 'login', 'display', 'email', 'active', 'roles', )
+
     column_labels = dict(
         id=lazy_gettext('id'),
         login=lazy_gettext('Login Name'),
@@ -68,3 +70,5 @@ class RoleAdmin(ModelViewWithAccess):
         users=lazy_gettext('User')
     )
     column_editable_list = ('description',)
+
+    column_details_list = ('id', 'name', 'description', 'users')

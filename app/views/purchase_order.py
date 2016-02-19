@@ -50,6 +50,10 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
     column_sortable_list = ('id', 'logistic_amount', 'total_amount', ('status', 'status.display'),
                             'goods_amount', 'order_date', ('supplier', 'supplier.id'),)
     form_excluded_columns = ('expenses', 'receivings')
+
+    column_details_list = ('id', 'supplier', 'status', 'logistic_amount', 'order_date', 'goods_amount', 'total_amount',
+                           'remark', 'lines', 'all_expenses', 'all_receivings')
+
     column_labels = {
         'id': lazy_gettext('id'),
         'logistic_amount': lazy_gettext('Logistic Amount'),
@@ -144,14 +148,14 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
         form.lines.form.product.kwargs['query_factory'] = partial(Product.supplier_filter, supplier_id)
         # Set option list of status available
         if obj.status.code == const.PO_RECEIVED_STATUS_KEY:
-            form.status.query = [EnumValues.find_one_by_code(const.PO_RECEIVED_STATUS_KEY),]
+            form.status.query = [EnumValues.find_one_by_code(const.PO_RECEIVED_STATUS_KEY), ]
         elif obj.status.code == const.PO_PART_RECEIVED_STATUS_KEY:
-            form.status.query = [EnumValues.find_one_by_code(const.PO_PART_RECEIVED_STATUS_KEY),]
+            form.status.query = [EnumValues.find_one_by_code(const.PO_PART_RECEIVED_STATUS_KEY), ]
         elif obj.status.code == const.PO_ISSUED_STATUS_KEY:
-            form.status.query = [EnumValues.find_one_by_code(const.PO_ISSUED_STATUS_KEY),]
+            form.status.query = [EnumValues.find_one_by_code(const.PO_ISSUED_STATUS_KEY), ]
         elif obj.status.code == const.PO_DRAFT_STATUS_KEY:
             form.status.query = [EnumValues.find_one_by_code(const.PO_ISSUED_STATUS_KEY),
-                                 EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY),]
+                                 EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY), ]
         # Set product query option for old lines(forbid to change product for existing line)
         line_entries = form.lines.entries
         products = Product.supplier_filter(supplier_id).all()
@@ -161,7 +165,7 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
 
     def create_form(self, obj=None):
         form = super(ModelView, self).create_form(obj)
-        form.status.query = [EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY),]
+        form.status.query = [EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY), ]
         return form
 
     def on_model_change(self, form, model, is_created):

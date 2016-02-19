@@ -8,6 +8,7 @@ from flask.ext.babelex import lazy_gettext
 from app.models import Preference, Incoming, Expense, Shipping, ShippingLine, EnumValues
 from app.views import ModelViewWithAccess, DisabledStringField
 from formatter import expenses_formatter, incoming_formatter, shipping_formatter, default_date_formatter
+from views.custom_fields import ReadonlyStringField
 
 
 class SalesOrderLineInlineAdmin(InlineFormAdmin):
@@ -16,9 +17,11 @@ class SalesOrderLineInlineAdmin(InlineFormAdmin):
         unit_price=dict(label=lazy_gettext('Unit Price')),
         quantity=dict(label=lazy_gettext('Quantity')),
         remark=dict(label=lazy_gettext('Remark')),
+        external_id=dict(label=lazy_gettext('External Id')),
     )
 
     def postprocess_form(self, form):
+        form.external_id = DisabledStringField(label=lazy_gettext('External Id'))
         form.retail_price = DisabledStringField(label=lazy_gettext('Retail Price'))
         form.price_discount = DisabledStringField(label=lazy_gettext('Price Discount'))
         form.original_amount = DisabledStringField(label=lazy_gettext('Original Amount'))
@@ -36,11 +39,15 @@ class SalesOrderAdmin(ModelViewWithAccess):
                    'discount_amount', 'order_date', 'incoming', 'expense', 'so_shipping', 'remark')
     # column_filters = ('order_date', 'remark', 'logistic_amount')
 
-    form_columns = ('logistic_amount', 'order_date', 'remark', 'actual_amount', 'original_amount',
-                    'discount_amount', 'lines')
-    form_edit_rules = ('logistic_amount', 'order_date', 'remark', 'actual_amount',
+    form_columns = ('id', 'external_id', 'logistic_amount', 'order_date', 'remark', 'actual_amount',
+                    'original_amount', 'discount_amount', 'lines')
+    form_edit_rules = ('external_id', 'logistic_amount', 'order_date', 'remark', 'actual_amount',
                        'original_amount', 'discount_amount', 'lines')
     form_create_rules = ('logistic_amount', 'order_date', 'remark', 'lines',)
+
+    column_details_list = ('id', 'external_id', 'logistic_amount', 'order_date', 'remark', 'actual_amount',
+                           'original_amount', 'discount_amount', 'incoming', 'expense', 'so_shipping', 'lines',)
+
     column_editable_list = ('remark',)
 
     form_extra_fields = {
@@ -48,6 +55,9 @@ class SalesOrderAdmin(ModelViewWithAccess):
         'original_amount': DisabledStringField(label=lazy_gettext('Original Amount')),
         'discount_amount': DisabledStringField(label=lazy_gettext('Discount Amount'))
     }
+
+    form_overrides = dict(external_id=ReadonlyStringField)
+
     form_args = dict(
         logistic_amount=dict(default=0),
         order_date=dict(default=datetime.now())
@@ -76,6 +86,7 @@ class SalesOrderAdmin(ModelViewWithAccess):
         'expense': lazy_gettext('Related Expense'),
         'so_shipping': lazy_gettext('Related Shipping'),
         'lines': lazy_gettext('Lines'),
+        'external_id': lazy_gettext('External Id'),
     }
 
     def create_form(self, obj=None):
