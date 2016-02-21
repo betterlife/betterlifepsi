@@ -12,4 +12,4 @@ class AdminIndexView(admin.AdminIndexView):
     def index(self):
         if not current_user.is_authenticated:
             return redirect(url_for_security('login'))
-        return redirect(url_for('product_inventory.index_view'))
+        return self.render('dashboard.html')
