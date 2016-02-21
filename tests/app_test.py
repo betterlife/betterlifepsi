@@ -42,8 +42,9 @@ class TestCases(unittest.TestCase):
         self.assertEqual(200, rv.status_code)
         self.assertIn('Log out', rv.data)
         self.assertIn('首页', rv.data)
-        self.assertIn('运营诊断', rv.data)
-        self.assertIn('周售量', rv.data)
+        self.assertIn('店铺重点产品运营诊断', rv.data)
+        self.assertIn('采购及支出', rv.data)
+        self.assertIn('数据管理', rv.data)
 
     def test_login_user_not_exist(self):
         rv = self.test_client.post('/login',
