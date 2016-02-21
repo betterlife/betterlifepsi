@@ -8,6 +8,7 @@ class ProductInventoryView(ModelViewWithAccess):
     can_edit = False
     can_delete = False
     can_create = False
+    can_view_details = False
 
     column_list = ('name', 'available_quantity', 'in_transit_quantity',
                    'average_purchase_price', 'average_retail_price', 'average_unit_profit', 'weekly_sold_qty',
