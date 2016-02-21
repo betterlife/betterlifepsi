@@ -13,7 +13,7 @@ class ProductCategory(db.Model):
     name = Column(String(128), unique=True, nullable=False)
     parent_id = Column(Integer, ForeignKey('product_category.id'))
     parent_category = relationship('ProductCategory', remote_side=id,
-                                   backref=backref('sub_categories', lazy='dynamic'))
+                                   backref=backref('sub_categories', lazy='joined'))
 
     def __unicode__(self):
         return self.code.encode('utf-8') + " - " + self.name.encode('utf-8')

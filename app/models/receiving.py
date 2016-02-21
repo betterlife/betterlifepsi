@@ -22,7 +22,7 @@ class Receiving(db.Model):
     status = relationship('EnumValues', foreign_keys=[status_id])
 
     purchase_order_id = Column(Integer, ForeignKey('purchase_order.id'), nullable=False)
-    purchase_order = relationship('PurchaseOrder', backref=backref('po_receivings', uselist=True,))
+    purchase_order = relationship('PurchaseOrder', backref=backref('po_receivings', uselist=True, ))
 
     inventory_transaction_id = Column(Integer, ForeignKey('inventory_transaction.id'), nullable=True)
     inventory_transaction = relationship('InventoryTransaction',
@@ -105,6 +105,12 @@ class Receiving(db.Model):
             recv_l.inventory_transaction_line = trans_l
         return recv
 
+    def __repr__(self):
+        return u"采购单: " + self.purchase_order_id + u", 供应商: " + self.supplier.name + u", 日期: " + self.date.strftime("%Y/%m/%d")
+
+    def __unicode__(self):
+        return self.__repr__()
+
 
 class ReceivingLine(db.Model):
     __tablename = 'receiving_line'
@@ -125,6 +131,12 @@ class ReceivingLine(db.Model):
     inventory_transaction_line = relationship('InventoryTransactionLine',
                                               backref=backref('itl_receiving_line', uselist=False,
                                                               cascade='all, delete-orphan'))
+
+    def __repr__(self):
+        return "{0:s}{1:.0f}个(价格{2:.2f}元)".format(self.product.name, self.quantity, self.price)
+
+    def __unicode__(self):
+        return self.__repr__()
 
     @hybrid_property
     def total_amount(self):

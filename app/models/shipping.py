@@ -93,6 +93,9 @@ class ShippingLine(db.Model):
     inventory_transaction_line = relationship('InventoryTransactionLine', backref=backref('itl_shipping_line',
                                                                                           uselist=False, ))
 
+    def __repr__(self):
+        return "{0:s}{1:f}个(价格{2:f}元)".format(self.product.name, self.quantity, self.price)
+
     @hybrid_property
     def total_amount(self):
         if self.quantity is None:

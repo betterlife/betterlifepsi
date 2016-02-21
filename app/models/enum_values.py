@@ -12,7 +12,7 @@ class EnumValues(db.Model):
     id = Column(Integer, primary_key=True)
     type_id = Column(Integer, ForeignKey('enum_values.id'))
     type = relationship('EnumValues', remote_side=id,
-                        backref=backref('type_values', lazy='dynamic'))
+                        backref=backref('type_values', lazy='joined'))
     code = Column(String(32), unique=True, nullable=False)
     display = Column(String(64), nullable=False)
 

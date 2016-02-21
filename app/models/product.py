@@ -25,7 +25,7 @@ class Product(db.Model):
     purchase_price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
     retail_price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
     category_id = Column(Integer, ForeignKey('product_category.id'), nullable=False)
-    category = relationship('ProductCategory', backref=backref('products', lazy='dynamic'))
+    category = relationship('ProductCategory', backref=backref('products', lazy='joined'))
     supplier_id = Column(Integer, ForeignKey('supplier.id'), nullable=False)
     supplier = relationship('Supplier', backref=backref('products', lazy='dynamic'))
     need_advice = Column(Boolean)
