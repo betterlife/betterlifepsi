@@ -13,7 +13,8 @@ class UserAdmin(ModelViewWithAccess):
 
     column_list = ('id', 'login', 'display', 'email', 'active',)
 
-    column_editable_list = ('display', 'email', 'active')
+    # Not working by now
+    # column_editable_list = ('display', 'email', 'active')
 
     column_details_list = ('id', 'login', 'display', 'email', 'active', 'roles',)
 
