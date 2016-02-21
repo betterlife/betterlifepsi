@@ -1,8 +1,10 @@
 # coding=utf-8
 from flask.ext.babelex import lazy_gettext
 from app.views import ModelViewWithAccess
+from flask.ext.security.utils import encrypt_password
 from wtforms import PasswordField
 from werkzeug.security import generate_password_hash
+
 
 # Customized User model for SQL-Admin
 class UserAdmin(ModelViewWithAccess):
@@ -13,7 +15,7 @@ class UserAdmin(ModelViewWithAccess):
 
     column_editable_list = ('display', 'email', 'active')
 
-    column_details_list = ('id', 'login', 'display', 'email', 'active', 'roles', )
+    column_details_list = ('id', 'login', 'display', 'email', 'active', 'roles',)
 
     column_labels = dict(
         id=lazy_gettext('id'),
@@ -38,7 +40,6 @@ class UserAdmin(ModelViewWithAccess):
     # There are two reasons for this. First, we want to encrypt the password before storing in the database. Second,
     # we want to use a password field (with the input masked) rather than a regular text field.
     def scaffold_form(self):
-
         # Start with the standard form as provided by Flask-Admin. We've already told Flask-Admin to exclude the
         # password field from this form.
         form_class = super(UserAdmin, self).scaffold_form()
@@ -52,17 +53,20 @@ class UserAdmin(ModelViewWithAccess):
     # This callback executes when the user saves changes to a newly-created or edited User -- before the changes are
     # committed to the database.
     def on_model_change(self, form, model, is_created):
-
         # If the password field isn't blank...
         if len(model.password2):
             # ... then encrypt the new password prior to storing it in the database. If the password field is blank,
             # the existing password in the database will be retained.
-            model.password = generate_password_hash(model.password2)
+            model.password = encrypt_password(model.password2)
+
 
 # Customized Role model for SQL-Admin
 class RoleAdmin(ModelViewWithAccess):
     # Prevent administration of Roles unless the currently logged-in user has the "admin" role
     column_list = ('id', 'name', 'description',)
+
+    column_searchable_list = ('name', 'description',)
+
     column_labels = dict(
         id=lazy_gettext('id'),
         name=lazy_gettext('Name'),
