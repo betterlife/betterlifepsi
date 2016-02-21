@@ -40,6 +40,8 @@ class InventoryTransactionAdmin(ModelViewWithAccess):
     form_create_rules = ('type', 'date', 'remark', 'lines',)
     column_editable_list = ('remark',)
 
+    column_details_list = ('id', 'type', 'date', 'total_amount', 'remark', 'lines', 'it_receiving', 'it_shipping',)
+
     column_labels = {
         'id': lazy_gettext('id'),
         'type': lazy_gettext('Inventory Transaction Type'),

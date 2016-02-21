@@ -9,6 +9,9 @@ class ProductCategoryAdmin(ModelViewWithAccess):
     column_searchable_list = ('code', 'name')
     # column_filters = ('code','name')
     column_editable_list = ['code', 'name']
+
+    column_details_list = ['id', 'name', 'code', 'parent_category', 'sub_categories', 'products']
+
     column_labels = {
         'id': lazy_gettext('id'),
         'name': lazy_gettext('Name'),

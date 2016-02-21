@@ -35,7 +35,9 @@ class ExpenseAdmin(ModelViewWithAccess):
         'category.display': lazy_gettext('Category'),
         'has_invoice': lazy_gettext('Has Invoice'),
     }
-    # column_filters = ('has_invoice','date','amount','category.display',)
+
+    column_filters = ['date', 'amount', 'category.display']
+
     form_excluded_columns = ('sales_order', 'purchase_order',)
 
     column_formatters = {

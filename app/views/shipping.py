@@ -28,12 +28,12 @@ class ShippingLineInlineAdmin(InlineFormAdmin):
 class ShippingAdmin(ModelViewWithAccess):
     inline_models = (ShippingLineInlineAdmin(ShippingLine),)
     column_list = ('id', 'status', 'date', 'total_amount', 'sales_order', 'inventory_transaction', 'remark')
-    column_editable_list = ('remark',)
-    can_edit = True
+
+    can_edit = False
     can_create = False
     can_delete = False
 
-    form_columns = ('sales_order', 'status', 'date', 'inventory_transaction', 'total_amount', 'remark', 'lines')
+    form_columns = ('sales_order', 'status', 'date', 'total_amount', 'remark', 'lines')
     form_extra_fields = {
         "total_amount": DisabledStringField(label=lazy_gettext('Total Amount')),
     }
@@ -49,6 +49,9 @@ class ShippingAdmin(ModelViewWithAccess):
         'inventory_transaction': lazy_gettext('Inventory Transaction'),
         'lines': lazy_gettext('Lines'),
     }
+
+    column_details_list = ('id', 'sales_order', 'status', 'date', 'total_amount', 'remark', 'lines', 'inventory_transaction')
+
     form_args = dict(
         status=dict(query_factory=Shipping.status_filter,),
         date=dict(default=datetime.now()),

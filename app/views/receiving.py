@@ -18,6 +18,7 @@ from wtforms.validators import ValidationError
 
 db = AppInfo.get_db()
 
+
 class ReceivingLineInlineAdmin(InlineFormAdmin):
     form_args = dict(
         purchase_order_line=dict(label=lazy_gettext('Purchase Order Line')),
@@ -56,6 +57,9 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
         'transient_po': DisabledStringField(label=lazy_gettext('Related Purchase Order')),
         "total_amount": DisabledStringField(label=lazy_gettext('Total Amount')),
     }
+
+    column_details_list = ('id', 'supplier', 'date', 'status', 'total_amount', 'remark', 'lines',
+                           'purchase_order', 'inventory_transaction',)
     form_widget_args = {
         'create_lines': {'default': True},
     }
@@ -127,7 +131,6 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
             elif started is True:
                 po.status = EnumValues.find_one_by_code(const.PO_PART_RECEIVED_STATUS_KEY)
             db.session.add(po)
-
 
     def operate_inv_trans_by_recv_status(self, model):
         inv_trans = None
@@ -234,7 +237,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
 
     def create_form(self, obj=None):
         form = super(ModelView, self).create_form(obj)
-        form.status.query = [EnumValues.find_one_by_code(const.RECEIVING_DRAFT_STATUS_KEY),]
+        form.status.query = [EnumValues.find_one_by_code(const.RECEIVING_DRAFT_STATUS_KEY), ]
         form.create_lines.data = True
         return form
 
@@ -242,10 +245,10 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
         form = super(ModelView, self).edit_form(obj)
         po_id = obj.transient_po.id
         # Set query_factory for newly added line
-        form.lines.form.purchase_order_line.kwargs['query_factory'] =\
+        form.lines.form.purchase_order_line.kwargs['query_factory'] = \
             partial(PurchaseOrderLine.header_filter, po_id)
         if obj is not None and obj.status is not None and obj.status.code == const.RECEIVING_COMPLETE_STATUS_KEY:
-            form.status.query = [EnumValues.find_one_by_code(const.RECEIVING_COMPLETE_STATUS_KEY),]
+            form.status.query = [EnumValues.find_one_by_code(const.RECEIVING_COMPLETE_STATUS_KEY), ]
         # Set query option for old lines
         line_entries = form.lines.entries
         po_lines = PurchaseOrderLine.header_filter(po_id).all()
