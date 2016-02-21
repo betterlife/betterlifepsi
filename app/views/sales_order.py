@@ -8,7 +8,7 @@ from flask.ext.babelex import lazy_gettext
 from app.models import Preference, Incoming, Expense, Shipping, ShippingLine, EnumValues
 from app.views import ModelViewWithAccess, DisabledStringField
 from formatter import expenses_formatter, incoming_formatter, shipping_formatter, default_date_formatter
-from views.custom_fields import ReadonlyStringField
+from app.views.custom_fields import ReadonlyStringField
 
 
 class SalesOrderLineInlineAdmin(InlineFormAdmin):

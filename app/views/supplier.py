@@ -2,7 +2,7 @@
 from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext
 from app.views import ModelViewWithAccess
-from views.custom_fields import ReadonlyStringField
+from app.views.custom_fields import ReadonlyStringField
 
 
 class PaymentMethodLineInlineAdmin(InlineFormAdmin):
