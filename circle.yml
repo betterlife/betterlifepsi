@@ -19,3 +19,4 @@ deployment:
     branch: master
     heroku:
       appname: betterlife-flask
+      appname: betterlife-flask-dev
