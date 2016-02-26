@@ -18,16 +18,14 @@ babel.init_app(app)
 
 toolbar = DebugToolbarExtension(app)
 
-import logging
-from logging.handlers import RotatingFileHandler
-from logging import Formatter
 import os.path as op
 
-log_file = op.join(op.dirname(__file__), 'flask-psi-main.log')
-file_handler = RotatingFileHandler(filename=log_file, maxBytes=1024 * 1024 * 10, encoding='UTF-8')
-file_handler.setLevel(logging.DEBUG)
-app.logger.addHandler(file_handler)
-file_handler.setFormatter(Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
+import logging
+from logging import StreamHandler
+
+log_handler = StreamHandler()
+app.logger.setLevel(logging.DEBUG)  # set the desired logging level here
+app.logger.addHandler(log_handler)
 
 db = None
 
@@ -59,6 +57,7 @@ if app.config['DEBUG'] is not True:
     sentry = Sentry(app)
 else:
     import logging
+
     # Disable werkzeug log
     log = logging.getLogger('werkzeug')
     log.setLevel(logging.ERROR)
