@@ -1,5 +1,5 @@
 # coding=utf-8
-"""增加某产品是否需要运营建议的选项, 在销售订单行中增加外部id
+"""Add need advice setting on production level, add external_id on sales order line
 
 Revision ID: faa0a5506a14
 Revises: 38571f2c12fc
