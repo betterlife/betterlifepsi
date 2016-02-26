@@ -22,9 +22,6 @@ def upgrade():
                                  sa.Column('type_id', sa.Integer(), nullable=True),
                                  sa.Column('code', sa.String(length=32), nullable=True),
                                  sa.Column('display', sa.String(length=64), nullable=False),
-                                 sa.ForeignKeyConstraint(['type_id'], ['enum_values.id'], ),
-                                 sa.PrimaryKeyConstraint('id'),
-                                 sa.UniqueConstraint('code'),
                                  )
     op.bulk_insert(enum_values_table, [
         {'id': 14, 'type_id': 1, 'code': 'INVENTORY_TRANSACTION_TYPE', 'display': u'库存变动类型'},
