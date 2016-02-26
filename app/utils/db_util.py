@@ -11,6 +11,8 @@ def get_next_code(object_type):
     :return: Value of next available code field(current max code plus 1 and format to 6 decimal(with leading zeros)
     """
     obj = db.session.query(object_type).order_by(desc(object_type.id)).first()
+    if obj is None:
+        return '{0:06d}'.format(1)
     return '{0:06d}'.format(1 + int(obj.code))
 
 
