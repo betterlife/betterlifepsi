@@ -10,6 +10,7 @@ from app.models import Supplier, Product, SalesOrder, SalesOrderLine, Shipping, 
     InventoryTransactionLine, \
     EnumValues, Incoming, Preference
 from app.utils import get_next_code, get_by_external_id, save_objects_commit, get_by_name
+from app.config import DEBUG
 from flask import request, current_app
 from flask.ext.admin import BaseView
 from flask.ext.babelex import gettext
@@ -145,43 +146,37 @@ class ImportStoreDataView(BaseView):
             f = StringIO.StringIO(content)
             reader = csv.reader(f, delimiter=',')
             line = 0
-            try:
-                shipping_status = EnumValues.find_one_by_code(const.SHIPPING_COMPLETE_STATUS_KEY)
-                it_type = EnumValues.find_one_by_code(const.SALES_OUT_INV_TRANS_TYPE_KEY)
-                incoming_category = Preference.get().def_so_incoming_type
-                incoming_status = Preference.get().def_so_incoming_status
-                for row in reader:
-                    if line != 0:  # Skip header line
-                        # TODO How to strip each string element before join them?
+            shipping_status = EnumValues.find_one_by_code(const.SHIPPING_COMPLETE_STATUS_KEY)
+            it_type = EnumValues.find_one_by_code(const.SALES_OUT_INV_TRANS_TYPE_KEY)
+            incoming_category = Preference.get().def_so_incoming_type
+            incoming_status = Preference.get().def_so_incoming_status
+            for row in reader:
+                if line != 0:  # Skip header line
+                    # TODO How to strip each string element before join them?
+                    if DEBUG:
                         logger.info("Start process line(%d) data: [%s]", line, ",".join(row))
-                        # 订单编号(0), 订单行编号(1),商品编号(2),商品名称(3),供应商编号(4),供应商名称(5),进价(6),定价(7),卖价(8),价格折扣(9),数量(10),
-                        # 金额(11),成本(12),毛利(13),折扣(%)(14),折扣额(15),毛利率(16),操作员(17),营业员(18),时间(19)
-                        po_num, po_line_num, prd_num, prd_name, sup_num, sup_name, pur_price, ret_price, act_price, qty, s_date = \
-                            row[0].strip(), row[1].strip(), row[2].strip(), row[3].strip(), row[4].strip(), row[5].strip(), \
-                            Decimal(row[6].strip()), Decimal(row[7].strip()), Decimal(row[8].strip()), \
-                            Decimal(row[10].strip()), datetime.strptime(row[19].strip(), '%Y-%m-%d %H:%M:%S.%f')
 
-                        # 1. Create or update supplier --> return supplier
-                        supplier = create_or_update_supplier(sup_num, sup_name)
-                        # 2. Create or update product --> return product
-                        product = create_or_update_product(prd_num, prd_name, pur_price, ret_price, supplier)
-                        # 3. Create or update sales order / sales order line --> return PO.
-                        order, order_line = create_or_update_sales_order(po_num, po_line_num, product, ret_price, act_price, qty, s_date)
-                        # 4. Create shipping record --> return shipping id
-                        shipping, shipping_line = create_or_update_shipping(order, order_line, shipping_status)
-                        # 5. Create inventory transaction record --> return inventory transaction record
-                        itr, itl = create_or_update_inventory_transaction(shipping, shipping_line, it_type)
-                        # 6. Create related incoming and return it.
-                        incoming = create_or_update_incoming(order, order_line, incoming_category, incoming_status)
-                        save_objects_commit(supplier, product, order, shipping, itr, incoming)
+                    # 订单编号(0), 订单行编号(1),商品编号(2),商品名称(3),供应商编号(4),供应商名称(5),进价(6),定价(7),卖价(8),价格折扣(9),数量(10),
+                    # 金额(11),成本(12),毛利(13),折扣(%)(14),折扣额(15),毛利率(16),操作员(17),营业员(18),时间(19)
+                    po_num, po_line_num, prd_num, prd_name, sup_num, sup_name, pur_price, ret_price, act_price, qty, s_date = \
+                        row[0].strip(), row[1].strip(), row[2].strip(), row[3].strip(), row[4].strip(), row[5].strip(), \
+                        Decimal(row[6].strip()), Decimal(row[7].strip()), Decimal(row[8].strip()), \
+                        Decimal(row[10].strip()), datetime.strptime(row[19].strip(), '%Y-%m-%d %H:%M:%S.%f')
+
+                    # 1. Create or update supplier --> return supplier
+                    supplier = create_or_update_supplier(sup_num, sup_name)
+                    # 2. Create or update product --> return product
+                    product = create_or_update_product(prd_num, prd_name, pur_price, ret_price, supplier)
+                    # 3. Create or update sales order / sales order line --> return PO.
+                    order, order_line = create_or_update_sales_order(po_num, po_line_num, product, ret_price, act_price, qty, s_date)
+                    # 4. Create shipping record --> return shipping id
+                    shipping, shipping_line = create_or_update_shipping(order, order_line, shipping_status)
+                    # 5. Create inventory transaction record --> return inventory transaction record
+                    itr, itl = create_or_update_inventory_transaction(shipping, shipping_line, it_type)
+                    # 6. Create related incoming and return it.
+                    incoming = create_or_update_incoming(order, order_line, incoming_category, incoming_status)
+                    save_objects_commit(supplier, product, order, shipping, itr, incoming)
+                    if DEBUG:
                         logger.info('Finish process line %s', line)
-                    line += 1
-            except Exception, e:
-                # FIXME How to return from an exception handler with a message and send the error to front end?
-                message = u'导入第' + str(line) + u'行时发生错误'
-                logger.error(message)
-                logger.error(e)
-                pass
-            else:
-                message = gettext('Upload and import into system successfully')
-            return message
+                line += 1
+            return gettext('Upload and import into system successfully')
