@@ -152,10 +152,6 @@ class ImportStoreDataView(BaseView):
             incoming_status = Preference.get().def_so_incoming_status
             for row in reader:
                 if line != 0:  # Skip header line
-                    # TODO How to strip each string element before join them?
-                    if DEBUG:
-                        logger.info("Start process line(%d) data: [%s]", line, ",".join(row))
-
                     # 订单编号(0), 订单行编号(1),商品编号(2),商品名称(3),供应商编号(4),供应商名称(5),进价(6),定价(7),卖价(8),价格折扣(9),数量(10),
                     # 金额(11),成本(12),毛利(13),折扣(%)(14),折扣额(15),毛利率(16),操作员(17),营业员(18),时间(19)
                     po_num, po_line_num, prd_num, prd_name, sup_num, sup_name, pur_price, ret_price, act_price, qty, s_date = \
@@ -176,7 +172,5 @@ class ImportStoreDataView(BaseView):
                     # 6. Create related incoming and return it.
                     incoming = create_or_update_incoming(order, order_line, incoming_category, incoming_status)
                     save_objects_commit(supplier, product, order, shipping, itr, incoming)
-                    if DEBUG:
-                        logger.info('Finish process line %s', line)
                 line += 1
             return gettext('Upload and import into system successfully')
