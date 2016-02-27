@@ -1,0 +1,9 @@
+---
+applications:
+- name: PSI
+  memory: 256M
+  instances: 1
+  url: betterlife-psip
+  host: betterlife-psip
+  path: .
+  command: python manage.py db upgrade;gunicorn start:app --log-file=- --timeout 300

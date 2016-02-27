@@ -1,0 +1,10 @@
+LICENSE
+nosetests.xml
+reports/
+scripts/
+tests/
+test_requirements.txt
+venv/
+README.md
+run_tests.sh
+*.pyc

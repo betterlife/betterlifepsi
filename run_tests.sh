@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 pip install -q -r test_requirements.txt
 mkdir -p reports/html
 nosetests -w tests --with-coverage --cover-html  --cover-html-dir=../reports/html --cover-branches
