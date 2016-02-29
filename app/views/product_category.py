@@ -2,6 +2,7 @@
 from flask.ext.babelex import lazy_gettext
 from app.views import ModelViewWithAccess
 
+
 class ProductCategoryAdmin(ModelViewWithAccess):
     column_exclude_list = ['sub_categories', 'products']
 
@@ -17,5 +18,7 @@ class ProductCategoryAdmin(ModelViewWithAccess):
         'name': lazy_gettext('Name'),
         'code': lazy_gettext('Code'),
         'parent_category': lazy_gettext('Parent category'),
+        'sub_categories': lazy_gettext('Sub Categories'),
+        'products': lazy_gettext('Products'),
     }
     form_excluded_columns = ('sub_categories', 'products')
