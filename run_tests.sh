@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+export TESTING="True"
 pip install -q -r test_requirements.txt
 mkdir -p reports/html
 nosetests -w tests --with-coverage --cover-html  --cover-html-dir=../reports/html --cover-branches

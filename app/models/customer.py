@@ -9,7 +9,7 @@ from app.models.enum_values import EnumValues
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, String, Date
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
-from utils import date_util
+from app.utils import date_util
 
 db = AppInfo.get_db()
 

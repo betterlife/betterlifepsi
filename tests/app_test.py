@@ -8,11 +8,11 @@ import os
 class TestCases(unittest.TestCase):
     def setUp(self):
         config.TESTING = True
-        config.DATABASE_URL = (os.environ.get('TEST_DATABASE_URL') or 'postgres://flask_sit:flask_sit@localhost:5432/flask_sit')
+        config.SQLALCHEMY_DATABASE_URI = (os.environ.get('TEST_DATABASE_URL') or 'postgres://flask_sit:flask_sit@localhost:5432/flask_sit')
         config.WTF_CSRF_ENABLED = False
         import start
-        start.db = start.init_db_security_admin()
-        self.test_client = start.app.test_client()
+        application = start.start(config)
+        self.test_client = application.test_client()
 
     def tearDown(self):
         pass
