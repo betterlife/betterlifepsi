@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 export TESTING="True"
+export DATABASE_URL=$TEST_DATABASE_URL
 pip install -q -r test_requirements.txt
 mkdir -p reports/html
 nosetests -w tests --with-coverage --cover-html  --cover-html-dir=../reports/html --cover-branches
