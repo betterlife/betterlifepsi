@@ -6,6 +6,7 @@ from app.models import *
 from werkzeug.security import check_password_hash
 from wtforms import form, fields, validators
 
+
 class LoginForm(form.Form):
     login = fields.StringField(validators=[validators.required()],
                                label=lazy_gettext('Login Name'), )
@@ -30,4 +31,3 @@ class LoginForm(form.Form):
     def get_user(self):
         db = app_provider.AppInfo.get_db()
         return db.session.query(User).filter_by(login=self.login.data).first()
-
