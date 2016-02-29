@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-06-26 07:25+0800\n"
-"PO-Revision-Date: 2016-02-29 13:12+0800\n"
+"PO-Revision-Date: 2016-02-29 21:54+0800\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -89,7 +89,7 @@ msgid "Product Name"
 msgstr "商品名称"
 
 msgid "Product Category"
-msgstr "商品分类"
+msgstr "分类"
 
 msgid "Preference"
 msgstr "业务设置"
@@ -402,3 +402,39 @@ msgstr "子分类"
 
 msgid "Products"
 msgstr "产品"
+
+msgid "Mobile Phone"
+msgstr "手机"
+
+msgid "Address"
+msgstr "地址"
+
+msgid "Join Date"
+msgstr "加入时间"
+
+msgid "Join Channel"
+msgstr "加入渠道"
+
+msgid "Customer"
+msgstr "会员"
+
+msgid "Customer Level"
+msgstr "会员级别"
+
+msgid "Total Spent"
+msgstr "总消费额"
+
+msgid "Member Year"
+msgstr "会员年限"
+
+msgid "First Name"
+msgstr "名"
+
+msgid "Last Name"
+msgstr "姓"
+
+msgid "Birthday"
+msgstr "生日"
+
+msgid "Points"
+msgstr "积分"

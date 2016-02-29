@@ -23,24 +23,29 @@ def upgrade():
                                  sa.Column('code', sa.String(length=32), nullable=True),
                                  sa.Column('display', sa.String(length=64), nullable=False),
                                  )
+    res = op.get_bind().execute('SELECT max(id)+1 FROM enum_values')
+    results = res.fetchall()
+    cm = 14
+    for r in results:
+        cm = r[0]
     op.bulk_insert(enum_values_table, [
-        {'id': 14, 'type_id': 1, 'code': 'INVENTORY_TRANSACTION_TYPE', 'display': u'库存变动类型'},
-        {'id': 15, 'type_id': 1, 'code': 'RECEIVING_STATUS', 'display': u'收货单状态'},
-        {'id': 16, 'type_id': 1, 'code': 'PURCHASE_ORDER_STATUS', 'display': u'采购单状态'},
-        {'id': 17, 'type_id': 1, 'code': 'SHIPPING_STATUS', 'display': u'发货单状态'},
-        {'id': 18, 'type_id': 14, 'code': 'PURCHASE_IN', 'display': u'采购入库'},
-        {'id': 19, 'type_id': 14, 'code': 'SALES_OUT', 'display': u'销售出库'},
-        {'id': 20, 'type_id': 14, 'code': 'INVENTORY_DAMAGED', 'display': u'商品损毁'},
-        {'id': 21, 'type_id': 14, 'code': 'INVENTORY_LOST', 'display': u'商品丢失'},
-        {'id': 22, 'type_id': 15, 'code': 'RECEIVING_DRAFT', 'display': u'收货单草稿'},
-        {'id': 23, 'type_id': 15, 'code': 'RECEIVING_COMPLETE', 'display': u'收货单完成'},
-        {'id': 24, 'type_id': 16, 'code': 'PURCHASE_ORDER_DRAFT', 'display': u'草稿'},
-        {'id': 25, 'type_id': 16, 'code': 'PURCHASE_ORDER_ISSUED', 'display': u'已发出'},
-        {'id': 26, 'type_id': 16, 'code': 'PURCHASE_ORDER_PART_RECEIVED', 'display': u'部分收货'},
-        {'id': 27, 'type_id': 16, 'code': 'PURCHASE_ORDER_RECEIVED', 'display': u'收货完成'},
-        {'id': 28, 'type_id': 17, 'code': 'SHIPPING_COMPLETE', 'display': u'发货完成'},
+        {'id': cm, 'type_id': 1, 'code': 'INVENTORY_TRANSACTION_TYPE', 'display': u'库存变动类型'},
+        {'id': cm + 1, 'type_id': 1, 'code': 'RECEIVING_STATUS', 'display': u'收货单状态'},
+        {'id': cm + 2, 'type_id': 1, 'code': 'PURCHASE_ORDER_STATUS', 'display': u'采购单状态'},
+        {'id': cm + 3, 'type_id': 1, 'code': 'SHIPPING_STATUS', 'display': u'发货单状态'},
+        {'id': cm + 4, 'type_id': cm, 'code': 'PURCHASE_IN', 'display': u'采购入库'},
+        {'id': cm + 5, 'type_id': cm, 'code': 'SALES_OUT', 'display': u'销售出库'},
+        {'id': cm + 6, 'type_id': cm, 'code': 'INVENTORY_DAMAGED', 'display': u'商品损毁'},
+        {'id': cm + 7, 'type_id': cm, 'code': 'INVENTORY_LOST', 'display': u'商品丢失'},
+        {'id': cm + 8, 'type_id': cm + 1, 'code': 'RECEIVING_DRAFT', 'display': u'收货单草稿'},
+        {'id': cm + 9, 'type_id': cm + 1, 'code': 'RECEIVING_COMPLETE', 'display': u'收货单完成'},
+        {'id': cm + 10, 'type_id': cm + 2, 'code': 'PURCHASE_ORDER_DRAFT', 'display': u'草稿'},
+        {'id': cm + 11, 'type_id': cm + 2, 'code': 'PURCHASE_ORDER_ISSUED', 'display': u'已发出'},
+        {'id': cm + 12, 'type_id': cm + 2, 'code': 'PURCHASE_ORDER_PART_RECEIVED', 'display': u'部分收货'},
+        {'id': cm + 13, 'type_id': cm + 2, 'code': 'PURCHASE_ORDER_RECEIVED', 'display': u'收货完成'},
+        {'id': cm + 14, 'type_id': cm + 3, 'code': 'SHIPPING_COMPLETE', 'display': u'发货完成'},
     ], multiinsert=False)
-    op.get_bind().execute(text("ALTER SEQUENCE enum_values_id_seq RESTART WITH 14;"))
+    op.get_bind().execute(text("ALTER SEQUENCE enum_values_id_seq RESTART WITH " + str(cm + 15) + ";"))
 
 
 def downgrade():

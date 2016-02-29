@@ -35,17 +35,17 @@ class SalesOrderLineInlineAdmin(InlineFormAdmin):
 class SalesOrderAdmin(ModelViewWithAccess):
     from app.models import SalesOrderLine
 
-    column_list = ('id', 'logistic_amount', 'actual_amount', 'original_amount',
+    column_list = ('id', 'customer', 'logistic_amount', 'actual_amount', 'original_amount',
                    'discount_amount', 'order_date', 'incoming', 'expense', 'so_shipping', 'remark')
     # column_filters = ('order_date', 'remark', 'logistic_amount')
 
-    form_columns = ('id', 'external_id', 'logistic_amount', 'order_date', 'remark', 'actual_amount',
+    form_columns = ('id', 'customer', 'external_id', 'logistic_amount', 'order_date', 'remark', 'actual_amount',
                     'original_amount', 'discount_amount', 'lines')
-    form_edit_rules = ('external_id', 'logistic_amount', 'order_date', 'remark', 'actual_amount',
+    form_edit_rules = ('customer', 'external_id', 'logistic_amount', 'order_date', 'remark', 'actual_amount',
                        'original_amount', 'discount_amount', 'lines')
-    form_create_rules = ('logistic_amount', 'order_date', 'remark', 'lines',)
+    form_create_rules = ('customer', 'logistic_amount', 'order_date', 'remark', 'lines',)
 
-    column_details_list = ('id', 'external_id', 'logistic_amount', 'order_date', 'remark', 'actual_amount',
+    column_details_list = ('id', 'customer', 'external_id', 'logistic_amount', 'order_date', 'remark', 'actual_amount',
                            'original_amount', 'discount_amount', 'incoming', 'expense', 'so_shipping', 'lines',)
 
     column_editable_list = ('remark',)
@@ -87,6 +87,7 @@ class SalesOrderAdmin(ModelViewWithAccess):
         'so_shipping': lazy_gettext('Related Shipping'),
         'lines': lazy_gettext('Lines'),
         'external_id': lazy_gettext('External Id'),
+        'customer': lazy_gettext('Customer'),
     }
 
     def create_form(self, obj=None):

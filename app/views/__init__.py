@@ -16,6 +16,7 @@ from receiving import ReceivingAdmin
 from shipping import ShippingAdmin
 from inventory_transaction import InventoryTransactionAdmin
 from product_inventory import ProductInventoryView
+from customer import CustomerAdmin
 from formatter import *
 from app.models import *
 from flask.ext.admin import Admin
@@ -45,9 +46,11 @@ def init_admin_views(app, db):
     adminViews.add_view(IncomingAdmin(Incoming, db_session, name=lazy_gettext("Incoming"),
                                       category=u'财务', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-usd'))
     adminViews.add_view(SupplierAdmin(Supplier, db_session, name=lazy_gettext("Supplier"),
-                                      category=u'主数据', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-user'))
+                                      category=u'主数据', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-globe'))
     adminViews.add_view(ProductAdmin(Product, db_session, name=lazy_gettext("Product"),
                                      category=u'主数据', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-barcode'))
+    adminViews.add_view(CustomerAdmin(Customer, db_session, name=lazy_gettext("Customer"),
+                                      category=u'主数据', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-user'))
     adminViews.add_view(ProductCategoryAdmin(ProductCategory, db_session, name=lazy_gettext("Product Category"),
                                              category=u'主数据', menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-tags'))
     adminViews.add_view(ImportStoreDataView(name=lazy_gettext("Import Store Data"), category=u'数据维护',
