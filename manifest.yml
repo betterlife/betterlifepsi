@@ -6,4 +6,4 @@ applications:
   url: betterlife-psip
   host: betterlife-psip
   path: .
-  command: python manage.py db upgrade;gunicorn start:app --log-file=- --timeout 300
+  command: python manage.py db upgrade;gunicorn start:start --log-file=- --timeout 300
