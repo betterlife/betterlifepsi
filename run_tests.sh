@@ -4,7 +4,7 @@ export DATABASE_URL=$TEST_DATABASE_URL
 python manage.py db upgrade
 pip install -q -r test_requirements.txt
 mkdir -p reports/html
-nosetests -w tests --with-coverage --cover-html  --cover-html-dir=../reports/html --cover-branches
+# nosetests -w tests --with-coverage --cover-html  --cover-html-dir=../reports/html --cover-branches
 nosetests -w tests --with-coverage --cover-erase --with-xunit --cover-branches
 
 # For coveralls.io service(This is disabled by now)
@@ -14,4 +14,3 @@ nosetests -w tests --with-coverage --cover-erase --with-xunit --cover-branches
 
 # For codecov.io service
 bash <(curl -s https://codecov.io/bash) -t b0607487-ef58-48c2-9efa-8538b24fcdfd
-
