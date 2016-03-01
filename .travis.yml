@@ -15,13 +15,18 @@ services:
 before_script:
   - psql -U postgres -c 'CREATE DATABASE flask_psi_test;'
 
+before_install:
+  - pip install codecov
+
 install:
   - pip install -r test_requirements.txt
 
 script:
   - python manage.py db upgrade
   - nosetests -w tests --with-coverage --cover-erase --with-xunit --cover-branches
-  - bash <(curl -s https://codecov.io/bash) -t $CODECOV_KEY
+
+after_success:
+  - codecov
 
 deploy:
   - provider: heroku
