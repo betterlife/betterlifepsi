@@ -10,6 +10,7 @@ Flask based Intelligent PSI(Purchase, Sales and Inventory) management system
 [![Code Climate](https://codeclimate.com/github/betterlife/flask-psi/badges/gpa.svg)](https://codeclimate.com/github/betterlife/flask-psi)
 [![Issue Count](https://codeclimate.com/github/betterlife/flask-psi/badges/issue_count.svg)](https://codeclimate.com/github/betterlife/flask-psi)
 [![codecov.io](http://codecov.io/github/betterlife/flask-psi/coverage.svg?branch=master)](http://codecov.io/github/betterlife/flask-psi?branch=master)
+[![Code Issues](https://www.quantifiedcode.com/api/v1/project/4c27fd0589fc4bcc96782a829824e1b9/badge.svg)](https://www.quantifiedcode.com/app/project/4c27fd0589fc4bcc96782a829824e1b9)
 
 
 Try to answer follow questions:
@@ -27,6 +28,7 @@ Links:
   - [Build Server(travis)](https://travis-ci.org/betterlife/flask-psi)
   - [Feature cards(atlassian)](https://betterlife.atlassian.net)
   - [Code coverage(codecov)](https://codecov.io/github/betterlife/flask-psi)
+  - [(Code Issues)](https://www.quantifiedcode.com/app/project/4c27fd0589fc4bcc96782a829824e1b9)
   - [Dev environment(Heroku)](http://betterlife-flask-dev.herokuapp.com/)
   - [SIT environment(Heroku)](http://betterlife-flask.herokuapp.com/)
 
