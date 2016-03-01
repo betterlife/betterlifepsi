@@ -6,46 +6,46 @@ from flask.ext.debugtoolbar import DebugToolbarExtension
 from raven.contrib.flask import Sentry
 
 
-def start(custom_config=None):
-    app = Flask(__name__, template_folder='app/templates', static_folder='app/static')
+def run_app(custom_config=None):
+    flask_app = Flask(__name__, template_folder='app/templates', static_folder='app/static')
 
     if custom_config is None:
         import app.config as default_config
-        app.config.from_object(default_config)
+        flask_app.config.from_object(default_config)
     else:
-        app.config.from_object(custom_config)
+        flask_app.config.from_object(custom_config)
 
     from flask_babelex import Babel
 
     babel = Babel(default_locale='zh_Hans_CN')
-    babel.init_app(app)
+    babel.init_app(flask_app)
 
-    toolbar = DebugToolbarExtension(app)
+    toolbar = DebugToolbarExtension(flask_app)
 
     import logging
     from logging import StreamHandler
 
     log_handler = StreamHandler()
-    app.logger.setLevel(logging.DEBUG)  # set the desired logging level here
-    app.logger.addHandler(log_handler)
+    flask_app.logger.setLevel(logging.DEBUG)  # set the desired logging level here
+    flask_app.logger.addHandler(log_handler)
 
     from app.app_provider import AppInfo
     from flask_sqlalchemy import SQLAlchemy
-    db = SQLAlchemy(app)
+    db = SQLAlchemy(flask_app)
     AppInfo.set_db(db)
     from app.models import User, Role
-    db.init_app(app)
+    db.init_app(flask_app)
 
     # Setup Flask-Security
     user_datastore = SQLAlchemyUserDatastore(db, User, Role)
-    Security(app, user_datastore)
+    Security(flask_app, user_datastore)
 
     from app.views import init_admin_views
-    init_admin_views(app, db)
+    init_admin_views(flask_app, db)
 
     # Init Sentry if not in debug mode
-    if app.config['DEBUG'] is not True:
-        sentry = Sentry(app)
+    if flask_app.config['DEBUG'] is not True:
+        sentry = Sentry(flask_app)
     else:
         import logging
 
@@ -53,22 +53,19 @@ def start(custom_config=None):
         log = logging.getLogger('werkzeug')
         log.setLevel(logging.ERROR)
 
-    @app.route('/')
+    @flask_app.route('/')
     def hello():
         return redirect("/admin", code=302)
 
-    if __name__ == '__main__':
-        app.run(host='0.0.0.0', port=5000, debug=app.config['DEBUG'] or True, use_reloader=False)
-
-    @app.before_request
+    @flask_app.before_request
     def before_request():
         pass
 
-    @app.teardown_request
+    @flask_app.teardown_request
     def teardown_request(exception):
         pass
 
-    @app.teardown_appcontext
+    @flask_app.teardown_appcontext
     def shutdown_session(exception=None):
         db.session.remove()
 
@@ -78,8 +75,8 @@ def start(custom_config=None):
         # user profile, cookie, session, etc.
         return 'zh_CN'
 
-    return app
+    return flask_app
 
 
 if not os.environ.get('TESTING'):
-    start()
+    app = run_app()

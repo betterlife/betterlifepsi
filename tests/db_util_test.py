@@ -1,7 +1,6 @@
 import unittest
 
 
-
 class TestCases(unittest.TestCase):
     def setUp(self):
         import os
@@ -11,7 +10,7 @@ class TestCases(unittest.TestCase):
                                           'postgres://flask_sit:flask_sit@localhost:5432/flask_sit')
         config.WTF_CSRF_ENABLED = False
         import start
-        application = start.start(config)
+        application = start.run_app(config)
         self.test_client = application.test_client()
 
     def test_get_next_code(self):
