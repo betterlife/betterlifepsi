@@ -8,6 +8,7 @@ python:
 
 env:
   - DATABASE_URL=postgres://postgres@localhost:5432/flask_psi_test
+  - TESTING="True"
 
 services:
   - postgresql
@@ -17,5 +18,8 @@ before_script:
 
 install:
   - pip install -r test_requirements.txt
+  - python manage.py db upgrade
 
-script: ./run_tests.sh
+script:
+  - nosetests -w tests --with-coverage --cover-erase --with-xunit --cover-branches
+  - bash <(curl -s https://codecov.io/bash) -t b0607487-ef58-48c2-9efa-8538b24fcdfd
