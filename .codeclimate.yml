@@ -1,3 +1,20 @@
+engines:
+  radon:
+    enabled: true
+    config:
+      python_version: 2
+  pep8:
+    enabled: true
+  eslint:
+    enabled: true
+  csslint:
+    enabled: true
+
+# required for grades to appear in web UI
+ratings:
+  paths:
+  - "**.py"
+
 exclude_paths:
 - migrations
 - app/static/ckeditor
