@@ -5,7 +5,7 @@ Flask based Intelligent PSI(Purchase, Sales and Inventory) management system
 
 ----
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
-[![Build & Deploy Status](https://snap-ci.com/betterlife/flask-psi/branch/master/build_image)](https://snap-ci.com/betterlife/flask-psi/branch/master)
+[![Build Status](https://travis-ci.org/betterlife/flask-psi.svg?branch=master)](https://travis-ci.org/betterlife/flask-psi)
 [![Requirements Status](https://requires.io/github/betterlife/flask-psi/requirements.svg?branch=master)](https://requires.io/github/betterlife/flask-psi/requirements/?branch=master)
 [![Code Climate](https://codeclimate.com/github/betterlife/flask-erp/badges/gpa.svg)](https://codeclimate.com/github/betterlife/flask-erp)
 [![Issue Count](https://codeclimate.com/github/betterlife/flask-erp/badges/issue_count.svg)](https://codeclimate.com/github/betterlife/flask-erp)
@@ -24,7 +24,7 @@ How to run?
 
 Links:
 
-  - [CD Server(Snap-CI)](https://snap-ci.com/betterlife/flask-psi/)
+  - [Build Server(travis)](https://travis-ci.org/betterlife/flask-psi)
   - [Feature cards(atlassian)](https://betterlife.atlassian.net)
   - [Code coverage(codecov)](https://codecov.io/github/betterlife/flask-psi)
   - [Dev environment(Heroku)](http://betterlife-flask-dev.herokuapp.com/)
