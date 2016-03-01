@@ -44,7 +44,7 @@ deploy:
     on:
       repo: betterlife/flask-psi
     app:
-      master:betterlife-flask
+      master: betterlife-flask
   - provider: cloudfoundry
     skip_cleanup: true
     username: $CF_USER
