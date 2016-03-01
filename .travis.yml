@@ -16,8 +16,8 @@ before_script:
 
 install:
   - pip install -r test_requirements.txt
-  - python manage.py db upgrade
 
 script:
+  - python manage.py db upgrade
   - nosetests -w tests --with-coverage --cover-erase --with-xunit --cover-branches
   - bash <(curl -s https://codecov.io/bash) -t b0607487-ef58-48c2-9efa-8538b24fcdfd
