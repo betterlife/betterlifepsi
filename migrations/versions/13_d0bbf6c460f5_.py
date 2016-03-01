@@ -1,5 +1,5 @@
 # coding=utf-8
-""" Add customer model and related relationship and configurations
+""" Add customer model and related relationship and configurations, role definitions
 
 Revision ID: d0bbf6c460f5
 Revises: f1603288979d
@@ -59,7 +59,24 @@ def upgrade():
         {'id': cm + 9, 'type_id': cm + 1, 'code': 'CUSTOMER_LEVEL_PLATINUM', 'display': u'白金卡会员'},
         {'id': cm + 10, 'type_id': cm + 1, 'code': 'CUSTOMER_LEVEL_LIFETIME_PLATINUM', 'display': u'终生白金卡会员'},
     ], multiinsert=False)
-    op.get_bind().execute(text("ALTER SEQUENCE enum_values_id_seq RESTART WITH " + str(cm + 15) + ";"))
+    op.get_bind().execute(text("ALTER SEQUENCE enum_values_id_seq RESTART WITH " + str(cm + 11) + ";"))
+    role_table = sa.table('role',
+                          sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+                          sa.Column('name', sa.String(length=80), nullable=True),
+                          sa.Column('description', sa.String(length=255), nullable=True),
+                          )
+    res = op.get_bind().execute('SELECT max(id)+1 FROM role')
+    results = res.fetchall()
+    rm = 45
+    for r in results:
+        rm = r[0]
+    op.bulk_insert(role_table, [
+        {'id': rm, 'name': 'customer_view', 'description': 'View customers'},
+        {'id': rm + 1, 'name': 'customer_create', 'description': 'Create customers'},
+        {'id': rm + 2, 'name': 'customer_edit', 'description': 'Edit customers'},
+        {'id': rm + 3, 'name': 'customer_delete', 'description': 'Delete customers'},
+    ], multiinsert=False)
+    op.get_bind().execute(text("ALTER SEQUENCE role_id_seq RESTART WITH " + str(rm + 4) + ";"))
     ### end Alembic commands ###
 
 
