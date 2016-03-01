@@ -17,6 +17,10 @@ class SalesOrder(db.Model):
     logistic_amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
     order_date = Column(DateTime, nullable=False)
     external_id = Column(String(), nullable=True)
+
+    customer_id = Column(Integer, ForeignKey('customer.id'), nullable=True)
+    customer = relationship('Customer', foreign_keys=[customer_id], backref=backref('sales_orders', uselist=True))
+
     remark = Column(Text)
 
     @hybrid_property
@@ -124,6 +128,19 @@ class SalesOrderLine(db.Model):
 
     @retail_price.setter
     def retail_price(self, retail_price):
+        pass
+
+    @hybrid_property
+    def transient_external_id(self):
+        """
+        This design is to display a readonly field containing current
+        external id information in UI but don't allow user to change it.
+        :return: Current external id as a transient property
+        """
+        return self.external_id
+
+    @transient_external_id.setter
+    def transient_external_id(self, val):
         pass
 
     def __unicode__(self):

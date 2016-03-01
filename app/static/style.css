@@ -38,7 +38,7 @@ input[name='_continue_editing'], input[name='_add_another'] {
 }
 
 .dashboard-container span, .dashboard-button span {
-    padding:10px;
+    padding: 10px;
 }
 
 .dashboard-button {
@@ -248,5 +248,16 @@ input[name='_continue_editing'], input[name='_add_another'] {
 }
 
 #upload-return-message:before {
+    padding-right: 10px;
+}
+
+.main-footer {
+    display:table;
+    margin: auto;
+    padding: 10px;
+    color: #999999;
+}
+
+ul.dropdown-menu > li > a > i.glyphicon {
     padding-right: 10px;
 }

@@ -23,11 +23,9 @@ class Expense(db.Model):
     category = relationship('EnumValues', foreign_keys=[category_id])
 
     purchase_order_id = Column(Integer, ForeignKey('purchase_order.id'))
-    purchase_order = relationship('PurchaseOrder', backref=backref('expenses',
-                                                                   uselist=True, cascade='all, delete-orphan'))
+    purchase_order = relationship('PurchaseOrder', backref=backref('expenses', uselist=True, cascade='all, delete-orphan'))
     sales_order_id = Column(Integer, ForeignKey('sales_order.id'))
-    sales_order = relationship('SalesOrder', backref=backref('expense',
-                                                             uselist=False, cascade='all, delete-orphan'))
+    sales_order = relationship('SalesOrder', backref=backref('expense', uselist=False, cascade='all, delete-orphan'))
 
     remark = Column(Text, nullable=False)
 

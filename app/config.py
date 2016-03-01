@@ -12,6 +12,7 @@ SECURITY_CONFIRMABLE = False
 SECURITY_RECOVERABLE = False
 SECURITY_CHANGEABLE = False
 DEBUG = (os.environ.get('DEBUG') == "True")
+TESTING = (os.environ.get('TESTING') == "True")
 DEBUG_TB_INTERCEPT_REDIRECTS = False
 SENTRY_DSN = os.environ.get('SENTRY_DSN')
 # TODO: Move those business related settings to a table and make it changeable via UI.

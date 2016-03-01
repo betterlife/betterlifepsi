@@ -7,6 +7,7 @@ from product_category import ProductCategory
 from supplier import Supplier, PaymentMethod
 from product import Product
 from enum_values import EnumValues
+from customer import Customer
 from expense import Expense
 from incoming import Incoming
 from shipping import Shipping, ShippingLine

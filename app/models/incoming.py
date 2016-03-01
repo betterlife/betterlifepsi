@@ -22,8 +22,7 @@ class Incoming(db.Model):
     status = relationship('EnumValues', foreign_keys=[status_id])
 
     sales_order_id = Column(Integer, ForeignKey('sales_order.id'))
-    sales_order = relationship('SalesOrder', backref=backref('incoming',
-                                                             uselist=False, cascade='all, delete-orphan'))
+    sales_order = relationship('SalesOrder', backref=backref('incoming', uselist=False, cascade='all, delete-orphan'))
 
     remark = Column(Text)
 
