@@ -1,0 +1,23 @@
+sudo: false
+language: python
+python:
+  - "2.7"
+
+env:
+  global:
+    - DATABASE_URL=postgresql://localhost/flask_psi_test
+    - TESTING="True"
+
+services:
+  - postgresql
+
+before_script:
+  - psql -U postgres -c 'CREATE DATABASE flask_psi_test;'
+
+install:
+  - pip install -r test_requirements.txt
+
+script:
+  - python manage.py db upgrade
+  - nosetests -w tests --with-coverage --cover-erase --with-xunit --cover-branches
+  - bash <(curl -s https://codecov.io/bash) -t b0607487-ef58-48c2-9efa-8538b24fcdfd
