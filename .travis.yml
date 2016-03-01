@@ -25,6 +25,7 @@ script:
 
 deploy:
   - provider: heroku
+    skip_cleanup: true
     api_key:
       secure: f0rWigeIF6dUiF0H4/fZNov/es33QQaEsXtzlZDjAGN7j5wRawSJfmHT/3O5Olhragww3Kgs5Wv8ejiU4JwHxVeU4kl2hUF+Ih4H4i87WBoGRm8/f6OYtGASN1HflhZzzcSDe4FsXRD6a0u9p/O9orF839ag8Bx+WJyqQngACI24Nm4LqhkPYSkGKpb7R0Wc5TT602SXBVOa49RsJ/eIZaFTqRGSpgjN2KtOv3YbZmPkyzM2aErFMg1uc+vMs+Ln6hQb5+xtDrb041V8bNPsPn/oRexWlErdXkxUAnu+m5MIHFErc75I7+fbB6m+nAtyNAkpmE8hDWGqj80Y1RU4WaCjpG5JEo4qmaZfvd5QdtC8yw0W2ZKVUEgtDcPx0SSqX9lbHNNfuKpQ60XVPdiq9WjYHLff2BOV5OhRW6et7u7Lqlyqqy4K/+3ieIcwGaYuLUK4DMbv7/V9ttk/gwv9liFlxCgEzj3WDB5SMLQblsnenAI9W90c5DR1nsPkciq+7OJ9scpbtG826FQQi6NLpxAItifMBL8ouRNKelSlFnfTeWrv/0qPW7iU46DnOEKQs6F//j7wB0L6x12MRy93UfVVu1+4jnOeKnGljjQA1fk9123PHHRonFBaGRu2tTmSGZLiBZlOfi/8py/ZkrSSFzZ9NS6biDktPXDcg6uq/r0=
     app: betterlife-flask-dev
@@ -32,6 +33,7 @@ deploy:
       repo: betterlife/flask-psi
       all_branches: true
   - provider: heroku
+    skip_cleanup: true
     api_key:
       secure: f0rWigeIF6dUiF0H4/fZNov/es33QQaEsXtzlZDjAGN7j5wRawSJfmHT/3O5Olhragww3Kgs5Wv8ejiU4JwHxVeU4kl2hUF+Ih4H4i87WBoGRm8/f6OYtGASN1HflhZzzcSDe4FsXRD6a0u9p/O9orF839ag8Bx+WJyqQngACI24Nm4LqhkPYSkGKpb7R0Wc5TT602SXBVOa49RsJ/eIZaFTqRGSpgjN2KtOv3YbZmPkyzM2aErFMg1uc+vMs+Ln6hQb5+xtDrb041V8bNPsPn/oRexWlErdXkxUAnu+m5MIHFErc75I7+fbB6m+nAtyNAkpmE8hDWGqj80Y1RU4WaCjpG5JEo4qmaZfvd5QdtC8yw0W2ZKVUEgtDcPx0SSqX9lbHNNfuKpQ60XVPdiq9WjYHLff2BOV5OhRW6et7u7Lqlyqqy4K/+3ieIcwGaYuLUK4DMbv7/V9ttk/gwv9liFlxCgEzj3WDB5SMLQblsnenAI9W90c5DR1nsPkciq+7OJ9scpbtG826FQQi6NLpxAItifMBL8ouRNKelSlFnfTeWrv/0qPW7iU46DnOEKQs6F//j7wB0L6x12MRy93UfVVu1+4jnOeKnGljjQA1fk9123PHHRonFBaGRu2tTmSGZLiBZlOfi/8py/ZkrSSFzZ9NS6biDktPXDcg6uq/r0=
     on:
@@ -39,6 +41,7 @@ deploy:
     app:
       master:betterlife-flask
   - provider: cloudfoundry
+    skip_cleanup: true
     username: $CF_USER
     password: $CF_PASS
     api: $CF_API
