@@ -7,14 +7,13 @@ python:
   - "3.4"
 
 env:
-  - WTFORMS_VERSION=1
-  - WTFORMS_VERSION=2
+  - DATABASE_URL=postgres://postgres@localhost:5432/flask_psi_test
 
 services:
   - postgresql
 
 before_script:
-  - psql -U postgres -c 'CREATE DATABASE flask-psi-test;'
+  - psql -U postgres -c 'CREATE DATABASE flask_psi_test;'
 
 install:
   - pip install -r test_requirements.txt
