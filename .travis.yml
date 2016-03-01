@@ -37,6 +37,8 @@ deploy:
     on:
       repo: betterlife/flask-psi
       all_branches: true
+    run:
+      - restart
   - provider: heroku
     skip_cleanup: true
     api_key:
@@ -45,6 +47,8 @@ deploy:
       repo: betterlife/flask-psi
     app:
       master: betterlife-flask
+    run:
+      - restart
   - provider: cloudfoundry
     skip_cleanup: true
     username: $CF_USER
