@@ -6,8 +6,7 @@ class TestCases(unittest.TestCase):
         import os
         import app.config as config
         config.TESTING = True
-        config.SQLALCHEMY_DATABASE_URI = (os.environ.get('TEST_DATABASE_URL') or os.environ.get('DATABASE_URL') or
-                                          'postgres://flask_sit:flask_sit@localhost:5432/flask_sit')
+        config.SQLALCHEMY_DATABASE_URI = (os.environ.get('TEST_DATABASE_URL') or 'postgres://flask_sit:flask_sit@localhost:5432/flask_sit')
         config.WTF_CSRF_ENABLED = False
         import start
         application = start.run_app(config)

@@ -6,6 +6,7 @@ python:
 env:
   global:
     - DATABASE_URL=postgresql://localhost/flask_psi_test
+    - TEST_DATABASE_URL=postgresql://localhost/flask_psi_test
     - TESTING="True"
 
 services:
