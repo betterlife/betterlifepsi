@@ -252,12 +252,10 @@ input[name='_continue_editing'], input[name='_add_another'] {
 }
 
 .main-footer {
+    display:table;
     margin: auto;
     padding: 10px;
-    border-top: 1px solid #DDDDDD;
-    border-bottom: 1px solid #DDDDDD;
-    width: 500px;
-    color: #DDDDDD;
+    color: #999999;
 }
 
 ul.dropdown-menu > li > a > i.glyphicon {

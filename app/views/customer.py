@@ -33,6 +33,7 @@ class CustomerAdmin(ModelViewWithAccess):
 
     edit_modal = True
     create_modal = True
+    details_modal = True
 
     form_excluded_columns = ('sales_orders',)
 

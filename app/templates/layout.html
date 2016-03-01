@@ -11,11 +11,8 @@
   {{ super() }}
   <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
   <script src="{{ url_for('static', filename='js/common.js') }}"></script>
-  <div align="center">
+  <div class='main-footer'>
     © 2015-2016 BETTERLIFE.IO
-  </div>
-  <div class='main-footer' align="center">
-    Current Branch: ${SNAP_BRANCH}, Commit: <a href="https://github.com/betterlife/flask-psi/commit/${SNAP_COMMIT}">${SNAP_COMMIT_SHORT}</a>,
   </div>
 {% endblock %}
 
