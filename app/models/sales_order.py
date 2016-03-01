@@ -130,5 +130,18 @@ class SalesOrderLine(db.Model):
     def retail_price(self, retail_price):
         pass
 
+    @hybrid_property
+    def transient_external_id(self):
+        """
+        This design is to display a readonly field containing current
+        external id information in UI but don't allow user to change it.
+        :return: Current external id as a transient property
+        """
+        return self.external_id
+
+    @transient_external_id.setter
+    def transient_external_id(self, val):
+        pass
+
     def __unicode__(self):
         return str(self.id) + ' - ' + self.product.name
