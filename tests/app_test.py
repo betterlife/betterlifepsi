@@ -3,16 +3,12 @@ import unittest
 
 import app.config as config
 import os
+from tests import fixture
 
 
 class TestCases(unittest.TestCase):
     def setUp(self):
-        config.TESTING = True
-        config.SQLALCHEMY_DATABASE_URI = (os.environ.get('TEST_DATABASE_URL') or 'postgres://flask_sit:flask_sit@localhost:5432/flask_sit')
-        config.WTF_CSRF_ENABLED = False
-        import start
-        application = start.run_app(config)
-        self.test_client = application.test_client()
+        self.test_client = fixture.get_test_client()
 
     def tearDown(self):
         pass

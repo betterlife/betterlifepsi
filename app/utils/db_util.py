@@ -17,7 +17,7 @@ def get_next_code(object_type):
 
 def get_by_external_id(object_type, external_id):
     """
-    Get model object via external_id, a field names "external_id" should exists and type should be int
+    Get model object via external_id, a field names "external_id" should exists
     :param object_type: Object type
     :param external_id: external id
     :return: The object if found, otherwise None

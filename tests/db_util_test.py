@@ -1,16 +1,11 @@
 import unittest
 
+from tests import fixture
+
 
 class TestCases(unittest.TestCase):
     def setUp(self):
-        import os
-        import app.config as config
-        config.TESTING = True
-        config.SQLALCHEMY_DATABASE_URI = (os.environ.get('TEST_DATABASE_URL') or 'postgres://flask_sit:flask_sit@localhost:5432/flask_sit')
-        config.WTF_CSRF_ENABLED = False
-        import start
-        application = start.run_app(config)
-        self.test_client = application.test_client()
+        self.test_client = fixture.get_test_client()
 
     def test_get_next_code(self):
         from app.models.supplier import Supplier

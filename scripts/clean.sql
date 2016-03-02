@@ -14,6 +14,7 @@ drop table expense;
 drop table incoming;
 drop table purchase_order;
 drop table sales_order;
+drop table customer;
 drop table product;
 drop table payment_method;
 drop table supplier;
