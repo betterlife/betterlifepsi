@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 export TESTING="True"
+
+TEST_DATABASE_URL='postgres://flask_sit:flask_sit@localhost:5432/flask_sit'
 export DATABASE_URL=$TEST_DATABASE_URL
 python manage.py db upgrade
-pip install -q -r test_requirements.txt
+
 mkdir -p reports/html
 # nosetests -w tests --with-coverage --cover-html  --cover-html-dir=../reports/html --cover-branches
 nosetests -w tests --with-coverage --cover-erase --with-xunit --cover-branches --xunit-file=nosetests.xml

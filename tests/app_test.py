@@ -8,7 +8,7 @@ from tests import fixture
 
 class TestCases(unittest.TestCase):
     def setUp(self):
-        self.test_client = fixture.get_test_client()
+        self.test_client = fixture.init_test_client()
 
     def tearDown(self):
         pass

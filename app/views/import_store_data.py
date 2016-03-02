@@ -4,19 +4,17 @@ import csv
 from datetime import datetime
 from decimal import Decimal
 
-from app import const
 from app import config
+from app import const
 from app.models import Supplier, Product, SalesOrder, SalesOrderLine, Shipping, ShippingLine, InventoryTransaction, \
     InventoryTransactionLine, \
     EnumValues, Incoming, Preference
 from app.utils import get_next_code, get_by_external_id, save_objects_commit, get_by_name
-from flask import request, current_app
+from flask import request
 from flask.ext.admin import BaseView
 from flask.ext.babelex import gettext
 from flask.ext.login import login_required
-from flask.ext.security import current_user, url_for_security
 from flask_admin import expose
-from werkzeug.utils import redirect
 
 
 def create_or_update_supplier(sup_num, sup_name):
@@ -54,6 +52,7 @@ def create_or_update_sales_order(po_num, po_line_num, product, ret_price, act_pr
     if order is None:
         order = SalesOrder()
         order.external_id = po_num
+        order.logistic_amount = 0
     order.order_date = sale_date
     existing = False
     line = None

@@ -1,4 +1,12 @@
-def get_test_client():
+import shlex
+import subprocess
+
+import os
+
+ALEMBIC_CONFIG = os.path.dirname(os.path.realpath(__file__)) + '/../migrations/alembic.ini'
+
+
+def init_test_client():
     import os
     import app.config as config
     config.TESTING = True
@@ -6,7 +14,7 @@ def get_test_client():
     config.WTF_CSRF_ENABLED = False
     import start
     start.application = start.create_app(config)
-    start.db = start.init_all_return_db(start.application)
+    start.init_all(start.application)
     return start.application.test_client()
 
 

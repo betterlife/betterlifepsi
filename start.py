@@ -3,7 +3,7 @@
 import os
 from flask import Flask
 
-application, db = None, None
+application = None
 
 
 def create_app(custom_config=None):
@@ -37,7 +37,6 @@ def init_db(flask_app):
     database.init_app(flask_app)
     AppInfo.set_db(database)
     return database
-
 
 def init_babel(flask_app):
     from flask_babelex import Babel
@@ -86,16 +85,15 @@ def define_route_context(flask_app, db, babel):
         return 'zh_CN'
 
 
-def init_all_return_db(app):
+def init_all(app):
     database = init_db(app)
     init_flask_security(app, database)
     init_admin_views(app, database)
     babel = init_babel(app)
     init_logging(app)
     define_route_context(app, database, babel)
-    return database
 
 
 if not os.environ.get('TESTING'):
     application = create_app()
-    db = init_all_return_db(application)
+    init_all(application)
