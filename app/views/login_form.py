@@ -1,5 +1,5 @@
 # coding=utf-8
-from app import app_provider
+from app import database
 from flask.ext.admin.babel import gettext
 from flask.ext.babelex import lazy_gettext
 from app.models import *
@@ -29,5 +29,5 @@ class LoginForm(form.Form):
             raise validators.ValidationError(gettext('User is disabled'))
 
     def get_user(self):
-        db = app_provider.AppInfo.get_db()
+        db = database.DbInfo.get_db()
         return db.session.query(User).filter_by(login=self.login.data).first()

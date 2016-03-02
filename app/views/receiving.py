@@ -2,7 +2,7 @@
 from datetime import datetime
 from functools import partial
 
-from app.app_provider import AppInfo
+from app.database import DbInfo
 from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.admin.model import InlineFormAdmin
 from app import const
@@ -16,7 +16,7 @@ from app.views.base import DeleteValidator
 from wtforms import BooleanField
 from wtforms.validators import ValidationError
 
-db = AppInfo.get_db()
+db = DbInfo.get_db()
 
 
 class ReceivingLineInlineAdmin(InlineFormAdmin):

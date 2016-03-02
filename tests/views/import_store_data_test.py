@@ -3,7 +3,7 @@ import unittest
 from datetime import datetime
 
 import codecs
-from app import AppInfo
+from app import DbInfo
 from tests import fixture
 
 
@@ -13,7 +13,7 @@ class TestCases(unittest.TestCase):
         fixture.login_as_admin(self.test_client)
 
     def tearDown(self):
-        AppInfo.get_db().engine.execute('DELETE FROM shipping_line;DELETE FROM shipping;'
+        DbInfo.get_db().engine.execute('DELETE FROM shipping_line;DELETE FROM shipping;'
                                         'DELETE FROM inventory_transaction_line;DELETE FROM inventory_transaction;'
                                         'DELETE FROM incoming;DELETE FROM sales_order_line;DELETE FROM sales_order;'
                                         'DELETE FROM product;DELETE FROM supplier;')
@@ -28,7 +28,7 @@ class TestCases(unittest.TestCase):
         self.assertIn(u'导入店铺运营数据', rv.data)
         self.test_client.post('/admin/import_store_data/', data=dict(content=content), follow_redirects=True)
 
-        # self.assertIsNotNone(db_util.get_by_external_id(SalesOrder, '01201503130002'))
+        self.assertIsNotNone(db_util.get_by_external_id(SalesOrder, '01201503090002'))
 
         self.assertIsNotNone(db_util.get_by_external_id(SalesOrderLine, '11'))
         self.assertIsNotNone(db_util.get_by_external_id(SalesOrderLine, '15'))

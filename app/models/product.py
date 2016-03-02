@@ -1,15 +1,16 @@
 # encoding: utf-8
 from app.advice import InventoryAdvice
-from app.app_provider import AppInfo
+from app.database import DbInfo
 from app import const
 from enum_values import EnumValues
-from app.models.util import format_decimal, get_weeks_between
+from app.utils.date_util import get_weeks_between
+from app.utils.format_util import format_decimal
 from app.models.inventory_transaction import InventoryTransactionLine, InventoryTransaction
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text, select, func, desc, Boolean
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
-db = AppInfo.get_db()
+db = DbInfo.get_db()
 
 
 class Product(db.Model):
@@ -204,7 +205,7 @@ class Product(db.Model):
 
     @staticmethod
     def supplier_filter(s_id):
-        return AppInfo.get_db().session.query(Product).filter_by(supplier_id=s_id)
+        return DbInfo.get_db().session.query(Product).filter_by(supplier_id=s_id)
 
     def get_lead_deliver_day(self):
         if self.deliver_day is None and self.lead_day is None:

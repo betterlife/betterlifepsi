@@ -1,9 +1,9 @@
 # encoding: utf-8
-from app.app_provider import AppInfo
+from app.database import DbInfo
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Text
 from sqlalchemy.orm import backref, relationship
 
-db = AppInfo.get_db()
+db = DbInfo.get_db()
 
 
 class Supplier(db.Model):

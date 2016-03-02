@@ -1,10 +1,10 @@
 # encoding: utf-8
 
-from app.app_provider import AppInfo
+from app.database import DbInfo
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import backref, relationship
 
-db = AppInfo.get_db()
+db = DbInfo.get_db()
 
 
 class EnumValues(db.Model):
@@ -18,12 +18,12 @@ class EnumValues(db.Model):
 
     @staticmethod
     def find_one_by_code(v_code):
-        v_l = EnumValues.query.filter_by(code=v_code).all()
+        v_l = db.session.query(EnumValues).filter_by(code=v_code).all()
         return v_l[0]
 
     @staticmethod
     def type_filter(type_code):
-        return AppInfo.get_db().session.query(EnumValues).\
+        return db.session.query(EnumValues).\
             join(EnumValues.type, aliased=True).\
             filter_by(code=type_code)
 

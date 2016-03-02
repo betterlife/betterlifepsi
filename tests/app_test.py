@@ -1,23 +1,13 @@
 # coding=utf-8
 import unittest
 
-import app.config as config
-import os
+from app import DbInfo
 from tests import fixture
 
 
 class TestCases(unittest.TestCase):
     def setUp(self):
         self.test_client = fixture.init_test_client()
-
-    def tearDown(self):
-        pass
-        # app_provider.AppInfo.get_db().get_engine(app.app).execute(
-        #     'ALTER SCHEMA public OWNER TO flask_sit')
-        # app_provider.AppInfo.get_db().get_engine(app.app).execute(
-        #     "drop schema public cascade")
-        # app_provider.AppInfo.get_db().get_engine(app.app).execute(
-        #     "create schema public")
 
     def test_empty_db(self):
         rv = self.test_client.get('/login')

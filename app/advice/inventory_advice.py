@@ -1,5 +1,5 @@
 # coding=utf-8
-from app.models.util import format_decimal
+from app.utils.format_util import format_decimal
 
 
 class InventoryAdvice(object):

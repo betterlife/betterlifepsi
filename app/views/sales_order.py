@@ -1,7 +1,7 @@
 # coding=utf-8
 from datetime import datetime
 
-from app import app_provider
+from app import database
 from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext
@@ -169,7 +169,7 @@ class SalesOrderAdmin(ModelViewWithAccess):
         incoming = SalesOrderAdmin.create_or_update_incoming(model)
         expense = SalesOrderAdmin.create_or_update_expense(model)
         shipping = SalesOrderAdmin.create_or_update_shipping(model)
-        db = app_provider.AppInfo.get_db()
+        db = database.DbInfo.get_db()
         if expense is not None:
             db.session.add(expense)
         if incoming is not None:

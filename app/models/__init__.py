@@ -17,5 +17,4 @@ from inventory_transaction import InventoryTransaction, \
 from preference import Preference
 from purchase_order import PurchaseOrder, PurchaseOrderLine
 from sales_order import SalesOrder, SalesOrderLine
-from util import format_decimal
 from security import User, Role, roles_users

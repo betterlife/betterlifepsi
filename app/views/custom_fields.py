@@ -25,7 +25,11 @@ class CKTextAreaWidget(widgets.TextArea):
     def __call__(self, field, **kwargs):
         # add WYSIWYG class to existing classes
         existing_classes = kwargs.pop('class', '') or kwargs.pop('class_', '')
-        kwargs['class'] = u'{0!s} {1!s}'.format(existing_classes, "ckeditor")
+        if (existing_classes is not None) and (len(existing_classes) == 0):
+            clazz = "ckeditor"
+        else:
+            clazz = u'{0!s} {1!s}'.format(existing_classes, "ckeditor")
+        kwargs['class'] = clazz
         return super(CKTextAreaWidget, self).__call__(field, **kwargs)
 
 

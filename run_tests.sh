@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-export TESTING="True"
 
 TEST_DATABASE_URL='postgres://flask_sit:flask_sit@localhost:5432/flask_sit'
 export DATABASE_URL=$TEST_DATABASE_URL
