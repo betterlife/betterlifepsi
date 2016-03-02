@@ -3,9 +3,9 @@ import unittest
 from datetime import datetime
 
 import codecs
-from models import SalesOrder, SalesOrderLine, Product, Supplier
+from app.models import SalesOrder, SalesOrderLine, Product, Supplier
 from tests import fixture
-from utils import db_util
+from app.utils import db_util
 
 
 class TestCases(unittest.TestCase):
