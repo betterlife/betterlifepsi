@@ -1,6 +1,5 @@
 # coding=utf-8
 import unittest
-from StdSuites import row
 from datetime import datetime
 
 import codecs
