@@ -24,11 +24,11 @@ Install & Deploy
   
 How to run?
   - Start the application
-    - For development, run **python start.py**, and then open it on http://localhost:5000
-    - If you run it via **heroku local**, please open it on http://localhost:8000
+    - For development, run **python start.py**, and then open it on __[http://localhost:5000](http://localhost:5000)__
+    - If you run it via **heroku local**, please open it on __[http://localhost:8000](http://localhost:8000)__
   - Test the application
     - Run **./run_tests.py** to test the application
-  - Default admin username/password is __support@betterlife.io / password__
+  - Default admin username/password is __support<i></i>@betterlife.io / password__
 
 Links:
 
