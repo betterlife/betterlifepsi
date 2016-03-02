@@ -1,9 +1,9 @@
 # encoding: utf-8
-from app.app_provider import AppInfo
+from app.database import DbInfo
 from sqlalchemy import Column, Integer, ForeignKey, Text
 from sqlalchemy.orm import relationship
 
-db = AppInfo.get_db()
+db = DbInfo.get_db()
 
 
 class Preference(db.Model):
@@ -33,4 +33,4 @@ class Preference(db.Model):
 
     @staticmethod
     def get():
-        return Preference.query.get(1)
+        return db.session.query(Preference).get(1)

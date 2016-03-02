@@ -4,14 +4,14 @@
 import datetime
 
 from app import const
-from app.app_provider import AppInfo
+from app.database import DbInfo
 from app.models.enum_values import EnumValues
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, String, Date
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from app.utils import date_util
 
-db = AppInfo.get_db()
+db = DbInfo.get_db()
 
 
 class Customer(db.Model):

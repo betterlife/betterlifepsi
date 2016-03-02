@@ -15,9 +15,9 @@ app.config.from_object(config)
 
 from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy(app)
-from app.app_provider import AppInfo
+from app.database import DbInfo
 
-AppInfo.set_db(db)
+DbInfo.set_db(db)
 from app.models import *
 db.init_app(app)
 

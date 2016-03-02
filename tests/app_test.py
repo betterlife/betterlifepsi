@@ -1,27 +1,13 @@
 # coding=utf-8
 import unittest
 
-import app.config as config
-import os
+from app import DbInfo
+from tests import fixture
 
 
 class TestCases(unittest.TestCase):
     def setUp(self):
-        config.TESTING = True
-        config.SQLALCHEMY_DATABASE_URI = (os.environ.get('TEST_DATABASE_URL') or 'postgres://flask_sit:flask_sit@localhost:5432/flask_sit')
-        config.WTF_CSRF_ENABLED = False
-        import start
-        application = start.run_app(config)
-        self.test_client = application.test_client()
-
-    def tearDown(self):
-        pass
-        # app_provider.AppInfo.get_db().get_engine(app.app).execute(
-        #     'ALTER SCHEMA public OWNER TO flask_sit')
-        # app_provider.AppInfo.get_db().get_engine(app.app).execute(
-        #     "drop schema public cascade")
-        # app_provider.AppInfo.get_db().get_engine(app.app).execute(
-        #     "create schema public")
+        self.test_client = fixture.init_test_client()
 
     def test_empty_db(self):
         rv = self.test_client.get('/login')

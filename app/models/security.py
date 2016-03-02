@@ -1,8 +1,8 @@
 # encoding: utf-8
-from app.app_provider import AppInfo
+from app.database import DbInfo
 from flask.ext.security import RoleMixin, UserMixin
 
-db = AppInfo.get_db()
+db = DbInfo.get_db()
 
 roles_users = db.Table('roles_users',
                        db.Column('id', db.Integer(), primary_key=True),

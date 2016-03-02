@@ -22,3 +22,19 @@ def num_years(begin, end=None):
         return num_of_years - 1
     else:
         return num_of_years
+
+
+def get_weeks_between(d1, d2):
+    """
+    Calculating the difference in weeks between the Mondays within weeks of respective dates
+
+    :param d1: day one, the start date
+    :param d2: day two, the end date
+    :return: Returns 0 if both dates fall withing one week, 1 if on two consecutive weeks, etc.
+    """
+    from datetime import timedelta
+    if d1 is None or d2 is None:
+        return 1
+    monday1 = (d1 - timedelta(days=d1.weekday()))
+    monday2 = (d2 - timedelta(days=d2.weekday()))
+    return (monday2 - monday1).days / 7

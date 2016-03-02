@@ -1,15 +1,15 @@
 # encoding: utf-8
 from decimal import Decimal
 
-from app.app_provider import AppInfo
+from app.database import DbInfo
 from app import const
-from app.models.util import format_decimal
+from app.utils.format_util import format_decimal
 from app.models.enum_values import EnumValues
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
-db = AppInfo.get_db()
+db = DbInfo.get_db()
 
 
 class Receiving(db.Model):
@@ -68,7 +68,7 @@ class Receiving(db.Model):
 
     @staticmethod
     def filter_by_po_id(po_id):
-        return AppInfo.get_db().session.query(Receiving).filter_by(purchase_order_id=po_id).all()
+        return DbInfo.get_db().session.query(Receiving).filter_by(purchase_order_id=po_id).all()
 
     def __unicode__(self):
         return str(self.id) + ' - ' + str(self.total_amount)

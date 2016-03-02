@@ -1,12 +1,12 @@
 # encoding: utf-8
-from app.app_provider import AppInfo
+from app.database import DbInfo
 from app import const
 from app.models.enum_values import EnumValues
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime
 from sqlalchemy.orm import backref, relationship
 
 
-db = AppInfo.get_db()
+db = DbInfo.get_db()
 
 
 class Incoming(db.Model):

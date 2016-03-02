@@ -1,16 +1,16 @@
 # encoding: utf-8
 from decimal import Decimal
 
-from app.app_provider import AppInfo
+from app.database import DbInfo
 from app import const
 from app.models.inventory_transaction import InventoryTransactionLine, InventoryTransaction
-from app.models.util import format_decimal
+from app.utils.format_util import format_decimal
 from app.models.enum_values import EnumValues
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
-db = AppInfo.get_db()
+db = DbInfo.get_db()
 
 
 class Shipping(db.Model):
@@ -48,7 +48,7 @@ class Shipping(db.Model):
 
     @staticmethod
     def filter_by_so_id(so_id):
-        return AppInfo.get_db().session.query(Shipping).filter_by(sales_order_id=so_id).all()
+        return DbInfo.get_db().session.query(Shipping).filter_by(sales_order_id=so_id).all()
 
     def __unicode__(self):
         return str(self.id) + ' - ' + str(self.total_amount)
@@ -71,7 +71,7 @@ class Shipping(db.Model):
             itl.in_transit_quantity = 0
             itl.inventory_transaction = it
             line.inventory_transaction_line = itl
-        AppInfo.get_db().session.add(it)
+        DbInfo.get_db().session.add(it)
 
 
 class ShippingLine(db.Model):
