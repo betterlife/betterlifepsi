@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-06-26 07:25+0800\n"
-"PO-Revision-Date: 2016-03-01 10:56+0800\n"
+"PO-Revision-Date: 2016-03-02 13:16+0800\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -83,7 +83,7 @@ msgid "Incoming"
 msgstr "收入"
 
 msgid "Enum Values"
-msgstr "枚举字段"
+msgstr "可选项"
 
 msgid "Product Name"
 msgstr "商品名称"
@@ -230,7 +230,7 @@ msgid "Password"
 msgstr "密码"
 
 msgid "Role"
-msgstr "角色"
+msgstr "权限"
 
 msgid "Welcome to Login"
 msgstr "Betterlife 系统登录"
@@ -266,10 +266,10 @@ msgid "Inventory Transaction Type"
 msgstr "库存变动类型"
 
 msgid "Receiving"
-msgstr "采购收货"
+msgstr "收货"
 
-msgid "Inventory Transaction"
-msgstr "库存变动"
+msgid "Adjust Inventory"
+msgstr "库存调整"
 
 msgid "Receiving Price"
 msgstr "收货价格"
@@ -326,7 +326,7 @@ msgid "Related Shipping"
 msgstr "相关发货单"
 
 msgid "Shipping"
-msgstr "销售发货"
+msgstr "发货"
 
 msgid "Type Values"
 msgstr "值列表"
@@ -358,8 +358,8 @@ msgstr "如果不修改密码请留空，如果修改密码，请在此处输入
 msgid "Un-check this checkbox to disable a user from login to the system"
 msgstr "取消本选择框来将用户禁用，并禁止其登陆系统"
 
-msgid "Product Inventory"
-msgstr "产品库存"
+msgid "Operation Suggestion"
+msgstr "运营建议"
 
 msgid "Average purchase price"
 msgstr "平均采购价"
@@ -438,3 +438,18 @@ msgstr "生日"
 
 msgid "Points"
 msgstr "积分"
+
+msgid "Purchase"
+msgstr "进货"
+
+msgid "Sales"
+msgstr "销售"
+
+msgid "Financial"
+msgstr "财务"
+
+msgid "Master Data"
+msgstr "数据"
+
+msgid "Settings"
+msgstr "设置"
