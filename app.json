@@ -1,0 +1,22 @@
+{
+  "name": "flask-psi",
+  "scripts": {
+  },
+  "env": {
+    "DOWNSTREAM_APP": {
+      "required": true
+    },
+    "SENTRY_DSN": {
+      "required": true
+    }
+  },
+  "addons": [
+    "heroku-postgresql",
+    "logentries"
+  ],
+  "buildpacks": [
+    {
+      "url": "urn:buildpack:heroku/python"
+    }
+  ]
+}
