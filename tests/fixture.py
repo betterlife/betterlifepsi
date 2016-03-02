@@ -8,3 +8,7 @@ def get_test_client():
     start.application = start.create_app(config)
     start.db = start.init_all_return_db(start.application)
     return start.application.test_client()
+
+
+def login_as_admin(test_client):
+    return test_client.post('/login', data=dict(email='support@betterlife.io', password='password'), follow_redirects=True)

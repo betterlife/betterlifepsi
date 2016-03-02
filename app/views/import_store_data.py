@@ -10,10 +10,10 @@ from app.models import Supplier, Product, SalesOrder, SalesOrderLine, Shipping, 
     InventoryTransactionLine, \
     EnumValues, Incoming, Preference
 from app.utils import get_next_code, get_by_external_id, save_objects_commit, get_by_name
-from app.config import DEBUG
 from flask import request, current_app
 from flask.ext.admin import BaseView
 from flask.ext.babelex import gettext
+from flask.ext.login import login_required
 from flask.ext.security import current_user, url_for_security
 from flask_admin import expose
 from werkzeug.utils import redirect
@@ -135,10 +135,8 @@ def create_or_update_incoming(order, order_line, incoming_category, incoming_sta
 
 class ImportStoreDataView(BaseView):
     @expose(url='/', methods=['GET', 'POST'])
+    @login_required
     def index(self):
-        logger = current_app.logger
-        if not current_user.is_authenticated:
-            return redirect(url_for_security('login'))
         if request.method == 'GET':
             return self.render('data_loading/legacy.html')
         elif request.method == 'POST':
