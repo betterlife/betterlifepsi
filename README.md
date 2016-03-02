@@ -19,8 +19,12 @@ Try to answer follow questions:
   - What is the optimized quantity/date for replenish the stock?
   
 How to run?
-  - For development, run python start.py
-  - For testing, run ./run_tests.py
+  - Start the application
+    - For development, run _python start.py_, and then open it on http://localhost:5000
+    - If you run it via heroku local, please open it on http://localhost:8000
+  - Test the application
+    - Run _./run_tests.py_ to test the application
+  - Default admin username/password is support@betterlife.io / password
 
 Links:
 
@@ -31,16 +35,6 @@ Links:
   - [Dev environment(Heroku)](http://betterlife-flask-dev.herokuapp.com/)
   - [SIT environment(Heroku)](http://betterlife-flask.herokuapp.com/)
 
-Documents
-
-  - [Python 2.x](https://docs.python.org/2/)
-  - [Python 3.x](https://docs.python.org/3/)
-  - [Flask](http://flask.pocoo.org/docs/dev/)
-  - [Flask-Admin](http://flask-admin.readthedocs.org/en/latest/)
-  - [SQLAlchemy](http://docs.sqlalchemy.org/en/rel_1_0/)
-  - [Flask-SQLAlchemy](https://pythonhosted.org/Flask-SQLAlchemy/index.html)
-  - [WTForms](http://wtforms.readthedocs.org/en/latest/forms.html)
-  
 Code Coverage History
 
 ![codecov.io](http://codecov.io/github/betterlife/flask-psi/branch.svg?branch=master)
