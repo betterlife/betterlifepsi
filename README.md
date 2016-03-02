@@ -18,20 +18,24 @@ Try to answer follow questions:
   - When do I need to replenish the stock and how much do I lost if that's not done?
   - What is the optimized quantity/date for replenish the stock?
   
+Install & Deploy
+  -  [Installation Locally](https://github.com/betterlife/flask-psi/wiki/Installation)
+  -  [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+  
 How to run?
   - Start the application
-    - For development, run _python start.py_, and then open it on http://localhost:5000
-    - If you run it via heroku local, please open it on http://localhost:8000
+    - For development, run **python start.py**, and then open it on http://localhost:5000
+    - If you run it via **heroku local**, please open it on http://localhost:8000
   - Test the application
-    - Run _./run_tests.py_ to test the application
-  - Default admin username/password is support@betterlife.io / password
+    - Run **./run_tests.py** to test the application
+  - Default admin username/password is __support@betterlife.io / password__
 
 Links:
 
   - [Build Server(travis)](https://travis-ci.org/betterlife/flask-psi)
   - [Feature cards(atlassian)](https://betterlife.atlassian.net)
   - [Code coverage(codecov)](https://codecov.io/github/betterlife/flask-psi)
-  - [(Code Issues)](https://www.quantifiedcode.com/app/project/4c27fd0589fc4bcc96782a829824e1b9)
+  - [Quantifiedcode(Code Issues)](https://www.quantifiedcode.com/app/project/4c27fd0589fc4bcc96782a829824e1b9)
   - [Dev environment(Heroku)](http://betterlife-flask-dev.herokuapp.com/)
   - [SIT environment(Heroku)](http://betterlife-flask.herokuapp.com/)
 
