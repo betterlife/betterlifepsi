@@ -22,7 +22,7 @@ class TestCases(unittest.TestCase):
         from app.models import SalesOrder, SalesOrderLine, Product, Supplier
         from app.utils import db_util
         import os
-        content = codecs.open(os.path.dirname(os.path.realpath(__file__)) + "/../data/store_data.csv", "r", "utf-8").read()
+        content = codecs.open(os.path.dirname(os.path.realpath(__file__)) + "/store_data.csv", "r", "utf-8").read()
         rv = self.test_client.get('/admin/import_store_data/', follow_redirects=True)
         self.assertEqual(200, rv.status_code)
         self.assertIn(u'导入店铺运营数据', rv.data)
