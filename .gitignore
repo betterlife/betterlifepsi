@@ -9,3 +9,5 @@ nosetests.xml
 coverage.xml
 reports
 *.log
+.vscode
+pip-delete-this-directory.txt

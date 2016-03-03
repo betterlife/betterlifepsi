@@ -4,6 +4,8 @@ from functools import partial
 
 from app.database import DbInfo
 from flask.ext.admin.contrib.sqla import ModelView
+from flask.ext.admin.contrib.sqla.filters import FloatEqualFilter, FloatSmallerFilter
+from flask.ext.admin.contrib.sqla.filters import FloatGreaterFilter
 from flask.ext.admin.model import InlineFormAdmin
 from app import const
 from flask.ext.babelex import lazy_gettext, gettext
@@ -65,6 +67,13 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
     }
     column_sortable_list = ('id', ('supplier', 'id'), ('purchase_order', 'id'), ('status', 'status.display'), 'date',
                             'total_amount')
+
+    column_filters = ('date', 'status.display', 'purchase_order.supplier.name',
+                      FloatSmallerFilter(Receiving.total_amount, lazy_gettext('Total Amount')),
+                      FloatGreaterFilter(Receiving.total_amount, lazy_gettext('Total Amount')),
+                      FloatEqualFilter(Receiving.total_amount, lazy_gettext('Total Amount')))
+
+    column_searchable_list = ('status.display', 'purchase_order.supplier.name', 'remark')
     column_labels = {
         'id': lazy_gettext('id'),
         'purchase_order': lazy_gettext('Related Purchase Order'),
@@ -75,6 +84,8 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
         'total_amount': lazy_gettext('Total Amount'),
         'inventory_transaction': lazy_gettext('Inventory Transaction'),
         'lines': lazy_gettext('Lines'),
+        'status.display': lazy_gettext('Status'),
+        'purchase_order.supplier.name': lazy_gettext('Supplier Name')
     }
     form_args = dict(
         status=dict(query_factory=Receiving.status_filter,

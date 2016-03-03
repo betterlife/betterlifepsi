@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from flask.ext.admin.contrib.sqla.filters import FloatGreaterFilter, FloatSmallerFilter
 from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext
 from app.models import InventoryTransactionLine, InventoryTransaction
@@ -8,7 +9,6 @@ from formatter import receivings_formatter, shipping_formatter, default_date_for
 
 
 class InventoryTransactionLineInlineAdmin(InlineFormAdmin):
-
     form_args = dict(
         id=dict(label=lazy_gettext('id')),
         product=dict(label=lazy_gettext('Product')),
@@ -30,8 +30,8 @@ class InventoryTransactionLineInlineAdmin(InlineFormAdmin):
         form.itl_shipping_line = None
         return form
 
-class InventoryTransactionAdmin(ModelViewWithAccess):
 
+class InventoryTransactionAdmin(ModelViewWithAccess):
     can_delete = False
 
     column_list = ('id', 'type', 'date', 'total_amount', 'it_receiving', 'it_shipping', 'remark')
@@ -39,6 +39,11 @@ class InventoryTransactionAdmin(ModelViewWithAccess):
     form_columns = ('type', 'date', 'total_amount', 'remark', 'lines')
     form_create_rules = ('type', 'date', 'remark', 'lines',)
     column_editable_list = ('remark',)
+
+    column_filters = ('date',
+                      FloatGreaterFilter(InventoryTransaction.total_amount, lazy_gettext('Total Amount')),
+                      FloatSmallerFilter(InventoryTransaction.total_amount, lazy_gettext('Total Amount')),)
+    column_searchable_list = ('type.display', 'remark')
 
     column_details_list = ('id', 'type', 'date', 'total_amount', 'remark', 'lines', 'it_receiving', 'it_shipping',)
 

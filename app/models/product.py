@@ -6,7 +6,7 @@ from enum_values import EnumValues
 from app.utils.date_util import get_weeks_between
 from app.utils.format_util import format_decimal
 from app.models.inventory_transaction import InventoryTransactionLine, InventoryTransaction
-from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text, select, func, desc, Boolean
+from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text, select, func, desc, Boolean, or_
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
@@ -121,20 +121,30 @@ class Product(db.Model):
 
     @average_unit_profit.expression
     def average_unit_profit(self):
-        return (select([-func.sum(InventoryTransactionLine.quantity * InventoryTransactionLine.price) /
-                        func.greatest(func.sum(InventoryTransactionLine.quantity), 1)])
-                .where(self.id == InventoryTransactionLine.product_id
-                       and InventoryTransactionLine.inventory_transaction_id == InventoryTransaction.id
-                       and InventoryTransaction.type_id == EnumValues.id
-                       and (EnumValues.code == const.SALES_OUT_INV_TRANS_TYPE_KEY or
-                            EnumValues.code == const.PURCHASE_IN_INV_TRANS_KEY))) \
-            .label('average_unit_profit')
+        return ((select([-func.sum(InventoryTransactionLine.quantity * InventoryTransactionLine.price) /
+                         func.greatest(func.sum(InventoryTransactionLine.quantity), 1)])
+                 .where(self.id == InventoryTransactionLine.product_id)
+                 .where(InventoryTransactionLine.inventory_transaction_id == InventoryTransaction.id)
+                 .where(InventoryTransaction.type_id == EnumValues.id)
+                 .where(or_(EnumValues.code == const.SALES_OUT_INV_TRANS_TYPE_KEY, EnumValues.code == const.PURCHASE_IN_INV_TRANS_KEY)))
+                .label('average_unit_profit'))
 
     @hybrid_property
     def weekly_average_profit(self):
         if 0 == self.average_unit_profit:
             return 0
         return format_decimal(self.weekly_sold_qty * self.average_unit_profit)
+
+    @weekly_average_profit.expression
+    def weekly_average_profit(self):
+        return ((select([-func.sum(InventoryTransactionLine.quantity * InventoryTransactionLine.price) /
+                         func.greatest(func.sum(InventoryTransactionLine.quantity), 1)])
+                 .where(self.id == InventoryTransactionLine.product_id
+                        and InventoryTransactionLine.inventory_transaction_id == InventoryTransaction.id
+                        and InventoryTransaction.type_id == EnumValues.id
+                        and (EnumValues.code == const.SALES_OUT_INV_TRANS_TYPE_KEY or
+                             EnumValues.code == const.PURCHASE_IN_INV_TRANS_KEY)))
+                .label('weekly_average_profit'))
 
     @weekly_average_profit.setter
     def weekly_average_profit(self, value):
@@ -188,6 +198,14 @@ class Product(db.Model):
     @weekly_sold_qty.setter
     def weekly_sold_qty(self, value):
         pass
+
+    @weekly_sold_qty.expression
+    def weekly_sold_qty(self):
+        from app.models.sales_order import SalesOrderLine, SalesOrder
+        return ((select([func.sum(SalesOrderLine.quantity)])
+                 .where(self.id == SalesOrderLine.product_id)
+                 .where(SalesOrderLine.sales_order_id == SalesOrder.id)
+                 .where(SalesOrder.order_date > func.now() - 7)).label('weekly_sold_qty'))
 
     def cal_inv_trans_average(self, transaction_type):
         i_ts = self.inventory_transaction_lines

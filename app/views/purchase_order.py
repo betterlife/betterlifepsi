@@ -4,6 +4,7 @@ from functools import partial
 
 from app import database
 from flask.ext.admin.contrib.sqla import ModelView
+from flask.ext.admin.contrib.sqla.filters import FloatSmallerFilter, FloatGreaterFilter, FloatEqualFilter
 from flask.ext.admin.model import InlineFormAdmin
 from app import const
 from flask.ext.babelex import lazy_gettext, gettext
@@ -54,6 +55,13 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
     column_details_list = ('id', 'supplier', 'status', 'logistic_amount', 'order_date', 'goods_amount', 'total_amount',
                            'remark', 'lines', 'all_expenses', 'all_receivings')
 
+    column_searchable_list = ('supplier.name', 'status.display', 'remark')
+
+    column_filters = ('order_date', 'supplier.name', 'logistic_amount', 'status.display',
+                      FloatSmallerFilter(PurchaseOrder.goods_amount, lazy_gettext('Goods Amount')),
+                      FloatGreaterFilter(PurchaseOrder.goods_amount, lazy_gettext('Goods Amount')),
+                      FloatEqualFilter(PurchaseOrder.goods_amount, lazy_gettext('Goods Amount')))
+
     column_labels = {
         'id': lazy_gettext('id'),
         'logistic_amount': lazy_gettext('Logistic Amount'),
@@ -66,6 +74,8 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
         'total_amount': lazy_gettext('Total Amount'),
         'goods_amount': lazy_gettext('Goods Amount'),
         'lines': lazy_gettext('Lines'),
+        'supplier.name': lazy_gettext('Supplier Name'),
+        'status.display': lazy_gettext('Status')
     }
 
     column_formatters = {

@@ -1,6 +1,8 @@
+from flask.ext.admin.contrib.sqla.filters import FloatSmallerFilter, FloatGreaterFilter
 from flask.ext.babelex import lazy_gettext
 from app.views import ModelViewWithAccess
 from formatter import supplier_formatter, product_formatter, available_quantity_formatter, default_decimal_formatter
+from app.models import Product
 from sqlalchemy import func
 
 
@@ -14,7 +16,11 @@ class ProductInventoryView(ModelViewWithAccess):
                    'average_purchase_price', 'average_retail_price', 'average_unit_profit', 'weekly_sold_qty',
                    'weekly_average_profit', 'inventory_advice')
 
-    column_searchable_list = ('name', 'supplier.name',)
+    column_searchable_list = ('name', 'code', 'supplier.name', 'supplier.code')
+
+    column_filters = (FloatSmallerFilter(Product.available_quantity, lazy_gettext('Available Quantity')),
+                      FloatGreaterFilter(Product.available_quantity, lazy_gettext('Available Quantity')),
+                      FloatGreaterFilter(Product.in_transit_quantity, lazy_gettext('In Transit Quantity')),)
 
     column_sortable_list = ('name', 'available_quantity', 'in_transit_quantity', 'average_purchase_price',
                             'average_retail_price', 'average_unit_profit',)
