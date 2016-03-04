@@ -1,6 +1,9 @@
 # encoding: utf-8
+from app import const
 from app.database import DbInfo
 from flask.ext.security import RoleMixin, UserMixin
+from sqlalchemy import ForeignKey, Integer
+from sqlalchemy.orm import relationship
 
 db = DbInfo.get_db()
 
@@ -28,8 +31,22 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255))
     active = db.Column(db.Boolean())
+    locale_id = db.Column(Integer, ForeignKey('enum_values.id'))
+    locale = relationship('EnumValues', foreign_keys=[locale_id])
+    timezone_id = db.Column(Integer, ForeignKey('enum_values.id'))
+    timezone = relationship('EnumValues', foreign_keys=[timezone_id])
     roles = db.relationship('Role', secondary=roles_users,
                             backref=db.backref('users', lazy='joined'))
 
     def __unicode__(self):
         return self.display
+
+    @staticmethod
+    def locale_filter():
+        from app.models import EnumValues
+        return EnumValues.type_filter(const.LANGUAGE_VALUES_KEY)
+
+    @staticmethod
+    def timezone_filter():
+        from app.models import EnumValues
+        return EnumValues.type_filter(const.TIMEZONE_VALUES_KEY)
