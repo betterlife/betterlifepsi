@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request, current_app
 
 
 def create_app(custom_config=None):
@@ -16,8 +16,12 @@ def create_app(custom_config=None):
 def init_flask_security(flask_app, database):
     from flask_security import SQLAlchemyUserDatastore, Security
     from app.models import User, Role
+    import app.config as config
+    for key, value in config.security_messages.items():
+        flask_app.config['SECURITY_MSG_' + key] = value
     user_datastore = SQLAlchemyUserDatastore(database, User, Role)
-    Security(flask_app, user_datastore)
+    from views.login_form import LoginForm
+    Security(flask_app, user_datastore, login_form=LoginForm)
 
 
 def init_admin_views(flask_app, database):
@@ -36,7 +40,8 @@ def init_db(flask_app):
 
 def init_babel(flask_app):
     from flask_babelex import Babel
-    return Babel(default_locale='zh_Hans_CN', app=flask_app)
+    # return Babel(default_locale='zh_Hans_CN', app=flask_app)
+    return Babel(app=flask_app)
 
 
 def init_logging(flask_app):
@@ -76,9 +81,12 @@ def define_route_context(flask_app, db, babel):
 
     @babel.localeselector
     def get_locale():
-        # Put your logic here. Application can store locale in
-        # user profile, cookie, session, etc.
-        return 'zh_CN'
+        """
+        Put your logic here. Application can store locale in
+        user profile, cookie, session, etc.
+        This is the setting actually take effective
+        """
+        return 'zh_CN' if current_app.config['DEBUG'] else request.accept_languages.best_match(['zh_CN', 'en_US'])
 
 
 def init_all(app):
