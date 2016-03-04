@@ -3,7 +3,6 @@ from flask.ext.babelex import lazy_gettext
 from app.views import ModelViewWithAccess
 from flask.ext.security.utils import encrypt_password
 from wtforms import PasswordField
-from werkzeug.security import generate_password_hash
 
 
 # Customized User model for SQL-Admin
@@ -12,6 +11,11 @@ class UserAdmin(ModelViewWithAccess):
     column_exclude_list = list = ('password',)
 
     column_list = ('id', 'login', 'display', 'email', 'active',)
+
+    """
+    Disable delete of user(use de-active instead)
+    """
+    can_delete = False
 
     # Not working by now
     # column_editable_list = ('display', 'email', 'active')
