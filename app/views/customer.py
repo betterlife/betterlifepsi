@@ -1,15 +1,16 @@
 # encoding=utf-8
 from datetime import datetime
 
-from app.views import ModelViewWithAccess
-from flask.ext.babelex import lazy_gettext
-from app.views.formatter import default_date_formatter
 from app.models.customer import Customer
+from app.views import ModelViewWithAccess
+from app.views.formatter import default_date_formatter
+from flask.ext.admin.contrib.sqla.filters import FloatGreaterFilter
+from flask.ext.babelex import lazy_gettext
 
 
 class CustomerAdmin(ModelViewWithAccess):
     column_list = ('id', 'name', 'mobile_phone', 'email', 'address', 'birthday',
-                   'join_date', 'member_age', 'join_channel', 'level', 'total_spent')
+                   'join_date', 'member_age', 'join_channel', 'level', 'total_spent', 'points')
 
     column_labels = {
         'id': lazy_gettext('id'),
@@ -37,11 +38,20 @@ class CustomerAdmin(ModelViewWithAccess):
 
     form_excluded_columns = ('sales_orders',)
 
-    column_searchable_list = ['first_name', 'last_name', 'mobile_phone', 'address', 'email']
+    column_searchable_list = ['first_name', 'last_name', 'mobile_phone', 'address',
+                              'email', 'join_channel.display', 'level.display']
+
+    # TODO Refer to https://github.com/flask-admin/flask-admin/pull/1209 for the current issue.
+    column_filters = ("points",
+                      FloatGreaterFilter(Customer.total_spent, lazy_gettext('Total Spent')),
+                      FloatGreaterFilter(Customer.member_age, lazy_gettext('Member Year')),)
 
     column_formatters = {
         'join_date': default_date_formatter,
+        'birthday': default_date_formatter,
     }
+
+    column_sortable_list = ('id', 'birthday', 'join_date', 'member_age', 'total_spent',)
 
     form_create_rules = form_edit_rules = ['last_name', 'first_name', 'mobile_phone',
                                            'email', 'address', 'birthday', 'join_channel',

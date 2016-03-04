@@ -1,6 +1,7 @@
 # coding=utf-8
 from datetime import datetime
 
+from flask.ext.admin.contrib.sqla.filters import FloatSmallerFilter, FloatGreaterFilter, FloatEqualFilter
 from flask.ext.admin.model import InlineFormAdmin
 from flask.ext.babelex import lazy_gettext, gettext
 from app.models import ShippingLine, Shipping
@@ -38,6 +39,12 @@ class ShippingAdmin(ModelViewWithAccess):
         "total_amount": DisabledStringField(label=lazy_gettext('Total Amount')),
     }
 
+    column_filters = ('date',
+                      FloatSmallerFilter(Shipping.total_amount, lazy_gettext('Total Amount')),
+                      FloatGreaterFilter(Shipping.total_amount, lazy_gettext('Total Amount')),
+                      FloatEqualFilter(Shipping.total_amount, lazy_gettext('Total Amount')),)
+    column_searchable_list = ('status.display', 'remark')
+
     column_sortable_list = ('id', ('sales_order', 'id'), ('status', 'status.display'), 'date', 'total_amount')
     column_labels = {
         'id': lazy_gettext('id'),
@@ -48,12 +55,13 @@ class ShippingAdmin(ModelViewWithAccess):
         'total_amount': lazy_gettext('Total Amount'),
         'inventory_transaction': lazy_gettext('Inventory Transaction'),
         'lines': lazy_gettext('Lines'),
+        'status.display': lazy_gettext('Status'),
     }
 
     column_details_list = ('id', 'sales_order', 'status', 'date', 'total_amount', 'remark', 'lines', 'inventory_transaction')
 
     form_args = dict(
-        status=dict(query_factory=Shipping.status_filter,),
+        status=dict(query_factory=Shipping.status_filter, ),
         date=dict(default=datetime.now()),
         lines=dict(description=lazy_gettext('Modify shipping document directly is not allowed, '
                                             'please modify the related sales order and this shipping document '

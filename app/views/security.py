@@ -18,6 +18,10 @@ class UserAdmin(ModelViewWithAccess):
 
     column_details_list = ('id', 'login', 'display', 'email', 'active', 'roles',)
 
+    column_filters = ('active',)
+
+    column_searchable_list = ('login', 'display', 'email',)
+
     column_labels = dict(
         id=lazy_gettext('id'),
         login=lazy_gettext('Login Name'),

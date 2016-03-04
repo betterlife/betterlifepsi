@@ -9,6 +9,7 @@ from app.models import Preference, Incoming, Expense, Shipping, ShippingLine, En
 from app.views import ModelViewWithAccess, DisabledStringField
 from formatter import expenses_formatter, incoming_formatter, shipping_formatter, default_date_formatter
 from app.views.custom_fields import ReadonlyStringField
+from flask_admin.contrib.sqla.filters import FloatGreaterFilter, FloatSmallerFilter, FloatInListFilter, FloatEqualFilter
 
 
 class SalesOrderLineInlineAdmin(InlineFormAdmin):
@@ -33,11 +34,24 @@ class SalesOrderLineInlineAdmin(InlineFormAdmin):
 
 
 class SalesOrderAdmin(ModelViewWithAccess):
-    from app.models import SalesOrderLine
+    from app.models import SalesOrderLine, SalesOrder
 
     column_list = ('id', 'customer', 'logistic_amount', 'actual_amount', 'original_amount',
                    'discount_amount', 'order_date', 'incoming', 'expense', 'so_shipping', 'remark')
-    # column_filters = ('order_date', 'remark', 'logistic_amount')
+    column_filters = ('order_date', 'logistic_amount',
+                      FloatSmallerFilter(SalesOrder.actual_amount, lazy_gettext('Actual Amount')),
+                      FloatGreaterFilter(SalesOrder.actual_amount, lazy_gettext('Actual Amount')),
+                      FloatEqualFilter(SalesOrder.actual_amount, lazy_gettext('Actual Amount')),
+                      FloatSmallerFilter(SalesOrder.discount_amount, lazy_gettext('Discount Amount')),
+                      FloatGreaterFilter(SalesOrder.discount_amount, lazy_gettext('Discount Amount')),
+                      FloatEqualFilter(SalesOrder.discount_amount, lazy_gettext('Discount Amount')),
+                      FloatSmallerFilter(SalesOrder.original_amount, lazy_gettext('Total Amount')),
+                      FloatGreaterFilter(SalesOrder.original_amount, lazy_gettext('Total Amount')),
+                      FloatEqualFilter(SalesOrder.original_amount, lazy_gettext('Total Amount')),)
+
+    column_searchable_list = ('customer.first_name', 'customer.last_name', 'remark',
+                              'customer.mobile_phone', 'customer.email', 'customer.address',
+                              'customer.level.display', 'customer.join_channel.display')
 
     form_columns = ('id', 'customer', 'transient_external_id', 'external_id', 'logistic_amount', 'order_date', 'remark', 'actual_amount',
                     'original_amount', 'discount_amount', 'lines')
@@ -89,6 +103,7 @@ class SalesOrderAdmin(ModelViewWithAccess):
         'lines': lazy_gettext('Lines'),
         'external_id': lazy_gettext('External Id'),
         'customer': lazy_gettext('Customer'),
+        'customer.name': lazy_gettext('Customer')
     }
 
     def create_form(self, obj=None):

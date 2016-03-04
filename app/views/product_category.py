@@ -7,8 +7,8 @@ class ProductCategoryAdmin(ModelViewWithAccess):
     column_exclude_list = ['sub_categories', 'products']
 
     column_sortable_list = ('id', 'code', 'name')
-    column_searchable_list = ('code', 'name')
-    # column_filters = ('code','name')
+    column_searchable_list = ('code', 'name', 'parent_category.code', 'parent_category.name')
+    column_filters = ('code', 'name', 'parent_category.code', 'parent_category.name')
     column_editable_list = ['code', 'name']
 
     column_details_list = ['id', 'name', 'code', 'parent_category', 'sub_categories', 'products']
@@ -20,5 +20,7 @@ class ProductCategoryAdmin(ModelViewWithAccess):
         'parent_category': lazy_gettext('Parent category'),
         'sub_categories': lazy_gettext('Sub Categories'),
         'products': lazy_gettext('Products'),
+        'parent_category.code': lazy_gettext('Parent Category Code'),
+        'parent_category.name': lazy_gettext('Parent Category Name'),
     }
     form_excluded_columns = ('sub_categories', 'products')

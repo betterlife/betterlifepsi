@@ -15,4 +15,4 @@ blinker==1.4.0
 raven==5.10.2
 Flask-Security==1.7.5
 Flask-DebugToolbar==0.10.0
--e git+https://github.com/betterlife/flask-admin.git@417f0170184c9bf0c2ae147445ed090e04afc47a#egg=Flask_Admin
+-e git+https://github.com/betterlife/flask-admin.git@dd26143b3cc1e2bd04a84f86b609306ca25562ee#egg=Flask_Admin

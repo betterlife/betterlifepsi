@@ -27,7 +27,10 @@ class SupplierAdmin(ModelViewWithAccess):
     column_details_list = ['id', 'external_id', 'name', 'qq', 'phone', 'contact', 'email', 'website',
                            'whole_sale_req', 'can_mixed_whole_sale', 'remark', 'paymentMethods']
 
-    column_searchable_list = ('code', 'name')
+    column_searchable_list = ('code', 'name', 'external_id', 'name', 'qq', 'phone',
+                              'contact', 'email', 'website', 'whole_sale_req', 'remark')
+
+    column_filters = ('can_mixed_whole_sale',)
 
     form_overrides = dict(external_id=ReadonlyStringField)
 

@@ -30,9 +30,11 @@ class IncomingAdmin(ModelViewWithAccess):
         'sales_order': lazy_gettext('Related Sales Order'),
         'remark': lazy_gettext('Remark'),
         'category.display': lazy_gettext('Category'),
+        'status.display': lazy_gettext('Status'),
     }
 
-    column_filters = ['date', 'amount', 'category.display']
+    column_searchable_list = ['category.display', 'status.display']
+    column_filters = ['date', 'amount', 'category.display', 'status.display']
 
     form_excluded_columns = ('sales_order',)
     column_formatters = {

@@ -5,8 +5,7 @@ import datetime
 
 from app import const
 from app.database import DbInfo
-from app.models.enum_values import EnumValues
-from sqlalchemy import Column, Integer, ForeignKey, DateTime, String, Date
+from sqlalchemy import Column, Integer, ForeignKey, DateTime, String, Date, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from app.utils import date_util
@@ -23,10 +22,10 @@ class Customer(db.Model):
     email = Column(String(64))
     address = Column(String(64), unique=False, nullable=True)
     birthday = Column(Date, nullable=True)
-    join_date = Column(DateTime, nullable=False)
+    join_date = Column(Date, nullable=False)
     points = Column(Integer, nullable=False)
 
-    join_channel_id = Column(Integer, ForeignKey('enum_values.id'), nullable=True)
+    join_channel_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
     join_channel = relationship('EnumValues', foreign_keys=[join_channel_id])
 
     level_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
@@ -39,6 +38,14 @@ class Customer(db.Model):
     @member_age.setter
     def member_age(self, val):
         pass
+
+    @member_age.expression
+    def member_age(self):
+        """
+        Being used in the UI sorting and filtering
+        :return:member age
+        """
+        return func.date_part("year", func.age(self.join_date)).label("member_age")
 
     @hybrid_property
     def name(self):
@@ -63,12 +70,22 @@ class Customer(db.Model):
     def total_spent(self, val):
         pass
 
+    @total_spent.expression
+    def total_spent(self):
+        from app.models.sales_order import SalesOrder, SalesOrderLine
+        return (select([func.sum(SalesOrderLine.quantity * SalesOrderLine.unit_price)])
+                .where(SalesOrder.id == SalesOrderLine.sales_order_id)
+                .where(self.id == SalesOrder.customer_id)
+                .label('total_spent'))
+
     @staticmethod
     def join_channel_filter():
+        from app.models.enum_values import EnumValues
         return EnumValues.type_filter(const.CUSTOMER_JOIN_CHANNEL_KEY)
 
     @staticmethod
     def level_filter():
+        from app.models.enum_values import EnumValues
         return EnumValues.type_filter(const.CUSTOMER_LEVEL_KEY)
 
     def __repr__(self):
