@@ -21,10 +21,10 @@ class TestCases(unittest.TestCase):
         rv = self.test_client.post('/login', data=dict(email='support@betterlife.io', password='password'), follow_redirects=True)
         self.assertEqual(200, rv.status_code)
         self.assertIn('Log out', rv.data)
-        self.assertIn('首页', rv.data)
-        self.assertIn('店铺重点产品运营诊断', rv.data)
-        self.assertIn('采购及支出', rv.data)
-        self.assertIn('数据管理', rv.data)
+        self.assertIn('Home', rv.data)
+        self.assertIn('Operation Suggestion', rv.data)
+        self.assertIn('Purchase Order', rv.data)
+        self.assertIn('Master Data', rv.data)
 
     def test_login_user_not_exist(self):
         rv = self.test_client.post('/login', data=dict(email='support1@betterlife.io', password='password'), follow_redirects=True)
