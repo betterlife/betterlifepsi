@@ -1,4 +1,5 @@
 from flask import Flask, request, current_app
+from flask.ext.login import current_user
 
 
 def create_app(custom_config=None):
@@ -65,6 +66,7 @@ def init_logging(flask_app):
 def init_debug_toolbar(flask_app):
     from flask.ext.debugtoolbar import DebugToolbarExtension
     if flask_app.config['DEBUG']:
+        flask_app.debug = True
         DebugToolbarExtension(flask_app)
 
 
@@ -79,6 +81,12 @@ def define_route_context(flask_app, db, babel):
     def shutdown_session(exception=None):
         db.session.remove()
 
+    @babel.timezoneselector
+    def get_timezone():
+        if getattr(current_user, 'timezone', None) is not None:
+            return current_user.timezone.code
+        return 'CST' if current_app.config['DEBUG'] else "UTC"
+
     @babel.localeselector
     def get_locale():
         """
@@ -86,6 +94,8 @@ def define_route_context(flask_app, db, babel):
         user profile, cookie, session, etc.
         This is the setting actually take effective
         """
+        if getattr(current_user, 'locale', None) is not None:
+            return current_user.locale.code
         return 'zh_CN' if current_app.config['DEBUG'] else request.accept_languages.best_match(['zh_CN', 'en_US'])
 
 

@@ -20,7 +20,9 @@ class UserAdmin(ModelViewWithAccess):
     # Not working by now
     # column_editable_list = ('display', 'email', 'active')
 
-    column_details_list = ('id', 'login', 'display', 'email', 'active', 'roles',)
+    column_details_list = ('id', 'login', 'display', 'email', 'active', 'roles', 'locale', 'timezone')
+
+    form_columns = ('login', 'display', 'email', 'locale', 'timezone', 'active', 'roles',)
 
     column_filters = ('active',)
 
@@ -38,8 +40,12 @@ class UserAdmin(ModelViewWithAccess):
     # Don't include the standard password field when creating or editing a User (but see below)
     form_excluded_columns = ('password',)
 
+    from app.models import User
+
     form_args = dict(
         active=dict(description=lazy_gettext('Un-check this checkbox to disable a user from login to the system')),
+        locale=dict(label=lazy_gettext('Language'), query_factory=User.locale_filter),
+        timezone=dict(label=lazy_gettext('Timezone'), query_factory=User.timezone_filter),
     )
 
     # Automatically display human-readable names for the current and available Roles when creating or editing a User
