@@ -3,7 +3,7 @@ from app import const
 from app.database import DbInfo
 from flask.ext.security import RoleMixin, UserMixin
 from sqlalchemy import ForeignKey, Integer
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 db = DbInfo.get_db()
 
@@ -16,6 +16,20 @@ roles_users = db.Table('roles_users',
 class Role(db.Model, RoleMixin):
     __tablename__ = 'role'
     id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(80), unique=True)
+    description = db.Column(db.String(255))
+    parent_id = db.Column(Integer, ForeignKey('role.id'))
+    parent = relationship('Role', remote_side=id,
+                          backref=backref('sub_roles', lazy='joined'))
+
+    def __unicode__(self):
+        return self.name
+
+
+class Permission(db.Model):
+    """ Permission model """
+    __tablename__ = 'permission'
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
 

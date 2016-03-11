@@ -11,3 +11,4 @@ reports
 *.log
 .vscode
 pip-delete-this-directory.txt
+debug.py

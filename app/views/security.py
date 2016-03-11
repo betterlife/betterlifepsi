@@ -1,8 +1,10 @@
 # coding=utf-8
-from flask.ext.babelex import lazy_gettext
+import database
+from flask.ext.babelex import lazy_gettext, gettext
 from app.views import ModelViewWithAccess
 from flask.ext.security.utils import encrypt_password
-from wtforms import PasswordField
+from views.base import CycleReferenceValidator
+from wtforms import PasswordField, ValidationError
 
 
 # Customized User model for SQL-Admin
@@ -78,16 +80,25 @@ class UserAdmin(ModelViewWithAccess):
 # Customized Role model for SQL-Admin
 class RoleAdmin(ModelViewWithAccess):
     # Prevent administration of Roles unless the currently logged-in user has the "admin" role
+
+    def on_model_change(self, form, model, is_created):
+        """Check whether the parent role is same as child role"""
+        CycleReferenceValidator.validate(form, model, object_type='Role', parent='parent', children='sub_roles')
+
     column_list = ('id', 'name', 'description',)
 
-    column_searchable_list = ('name', 'description',)
+    column_searchable_list = ('name', 'description',
+                              'parent.name', 'parent.description')
 
     column_labels = dict(
         id=lazy_gettext('id'),
         name=lazy_gettext('Name'),
         description=lazy_gettext('Description'),
-        users=lazy_gettext('User')
+        users=lazy_gettext('User'),
+        sub_roles=lazy_gettext('Sub Roles'),
+        parent=lazy_gettext('Parent Role')
     )
     column_editable_list = ('description',)
 
-    column_details_list = ('id', 'name', 'description', 'users')
+    column_details_list = ('id', 'name', 'description',
+                           'parent', 'sub_roles', 'users')

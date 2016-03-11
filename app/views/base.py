@@ -3,6 +3,7 @@ from flask import url_for, request, flash
 from flask.ext.admin._compat import as_unicode
 from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.security import current_user
+from app.utils.security_util import get_user_roles
 from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
 from wtforms import ValidationError
@@ -34,9 +35,7 @@ class ModelViewWithAccess(ModelView):
 
     def can(self, operation='view'):
         tablename = self.model.__tablename__
-        return current_user.is_authenticated and (
-            current_user.has_role('admin') or
-            current_user.has_role(tablename + '_' + operation))
+        return current_user.is_authenticated and (tablename + '_' + operation in get_user_roles())
 
     def handle_view_exception(self, exc):
         if isinstance(exc, ValidationError):
@@ -62,3 +61,16 @@ class DeleteValidator(object):
     def validate_status_for_change(model, status_code, error_msg):
         if model.status.code == status_code:
             raise ValidationError(error_msg)
+
+
+class CycleReferenceValidator(object):
+    @staticmethod
+    def validate(form, model, object_type="Object ", parent="parent", children="child"):
+        if form[parent] is not None and \
+                        form[parent].data is not None and \
+                        form[parent].data.id == model.id:
+            raise ValidationError("%s can not be itself's parent" % object_type)
+        if form[children] is not None and \
+                        form[children].data is not None and \
+                        model in form[children].data:
+            raise ValidationError('%s can not be itself\'s child' % object_type)
