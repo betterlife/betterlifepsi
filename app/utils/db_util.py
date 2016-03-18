@@ -1,4 +1,4 @@
-from app import DbInfo
+from app.database import DbInfo
 from sqlalchemy import desc
 
 

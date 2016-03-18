@@ -1,4 +1,4 @@
-from flask import Flask, request, current_app
+from flask import Flask, request, current_app, render_template
 from flask.ext.login import current_user
 
 
@@ -16,7 +16,7 @@ def create_app(custom_config=None):
 
 def init_flask_security(flask_app, database):
     from flask_security import SQLAlchemyUserDatastore, Security
-    from app.models import User, Role
+    from app.models.security import User, Role
     import app.config as config
     for key, value in config.security_messages.items():
         flask_app.config['SECURITY_MSG_' + key] = value
@@ -72,6 +72,10 @@ def init_debug_toolbar(flask_app):
 
 def define_route_context(flask_app, db, babel):
     from werkzeug.utils import redirect
+
+    @flask_app.route('/report')
+    def report():
+        return render_template('report.html')
 
     @flask_app.route('/')
     def hello():

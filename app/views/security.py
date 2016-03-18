@@ -1,9 +1,11 @@
 # coding=utf-8
-import database
+from app import database
 from flask.ext.babelex import lazy_gettext, gettext
 from app.views import ModelViewWithAccess
+from flask.ext.login import current_user
 from flask.ext.security.utils import encrypt_password
-from views.base import CycleReferenceValidator
+from sqlalchemy import func
+from app.views.base import CycleReferenceValidator
 from wtforms import PasswordField, ValidationError
 
 
@@ -24,7 +26,7 @@ class UserAdmin(ModelViewWithAccess):
 
     column_details_list = ('id', 'login', 'display', 'email', 'active', 'roles', 'locale', 'timezone')
 
-    form_columns = ('login', 'display', 'email', 'locale', 'timezone', 'active', 'roles',)
+    form_columns = ('login', 'display', 'email', 'locale', 'timezone', 'active', 'organization', 'roles',)
 
     column_filters = ('active',)
 
@@ -87,8 +89,7 @@ class RoleAdmin(ModelViewWithAccess):
 
     column_list = ('id', 'name', 'description',)
 
-    column_searchable_list = ('name', 'description',
-                              'parent.name', 'parent.description')
+    column_searchable_list = ('name', 'description', 'parent.name', 'parent.description')
 
     column_labels = dict(
         id=lazy_gettext('id'),
@@ -100,5 +101,27 @@ class RoleAdmin(ModelViewWithAccess):
     )
     column_editable_list = ('description',)
 
-    column_details_list = ('id', 'name', 'description',
-                           'parent', 'sub_roles', 'users')
+    column_details_list = ('id', 'name', 'description', 'parent', 'sub_roles', 'users')
+
+
+class OrganizationAdmin(ModelViewWithAccess):
+
+    def on_model_change(self, form, model, is_created):
+        """Check whether the parent role is same as child role"""
+        CycleReferenceValidator.validate(form, model, object_type='Organization', parent='parent', children='sub_organizations')
+
+    column_list = ('id', 'name', 'description',)
+
+    column_searchable_list = ('name', 'description', 'parent.name', 'parent.description')
+
+    column_labels = dict(
+        id=lazy_gettext('id'),
+        name=lazy_gettext('Name'),
+        description=lazy_gettext('Description'),
+        users=lazy_gettext('User'),
+        sub_roles=lazy_gettext('Sub Organizations'),
+        parent=lazy_gettext('Parent Organization')
+    )
+    column_editable_list = ('description',)
+
+    column_details_list = ('id', 'name', 'description', 'parent', 'sub_roles', 'users')

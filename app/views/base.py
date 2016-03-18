@@ -4,6 +4,7 @@ from flask.ext.admin._compat import as_unicode
 from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.security import current_user
 from app.utils.security_util import get_user_roles
+from sqlalchemy import func
 from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
 from wtforms import ValidationError
@@ -35,13 +36,25 @@ class ModelViewWithAccess(ModelView):
 
     def can(self, operation='view'):
         tablename = self.model.__tablename__
-        return current_user.is_authenticated and (tablename + '_' + operation in get_user_roles())
+        return (current_user.is_authenticated and (tablename + '_' + operation in get_user_roles())) or current_user.login == 'admin'
 
     def handle_view_exception(self, exc):
         if isinstance(exc, ValidationError):
             flash(as_unicode(exc), category='error')
             return True
         return super(ModelView, self).handle_view_exception(exc)
+
+    def get_query(self):
+        if hasattr(self.model, 'organization'):
+            return self.session.query(self.model).filter(self.model.organization == current_user.organization)
+        else:
+            return super(ModelViewWithAccess, self).get_query()
+
+    def get_count_query(self):
+        if hasattr(self.model, 'organization'):
+            return self.session.query(func.count('*')).filter(self.model.organization == current_user.organization)
+        else:
+            return super(ModelViewWithAccess, self).get_count_query()
 
     def _handle_view(self, name, **kwargs):
         """

@@ -52,7 +52,7 @@ class ProductInventoryView(ModelViewWithAccess):
     }
 
     def get_query(self):
-        return self.session.query(self.model).filter(self.model.need_advice == True)
+        return super(ModelViewWithAccess, self).get_query().filter(self.model.need_advice == True)
 
     def get_count_query(self):
-        return self.session.query(func.count('*')).filter(self.model.need_advice == True)
+        return super(ModelViewWithAccess, self).get_count_query().filter(self.model.need_advice == True)

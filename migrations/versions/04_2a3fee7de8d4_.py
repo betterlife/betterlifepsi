@@ -43,8 +43,7 @@ def upgrade():
     op.bulk_insert(user_table, [
         {'id': 1, 'login': 'admin', 'display': 'Administrator',
          'email': 'support@betterlife.io',
-         'password': '$pbkdf2-sha512$25000$R4iRUopxzvk/55xzTuk9Rw$sXpTS/zJnhVEl'
-                     '/gHqYW7lZkuIJQ69To6CUNOFnuJ7y2qrNH7ldH47wfRTPF3pxZBkzuSXPmOISBGODtHLdBxJA',
+         'password': '$pbkdf2-sha512$25000$R4iRUopxzvk/55xzTuk9Rw$sXpTS/zJnhVEl/gHqYW7lZkuIJQ69To6CUNOFnuJ7y2qrNH7ldH47wfRTPF3pxZBkzuSXPmOISBGODtHLdBxJA',
          'active': True},
     ], multiinsert=False)
     op.get_bind().execute(text("ALTER SEQUENCE user_id_seq RESTART WITH 2;"))

@@ -13,14 +13,28 @@ roles_users = db.Table('roles_users',
                        db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
 
 
+class Organization(db.Model):
+    """
+    Organization, used to do data isolation
+    """
+    __tablename__ = 'organization'
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(80), unique=True)
+    description = db.Column(db.String(255))
+    parent_id = db.Column(Integer, ForeignKey('organization.id'))
+    parent = relationship('Organization', remote_side=id, backref=backref('sub_organizations', lazy='joined'))
+
+    def __unicode__(self):
+        return self.name
+
+
 class Role(db.Model, RoleMixin):
     __tablename__ = 'role'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
     parent_id = db.Column(Integer, ForeignKey('role.id'))
-    parent = relationship('Role', remote_side=id,
-                          backref=backref('sub_roles', lazy='joined'))
+    parent = relationship('Role', remote_side=id, backref=backref('sub_roles', lazy='joined'))
 
     def __unicode__(self):
         return self.name
@@ -49,6 +63,8 @@ class User(db.Model, UserMixin):
     locale = relationship('EnumValues', foreign_keys=[locale_id])
     timezone_id = db.Column(Integer, ForeignKey('enum_values.id'))
     timezone = relationship('EnumValues', foreign_keys=[timezone_id])
+    organization_id = db.Column(Integer, ForeignKey('organization.id'))
+    organization = relationship('Organization', foreign_keys=[organization_id])
     roles = db.relationship('Role', secondary=roles_users,
                             backref=db.backref('users', lazy='joined'))
 

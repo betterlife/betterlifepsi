@@ -10,7 +10,7 @@ from product import ProductAdmin
 from product_category import ProductCategoryAdmin
 from purchase_order import PurchaseOrderAdmin
 from sales_order import SalesOrderAdmin
-from security import UserAdmin, RoleAdmin
+from security import UserAdmin, RoleAdmin, OrganizationAdmin
 from supplier import SupplierAdmin
 from receiving import ReceivingAdmin
 from shipping import ShippingAdmin
@@ -19,9 +19,11 @@ from product_inventory import ProductInventoryView
 from customer import CustomerAdmin
 from formatter import *
 from app.models import *
+from app.models.security import Organization
 from flask.ext.admin import Admin
 from flask.ext.admin.consts import ICON_TYPE_GLYPH
 from import_store_data import ImportStoreDataView
+from app.views.report import ReportView
 
 
 def init_admin_views(app, db):
@@ -67,10 +69,15 @@ def init_admin_views(app, db):
                                              menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-shopping-cart',
                                              endpoint='import_store_data'))
 
+    admin_views.add_view(ReportView(name=lazy_gettext("Reports"), menu_icon_type=ICON_TYPE_GLYPH,
+                                             menu_icon_value='glyphicon-eye', endpoint='reports'))
+
     admin_views.add_view(UserAdmin(User, db_session, name=lazy_gettext('User'),
                                    category=lazy_gettext('Settings'), menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-user'))
     admin_views.add_view(RoleAdmin(Role, db_session, name=lazy_gettext("Role"),
                                    category=lazy_gettext('Settings'), menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-eye-close'))
+    admin_views.add_view(OrganizationAdmin(Organization, db_session, name=lazy_gettext("Organization"),
+                                   category=lazy_gettext('Settings'), menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-user'))
     admin_views.add_view(EnumValuesAdmin(EnumValues, db_session, name=lazy_gettext("Enum Values"),
                                          category=lazy_gettext('Settings'), menu_icon_type=ICON_TYPE_GLYPH,
                                          menu_icon_value='glyphicon-tasks'))

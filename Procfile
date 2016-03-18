@@ -1,1 +1,1 @@
-web: python manage.py db upgrade;gunicorn start:application --log-file=- --timeout 300
+web: python manage.py db upgrade;gunicorn wsgi:application --log-file=- --timeout 300
