@@ -109,5 +109,5 @@ def init_all(app):
     init_admin_views(app, database)
     babel = init_babel(app)
     init_logging(app)
-    init_debug_toolbar(app)
+    # init_debug_toolbar(app)
     define_route_context(app, database, babel)
