@@ -5,7 +5,7 @@ from flask.ext.babelex import lazy_gettext
 BABEL_DEFAULT_LOCALE = 'en_US'
 BABEL_DEFAULT_TIMEZONE = 'CST'
 SQLALCHEMY_ECHO = False
-SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'postgres://flask:flask@localhost:5432/flask'
+SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or os.environ.get('OPENSHIFT_POSTGRESQL_DB_URL') or 'postgres://flask:flask@localhost:5432/flask'
 SECRET_KEY = os.environ.get('SECRET_KEY')
 SECURITY_PASSWORD_HASH = 'pbkdf2_sha512'
 SECURITY_PASSWORD_SALT = os.environ.get('SECURITY_PASSWORD_SALT')
