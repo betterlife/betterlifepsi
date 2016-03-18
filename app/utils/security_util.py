@@ -9,9 +9,13 @@ def get_user_roles(user=current_user):
     :return: A set of all roles assigned to the user
     """
     all_derive_roles = set()
+    result = []
     for role in user.roles:
         all_derive_roles.add(get_all_sub_roles(role, current_result=all_derive_roles))
-    return all_derive_roles
+    for r in all_derive_roles:
+        if r is not None:
+            result.append(r)
+    return result
 
 
 def get_all_sub_roles(role, current_result):
