@@ -21,6 +21,9 @@ class SalesOrder(db.Model):
     customer_id = Column(Integer, ForeignKey('customer.id'), nullable=True)
     customer = relationship('Customer', foreign_keys=[customer_id], backref=backref('sales_orders', uselist=True))
 
+    organization_id = db.Column(Integer, ForeignKey('organization.id'))
+    organization = relationship('Organization', foreign_keys=[organization_id])
+
     remark = Column(Text)
 
     @hybrid_property

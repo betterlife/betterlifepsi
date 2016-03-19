@@ -28,6 +28,9 @@ class Receiving(db.Model):
     inventory_transaction = relationship('InventoryTransaction',
                                          backref=backref('it_receiving', uselist=False, cascade='all, delete-orphan'))
 
+    organization_id = db.Column(Integer, ForeignKey('organization.id'))
+    organization = relationship('Organization', foreign_keys=[organization_id])
+
     @staticmethod
     def status_filter():
         return EnumValues.type_filter('RECEIVING_STATUS')

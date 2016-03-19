@@ -21,6 +21,9 @@ class Supplier(db.Model):
     can_mixed_whole_sale = Column(Boolean)
     remark = Column(Text)
 
+    organization_id = db.Column(Integer, ForeignKey('organization.id'))
+    organization = relationship('Organization', foreign_keys=[organization_id])
+
     def __unicode__(self):
         return self.name
 

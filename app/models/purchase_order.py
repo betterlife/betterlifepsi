@@ -23,6 +23,9 @@ class PurchaseOrder(db.Model):
     status_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
     status = relationship('EnumValues', foreign_keys=[status_id])
 
+    organization_id = db.Column(Integer, ForeignKey('organization.id'))
+    organization = relationship('Organization', foreign_keys=[organization_id])
+
     @staticmethod
     def status_filter(status_codes):
         return db.session.query(PurchaseOrder) \

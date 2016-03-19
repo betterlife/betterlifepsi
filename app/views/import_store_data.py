@@ -135,7 +135,7 @@ def create_or_update_incoming(order, order_line, incoming_category, incoming_sta
 class ImportStoreDataView(BaseView):
     @expose(url='/', methods=['GET', 'POST'])
     @login_required
-    @has_role(['import_store_data'])
+    @has_role('import_store_data')
     def index(self):
         if request.method == 'GET':
             return self.render('data_loading/legacy.html')

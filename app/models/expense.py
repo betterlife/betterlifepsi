@@ -27,6 +27,9 @@ class Expense(db.Model):
     sales_order_id = Column(Integer, ForeignKey('sales_order.id'))
     sales_order = relationship('SalesOrder', backref=backref('expense', uselist=False, cascade='all, delete-orphan'))
 
+    organization_id = db.Column(Integer, ForeignKey('organization.id'))
+    organization = relationship('Organization', foreign_keys=[organization_id])
+
     remark = Column(Text, nullable=False)
 
     def __init__(self, amount=0, exp_date=None, status_id=None, category_id=None):

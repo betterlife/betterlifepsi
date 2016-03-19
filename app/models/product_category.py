@@ -15,6 +15,9 @@ class ProductCategory(db.Model):
     parent_category = relationship('ProductCategory', remote_side=id,
                                    backref=backref('sub_categories', lazy='joined'))
 
+    organization_id = db.Column(Integer, ForeignKey('organization.id'))
+    organization = relationship('Organization', foreign_keys=[organization_id])
+
     def __unicode__(self):
         return self.code.encode('utf-8') + " - " + self.name.encode('utf-8')
 

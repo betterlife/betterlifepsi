@@ -101,6 +101,8 @@ class RoleAdmin(ModelViewWithAccess):
     )
     column_editable_list = ('description',)
 
+    column_sortable_list = ('id', 'name', 'description')
+
     column_details_list = ('id', 'name', 'description', 'parent', 'sub_roles', 'users')
 
 

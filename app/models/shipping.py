@@ -29,6 +29,9 @@ class Shipping(db.Model):
     inventory_transaction = relationship('InventoryTransaction',
                                          backref=backref('it_shipping', uselist=False, ))
 
+    organization_id = db.Column(Integer, ForeignKey('organization.id'))
+    organization = relationship('Organization', foreign_keys=[organization_id])
+
     @staticmethod
     def status_filter():
         return EnumValues.type_filter(const.SHIPPING_STATUS_KEY)

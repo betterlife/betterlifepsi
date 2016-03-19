@@ -31,6 +31,9 @@ class Product(db.Model):
     supplier = relationship('Supplier', backref=backref('products', lazy='dynamic'))
     need_advice = Column(Boolean)
 
+    organization_id = db.Column(Integer, ForeignKey('organization.id'))
+    organization = relationship('Organization', foreign_keys=[organization_id])
+
     @hybrid_property
     def in_transit_quantity(self):
         i_ts = self.inventory_transaction_lines

@@ -16,6 +16,9 @@ class EnumValues(db.Model):
     code = Column(String(32), unique=True, nullable=False)
     display = Column(String(64), nullable=False)
 
+    organization_id = db.Column(Integer, ForeignKey('organization.id'))
+    organization = relationship('Organization', foreign_keys=[organization_id])
+
     @staticmethod
     def find_one_by_code(v_code):
         v_l = db.session.query(EnumValues).filter_by(code=v_code).all()

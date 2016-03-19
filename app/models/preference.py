@@ -29,6 +29,9 @@ class Preference(db.Model):
     def_po_goods_exp_type_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
     def_po_goods_exp_type = relationship('EnumValues', foreign_keys=[def_po_goods_exp_type_id])
 
+    organization_id = db.Column(Integer, ForeignKey('organization.id'))
+    organization = relationship('Organization', foreign_keys=[organization_id])
+
     remark = Column(Text)
 
     @staticmethod

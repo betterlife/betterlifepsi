@@ -31,6 +31,9 @@ class Customer(db.Model):
     level_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
     level = relationship('EnumValues', foreign_keys=[level_id])
 
+    organization_id = db.Column(Integer, ForeignKey('organization.id'))
+    organization = relationship('Organization', foreign_keys=[organization_id])
+
     @hybrid_property
     def member_age(self):
         return int(date_util.num_years(self.join_date))

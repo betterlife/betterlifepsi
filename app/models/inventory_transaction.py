@@ -18,6 +18,10 @@ class InventoryTransaction(db.Model):
     date = Column(DateTime, nullable=False)
     type_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
     type = relationship('EnumValues', foreign_keys=[type_id])
+
+    organization_id = db.Column(Integer, ForeignKey('organization.id'))
+    organization = relationship('Organization', foreign_keys=[organization_id])
+
     remark = Column(Text)
 
     @staticmethod
