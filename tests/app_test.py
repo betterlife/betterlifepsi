@@ -1,13 +1,17 @@
 # coding=utf-8
 import unittest
 
-from app import DbInfo
 from tests import fixture
 
 
 class TestCases(unittest.TestCase):
     def setUp(self):
-        self.test_client = fixture.init_test_client()
+        self.app = fixture.init_app()
+        self.test_client = self.app.test_client()
+        self.app_context = self.app.app_context()
+
+    def tearDown(self):
+        fixture.cleanup_database(self.app_context)
 
     def test_empty_db(self):
         rv = self.test_client.get('/login')

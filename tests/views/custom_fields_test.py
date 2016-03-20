@@ -1,13 +1,12 @@
 # encoding=utf-8
 import unittest
 
-from app import DbInfo
 from tests import fixture
 
 
 class TestCases(unittest.TestCase):
     def setUp(self):
-        self.test_client = fixture.init_test_client()
+        self.test_client = fixture.init_app().test_client()
 
     def DisabledStringField_test(self):
         from wtforms import form

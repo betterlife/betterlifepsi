@@ -22,8 +22,7 @@ install:
   - pip install -r test_requirements.txt
 
 script:
-  - python manage.py db upgrade
-  - nosetests -w tests --with-coverage --cover-erase --with-xunit --cover-branches
+  - python manage.py test
 
 after_success:
   - codecov

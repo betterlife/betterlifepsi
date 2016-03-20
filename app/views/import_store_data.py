@@ -4,12 +4,11 @@ import csv
 from datetime import datetime
 from decimal import Decimal
 
-from app import config
 from app import const
 from app.models import Supplier, Product, SalesOrder, SalesOrderLine, Shipping, ShippingLine, InventoryTransaction, \
     InventoryTransactionLine, EnumValues, Incoming, Preference
 from app.utils import get_next_code, get_by_external_id, save_objects_commit, get_by_name
-from flask import request
+from flask import request, current_app
 from flask.ext.admin import BaseView
 from flask.ext.babelex import gettext
 from flask.ext.login import login_required
@@ -37,9 +36,9 @@ def create_or_update_product(prd_num, prd_name, pur_price, ret_price, supplier):
             prd = Product()
             prd.code = get_next_code(Product)
         prd.external_id = prd_num
-        prd.deliver_day = config.DEFAULT_DELIVER_DAY
-        prd.lead_day = config.DEFAULT_LEAD_DAY
-        prd.category_id = config.DEFAULT_CATEGORY_ID
+        prd.deliver_day = current_app.config.get('DEFAULT_DELIVER_DAY')
+        prd.lead_day = current_app.config.get('DEFAULT_LEAD_DAY')
+        prd.category_id = current_app.config.get('DEFAULT_CATEGORY_ID')
     prd.name = prd_name
     prd.purchase_price = pur_price
     prd.retail_price = ret_price

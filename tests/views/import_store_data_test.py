@@ -3,26 +3,34 @@ import unittest
 from datetime import datetime
 
 import codecs
-from app import DbInfo
 from tests import fixture
 
 
 class TestCases(unittest.TestCase):
     def setUp(self):
-        self.test_client = fixture.init_test_client()
+        self.app = fixture.init_app()
+        self.test_client = self.app.test_client()
+        self.app_context = self.app.app_context()
+        self.app_context.push()
         fixture.login_as_admin(self.test_client)
 
     def tearDown(self):
-        DbInfo.get_db().engine.execute('DELETE FROM shipping_line;DELETE FROM shipping;'
-                                        'DELETE FROM inventory_transaction_line;DELETE FROM inventory_transaction;'
-                                        'DELETE FROM incoming;DELETE FROM sales_order_line;DELETE FROM sales_order;'
-                                        'DELETE FROM product;DELETE FROM supplier;')
+        fixture.cleanup_database(self.app_context)
+        self.app_context.pop()
 
     def test_import(self):
         from app.models import SalesOrder, SalesOrderLine, Product, Supplier
         from app.utils import db_util
         import os
         content = codecs.open(os.path.dirname(os.path.realpath(__file__)) + "/store_data.csv", "r", "utf-8").read()
+        from app.models.security import User, Role
+        from app.database import DbInfo
+        user = DbInfo.get_db().session.query(User).filter_by(login='admin').first()
+        role = DbInfo.get_db().session.query(Role).filter_by(name='import_store_data').first()
+        user.roles.append(role)
+        from app.database import DbInfo
+        DbInfo.get_db().session.add(user)
+        DbInfo.get_db().session.commit()
         rv = self.test_client.get('/admin/import_store_data/', follow_redirects=True)
         self.assertEqual(200, rv.status_code)
         self.assertIn(u'导入店铺运营数据', rv.data)
