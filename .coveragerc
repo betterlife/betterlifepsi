@@ -8,3 +8,4 @@ omit =
     */.virtualenv/*
     */.ropeproject/*
     */venv-system/*
+    */flask-admin/*
