@@ -41,7 +41,7 @@ Links:
 
 Code Coverage History
 
-![codecov.io](http://codecov.io/github/betterlife/flask-psi/branch.svg?branch=master)
+![codecov.io](http://codecov.io/github/betterlife/psi/branch.svg?branch=master)
 
 Special Thanks
 
