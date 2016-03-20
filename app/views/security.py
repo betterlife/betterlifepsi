@@ -73,6 +73,7 @@ class UserAdmin(ModelViewWithAccess):
     # committed to the database.
     def on_model_change(self, form, model, is_created):
         # If the password field isn't blank...
+        super(UserAdmin, self).on_model_change(form, model, is_created)
         if len(model.password2):
             # ... then encrypt the new password prior to storing it in the database. If the password field is blank,
             # the existing password in the database will be retained.
@@ -85,6 +86,7 @@ class RoleAdmin(ModelViewWithAccess):
 
     def on_model_change(self, form, model, is_created):
         """Check whether the parent role is same as child role"""
+        super(RoleAdmin, self).on_model_change(form, model, is_created)
         CycleReferenceValidator.validate(form, model, object_type='Role', parent='parent', children='sub_roles')
 
     column_list = ('id', 'name', 'description',)
@@ -110,6 +112,7 @@ class OrganizationAdmin(ModelViewWithAccess):
 
     def on_model_change(self, form, model, is_created):
         """Check whether the parent role is same as child role"""
+        super(OrganizationAdmin, self).on_model_change(form, model, is_created)
         CycleReferenceValidator.validate(form, model, object_type='Organization', parent='parent', children='sub_organizations')
 
     column_list = ('id', 'name', 'description',)

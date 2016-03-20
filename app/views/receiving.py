@@ -111,6 +111,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
                                                            'nor delete on complete status'))
 
     def on_model_change(self, form, model, is_created):
+        super(ReceivingAdmin, self).on_model_change(form, model, is_created)
         if is_created:
             available_info = self.get_available_lines_info(model)
             # 4. Check any qty available for receiving?

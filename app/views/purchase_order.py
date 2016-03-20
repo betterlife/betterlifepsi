@@ -179,6 +179,7 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
         return form
 
     def on_model_change(self, form, model, is_created):
+        super(PurchaseOrderAdmin, self).on_model_change(form, model, is_created)
         DeleteValidator.validate_status_for_change(model, const.PO_RECEIVED_STATUS_KEY,
                                                    gettext('Purchase order can not be update nor delete '
                                                            'on received status'))
