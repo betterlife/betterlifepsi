@@ -5,7 +5,7 @@ Flask based Intelligent PSI(Purchase, Sales and Inventory) management system
 
 ----
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
-[![Build Status](https://travis-ci.org/betterlife/flask-psi.svg?branch=master)](https://travis-ci.org/betterlife/flask-psi)
+[![Build Status](https://travis-ci.org/betterlife/psi.svg?branch=master)](https://travis-ci.org/betterlife/psi)
 [![Requirements Status](https://requires.io/github/betterlife/flask-psi/requirements.svg?branch=master)](https://requires.io/github/betterlife/flask-psi/requirements/?branch=master)
 [![Code Climate](https://codeclimate.com/github/betterlife/flask-psi/badges/gpa.svg)](https://codeclimate.com/github/betterlife/flask-psi)
 [![codecov.io](http://codecov.io/github/betterlife/flask-psi/coverage.svg?branch=master)](http://codecov.io/github/betterlife/flask-psi?branch=master)
