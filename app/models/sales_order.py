@@ -16,7 +16,7 @@ class SalesOrder(db.Model):
     id = Column(Integer, primary_key=True)
     logistic_amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
     order_date = Column(DateTime, nullable=False)
-    external_id = Column(String(), nullable=True)
+    external_id = Column(String(), nullable=True, unique=False)
 
     customer_id = Column(Integer, ForeignKey('customer.id'), nullable=True)
     customer = relationship('Customer', foreign_keys=[customer_id], backref=backref('sales_orders', uselist=True))

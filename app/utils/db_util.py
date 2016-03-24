@@ -1,4 +1,5 @@
 from app.database import DbInfo
+from flask.ext.login import current_user
 from sqlalchemy import desc
 
 
@@ -23,7 +24,7 @@ def get_by_external_id(object_type, external_id):
     :return: The object if found, otherwise None
     """
     db = DbInfo.get_db()
-    return db.session.query(object_type).filter_by(external_id=external_id).first()
+    return db.session.query(object_type).filter_by(external_id=external_id, organization_id=current_user.organization_id).first()
 
 
 def get_by_name(object_type, val):
@@ -34,7 +35,7 @@ def get_by_name(object_type, val):
     :return: The object if found, otherwise None
     """
     db = DbInfo.get_db()
-    return db.session.query(object_type).filter_by(name=val).first()
+    return db.session.query(object_type).filter_by(name=val, organization_id=current_user.organization_id).first()
 
 
 def save_objects_commit(*objects):
