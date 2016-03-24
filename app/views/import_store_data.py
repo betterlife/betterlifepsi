@@ -11,7 +11,7 @@ from app.utils import get_next_code, get_by_external_id, save_objects_commit, ge
 from flask import request, current_app
 from flask.ext.admin import BaseView
 from flask.ext.babelex import gettext
-from flask.ext.login import login_required
+from flask.ext.login import login_required, current_user
 from flask_admin import expose
 from app.utils.decorations import has_role
 
@@ -23,6 +23,7 @@ def create_or_update_supplier(sup_num, sup_name):
         if supplier is None:
             supplier = Supplier()
             supplier.code = get_next_code(Supplier)
+            supplier.organization_id = current_user.organization_id
         supplier.external_id = sup_num
     supplier.name = sup_name
     return supplier
@@ -39,6 +40,7 @@ def create_or_update_product(prd_num, prd_name, pur_price, ret_price, supplier):
         prd.deliver_day = current_app.config.get('DEFAULT_DELIVER_DAY')
         prd.lead_day = current_app.config.get('DEFAULT_LEAD_DAY')
         prd.category_id = current_app.config.get('DEFAULT_CATEGORY_ID')
+        prd.organization_id = current_user.organization_id
     prd.name = prd_name
     prd.purchase_price = pur_price
     prd.retail_price = ret_price
@@ -52,6 +54,7 @@ def create_or_update_sales_order(po_num, po_line_num, product, ret_price, act_pr
         order = SalesOrder()
         order.external_id = po_num
         order.logistic_amount = 0
+        order.organization_id = current_user.organization_id
     order.order_date = sale_date
     existing = False
     line = None
@@ -77,6 +80,7 @@ def create_or_update_shipping(order, order_line, status):
         shipping.sales_order = order
         shipping.date = order.order_date
         shipping.status = status
+        shipping.organization_id = current_user.organization_id
     shipping_line = None
     existing = False
     for shipping_line in shipping.lines:
@@ -98,6 +102,7 @@ def create_or_update_inventory_transaction(shipping, shipping_line, it_type):
         it = shipping.inventory_transaction
     else:
         it = InventoryTransaction()
+        it.organization_id = current_user.organization_id
     it.date = shipping.date
     shipping.inventory_transaction = it
     it.type = it_type
@@ -121,6 +126,7 @@ def create_or_update_incoming(order, order_line, incoming_category, incoming_sta
     if order.incoming is None:
         incoming = Incoming()
         incoming.amount = order_line.actual_amount
+        incoming.organization_id = current_user.organization_id
     else:
         incoming = order.incoming
         incoming.amount += order_line.actual_amount

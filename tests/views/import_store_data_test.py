@@ -60,14 +60,18 @@ class TestCases(unittest.TestCase):
         self.assertEqual(3, len(sales_order.lines))
 
         sales_order = db_util.get_by_external_id(SalesOrder, '01201503130001')
+        self.assertEqual(user.organization_id, sales_order.organization_id)
         self.assertEqual(1, len(sales_order.lines))
         line = sales_order.lines[0]
         """:type: SalesOrderLine"""
+
         self.assertEqual('15', line.external_id)
         self.assertEqual('产品2', line.product.name)
+        self.assertEquals(user.organization_id, line.product.organization_id)
         self.assertEqual('000010', line.product.external_id)
         self.assertEquals('000016', line.product.supplier.external_id)
         self.assertEquals('供应商2', line.product.supplier.name)
+        self.assertEquals(user.organization_id, line.product.supplier.organization_id)
         self.assertEquals(16.5000, line.product.purchase_price)
         self.assertEquals(33, line.product.retail_price)
         self.assertEqual(33, line.unit_price)
