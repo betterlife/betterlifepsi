@@ -58,7 +58,7 @@ def upgrade():
     op.add_column('supplier', sa.Column('organization_id', sa.Integer(), nullable=True))
     op.create_foreign_key(None, 'supplier', 'organization', ['organization_id'], ['id'])
     from sqlalchemy.sql import text
-    op.get_bind().execute(text("UPDATE \"user\" SET organization_id = 1 WHERE login != 'admin';"))
+    op.get_bind().execute(text("UPDATE \"user\" SET organization_id = 1"))
     op.get_bind().execute(text('UPDATE customer SET organization_id = 1;'))
     op.get_bind().execute(text('UPDATE enum_values SET organization_id = 1;'))
     op.get_bind().execute(text('UPDATE expense SET organization_id = 1;'))
