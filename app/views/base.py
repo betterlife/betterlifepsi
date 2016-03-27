@@ -5,7 +5,7 @@ from flask import url_for, request, flash
 from flask.ext.admin._compat import as_unicode
 from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.security import current_user
-from app.utils.security_util import get_user_roles
+from app.utils.security_util import get_user_roles, is_super_admin
 from sqlalchemy import func
 from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
@@ -38,7 +38,7 @@ class ModelViewWithAccess(ModelView):
 
     def can(self, operation='view'):
         tablename = self.model.__tablename__
-        return (current_user.is_authenticated and (tablename + '_' + operation in get_user_roles())) or current_user.login == 'admin'
+        return (current_user.is_authenticated and (tablename + '_' + operation in get_user_roles())) or is_super_admin()
 
     def handle_view_exception(self, exc):
         if isinstance(exc, ValidationError):

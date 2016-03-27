@@ -1,12 +1,13 @@
 # coding=utf-8
-from app import database
-from flask.ext.babelex import lazy_gettext, gettext
+
 from app.views import ModelViewWithAccess
+from app.views.base import CycleReferenceValidator
+from flask.ext.babelex import lazy_gettext
 from flask.ext.login import current_user
 from flask.ext.security.utils import encrypt_password
 from sqlalchemy import func
-from app.views.base import CycleReferenceValidator
-from wtforms import PasswordField, ValidationError
+from app.utils.security_util import is_super_admin, exclude_super_admin_roles
+from wtforms import PasswordField
 
 
 # Customized User model for SQL-Admin
@@ -79,10 +80,35 @@ class UserAdmin(ModelViewWithAccess):
             # the existing password in the database will be retained.
             model.password = encrypt_password(model.password2)
 
+    def get_query(self):
+        """
+        For cross organization super admin, return all the users
+        For organization specify admin, only return users of it's own's organization
+        :return:
+        """
+        return self.session.query(self.model) if is_super_admin() else super(UserAdmin, self).get_query()
 
-# Customized Role model for SQL-Admin
+    def get_count_query(self):
+        """
+        For cross organization super admin, return all the users
+        For organization specify admin, only return users of it's own's organization
+        :return:
+        """
+        return self.session.query(func.count('*')).select_from(self.model) \
+            if is_super_admin() \
+            else super(UserAdmin, self).get_count_query()
+
+
 class RoleAdmin(ModelViewWithAccess):
-    # Prevent administration of Roles unless the currently logged-in user has the "admin" role
+    def get_query(self):
+        if not is_super_admin():
+            return exclude_super_admin_roles(self.model.name, super(RoleAdmin, self).get_query())
+        return super(RoleAdmin, self).get_query()
+
+    def get_count_query(self):
+        if not is_super_admin():
+            return exclude_super_admin_roles(self.model.name, super(RoleAdmin, self).get_count_query())
+        return super(RoleAdmin, self).get_count_query()
 
     def on_model_change(self, form, model, is_created):
         """Check whether the parent role is same as child role"""
@@ -109,11 +135,26 @@ class RoleAdmin(ModelViewWithAccess):
 
 
 class OrganizationAdmin(ModelViewWithAccess):
-
     def on_model_change(self, form, model, is_created):
         """Check whether the parent role is same as child role"""
         super(OrganizationAdmin, self).on_model_change(form, model, is_created)
         CycleReferenceValidator.validate(form, model, object_type='Organization', parent='parent', children='sub_organizations')
+
+    @property
+    def can_create(self):
+        return is_super_admin()
+
+    @property
+    def can_delete(self):
+        return is_super_admin()
+
+    def get_query(self):
+        return self.session.query(self.model).filter(self.model.id == current_user.organization_id) \
+            if not is_super_admin() else self.session.query(self.model)
+
+    def get_count_query(self):
+        return self.session.query(func.count('*')).filter(self.model.id == current_user.organization_id) \
+            if not is_super_admin() else self.session.query(func.count('*'))
 
     column_list = ('id', 'name', 'description',)
 

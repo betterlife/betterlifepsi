@@ -2,6 +2,30 @@
 from flask.ext.login import current_user
 
 
+def exclude_super_admin_roles(name, query):
+    """
+    Filter out super admin related roles from role list page.
+    :param name: Model name
+    :param query: current query
+    :return: filtered query
+    """
+    return query.filter(
+        name != 'organization_view',
+        name != 'organization_edit',
+        name != 'organization_create',
+        name != 'organization_delete',
+        name != 'superadmin')
+
+
+def is_super_admin(user=current_user):
+    """
+    Whether a user is a cross organization super admin
+    :param user: user to judge
+    :return: True if the user is a super admin, otherwise False
+    """
+    return user.has_role('superadmin')
+
+
 def get_user_roles(user=current_user):
     """
     Get all roles of a user, included derived roles not directly assigned to the user.

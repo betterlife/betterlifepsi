@@ -79,18 +79,18 @@ def upgrade():
                           sa.Column('name', sa.String(length=80), nullable=True),
                           sa.Column('description', sa.String(length=255), nullable=True),
                           )
-    # res = op.get_bind().execute('SELECT max(id)+1 FROM role')
-    # results = res.fetchall()
-    # rm = 49
-    # for r in results:
-    #     rm = r[0]
-    # op.bulk_insert(role_table, [
-    #     {'id': rm, 'name': 'organization_view', 'description': 'View customers'},
-    #     {'id': rm + 1, 'name': 'organization_create', 'description': 'Create customers'},
-    #     {'id': rm + 2, 'name': 'organization_edit', 'description': 'Edit customers'},
-    #     {'id': rm + 3, 'name': 'organization_delete', 'description': 'Delete customers'},
-    # ], multiinsert=False)
-    # op.get_bind().execute(text("ALTER SEQUENCE role_id_seq RESTART WITH " + str(rm + 4) + ";"))
+    res = op.get_bind().execute('SELECT max(id)+1 FROM role')
+    results = res.fetchall()
+    rm = 49
+    for r in results:
+        rm = r[0]
+    op.bulk_insert(role_table, [
+        {'id': rm, 'name': 'organization_view', 'description': 'View customers'},
+        {'id': rm + 1, 'name': 'organization_create', 'description': 'Create customers'},
+        {'id': rm + 2, 'name': 'organization_edit', 'description': 'Edit customers'},
+        {'id': rm + 3, 'name': 'organization_delete', 'description': 'Delete customers'},
+    ], multiinsert=False)
+    op.get_bind().execute(text("ALTER SEQUENCE role_id_seq RESTART WITH " + str(rm + 4) + ";"))
     ### end Alembic commands ###
 
 
