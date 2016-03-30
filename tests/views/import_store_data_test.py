@@ -36,30 +36,30 @@ class TestCases(unittest.TestCase):
         self.assertIn(u'导入店铺运营数据', rv.data)
         self.test_client.post('/admin/import_store_data/', data=dict(content=content), follow_redirects=True)
 
-        self.assertIsNotNone(db_util.get_by_external_id(SalesOrder, '01201503090002'))
+        self.assertIsNotNone(db_util.get_by_external_id(SalesOrder, '01201503090002', user=user))
 
-        self.assertIsNotNone(db_util.get_by_external_id(SalesOrderLine, '11'))
-        self.assertIsNotNone(db_util.get_by_external_id(SalesOrderLine, '15'))
-        self.assertIsNotNone(db_util.get_by_external_id(SalesOrderLine, '16'))
-        self.assertIsNotNone(db_util.get_by_external_id(SalesOrderLine, '17'))
-        self.assertIsNotNone(db_util.get_by_external_id(SalesOrderLine, '18'))
+        self.assertIsNotNone(db_util.get_by_external_id(SalesOrderLine, '11', user=user))
+        self.assertIsNotNone(db_util.get_by_external_id(SalesOrderLine, '15', user=user))
+        self.assertIsNotNone(db_util.get_by_external_id(SalesOrderLine, '16', user=user))
+        self.assertIsNotNone(db_util.get_by_external_id(SalesOrderLine, '17', user=user))
+        self.assertIsNotNone(db_util.get_by_external_id(SalesOrderLine, '18', user=user))
 
-        self.assertIsNotNone(db_util.get_by_name(Product, '产品1'))
-        self.assertIsNotNone(db_util.get_by_name(Product, '产品2'))
-        self.assertIsNotNone(db_util.get_by_name(Product, '产品3'))
-        self.assertIsNotNone(db_util.get_by_name(Product, '产品4'))
-        self.assertIsNotNone(db_util.get_by_name(Product, '产品5'))
+        self.assertIsNotNone(db_util.get_by_name(Product, '产品1', user=user))
+        self.assertIsNotNone(db_util.get_by_name(Product, '产品2', user=user))
+        self.assertIsNotNone(db_util.get_by_name(Product, '产品3', user=user))
+        self.assertIsNotNone(db_util.get_by_name(Product, '产品4', user=user))
+        self.assertIsNotNone(db_util.get_by_name(Product, '产品5', user=user))
 
         self.assertEqual(3, SalesOrder.query.count())
         self.assertEqual(5, SalesOrderLine.query.count())
         self.assertEqual(5, Product.query.count())
         self.assertEqual(3, Supplier.query.count())
 
-        sales_order = db_util.get_by_external_id(SalesOrder, '01201503130003')
+        sales_order = db_util.get_by_external_id(SalesOrder, '01201503130003', user=user)
         """:type: SalesOrder"""
         self.assertEqual(3, len(sales_order.lines))
 
-        sales_order = db_util.get_by_external_id(SalesOrder, '01201503130001')
+        sales_order = db_util.get_by_external_id(SalesOrder, '01201503130001', user=user)
         self.assertEqual(user.organization_id, sales_order.organization_id)
         self.assertEqual(1, len(sales_order.lines))
         line = sales_order.lines[0]

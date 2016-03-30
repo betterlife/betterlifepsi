@@ -16,26 +16,32 @@ def get_next_code(object_type):
     return '{0:06d}'.format(1 + int(obj.code))
 
 
-def get_by_external_id(object_type, external_id):
+def get_by_external_id(object_type, external_id, user=current_user):
     """
     Get model object via external_id, a field names "external_id" should exists
     :param object_type: Object type
     :param external_id: external id
+    :param user: user context, default to current login user.
     :return: The object if found, otherwise None
     """
     db = DbInfo.get_db()
-    return db.session.query(object_type).filter_by(external_id=external_id, organization_id=current_user.organization_id).first()
+    if hasattr(object_type, 'organization_id'):
+        return db.session.query(object_type).filter_by(external_id=external_id, organization_id=user.organization_id).first()
+    return db.session.query(object_type).filter_by(external_id=external_id).first()
 
 
-def get_by_name(object_type, val):
+def get_by_name(object_type, val, user=current_user):
     """
     Get the first model object via query condition of name field
     :param object_type: Object type
     :param val: value of the name
+    :param user: user context, default to current login user.
     :return: The object if found, otherwise None
     """
     db = DbInfo.get_db()
-    return db.session.query(object_type).filter_by(name=val, organization_id=current_user.organization_id).first()
+    if hasattr(object_type, 'organization_id'):
+        return db.session.query(object_type).filter_by(name=val, organization_id=user.organization_id).first()
+    return db.session.query(object_type).filter_by(name=val).first()
 
 
 def save_objects_commit(*objects):
