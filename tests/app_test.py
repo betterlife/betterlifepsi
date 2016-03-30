@@ -26,9 +26,6 @@ class TestCases(unittest.TestCase):
         self.assertEqual(200, rv.status_code)
         self.assertIn('Log out', rv.data)
         self.assertIn('Home', rv.data)
-        self.assertIn('Operation Suggestion', rv.data)
-        self.assertIn('Purchase Order', rv.data)
-        self.assertIn('Master Data', rv.data)
 
     def test_login_user_not_exist(self):
         rv = self.test_client.post('/login', data=dict(email='support1@betterlife.io', password='password'), follow_redirects=True)
