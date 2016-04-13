@@ -1,44 +1,30 @@
 sudo: false
 language: python
 python:
-  - '2.7'
-
+- '2.7'
 env:
   global:
-    - DATABASE_URL=postgresql://localhost/flask_psi_test
-    - TEST_DATABASE_URL=postgresql://localhost/flask_psi_test
-    - TESTING="True"
-
+  - DATABASE_URL=postgresql://localhost/flask_psi_test
+  - TEST_DATABASE_URL=postgresql://localhost/flask_psi_test
+  - TESTING="True"
 services:
-  - postgresql
-
+- postgresql
 before_script:
-  - psql -U postgres -c 'CREATE DATABASE flask_psi_test;'
-
+- psql -U postgres -c 'CREATE DATABASE flask_psi_test;'
 before_install:
-  - pip install codecov
-
+- pip install codecov
 install:
-  - pip install -r test_requirements.txt
-
+- pip install -r test_requirements.txt
 script:
-  - python manage.py test
-
+- python manage.py test
 after_success:
-  - codecov
-
+- codecov
 deploy:
-  - provider: openshift
-    skip_cleanup: true
-    username: $OPENSHIFT_USER
-    password: $OPENSHIFT_PASS
-    domain: dstore-betterlife.rhcloud.com
-    on:
-      all_branches: true
-  - provider: openshift
-    skip_cleanup: true
-    username: $OPENSHIFT_USER
-    password: $OPENSHIFT_PASS
-    domain: store-betterlife.rhcloud.com
-    on:
-      tags: true
+  provider: openshift
+  user: $OPENSHIFT_USER
+  password:
+    secure: Sno/DgKJQv4hhG6pJD0p3Yr7OmCf+wtQ2Lm08IF9qvN4a3KYr0N4+iAeW/Qf97hnHSkv9sufsGFFZ39k+pHAkMl2Cvaq0qDvZAz1+cAaoxC3FjJ1AOi+qwzedpH2KKeOV8/xkYuY3LQbzOu63G5n+IwxR3/Tp699FxzZP+45eObQpGrM6nCJtCOyR/VKddOgWru6m5+ysTSGU+Pzn/N8JJ5BFeqzLetXzdLzrBhs8YlunaFIpZIFvgLTiI528ndUKfbmqDS1U0IX0/jYSc3w6zqtRNssDLWcndXpYJ5UYXsuyswvotKKfTiAw8k5thdH52+QCvcIpLPx8rrnUhEJFUUwJItEpgx8C08O3yBEQOfRXcUGYZZRVjX8N0dkomwFSREZsYMuZ6DOpL0s5WBPYVCda82VuJL1MxCFNoe6u/d5nbOo668QIEWQ/1U4nRxM4l9C1FRP81hXHD0Y+THGdRz5c7WsLDKQ8ehfom67QjpD+C+EgvisEqfoC1laexjtXizGQlYSqwREb2+xqWxYagEoXdSIA492/Pj4vSlzdgl0FfxC0LCx1B7t/hB/p2fMhvgXuW37ENg9RS6Az2pAXxtb8RLudxJJHpyUOKsKsnEhCmYB8gPQe1GEWbKjyB5XRj/oKFmXt8zTVf/dKOSR5UZqq2uQD9UTkKt0EFHBzRM=
+  app: dstore
+  domain: betterlife
+  on:
+    repo: betterlife/psi
