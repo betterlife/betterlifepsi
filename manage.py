@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # coding=utf-8
-import nose
 from flask import Flask
 from flask.ext.migrate import Migrate, MigrateCommand
 from raven.contrib.flask import Sentry
