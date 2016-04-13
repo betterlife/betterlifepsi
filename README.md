@@ -37,7 +37,6 @@ Links:
   - [Code coverage(codecov)](https://codecov.io/github/betterlife/flask-psi)
   - [Quantifiedcode (Code Issues)](https://www.quantifiedcode.com/app/project/4c27fd0589fc4bcc96782a829824e1b9)
   - [Dev environment(Openshift)](http://dev.psi.betterlife.io)
-  - [SIT environment(Openshift)](http://psi.betterlife.io/)
 
 Code Coverage History
 
