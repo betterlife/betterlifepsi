@@ -68,10 +68,6 @@ def init_admin_views(app, db):
     admin_views.add_view(ImportStoreDataView(name=lazy_gettext("Import Store Data"), category=lazy_gettext('Master Data'),
                                              menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-shopping-cart',
                                              endpoint='import_store_data'))
-
-    admin_views.add_view(ReportView(name=lazy_gettext("Reports"), menu_icon_type=ICON_TYPE_GLYPH,
-                                             menu_icon_value='glyphicon-eye', endpoint='reports'))
-
     admin_views.add_view(UserAdmin(User, db_session, name=lazy_gettext('User'),
                                    category=lazy_gettext('Settings'), menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-user'))
     admin_views.add_view(RoleAdmin(Role, db_session, name=lazy_gettext("Role"),
