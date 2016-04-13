@@ -33,6 +33,8 @@ deploy:
     username: $OPENSHIFT_USER
     password: $OPENSHIFT_PASS
     domain: dstore-betterlife.rhcloud.com
+    on:
+      all_branches: true
   - provider: openshift
     skip_cleanup: true
     username: $OPENSHIFT_USER

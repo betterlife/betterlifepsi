@@ -501,3 +501,6 @@ msgstr "您没有权限修改本记录"
 
 msgid "You are not allowed to delete this record"
 msgstr "您没有权限删除本记录"
+
+msgid "Organization"
+msgstr "组织"

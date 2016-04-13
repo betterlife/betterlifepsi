@@ -5,8 +5,6 @@ import os
 from flask import Flask, request, current_app, render_template
 from flask.ext.login import current_user
 from flask.ext.migrate import upgrade
-import config
-import database
 
 
 def create_app(custom_config=None):

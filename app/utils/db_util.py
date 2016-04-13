@@ -3,14 +3,18 @@ from flask.ext.login import current_user
 from sqlalchemy import desc
 
 
-def get_next_code(object_type):
+def get_next_code(object_type, user=current_user):
     """
     Get next code of object
     :param object_type: Type of the model
+    :param user User context, default to current login user.
     :return: Value of next available code field(current max code plus 1 and format to 6 decimal(with leading zeros)
     """
     db = DbInfo.get_db()
-    obj = db.session.query(object_type).order_by(desc(object_type.id)).first()
+    if hasattr(object_type, 'organization_id'):
+        obj = db.session.query(object_type).filter_by(organization_id=user.organization_id).order_by(desc(object_type.id)).first()
+    else:
+        obj = db.session.query(object_type).order_by(desc(object_type.id)).first()
     if obj is None:
         return '{0:06d}'.format(1)
     return '{0:06d}'.format(1 + int(obj.code))
