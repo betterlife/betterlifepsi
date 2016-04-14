@@ -1,35 +1,63 @@
 {% extends 'layout.html' %}
 {% block body %}
   <div class="dashboard-container">
-    <a href="{{ url_for('product_inventory.index_view') }}">
-      <button class="btn dashboard-button btn-warning" style="width:900px">
-        <span class="glyphicon glyphicon-bell"></span><span class="glyphicon glyphicon-info-sign"></span>
-        <span class="glyphicon glyphicon-alert"></span>店铺重点产品运营诊断
-      </button>
-    </a>
-    <br>
-    <button class="btn dashboard-button btn-info"><span class="glyphicon glyphicon-triangle-right"></span>采购及支出</button>
-    <a href="{{ url_for('purchaseorder.index_view') }}">
-      <button class="btn btn-default dashboard-button"><span class="glyphicon glyphicon-shopping-cart"></span>采购单</button>
-    </a>
-    <a href="{{ url_for('receiving.index_view') }}">
-      <button class="btn btn-default dashboard-button"><span class="glyphicon glyphicon-import"></span>收货</button>
-    </a>
-    <a href="{{ url_for('expense.index_view') }}">
-      <button class="btn btn-default dashboard-button">
-        <span class="glyphicon glyphicon-yen"></span>支出
-      </button>
-    </a>
-    <br>
-    <button class="btn dashboard-button btn-info"><span class="glyphicon glyphicon-cog"></span>数据管理</button>
-    <a href="{{ url_for('supplier.index_view') }}">
-      <button class="btn btn-default dashboard-button"><span class="glyphicon glyphicon-globe"></span>供应商</button>
-    </a>
-    <a href="{{ url_for('product.index_view') }}">
-      <button class="btn btn-default dashboard-button"><span class="glyphicon glyphicon-barcode"></span>产品</button>
-    </a>
-    <a href="/admin/import_store_data">
-      <button class="btn btn-default dashboard-button"><span class="glyphicon glyphicon-upload"></span>导入数据</button>
-    </a>
+    <div id="report-container" style="height:400px;width:50%;float:left"></div>
+    <div id="report-container2" style="height:400px;width:50%;float:right"></div>
   </div>
+{% endblock %}
+
+{% block tail %}
+  {{ super() }}
+  <script src="{{ url_for('static', filename='echarts/echarts.js') }}"></script>
+  <script type="text/javascript">
+    // 路径配置
+    require.config({
+      paths: {
+        echarts: '{{ url_for('static', filename='echarts') }}'
+      }
+    });
+
+    // 使用
+    require(
+        [
+          'echarts',
+          'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+        ],
+        function (ec) {
+          // 基于准备好的dom，初始化echarts图表
+          var myChart = ec.init(document.getElementById('report-container'));
+          var myChart2 = ec.init(document.getElementById('report-container2'));
+          var option = {
+            tooltip: {
+              show: true
+            },
+            legend: {
+              data: ['销量']
+            },
+            xAxis: [
+              {
+                type: 'category',
+                data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
+              }
+            ],
+            yAxis: [
+              {
+                type: 'value'
+              }
+            ],
+            series: [
+              {
+                "name": "销量",
+                "type": "bar",
+                "data": [5, 20, 40, 10, 10, 20]
+              }
+            ]
+          };
+
+          // 为echarts对象加载数据
+          myChart.setOption(option);
+          myChart2.setOption(option);
+        }
+    );
+  </script>
 {% endblock %}
