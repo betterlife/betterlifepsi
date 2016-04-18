@@ -3,7 +3,7 @@ from functools import wraps
 
 from flask import abort
 from flask.ext.login import current_user
-from app.utils.security_util import get_user_roles
+from app.utils.security_util import get_user_roles, user_has_role
 
 
 def has_role(expect_role):
@@ -18,8 +18,7 @@ def has_role(expect_role):
         @wraps(f)
         def decorated_function(*args, **kwargs):
             if current_user.is_authenticated:
-                user_roles = get_user_roles(current_user)
-                return f(*args, **kwargs) if expect_role in user_roles else abort(403)
+                return f(*args, **kwargs) if user_has_role(expect_role) else abort(403)
             else:
                 abort(403)
 

@@ -42,6 +42,17 @@ def get_user_roles(user=current_user):
     return result
 
 
+def user_has_role(role, user=current_user):
+    """
+    Check whether a user has a specific role
+    :param user: User
+    :param role: Role to check
+    :return:True if user has the role, otherwise False
+    """
+    user_roles = get_user_roles(current_user)
+    return role in user_roles
+
+
 def get_all_sub_roles(role, current_result):
     """
     Get all detail roles for a base role

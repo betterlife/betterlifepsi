@@ -14,6 +14,7 @@ from flask.ext.babelex import gettext
 from flask.ext.login import login_required, current_user
 from flask_admin import expose
 from app.utils.decorations import has_role
+from utils.security_util import get_user_roles, user_has_role
 
 
 def create_or_update_supplier(sup_num, sup_name):
@@ -138,6 +139,9 @@ def create_or_update_incoming(order, order_line, incoming_category, incoming_sta
 
 
 class ImportStoreDataView(BaseView):
+    def is_accessible(self):
+        return user_has_role('import_store_data')
+
     @expose(url='/', methods=['GET', 'POST'])
     @login_required
     @has_role('import_store_data')
