@@ -39,7 +39,8 @@ class UserAdmin(ModelViewWithAccess):
         display=lazy_gettext('Display'),
         email=lazy_gettext('Email'),
         active=lazy_gettext('Active'),
-        roles=lazy_gettext('Role')
+        roles=lazy_gettext('Role'),
+        organizaiton=lazy_gettext('Organization'),
     )
 
     # Don't include the standard password field when creating or editing a User (but see below)
@@ -165,7 +166,7 @@ class OrganizationAdmin(ModelViewWithAccess):
         name=lazy_gettext('Name'),
         description=lazy_gettext('Description'),
         users=lazy_gettext('User'),
-        sub_roles=lazy_gettext('Sub Organizations'),
+        sub_organizations=lazy_gettext('Sub Organizations'),
         parent=lazy_gettext('Parent Organization')
     )
     column_editable_list = ('description',)
