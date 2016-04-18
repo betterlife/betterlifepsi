@@ -38,7 +38,7 @@ class ModelViewWithAccess(ModelView):
 
     def can(self, operation='view'):
         tablename = self.model.__tablename__
-        return (current_user.is_authenticated and (tablename + '_' + operation in get_user_roles())) or is_super_admin()
+        return current_user.is_authenticated and (tablename + '_' + operation in get_user_roles())
 
     def handle_view_exception(self, exc):
         if isinstance(exc, ValidationError):
