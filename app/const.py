@@ -37,3 +37,6 @@ CUSTOMER_LEVEL_KEY = u'CUSTOMER_LEVEL'
 # User locale settings
 LANGUAGE_VALUES_KEY = u'LANGUAGES'
 TIMEZONE_VALUES_KEY = u'TIMEZONES'
+
+# Super admin role
+SUPER_ADMIN_ROLE_NAME = u'super_admin'

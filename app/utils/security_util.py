@@ -1,4 +1,5 @@
 # encoding=utf-8
+from const import SUPER_ADMIN_ROLE_NAME
 from flask.ext.login import current_user
 
 
@@ -14,7 +15,7 @@ def exclude_super_admin_roles(name, query):
         name != 'organization_edit',
         name != 'organization_create',
         name != 'organization_delete',
-        name != 'superadmin')
+        name != SUPER_ADMIN_ROLE_NAME)
 
 
 def is_super_admin(user=current_user):
@@ -23,7 +24,7 @@ def is_super_admin(user=current_user):
     :param user: user to judge
     :return: True if the user is a super admin, otherwise False
     """
-    return user.has_role('superadmin')
+    return user.has_role(SUPER_ADMIN_ROLE_NAME)
 
 
 def get_user_roles(user=current_user):
@@ -49,7 +50,7 @@ def user_has_role(role, user=current_user):
     :param role: Role to check
     :return:True if user has the role, otherwise False
     """
-    user_roles = get_user_roles(current_user)
+    user_roles = get_user_roles(user)
     return role in user_roles
 
 

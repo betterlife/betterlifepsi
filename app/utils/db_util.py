@@ -69,3 +69,12 @@ def delete_by_id(obj_type, id_to_del):
     obj = db.session.query(obj_type).get(id_to_del)
     db.session.delete(obj)
     db.session.commit()
+
+
+def get_first_result_raw_sql(op, sql):
+    res = op.get_bind().execute(sql)
+    results = res.fetchall()
+    result = None
+    for r in results:
+        result = r[0]
+    return result
