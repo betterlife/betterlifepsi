@@ -25,7 +25,7 @@ class TestCases(unittest.TestCase):
         content = codecs.open(os.path.dirname(os.path.realpath(__file__)) + "/store_data.csv", "r", "utf-8").read()
         from app.models.security import User, Role
         from app.database import DbInfo
-        user = DbInfo.get_db().session.query(User).filter_by(login='admin').first()
+        user = DbInfo.get_db().session.query(User).filter_by(login='super_admin').first()
         role = DbInfo.get_db().session.query(Role).filter_by(name='import_store_data').first()
         user.roles.append(role)
         from app.database import DbInfo

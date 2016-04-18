@@ -1,5 +1,5 @@
 # encoding=utf-8
-from const import SUPER_ADMIN_ROLE_NAME
+from app.const import SUPER_ADMIN_ROLE_NAME
 from flask.ext.login import current_user
 
 

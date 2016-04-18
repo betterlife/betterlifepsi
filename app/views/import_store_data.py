@@ -14,7 +14,7 @@ from flask.ext.babelex import gettext
 from flask.ext.login import login_required, current_user
 from flask_admin import expose
 from app.utils.decorations import has_role
-from utils.security_util import get_user_roles, user_has_role
+from app.utils.security_util import user_has_role
 
 
 def create_or_update_supplier(sup_num, sup_name):
