@@ -2,6 +2,7 @@
 
 from app.views import ModelViewWithAccess
 from app.views.base import CycleReferenceValidator
+from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.babelex import lazy_gettext
 from flask.ext.login import current_user
 from flask.ext.security.utils import encrypt_password
@@ -40,7 +41,7 @@ class UserAdmin(ModelViewWithAccess):
         email=lazy_gettext('Email'),
         active=lazy_gettext('Active'),
         roles=lazy_gettext('Role'),
-        organizaiton=lazy_gettext('Organization'),
+        organization=lazy_gettext('Organization'),
     )
 
     # Don't include the standard password field when creating or editing a User (but see below)
@@ -71,11 +72,24 @@ class UserAdmin(ModelViewWithAccess):
                                                                       'input the new password to change it'))
         return form_class
 
+    def create_form(self, obj=None):
+        form = super(ModelView, self).create_form(obj)
+        if not is_super_admin():
+            delattr(form, "organization")
+        return form
+
+    def edit_form(self, obj=None):
+        form = super(ModelView, self).edit_form(obj)
+        if not is_super_admin():
+            delattr(form, "organization")
+        return form
+
     # This callback executes when the user saves changes to a newly-created or edited User -- before the changes are
     # committed to the database.
     def on_model_change(self, form, model, is_created):
         # If the password field isn't blank...
-        super(UserAdmin, self).on_model_change(form, model, is_created)
+        if not is_super_admin():
+            super(UserAdmin, self).on_model_change(form, model, is_created)
         if len(model.password2):
             # ... then encrypt the new password prior to storing it in the database. If the password field is blank,
             # the existing password in the database will be retained.
@@ -101,6 +115,9 @@ class UserAdmin(ModelViewWithAccess):
 
 
 class RoleAdmin(ModelViewWithAccess):
+    def is_accessible(self):
+        return is_super_admin()
+
     def get_query(self):
         if not is_super_admin():
             return exclude_super_admin_roles(self.model.name, super(RoleAdmin, self).get_query())
