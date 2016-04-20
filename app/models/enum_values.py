@@ -21,13 +21,12 @@ class EnumValues(db.Model):
 
     @staticmethod
     def find_one_by_code(v_code):
-        v_l = db.session.query(EnumValues).filter_by(code=v_code).all()
-        return v_l[0]
+        return db.session.query(EnumValues).filter_by(code=v_code).first()
 
     @staticmethod
     def type_filter(type_code):
-        return db.session.query(EnumValues).\
-            join(EnumValues.type, aliased=True).\
+        return db.session.query(EnumValues). \
+            join(EnumValues.type, aliased=True). \
             filter_by(code=type_code)
 
     def __repr__(self):
