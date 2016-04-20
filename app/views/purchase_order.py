@@ -12,6 +12,7 @@ from app.models import Preference, Expense, PurchaseOrder, Product, EnumValues, 
 from app.views import ModelViewWithAccess, DisabledStringField
 from app.views.base import DeleteValidator
 from app.views.formatter import supplier_formatter, expenses_formatter, receivings_formatter, default_date_formatter
+from app.utils import db_util
 
 
 class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
@@ -176,6 +177,8 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
     def create_form(self, obj=None):
         form = super(ModelView, self).create_form(obj)
         form.status.query = [EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY), ]
+        from app.models import Supplier
+        form.supplier.query = db_util.filter_by_organization(Supplier)
         return form
 
     def on_model_change(self, form, model, is_created):

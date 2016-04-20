@@ -78,3 +78,14 @@ def get_first_result_raw_sql(op, sql):
     for r in results:
         result = r[0]
     return result
+
+
+def filter_by_organization(object_type, user=current_user):
+    """
+    Filter object by user's organization
+    :param object_type: Object type to filter
+    :param user: User('s Organization) to use for the filter
+    :return: List of object filter by the user's organisation
+    """
+    db = DbInfo.get_db()
+    return db.session.query(object_type).filter_by(organization_id=user.organization_id).all()
