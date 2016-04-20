@@ -41,7 +41,7 @@ class ExpenseAdmin(ModelViewWithAccess):
 
     column_searchable_list = ['category.display', 'status.display']
 
-    form_excluded_columns = ('sales_order', 'purchase_order',)
+    form_excluded_columns = ('sales_order', 'purchase_order', 'organization')
 
     column_formatters = {
         'sales_order': sales_order_formatter,

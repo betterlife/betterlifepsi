@@ -228,6 +228,10 @@ class Product(db.Model):
     def supplier_filter(s_id):
         return DbInfo.get_db().session.query(Product).filter_by(supplier_id=s_id)
 
+    @staticmethod
+    def organization_filter(org_id):
+        return DbInfo.get_db().session.query(Product).filter_by(organization_id=org_id)
+
     def get_lead_deliver_day(self):
         if self.deliver_day is None and self.lead_day is None:
             return 0

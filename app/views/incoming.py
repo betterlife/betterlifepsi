@@ -36,7 +36,7 @@ class IncomingAdmin(ModelViewWithAccess):
     column_searchable_list = ['category.display', 'status.display']
     column_filters = ['date', 'amount', 'category.display', 'status.display']
 
-    form_excluded_columns = ('sales_order',)
+    form_excluded_columns = ('sales_order', 'organization')
     column_formatters = {
         'sales_order': sales_order_formatter,
         'date': default_date_formatter,

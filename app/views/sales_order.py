@@ -1,5 +1,6 @@
 # coding=utf-8
 from datetime import datetime
+from functools import partial
 
 from app import database
 from flask.ext.admin.contrib.sqla import ModelView
@@ -10,6 +11,8 @@ from app.views import ModelViewWithAccess, DisabledStringField
 from formatter import expenses_formatter, incoming_formatter, shipping_formatter, default_date_formatter
 from app.views.custom_fields import ReadonlyStringField
 from flask_admin.contrib.sqla.filters import FloatGreaterFilter, FloatSmallerFilter, FloatInListFilter, FloatEqualFilter
+from app.models import Customer, Product
+from app.utils import db_util, current_user, form_util
 
 
 class SalesOrderLineInlineAdmin(InlineFormAdmin):
@@ -107,13 +110,30 @@ class SalesOrderAdmin(ModelViewWithAccess):
     }
 
     def create_form(self, obj=None):
-        form = super(ModelView, self).create_form(obj)
+        form = super(ModelViewWithAccess, self).create_form(obj)
         form.lines.form.actual_amount = None
         form.lines.form.discount_amount = None
         form.lines.form.original_amount = None
         form.lines.form.price_discount = None
         form.lines.form.retail_price = None
+        form_util.filter_by_organization(form.customer, Customer)
+        self.filter_product(form)
         return form
+
+    def edit_form(self, obj=None):
+        form = super(ModelViewWithAccess, self).edit_form(obj)
+        form_util.filter_by_organization(form.customer, Customer)
+        self.filter_product(form)
+        return form
+
+    @staticmethod
+    def filter_product(form):
+        # Set query factory for new created line
+        form.lines.form.product.kwargs['query_factory'] = partial(Product.organization_filter, current_user.organization_id)
+        # Set query object filter for existing lines
+        line_entries = form.lines.entries
+        for sub_line in line_entries:
+            form_util.filter_by_organization(sub_line.form.product, Product)
 
     @staticmethod
     def create_or_update_incoming(model):
