@@ -1,8 +1,3 @@
-import sys
-
-reload(sys)
-sys.setdefaultencoding("utf-8")
-
 from product_category import ProductCategory
 from supplier import Supplier, PaymentMethod
 from product import Product
