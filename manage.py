@@ -6,6 +6,11 @@ from raven.contrib.flask import Sentry
 from flask.ext.script import Manager
 from app.database import DbInfo
 
+import sys
+
+reload(sys)
+sys.setdefaultencoding("utf-8")
+
 
 def init_app():
     app = Flask(__name__)
