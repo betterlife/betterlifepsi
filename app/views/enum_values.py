@@ -1,6 +1,7 @@
 # coding=utf-8
 from flask.ext.babelex import lazy_gettext
 from app.views.base import ModelViewWithAccess, CycleReferenceValidator
+from app.utils import security_util
 
 
 class EnumValuesAdmin(ModelViewWithAccess):
@@ -24,6 +25,9 @@ class EnumValuesAdmin(ModelViewWithAccess):
         'type_values': lazy_gettext('Type Values'),
         'type.display': lazy_gettext('Type'),
     }
+
+    def is_accessible(self):
+        return security_util.is_super_admin()
 
     def on_model_change(self, form, model, is_created):
         """Check whether the parent enum value or child enum value is same as the value being edited"""
