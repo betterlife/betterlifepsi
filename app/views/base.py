@@ -5,7 +5,7 @@ from flask import url_for, request, flash
 from flask.ext.admin._compat import as_unicode
 from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.security import current_user
-from app.utils.security_util import get_user_roles, is_super_admin
+from app.utils.security_util import get_user_roles, is_super_admin, has_organization_field
 from sqlalchemy import func
 from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
@@ -47,40 +47,39 @@ class ModelViewWithAccess(ModelView):
         return super(ModelView, self).handle_view_exception(exc)
 
     def get_query(self):
-        if hasattr(self.model, 'organization'):
+        if has_organization_field(self.model):
             return self.session.query(self.model).filter(self.model.organization == current_user.organization)
         else:
             return super(ModelViewWithAccess, self).get_query()
 
     def get_count_query(self):
-        if hasattr(self.model, 'organization'):
+        if has_organization_field(self.model):
             return self.session.query(func.count('*')).filter(self.model.organization == current_user.organization)
         else:
             return super(ModelViewWithAccess, self).get_count_query()
 
     def on_model_change(self, form, model, is_created):
-        if hasattr(model, 'organization'):
+        if has_organization_field(self.model):
             if is_created:
                 model.organization = current_user.organization
             elif model.organization != current_user.organization:
                 ValidationError(gettext('You are not allowed to change this record'))
 
     def on_model_delete(self, model):
-        if hasattr(model, 'organization') and model.organization != current_user.organization:
+        if has_organization_field(model) and model.organization != current_user.organization:
             ValidationError(gettext('You are not allowed to delete this record'))
 
-
-def _handle_view(self, name, **kwargs):
-    """
-    Override builtin _handle_view in order to redirect users when a view is not accessible.
-    """
-    if not self.is_accessible():
-        if current_user.is_authenticated:
-            # permission denied
-            abort(403)
-        else:
-            # login
-            return redirect(url_for('security.login', next=request.url))
+    def _handle_view(self, name, **kwargs):
+        """
+        Override builtin _handle_view in order to redirect users when a view is not accessible.
+        """
+        if not self.is_accessible():
+            if current_user.is_authenticated:
+                # permission denied
+                abort(403)
+            else:
+                # login
+                return redirect(url_for('security.login', next=request.url))
 
 
 class DeleteValidator(object):

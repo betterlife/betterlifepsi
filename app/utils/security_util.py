@@ -65,3 +65,12 @@ def get_all_sub_roles(role, current_result):
         current_result.add(role.name)
         for sr in role.sub_roles:
             current_result.add(get_all_sub_roles(sr, current_result))
+
+
+def has_organization_field(obj):
+    """
+    To check whether this object has a organization field
+    :param obj: object to check
+    :return: True if organization field exists, otherwise false
+    """
+    return hasattr(obj, 'organization')
