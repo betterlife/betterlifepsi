@@ -12,7 +12,7 @@ from app.models import Preference, Expense, PurchaseOrder, Product, EnumValues, 
 from app.views import ModelViewWithAccess, DisabledStringField
 from app.views.base import DeleteValidator
 from app.views.formatter import supplier_formatter, expenses_formatter, receivings_formatter, default_date_formatter
-from app.utils import db_util, form_util
+from app.utils import form_util
 
 
 class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
