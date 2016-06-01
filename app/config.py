@@ -38,6 +38,7 @@ class BaseConfig(object):
 
 class DevConfig(BaseConfig):
     DEBUG = True
+    SQLALCHEMY_ECHO = True
 
 
 class TestConfig(BaseConfig):
@@ -49,3 +50,5 @@ class TestConfig(BaseConfig):
 
 class ProductionConfig(BaseConfig):
     DEBUG = False
+    TESTING = False
+
