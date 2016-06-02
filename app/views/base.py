@@ -31,10 +31,20 @@ class ModelViewWithAccess(ModelView):
 
     @property
     def can_export(self):
-        return self.can(operation='export')
+        """
+        See https://github.com/flask-admin/flask-admin/issues/1263 and https://github.com/flask-admin/flask-admin/pull/1264
+        for the background
+        :return:
+        """
+        return False
 
     @property
     def can_view_details(self):
+        """
+        See https://github.com/flask-admin/flask-admin/issues/1263 and https://github.com/flask-admin/flask-admin/pull/1264
+        for the background
+        :return:
+        """
         return True
 
     def can(self, operation='view'):
