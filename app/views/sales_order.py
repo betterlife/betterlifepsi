@@ -3,9 +3,9 @@ from datetime import datetime
 from functools import partial
 
 from app import database
-from flask.ext.admin.contrib.sqla import ModelView
-from flask.ext.admin.model import InlineFormAdmin
-from flask.ext.babelex import lazy_gettext
+from flask_admin.contrib.sqla import ModelView
+from flask_admin.model import InlineFormAdmin
+from flask_babelex import lazy_gettext
 from app.models import Preference, Incoming, Expense, Shipping, ShippingLine, EnumValues
 from app.views import ModelViewWithAccess, DisabledStringField
 from formatter import expenses_formatter, incoming_formatter, shipping_formatter, default_date_formatter

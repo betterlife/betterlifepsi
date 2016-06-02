@@ -3,8 +3,8 @@
 import os
 
 from flask import Flask, request, current_app, render_template
-from flask.ext.login import current_user
-from flask.ext.migrate import upgrade
+from flask_login import current_user
+from flask_migrate import upgrade
 
 
 def create_app(custom_config=None):
@@ -48,7 +48,7 @@ def init_db(flask_app):
 
 
 def init_migrate(flask_app, database):
-    from flask.ext.migrate import Migrate
+    from flask_migrate import Migrate
     migrate = Migrate(app=flask_app, db=database)
     with flask_app.app_context():
         upgrade(directory=os.path.dirname(__file__) + "/../migrations")
@@ -79,7 +79,7 @@ def init_logging(flask_app):
 
 
 def init_debug_toolbar(flask_app):
-    from flask.ext.debugtoolbar import DebugToolbarExtension
+    from flask_debugtoolbar import DebugToolbarExtension
     if flask_app.config['DEBUG']:
         flask_app.debug = True
         DebugToolbarExtension(flask_app)

@@ -2,7 +2,7 @@
 
 import flask_admin as admin
 from flask import url_for
-from flask.ext.security import current_user, url_for_security
+from flask_security import current_user, url_for_security
 from flask_admin import expose
 from werkzeug.utils import redirect
 

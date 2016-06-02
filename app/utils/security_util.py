@@ -1,6 +1,6 @@
 # encoding=utf-8
 from app.const import SUPER_ADMIN_ROLE_NAME
-from flask.ext.login import current_user
+from flask_login import current_user
 
 
 def exclude_super_admin_roles(name, query):

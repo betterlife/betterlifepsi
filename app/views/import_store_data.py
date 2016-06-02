@@ -9,9 +9,9 @@ from app.models import Supplier, Product, SalesOrder, SalesOrderLine, Shipping, 
     InventoryTransactionLine, EnumValues, Incoming, Preference
 from app.utils import get_next_code, get_by_external_id, save_objects_commit, get_by_name
 from flask import request, current_app
-from flask.ext.admin import BaseView
-from flask.ext.babelex import gettext
-from flask.ext.login import login_required, current_user
+from flask_admin import BaseView
+from flask_babelex import gettext
+from flask_login import login_required, current_user
 from flask_admin import expose
 from app.utils.decorations import has_role
 from app.utils.security_util import user_has_role

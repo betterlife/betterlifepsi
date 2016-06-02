@@ -3,11 +3,11 @@ from datetime import datetime
 from functools import partial
 
 from app import database
-from flask.ext.admin.contrib.sqla import ModelView
-from flask.ext.admin.contrib.sqla.filters import FloatSmallerFilter, FloatGreaterFilter, FloatEqualFilter
-from flask.ext.admin.model import InlineFormAdmin
+from flask_admin.contrib.sqla import ModelView
+from flask_admin.contrib.sqla.filters import FloatSmallerFilter, FloatGreaterFilter, FloatEqualFilter
+from flask_admin.model import InlineFormAdmin
 from app import const
-from flask.ext.babelex import lazy_gettext, gettext
+from flask_babelex import lazy_gettext, gettext
 from app.models import Preference, Expense, PurchaseOrder, Product, EnumValues, Receiving
 from app.views import ModelViewWithAccess, DisabledStringField
 from app.views.base import DeleteValidator

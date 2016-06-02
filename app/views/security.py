@@ -2,10 +2,10 @@
 
 from app.views import ModelViewWithAccess
 from app.views.base import CycleReferenceValidator
-from flask.ext.admin.contrib.sqla import ModelView
-from flask.ext.babelex import lazy_gettext
-from flask.ext.login import current_user
-from flask.ext.security.utils import encrypt_password
+from flask_admin.contrib.sqla import ModelView
+from flask_babelex import lazy_gettext
+from flask_login import current_user
+from flask_security.utils import encrypt_password
 from sqlalchemy import func
 from app.utils.security_util import is_super_admin, exclude_super_admin_roles
 from wtforms import PasswordField

@@ -1,7 +1,7 @@
 from flask import request
-from flask.ext.admin import BaseView
-from flask.ext.admin import expose
-from flask.ext.login import login_required
+from flask_admin import BaseView
+from flask_admin import expose
+from flask_login import login_required
 
 
 class ReportView(BaseView):

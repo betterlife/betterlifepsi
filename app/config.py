@@ -1,6 +1,6 @@
 # coding=utf-8
 import os
-from flask.ext.babelex import lazy_gettext
+from flask_babelex import lazy_gettext
 
 
 class BaseConfig(object):

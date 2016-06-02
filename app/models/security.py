@@ -1,7 +1,7 @@
 # encoding: utf-8
 from app import const
 from app.database import DbInfo
-from flask.ext.security import RoleMixin, UserMixin
+from flask_security import RoleMixin, UserMixin
 from sqlalchemy import ForeignKey, Integer, select, desc, func, between
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, backref, aliased

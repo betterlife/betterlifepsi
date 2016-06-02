@@ -2,10 +2,10 @@
 from gettext import gettext
 
 from flask import url_for, request, flash
-from flask.ext.admin._compat import as_unicode
-from flask.ext.admin.contrib.sqla import ModelView
-from flask.ext.admin.model.helpers import get_mdict_item_or_list
-from flask.ext.security import current_user
+from flask_admin._compat import as_unicode
+from flask_admin.contrib.sqla import ModelView
+from flask_admin.model.helpers import get_mdict_item_or_list
+from flask_security import current_user
 from app.utils.security_util import get_user_roles, has_organization_field
 from sqlalchemy import func
 from werkzeug.exceptions import abort

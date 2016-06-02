@@ -20,8 +20,8 @@ from customer import CustomerAdmin
 from formatter import *
 from app.models import *
 from app.models.security import Organization
-from flask.ext.admin import Admin
-from flask.ext.admin.consts import ICON_TYPE_GLYPH
+from flask_admin import Admin
+from flask_admin.consts import ICON_TYPE_GLYPH
 from import_store_data import ImportStoreDataView
 from app.views.report import ReportView
 

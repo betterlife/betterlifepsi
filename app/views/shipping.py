@@ -1,9 +1,9 @@
 # coding=utf-8
 from datetime import datetime
 
-from flask.ext.admin.contrib.sqla.filters import FloatSmallerFilter, FloatGreaterFilter, FloatEqualFilter
-from flask.ext.admin.model import InlineFormAdmin
-from flask.ext.babelex import lazy_gettext, gettext
+from flask_admin.contrib.sqla.filters import FloatSmallerFilter, FloatGreaterFilter, FloatEqualFilter
+from flask_admin.model import InlineFormAdmin
+from flask_babelex import lazy_gettext, gettext
 from app.models import ShippingLine, Shipping
 from app.views import ModelViewWithAccess, DisabledStringField
 from formatter import inventory_transaction_formatter, sales_order_formatter, default_date_formatter
