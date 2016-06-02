@@ -43,6 +43,61 @@ class Organization(db.Model):
                 .where(Organization.right > self.right).label('parent'))
 
     @hybrid_property
+    def all_children(self):
+        """
+        Get immediate children of the organization
+        Reference:
+        http://mikehillyer.com/articles/managing-hierarchical-data-in-mysql/
+        http://www.sitepoint.com/hierarchical-data-database/
+        Generated SQL Sample:
+        SELECT node.name, (COUNT(parent.name) - (sub_tree.depth + 1)) AS depth
+        FROM nested_category AS node,
+             nested_category AS parent,
+             nested_category AS sub_parent,
+             (
+              SELECT node.name, (COUNT(parent.name) - 1) AS depth
+              FROM nested_category AS node,
+              nested_category AS parent
+              WHERE node.lft BETWEEN parent.lft AND parent.rgt
+              AND node.name = 'PORTABLE ELECTRONICS'
+              GROUP BY node.name
+              ORDER BY node.lft
+             )AS sub_tree
+             WHERE node.lft BETWEEN parent.lft AND parent.rgt
+             AND node.lft BETWEEN sub_parent.lft AND sub_parent.rgt
+             AND sub_parent.name = sub_tree.name
+             GROUP BY node.name
+             ORDER BY node.lft;
+        """
+        s_node = aliased(Organization, name='s_node')
+        s_parent = aliased(Organization, name='s_parent')
+        sub_tree = db.session.query(s_node.id, (func.count(s_parent.name) - 1).label('depth')). \
+            filter(and_(between(s_node.lft, s_parent.lft, s_parent.right), s_node.id == self.id)) \
+            .group_by(s_node.id, s_node.lft).order_by(s_node.lft).subquery()
+
+        t_node = aliased(Organization, name='t_node')
+        t_parent = aliased(Organization, name='t_parent')
+        t_sub_parent = aliased(Organization, name='t_sub_parent')
+        # Postgres does not support label as (func.count(t_parent.name) - (sub_tree.c.depth + 1)).label('xxx')
+        # And have the field in having clause will cause issue.
+        query = (db.session.query(t_node.id, t_node.name, (func.count(t_parent.name) - (sub_tree.c.depth + 1))).
+                 filter(and_(between(t_node.lft, t_parent.lft, t_parent.right),
+                             between(t_node.lft, t_sub_parent.lft, t_sub_parent.right),
+                             t_node.id != self.id,  # Exclude current node --> itself
+                             t_sub_parent.id == sub_tree.c.id))
+                 .group_by(t_node.id, t_node.name, t_node.lft, 'depth')
+                 .order_by(t_node.lft))
+        return query.all()
+
+    @all_children.setter
+    def all_children(self, val):
+        pass
+
+    @all_children.expression
+    def all_children(self):
+        pass
+
+    @hybrid_property
     def immediate_children(self):
         """
         Get immediate children of the organization

@@ -7,9 +7,10 @@ Flask based Intelligent PSI(Purchase, Sales and Inventory) management system
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 [![Build Status](https://travis-ci.org/betterlife/psi.svg?branch=master)](https://travis-ci.org/betterlife/psi)
 [![Requirements Status](https://requires.io/github/betterlife/psi/requirements.svg?branch=master)](https://requires.io/github/betterlife/psi/requirements/?branch=master)
-[![Code Climate](https://codeclimate.com/github/betterlife/psi/badges/gpa.svg)](https://codeclimate.com/github/betterlife/psi)
 [![codecov.io](http://codecov.io/github/betterlife/psi/coverage.svg?branch=master)](http://codecov.io/github/betterlife/psi?branch=master)
+[![Code Climate](https://codeclimate.com/github/betterlife/psi/badges/gpa.svg)](https://codeclimate.com/github/betterlife/psi)
 [![Code Issues](https://www.quantifiedcode.com/api/v1/project/4c27fd0589fc4bcc96782a829824e1b9/badge.svg)](https://www.quantifiedcode.com/app/project/4c27fd0589fc4bcc96782a829824e1b9)
+[![Code Health](https://landscape.io/github/betterlife/psi/master/landscape.svg?style=flat)](https://landscape.io/github/betterlife/psi/master)
 
 
 Try to answer follow questions:

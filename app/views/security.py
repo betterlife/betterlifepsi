@@ -175,7 +175,7 @@ class OrganizationAdmin(ModelViewWithAccess):
         return self.session.query(func.count('*')).filter(self.model.id == current_user.organization_id) \
             if not is_super_admin() else self.session.query(func.count('*'))
 
-    column_list = ('id', 'name', 'description', 'lft', 'right','parent', 'immediate_children')
+    column_list = ('id', 'name', 'description', 'lft', 'right','parent', 'immediate_children', 'all_children')
 
     column_sortable_list = ('id', 'name', 'description', 'lft', 'right')
 
@@ -191,4 +191,4 @@ class OrganizationAdmin(ModelViewWithAccess):
     )
     column_editable_list = ('description',)
 
-    column_details_list = ('id', 'name', 'description', 'lft', 'right', 'parent', 'immediate_children')
+    column_details_list = ('id', 'name', 'description', 'lft', 'right', 'parent', 'immediate_children', 'all_children')

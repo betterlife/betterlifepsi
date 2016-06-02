@@ -1,0 +1,9 @@
+comment:
+  layout: "header, diff, changes, uncovered"
+coverage:
+  notify:
+    slack:
+      default:
+        branches:
+        - master
+        url: https://hooks.slack.com/services/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
