@@ -120,10 +120,10 @@ def define_route_context(flask_app, db, babel):
 
 def init_all(app):
     database = init_db(app)
+    init_logging(app)
     init_migrate(app, database)
     init_flask_security(app, database)
     init_admin_views(app, database)
     babel = init_babel(app)
-    init_logging(app)
     # init_debug_toolbar(app)
     define_route_context(app, database, babel)
