@@ -35,7 +35,7 @@ class ModelViewWithAccess(ModelView):
 
     @property
     def can_view_details(self):
-        return True
+        return self.can()
 
     def can(self, operation='view'):
         tablename = self.model.__tablename__
