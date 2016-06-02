@@ -1,5 +1,5 @@
 # coding=utf-8
-from flask.ext.babelex import lazy_gettext
+from flask_babelex import lazy_gettext
 from app.views.base import ModelViewWithAccess, CycleReferenceValidator
 from app.utils import security_util
 

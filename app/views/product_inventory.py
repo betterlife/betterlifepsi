@@ -1,5 +1,5 @@
-from flask.ext.admin.contrib.sqla.filters import FloatSmallerFilter, FloatGreaterFilter
-from flask.ext.babelex import lazy_gettext
+from flask_admin.contrib.sqla.filters import FloatSmallerFilter, FloatGreaterFilter
+from flask_babelex import lazy_gettext
 from app.views import ModelViewWithAccess
 from formatter import supplier_formatter, product_formatter, available_quantity_formatter, default_decimal_formatter
 from app.models import Product

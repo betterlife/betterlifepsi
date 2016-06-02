@@ -3,19 +3,22 @@
 import os
 
 from flask import Flask, request, current_app, render_template
-from flask.ext.login import current_user
-from flask.ext.migrate import upgrade
+from flask_login import current_user
+from flask_migrate import upgrade
 
 
 def create_app(custom_config=None):
     flask_app = Flask(__name__, template_folder='templates', static_folder='static')
-
-    if custom_config is None:
-        import app.config as default_config
-        flask_app.config.from_object(default_config.ProductionConfig)
-    else:
+    if custom_config is not None:
         flask_app.config.from_object(custom_config)
-
+    else:
+        import app.config as default_config
+        if os.environ.get('TESTING') == 'True':
+            flask_app.config.from_object(default_config.TestConfig)
+        elif os.environ.get('DEBUG') == 'True':
+            flask_app.config.from_object(default_config.DevConfig)
+        elif custom_config is None:
+            flask_app.config.from_object(default_config.ProductionConfig)
     return flask_app
 
 
@@ -45,7 +48,7 @@ def init_db(flask_app):
 
 
 def init_migrate(flask_app, database):
-    from flask.ext.migrate import Migrate
+    from flask_migrate import Migrate
     migrate = Migrate(app=flask_app, db=database)
     with flask_app.app_context():
         upgrade(directory=os.path.dirname(__file__) + "/../migrations")
@@ -60,7 +63,7 @@ def init_babel(flask_app):
 def init_logging(flask_app):
     from raven.contrib.flask import Sentry
     # Init Sentry if not in debug mode
-    if flask_app.config['DEBUG'] or flask_app.config['TESTING']:
+    if not flask_app.config['DEBUG']:
         Sentry().init_app(flask_app)
     else:
         # Set log level to debug and redirect all the logs to stand out
@@ -76,7 +79,7 @@ def init_logging(flask_app):
 
 
 def init_debug_toolbar(flask_app):
-    from flask.ext.debugtoolbar import DebugToolbarExtension
+    from flask_debugtoolbar import DebugToolbarExtension
     if flask_app.config['DEBUG']:
         flask_app.debug = True
         DebugToolbarExtension(flask_app)
@@ -116,11 +119,11 @@ def define_route_context(flask_app, db, babel):
 
 
 def init_all(app):
+    init_logging(app)
     database = init_db(app)
     init_migrate(app, database)
     init_flask_security(app, database)
     init_admin_views(app, database)
     babel = init_babel(app)
-    init_logging(app)
     # init_debug_toolbar(app)
     define_route_context(app, database, babel)

@@ -1,7 +1,7 @@
 # coding=utf-8
 from functools import partial
 
-from flask.ext.babelex import lazy_gettext
+from flask_babelex import lazy_gettext
 from app.models.product import Product
 from app.views.formatter import supplier_formatter
 from app.views.base import ModelViewWithAccess

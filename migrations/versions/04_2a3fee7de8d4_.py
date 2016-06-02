@@ -7,7 +7,6 @@ Create Date: 2015-06-27 01:53:52.021040
 """
 
 # revision identifiers, used by Alembic.
-from flask.ext.security.utils import encrypt_password
 
 revision = '2a3fee7de8d4'
 down_revision = '29b31f4d8de6'

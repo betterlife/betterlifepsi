@@ -36,7 +36,9 @@ Links:
   - [Feature cards(atlassian)](https://betterlife.atlassian.net)
   - [Code coverage(codecov)](https://codecov.io/github/betterlife/flask-psi)
   - [Quantifiedcode (Code Issues)](https://www.quantifiedcode.com/app/project/4c27fd0589fc4bcc96782a829824e1b9)
-  - [Dev environment(Openshift)](http://dev.psi.betterlife.io)
+  - [Dev environment(Openshift)](https://dstore-betterlife.rhcloud.com/)
+    - Organization user: __support@betterlife.io / password__
+    - Business user: __business@betterlife.io / password__
 
 Code Coverage History
 

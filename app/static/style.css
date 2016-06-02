@@ -33,7 +33,7 @@ input[name='_continue_editing'], input[name='_add_another'] {
 }
 
 .dashboard-container {
-    margin: 100px auto 100px;
+    margin: auto 100px;
     text-align: center;
 }
 

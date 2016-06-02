@@ -4,8 +4,8 @@ from datetime import datetime
 from app.models.customer import Customer
 from app.views import ModelViewWithAccess
 from app.views.formatter import default_date_formatter
-from flask.ext.admin.contrib.sqla.filters import FloatGreaterFilter
-from flask.ext.babelex import lazy_gettext
+from flask_admin.contrib.sqla.filters import FloatGreaterFilter
+from flask_babelex import lazy_gettext
 
 
 class CustomerAdmin(ModelViewWithAccess):

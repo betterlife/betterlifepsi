@@ -1,5 +1,5 @@
 # coding=utf-8
-from flask.ext.babelex import lazy_gettext
+from flask_babelex import lazy_gettext
 from app.views import ModelViewWithAccess
 from app.models import ProductCategory
 from app.utils import form_util

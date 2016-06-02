@@ -3,12 +3,12 @@ from datetime import datetime
 from functools import partial
 
 from app.database import DbInfo
-from flask.ext.admin.contrib.sqla import ModelView
-from flask.ext.admin.contrib.sqla.filters import FloatEqualFilter, FloatSmallerFilter
-from flask.ext.admin.contrib.sqla.filters import FloatGreaterFilter
-from flask.ext.admin.model import InlineFormAdmin
+from flask_admin.contrib.sqla import ModelView
+from flask_admin.contrib.sqla.filters import FloatEqualFilter, FloatSmallerFilter
+from flask_admin.contrib.sqla.filters import FloatGreaterFilter
+from flask_admin.model import InlineFormAdmin
 from app import const
-from flask.ext.babelex import lazy_gettext, gettext
+from flask_babelex import lazy_gettext, gettext
 from app.models import ReceivingLine, Receiving, PurchaseOrderLine, PurchaseOrder, InventoryTransaction, EnumValues, \
     InventoryTransactionLine
 from app.views import ModelViewWithAccess, DisabledStringField
