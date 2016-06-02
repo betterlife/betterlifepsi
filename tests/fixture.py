@@ -7,8 +7,7 @@ from app import create_app, init_all
 
 
 def init_app():
-    from app.config import TestConfig
-    application = create_app(TestConfig)
+    application = create_app()
     init_all(application)
     return application
 

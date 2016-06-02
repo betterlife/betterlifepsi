@@ -13,10 +13,10 @@ def create_app(custom_config=None):
         flask_app.config.from_object(custom_config)
     else:
         import app.config as default_config
-        if os.environ.get('DEBUG'):
-            flask_app.config.from_object(default_config.DevConfig)
-        elif os.environ.get('TESTING'):
+        if os.environ.get('TESTING') == 'True':
             flask_app.config.from_object(default_config.TestConfig)
+        elif os.environ.get('DEBUG') == 'True':
+            flask_app.config.from_object(default_config.DevConfig)
         elif custom_config is None:
             flask_app.config.from_object(default_config.ProductionConfig)
     return flask_app
