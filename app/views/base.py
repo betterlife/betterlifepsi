@@ -1,11 +1,12 @@
 # coding=utf-8
 from gettext import gettext
 
-from flask import url_for, request, flash
-from flask.ext.admin._compat import as_unicode
-from flask.ext.admin.contrib.sqla import ModelView
-from flask.ext.security import current_user
-from app.utils.security_util import get_user_roles, is_super_admin, has_organization_field
+from flask import url_for, request, flash, has_request_context
+from flask_admin._compat import as_unicode
+from flask_admin.contrib.sqla import ModelView
+from flask_admin.model.helpers import get_mdict_item_or_list
+from flask_security import current_user
+from app.utils.security_util import get_user_roles, has_organization_field
 from sqlalchemy import func
 from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
@@ -38,7 +39,13 @@ class ModelViewWithAccess(ModelView):
 
     def can(self, operation='view'):
         tablename = self.model.__tablename__
-        return current_user.is_authenticated and (tablename + '_' + operation in get_user_roles())
+        obj_id = get_mdict_item_or_list(request.args, 'id') if has_request_context() else None
+        obj = None if obj_id is None else self.get_one(obj_id)
+        if obj is None:
+            same_org = True
+        else:
+            same_org = (obj.organization == current_user.organization) if has_organization_field(obj) else True
+        return same_org and current_user.is_authenticated and (tablename + '_' + operation in get_user_roles())
 
     def handle_view_exception(self, exc):
         if isinstance(exc, ValidationError):
