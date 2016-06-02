@@ -1,63 +1,53 @@
 {% extends 'layout.html' %}
 {% block body %}
   <div class="dashboard-container">
-    <div id="report-container" style="height:400px;width:50%;float:left"></div>
-    <div id="report-container2" style="height:400px;width:50%;float:right"></div>
+    <iframe name="dashboard-frame" src="http://localhost:8088/caravel/dashboard/3/" width="100%" height="1400" frameborder="no"
+            scrolling="no" allowtransparency="yes">
+    </iframe>
   </div>
+{% endblock %}
+
+{% block head_tail %}
+  {{ super() }}
+  <script type="text/javascript">
+    var browserVersion = window.navigator.userAgent.toUpperCase();
+    var isOpera = false, isFireFox = false, isChrome = false, isSafari = false, isIE = false;
+    function reinitIframe(iframeId, minHeight) {
+      try {
+        var iframe = document.getElementById(iframeId);
+        var bHeight = 0;
+        if (isChrome == false && isSafari == false)
+          bHeight = iframe.contentWindow.document.body.scrollHeight;
+
+        var dHeight = 0;
+        if (isFireFox == true)
+          dHeight = iframe.contentWindow.document.documentElement.offsetHeight + 2;
+        else if (isIE == false && isOpera == false)
+          dHeight = iframe.contentWindow.document.documentElement.scrollHeight;
+        else if (isIE == true && !-[1,] == false) { } //ie9+
+        else
+          bHeight += 3;
+
+        var height = Math.max(bHeight, dHeight);
+        if (height < minHeight) height = minHeight;
+        iframe.style.height = height + "px";
+      } catch (ex) { }
+    }
+    function startInit(iframeId, minHeight) {
+      isOpera = browserVersion.indexOf("OPERA") > -1;
+      isFireFox = browserVersion.indexOf("FIREFOX") > -1;
+      isChrome = browserVersion.indexOf("CHROME") > -1;
+      isSafari = browserVersion.indexOf("SAFARI") > -1;
+      if (!!window.ActiveXObject || "ActiveXObject" in window)
+        isIE = true;
+      window.setInterval("reinitIframe('" + iframeId + "'," + minHeight + ")", 100);
+    }
+  </script>
 {% endblock %}
 
 {% block tail %}
   {{ super() }}
-  <script src="{{ url_for('static', filename='echarts/echarts.js') }}"></script>
   <script type="text/javascript">
-    // 路径配置
-    require.config({
-      paths: {
-        echarts: '{{ url_for('static', filename='echarts') }}'
-      }
-    });
-
-    // 使用
-    require(
-        [
-          'echarts',
-          'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
-        ],
-        function (ec) {
-          // 基于准备好的dom，初始化echarts图表
-          var myChart = ec.init(document.getElementById('report-container'));
-          var myChart2 = ec.init(document.getElementById('report-container2'));
-          var option = {
-            tooltip: {
-              show: true
-            },
-            legend: {
-              data: ['销量']
-            },
-            xAxis: [
-              {
-                type: 'category',
-                data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
-              }
-            ],
-            yAxis: [
-              {
-                type: 'value'
-              }
-            ],
-            series: [
-              {
-                "name": "销量",
-                "type": "bar",
-                "data": [5, 20, 40, 10, 10, 20]
-              }
-            ]
-          };
-
-          // 为echarts对象加载数据
-          myChart.setOption(option);
-          myChart2.setOption(option);
-        }
-    );
+    startInit('dashboard-frame', 560);
   </script>
 {% endblock %}
