@@ -63,7 +63,7 @@ def init_babel(flask_app):
 def init_logging(flask_app):
     from raven.contrib.flask import Sentry
     # Init Sentry if not in debug mode
-    if flask_app.config['DEBUG'] or flask_app.config['TESTING']:
+    if not flask_app.config['DEBUG']:
         Sentry().init_app(flask_app)
     else:
         # Set log level to debug and redirect all the logs to stand out
