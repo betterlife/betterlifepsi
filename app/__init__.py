@@ -119,8 +119,8 @@ def define_route_context(flask_app, db, babel):
 
 
 def init_all(app):
-    database = init_db(app)
     init_logging(app)
+    database = init_db(app)
     init_migrate(app, database)
     init_flask_security(app, database)
     init_admin_views(app, database)
