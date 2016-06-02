@@ -31,11 +31,11 @@ class ModelViewWithAccess(ModelView):
 
     @property
     def can_export(self):
-        return False
+        return self.can(operation='export')
 
     @property
     def can_view_details(self):
-        return self.can()
+        return True
 
     def can(self, operation='view'):
         tablename = self.model.__tablename__
