@@ -1,7 +1,7 @@
 # coding=utf-8
 from gettext import gettext
 
-from flask import url_for, request, flash
+from flask import url_for, request, flash, has_request_context
 from flask_admin._compat import as_unicode
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.model.helpers import get_mdict_item_or_list
@@ -39,15 +39,12 @@ class ModelViewWithAccess(ModelView):
 
     def can(self, operation='view'):
         tablename = self.model.__tablename__
-        obj_id = get_mdict_item_or_list(request.args, 'id')
-        if obj_id is not None:
-            obj = self.get_one(obj_id)
-        else:
-            obj = None
-        if obj is not None:
-            same_org = (obj.organization == current_user.organization) if has_organization_field(obj) else True
-        else:
+        obj_id = get_mdict_item_or_list(request.args, 'id') if has_request_context() else None
+        obj = None if obj_id is None else self.get_one(obj_id)
+        if obj is None:
             same_org = True
+        else:
+            same_org = (obj.organization == current_user.organization) if has_organization_field(obj) else True
         return same_org and current_user.is_authenticated and (tablename + '_' + operation in get_user_roles())
 
     def handle_view_exception(self, exc):
