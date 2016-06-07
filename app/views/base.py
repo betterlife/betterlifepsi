@@ -6,7 +6,7 @@ from flask_admin._compat import as_unicode
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.model.helpers import get_mdict_item_or_list
 from flask_security import current_user
-from app.utils.security_util import get_user_roles, has_organization_field
+from app.utils.security_util import get_user_roles, has_organization_field, is_super_admin
 from sqlalchemy import func
 from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
@@ -55,7 +55,7 @@ class ModelViewWithAccess(ModelView):
             same_org = True
         else:
             same_org = (obj.organization == current_user.organization) if has_organization_field(obj) else True
-        return same_org and current_user.is_authenticated and (tablename + '_' + operation in get_user_roles())
+        return (is_super_admin()) or (same_org and current_user.is_authenticated and (tablename + '_' + operation in get_user_roles()))
 
     def handle_view_exception(self, exc):
         if isinstance(exc, ValidationError):
