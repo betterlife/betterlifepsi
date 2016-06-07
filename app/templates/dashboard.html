@@ -1,8 +1,8 @@
 {% extends 'layout.html' %}
 {% block body %}
   <div class="dashboard-container">
-    <iframe name="dashboard-frame" src="http://localhost:8088/caravel/dashboard/3/" width="100%" height="1400" frameborder="no"
-            scrolling="no" allowtransparency="yes">
+    <iframe name="dashboard-frame" src="{{config.DASHBOARD_BI_URL}}" 
+            width="100%" height="1400" frameborder="no" scrolling="no" allowtransparency="yes">
     </iframe>
   </div>
 {% endblock %}

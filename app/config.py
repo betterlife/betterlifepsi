@@ -24,6 +24,7 @@ class BaseConfig(object):
     DEFAULT_DELIVER_DAY = 5
     DEFAULT_LEAD_DAY = 3
     DEFAULT_CATEGORY_ID = 1
+    DASHBOARD_BI_URL = "https://psi-bi.herokuapp.com/caravel/welcome"
 
     security_messages = {
         'PASSWORD_MISMATCH': (lazy_gettext('Password does not match'), 'error'),
