@@ -21,5 +21,6 @@ def cleanup_database(app_context):
     with app_context:
         DbInfo.get_db().session.remove()
         DbInfo.get_db().engine.execute('DROP TABLE alembic_version')
+        DbInfo.get_db().engine.execute('DROP VIEW sales_order_detail')
         DbInfo.get_db().session.commit()
         DbInfo.get_db().drop_all()
