@@ -3,6 +3,7 @@
 import os
 
 from flask import Flask, request, current_app, render_template
+from flask_sslify import SSLify
 from flask_login import current_user
 from flask_migrate import upgrade
 
@@ -118,9 +119,15 @@ def define_route_context(flask_app, db, babel):
         return 'zh_CN' if current_app.config['DEBUG'] else request.accept_languages.best_match(['zh_CN', 'en_US'])
 
 
+def init_https(app):
+    if 'DYNO' in os.environ:  # only trigger SSLify if the app is running on Heroku
+        sslify = SSLify(app)
+
+
 def init_all(app):
     init_logging(app)
     database = init_db(app)
+    init_https(app)
     init_migrate(app, database)
     init_flask_security(app, database)
     init_admin_views(app, database)
