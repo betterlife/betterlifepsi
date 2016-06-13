@@ -2,10 +2,13 @@
 
 from app.views import ModelViewWithAccess
 from app.views.base import CycleReferenceValidator
+from flask.ext.admin.contrib.sqla.fields import QuerySelectField
+from flask.ext.admin.form import Select2Widget
 from flask_admin.contrib.sqla import ModelView
 from flask_babelex import lazy_gettext
 from flask_login import current_user
 from flask_security.utils import encrypt_password
+from app.models.security import Organization
 from sqlalchemy import func
 from app.utils.security_util import is_super_admin, exclude_super_admin_roles
 from app.views.formatter import organization_formatter
@@ -154,12 +157,6 @@ class RoleAdmin(ModelViewWithAccess):
 
 
 class OrganizationAdmin(ModelViewWithAccess):
-    def on_model_change(self, form, model, is_created):
-        """Check whether the parent role is same as child role"""
-        pass
-        # super(OrganizationAdmin, self).on_model_change(form, model, is_created)
-        # CycleReferenceValidator.validate(form, model, object_type='Organization', parent='parent', children='sub_organizations')
-
     @property
     def can_create(self):
         return is_super_admin()
@@ -199,5 +196,21 @@ class OrganizationAdmin(ModelViewWithAccess):
         'parent': organization_formatter
     }
     column_editable_list = ('description',)
+
+    form_excluded_columns = ('lft', 'right',)
+
+    form_extra_fields = {
+        'parent': QuerySelectField(
+            label=lazy_gettext('Parent Organization'),
+            query_factory=lambda: Organization.query.all(),
+            widget=Select2Widget(),
+            allow_blank=True,
+        )
+    }
+
+    def on_model_change(self, form, model, is_created):
+        """Check whether the parent organization or child organization is same as the value being edited"""
+        super(OrganizationAdmin, self).on_model_change(form, model, is_created)
+        CycleReferenceValidator.validate(form, model, object_type='Organization', parent='parent', children='all_children')
 
     column_details_list = ('id', 'name', 'description', 'lft', 'right', 'parent', 'immediate_children', 'all_children')
