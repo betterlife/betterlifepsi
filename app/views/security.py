@@ -8,6 +8,7 @@ from flask_login import current_user
 from flask_security.utils import encrypt_password
 from sqlalchemy import func
 from app.utils.security_util import is_super_admin, exclude_super_admin_roles
+from app.views.formatter import organization_formatter
 from wtforms import PasswordField
 
 
@@ -175,9 +176,9 @@ class OrganizationAdmin(ModelViewWithAccess):
         return self.session.query(func.count('*')).filter(self.model.id == current_user.organization_id) \
             if not is_super_admin() else self.session.query(func.count('*'))
 
-    column_list = ('id', 'name', 'description', 'lft', 'right','parent', 'immediate_children', 'all_children')
+    column_list = ('id', 'name', 'description', 'parent', 'immediate_children', 'all_children')
 
-    column_sortable_list = ('id', 'name', 'description', 'lft', 'right')
+    column_sortable_list = ('id', 'name', 'description',)
 
     column_searchable_list = ('name', 'description', 'parent.name', 'parent.description', 'lft', 'right')
 
@@ -187,8 +188,16 @@ class OrganizationAdmin(ModelViewWithAccess):
         description=lazy_gettext('Description'),
         parent=lazy_gettext('Parent Organization'),
         lft=lazy_gettext('Left'),
-        right=lazy_gettext('Right')
+        right=lazy_gettext('Right'),
+        immediate_children=lazy_gettext('Immediate Children'),
+        all_children=lazy_gettext('All Children'),
     )
+
+    column_formatters = {
+        'immediate_children': organization_formatter,
+        'all_children': organization_formatter,
+        'parent': organization_formatter
+    }
     column_editable_list = ('description',)
 
     column_details_list = ('id', 'name', 'description', 'lft', 'right', 'parent', 'immediate_children', 'all_children')

@@ -1,6 +1,7 @@
 # encoding: utf-8
 from app import const
 from app.database import DbInfo
+from app.utils.db_util import id_query_to_obj
 from flask_security import RoleMixin, UserMixin
 from sqlalchemy import ForeignKey, Integer, select, desc, func, between
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -87,7 +88,8 @@ class Organization(db.Model):
                              t_sub_parent.id == sub_tree.c.id))
                  .group_by(t_node.id, t_node.name, t_node.lft, 'depth')
                  .order_by(t_node.lft))
-        return query.all()
+        obj_result = id_query_to_obj(Organization, query)
+        return obj_result
 
     @all_children.setter
     def all_children(self, val):
@@ -144,7 +146,7 @@ class Organization(db.Model):
                  .group_by(t_node.id, t_node.name, t_node.lft, 'depth')
                  .having((func.count(t_parent.name) - (sub_tree.c.depth + 1)) <= 1)
                  .order_by(t_node.lft))
-        return query.all()
+        return id_query_to_obj(Organization, query)
 
     @immediate_children.setter
     def immediate_children(self, val):

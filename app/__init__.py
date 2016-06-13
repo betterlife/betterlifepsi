@@ -120,7 +120,8 @@ def define_route_context(flask_app, db, babel):
 
 
 def init_https(app):
-    if 'DYNO' in os.environ:  # only trigger SSLify if the app is running on Heroku
+    # only trigger SSLify if the app is running on Heroku and debug is false
+    if (app.config['DEBUG'] is False) and ('DYNO' in os.environ):
         sslify = SSLify(app)
 
 
