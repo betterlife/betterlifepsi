@@ -43,7 +43,6 @@ def init_db(flask_app):
     from app.database import DbInfo
     from flask_sqlalchemy import SQLAlchemy
     sqlalchemy = SQLAlchemy(flask_app)
-    sqlalchemy.init_app(flask_app)
     DbInfo.set_db(sqlalchemy)
     return sqlalchemy
 
