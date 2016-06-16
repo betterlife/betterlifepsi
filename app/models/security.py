@@ -24,8 +24,8 @@ class Organization(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
-    lft = db.Column(Integer, unique=True, nullable=False)
-    right = db.Column(Integer, unique=True, nullable=False)
+    lft = db.Column(Integer, unique=True, nullable=False, default=0)
+    right = db.Column(Integer, unique=True, nullable=False, default=0)
 
     @hybrid_property
     def parent(self):

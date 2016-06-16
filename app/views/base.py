@@ -108,16 +108,19 @@ class DeleteValidator(object):
 
 class CycleReferenceValidator(object):
     @staticmethod
-    def validate(form, model, object_type="Object ", parent="parent", children="child"):
-        if form[parent] is not None and \
-                        form[parent].data is not None and \
-                        form[parent].data.id == model.id:
+    def validate(form, model, object_type="Object ", parent="parent", children="child", is_created=False):
+        if is_created is False and \
+           form[parent] is not None and \
+           form[parent].data is not None and \
+           form[parent].data.id == model.id:
             raise ValidationError("Can not set %s's parent to itself" % object_type)
-        if form[parent] is not None and \
-                        form[parent].data is not None and \
-                        form[parent].data in getattr(model, children):
+        if is_created is False and \
+           form[parent] is not None and \
+           form[parent].data is not None and \
+           form[parent].data in getattr(model, children):
             raise ValidationError("Can not set %s's parent to it's child" % object_type)
-        if form[children] is not None and \
-                        form[children].data is not None and \
-                        model in form[children].data:
+        if hasattr(form, children) and \
+           form[children] is not None and \
+           form[children].data is not None and \
+           model in form[children].data:
             raise ValidationError('Can not set %s''s child to itself' % object_type)

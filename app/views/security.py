@@ -12,6 +12,7 @@ from app.models.security import Organization
 from sqlalchemy import func
 from app.utils.security_util import is_super_admin, exclude_super_admin_roles
 from app.views.formatter import organization_formatter
+from app.utils import db_util
 from wtforms import PasswordField
 
 
@@ -135,7 +136,8 @@ class RoleAdmin(ModelViewWithAccess):
     def on_model_change(self, form, model, is_created):
         """Check whether the parent role is same as child role"""
         super(RoleAdmin, self).on_model_change(form, model, is_created)
-        CycleReferenceValidator.validate(form, model, object_type='Role', parent='parent', children='sub_roles')
+        CycleReferenceValidator.validate(form, model, object_type='Role', parent='parent',
+                                         children='sub_roles', is_created=is_created)
 
     column_list = ('id', 'name', 'description',)
 
@@ -208,9 +210,39 @@ class OrganizationAdmin(ModelViewWithAccess):
         )
     }
 
+    def after_model_change(self, form, model, is_created):
+        """
+        :param form: form object from the UI
+        :param model: model, when on after_model_change, it has got id field and necessary default value from DB.
+        :param is_created: True if model was created, False if model was updated
+        :return: nothing
+        Update left and right field of all impacted organization vai raw sql, and also update left and right
+        of the newly added organization to it's parent's current right and current right + 1
+        """
+        from sqlalchemy import text
+        from app.database import DbInfo
+        if is_created and getattr(form, "parent") is not None:
+            # update all exiting node with right and left bigger than current parent's right - 1
+            str_id = getattr(form, "parent").raw_data[0]
+            int_id = int(str_id) if str_id is not None and len(str_id) > 0 else None
+            parent = Organization.query.get(int_id) if int_id is not None else None
+            if parent is not None:
+                max_lft = parent.right - 1
+                sql = text('UPDATE organization SET "right" = "right" + 2 WHERE "right" > {val};'
+                           'UPDATE organization SET lft = lft + 2 WHERE lft > {val}'
+                           .format(val=max_lft))
+                db = DbInfo.get_db()
+
+                # set left and right of the new object
+                model.lft = max_lft + 1
+                model.right = max_lft + 2
+                db.engine.execute(sql)
+                db_util.save_objects_commit(model)
+
     def on_model_change(self, form, model, is_created):
         """Check whether the parent organization or child organization is same as the value being edited"""
         super(OrganizationAdmin, self).on_model_change(form, model, is_created)
-        CycleReferenceValidator.validate(form, model, object_type='Organization', parent='parent', children='all_children')
+        CycleReferenceValidator.validate(form, model, object_type='Organization', parent='parent',
+                                         children='all_children', is_created=is_created)
 
     column_details_list = ('id', 'name', 'description', 'lft', 'right', 'parent', 'immediate_children', 'all_children')
