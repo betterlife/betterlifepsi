@@ -3,7 +3,6 @@
 import os
 
 from flask import Flask, request, current_app, render_template
-from flask_sslify import SSLify
 from flask_login import current_user
 from flask_migrate import upgrade
 
@@ -121,6 +120,7 @@ def define_route_context(flask_app, db, babel):
 def init_https(app):
     # only trigger SSLify if the app is running on Heroku and debug is false
     if (app.config['DEBUG'] is False) and ('DYNO' in os.environ):
+        from flask_sslify import SSLify
         sslify = SSLify(app)
 
 
