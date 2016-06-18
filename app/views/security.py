@@ -13,6 +13,7 @@ from sqlalchemy import func
 from app.utils.security_util import is_super_admin, exclude_super_admin_roles
 from app.views.formatter import organization_formatter
 from app.utils import db_util
+from wtforms import ValidationError
 from wtforms import PasswordField
 
 
@@ -175,7 +176,7 @@ class OrganizationAdmin(ModelViewWithAccess):
         return self.session.query(func.count('*')).filter(self.model.id == current_user.organization_id) \
             if not is_super_admin() else self.session.query(func.count('*'))
 
-    column_list = ('id', 'name', 'description', 'parent', 'immediate_children', 'all_children')
+    column_list = ('id', 'name', 'description', 'parent', 'immediate_children',)
 
     column_sortable_list = ('id', 'name', 'description',)
 
@@ -206,7 +207,7 @@ class OrganizationAdmin(ModelViewWithAccess):
             label=lazy_gettext('Parent Organization'),
             query_factory=lambda: Organization.query.all(),
             widget=Select2Widget(),
-            allow_blank=True,
+            allow_blank=False,
         )
     }
 
@@ -215,13 +216,13 @@ class OrganizationAdmin(ModelViewWithAccess):
         :param form: form object from the UI
         :param model: model, when on after_model_change, it has got id field and necessary default value from DB.
         :param is_created: True if model was created, False if model was updated
-        :return: nothing
+        :return: None
         Update left and right field of all impacted organization vai raw sql, and also update left and right
         of the newly added organization to it's parent's current right and current right + 1
         """
         from sqlalchemy import text
         from app.database import DbInfo
-        if is_created and getattr(form, "parent") is not None:
+        if is_created and getattr(form, "parent") is not None and getattr(form, "parent")._data is not None:
             # update all exiting node with right and left bigger than current parent's right - 1
             str_id = getattr(form, "parent").raw_data[0]
             int_id = int(str_id) if str_id is not None and len(str_id) > 0 else None
@@ -242,6 +243,8 @@ class OrganizationAdmin(ModelViewWithAccess):
     def on_model_change(self, form, model, is_created):
         """Check whether the parent organization or child organization is same as the value being edited"""
         super(OrganizationAdmin, self).on_model_change(form, model, is_created)
+        if getattr(form, "parent") is None or getattr(form, "parent")._data is None:
+            raise ValidationError('Can not create organization with no parent organization')
         CycleReferenceValidator.validate(form, model, object_type='Organization', parent='parent',
                                          children='all_children', is_created=is_created)
 
