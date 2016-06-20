@@ -44,3 +44,7 @@ deploy:
     app: store
     on:
       tags: true
+
+notifications:
+    webhooks:
+      - https://hook.worktile.com/travisci/037fa21703804550a880d82f52c1c9ef
