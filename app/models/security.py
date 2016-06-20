@@ -3,6 +3,7 @@ from app import const
 from app.database import DbInfo
 from app.utils.db_util import id_query_to_obj
 from flask_security import RoleMixin, UserMixin
+from app.models.data_security_mixin import DataSecurityMixin
 from sqlalchemy import ForeignKey, Integer, select, desc, func, between
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, backref, aliased
@@ -16,7 +17,7 @@ roles_users = db.Table('roles_users',
                        db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
 
 
-class Organization(db.Model):
+class Organization(db.Model, DataSecurityMixin):
     """
     Organization, used to do data isolation
     """
@@ -159,8 +160,15 @@ class Organization(db.Model):
     def __unicode__(self):
         return self.name
 
+    def can_delete(self):
+        if hasattr(self, "immediate_children"):
+            return len(self.immediate_children) == 0
+        if hasattr(self, "all_children"):
+            return len(self.all_children) == 0
+        return True
 
-class Role(db.Model, RoleMixin):
+
+class Role(db.Model, RoleMixin, DataSecurityMixin):
     __tablename__ = 'role'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(80), unique=True)
@@ -171,8 +179,11 @@ class Role(db.Model, RoleMixin):
     def __unicode__(self):
         return self.name
 
+    def can_delete(self):
+        return len(self.sub_roles) == 0
 
-class User(db.Model, UserMixin):
+
+class User(db.Model, UserMixin, DataSecurityMixin):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String(64), unique=True, nullable=False)

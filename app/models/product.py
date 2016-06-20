@@ -6,6 +6,7 @@ from enum_values import EnumValues
 from app.utils.date_util import get_weeks_between
 from app.utils.format_util import format_decimal
 from app.models.inventory_transaction import InventoryTransactionLine, InventoryTransaction
+from app.models.data_security_mixin import DataSecurityMixin
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text, select, func, desc, Boolean, or_
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
@@ -13,7 +14,7 @@ from sqlalchemy.orm import backref, relationship
 db = DbInfo.get_db()
 
 
-class Product(db.Model):
+class Product(db.Model, DataSecurityMixin):
     __tablename__ = 'product'
     id = Column(Integer, primary_key=True)
     code = Column(String(8), unique=True, nullable=False)

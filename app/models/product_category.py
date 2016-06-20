@@ -1,12 +1,13 @@
 # encoding: utf-8
 from app.database import DbInfo
+from app.models.data_security_mixin import DataSecurityMixin
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import backref, relationship
 
 db = DbInfo.get_db()
 
 
-class ProductCategory(db.Model):
+class ProductCategory(db.Model, DataSecurityMixin):
     __tablename__ = 'product_category'
     id = Column(Integer, primary_key=True)
     code = Column(String(8), unique=True, nullable=False)

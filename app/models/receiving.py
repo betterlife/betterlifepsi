@@ -5,6 +5,7 @@ from app.database import DbInfo
 from app import const
 from app.utils.format_util import format_decimal
 from app.models.enum_values import EnumValues
+from app.models.data_security_mixin import DataSecurityMixin
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
@@ -12,7 +13,7 @@ from sqlalchemy.orm import backref, relationship
 db = DbInfo.get_db()
 
 
-class Receiving(db.Model):
+class Receiving(db.Model, DataSecurityMixin):
     __tablename__ = 'receiving'
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, nullable=False)

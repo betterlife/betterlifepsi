@@ -248,4 +248,8 @@ class OrganizationAdmin(ModelViewWithAccess):
         CycleReferenceValidator.validate(form, model, object_type='Organization', parent='parent',
                                          children='all_children', is_created=is_created)
 
+    def on_model_delete(self, model):
+        if len(model.all_children) > 0:
+            raise ValidationError('Can not delete an organization with child organisation exists')
+
     column_details_list = ('id', 'name', 'description', 'lft', 'right', 'parent', 'immediate_children', 'all_children')

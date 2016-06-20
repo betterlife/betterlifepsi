@@ -1,12 +1,13 @@
 # encoding: utf-8
 from app.database import DbInfo
+from app.models.data_security_mixin import DataSecurityMixin
 from sqlalchemy import Column, Integer, ForeignKey, Text
 from sqlalchemy.orm import relationship
 
 db = DbInfo.get_db()
 
 
-class Preference(db.Model):
+class Preference(db.Model, DataSecurityMixin):
     __tablename__ = 'preference'
     id = Column(Integer, primary_key=True)
     def_so_incoming_type_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)

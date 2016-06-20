@@ -5,6 +5,7 @@ from app.database import DbInfo
 from app import const
 from app.models.enum_values import EnumValues
 from app.utils.format_util import format_decimal
+from app.models.data_security_mixin import DataSecurityMixin
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
@@ -12,7 +13,7 @@ from sqlalchemy.orm import backref, relationship
 db = DbInfo.get_db()
 
 
-class PurchaseOrder(db.Model):
+class PurchaseOrder(db.Model, DataSecurityMixin):
     __tablename__ = 'purchase_order'
     id = Column(Integer, primary_key=True)
     logistic_amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
