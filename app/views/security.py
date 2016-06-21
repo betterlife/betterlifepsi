@@ -5,7 +5,7 @@ from app.views.base import CycleReferenceValidator
 from flask.ext.admin.contrib.sqla.fields import QuerySelectField
 from flask.ext.admin.form import Select2Widget
 from flask_admin.contrib.sqla import ModelView
-from flask_babelex import lazy_gettext
+from flask_babelex import lazy_gettext, gettext
 from flask_login import current_user
 from flask_security.utils import encrypt_password
 from app.models.security import Organization
@@ -244,12 +244,12 @@ class OrganizationAdmin(ModelViewWithAccess):
         """Check whether the parent organization or child organization is same as the value being edited"""
         super(OrganizationAdmin, self).on_model_change(form, model, is_created)
         if getattr(form, "parent") is None or getattr(form, "parent")._data is None:
-            raise ValidationError('Can not create organization with no parent organization')
+            raise ValidationError(gettext('Please specify parent organization(creation of top level organization not allowed)'))
         CycleReferenceValidator.validate(form, model, object_type='Organization', parent='parent',
                                          children='all_children', is_created=is_created)
 
     def on_model_delete(self, model):
         if len(model.all_children) > 0:
-            raise ValidationError('Can not delete an organization with child organisation exists')
+            raise ValidationError(gettext('Can not delete an organization with child organisation exists'))
 
     column_details_list = ('id', 'name', 'description', 'lft', 'right', 'parent', 'immediate_children', 'all_children')

@@ -1,5 +1,5 @@
 # coding=utf-8
-from gettext import gettext
+from flask_babelex import gettext
 
 from flask import url_for, request, flash, has_request_context
 from flask_admin._compat import as_unicode
@@ -110,17 +110,17 @@ class CycleReferenceValidator(object):
     @staticmethod
     def validate(form, model, object_type="Object ", parent="parent", children="child", is_created=False):
         if is_created is False and \
-           form[parent] is not None and \
-           form[parent].data is not None and \
-           form[parent].data.id == model.id:
-            raise ValidationError("Can not set %s's parent to itself" % object_type)
+                        form[parent] is not None and \
+                        form[parent].data is not None and \
+                        form[parent].data.id == model.id:
+            raise ValidationError(gettext("Can not set %(ot)s's parent to itself[%(data)s]", ot=gettext(object_type), data=model))
         if is_created is False and \
-           form[parent] is not None and \
-           form[parent].data is not None and \
-           form[parent].data in getattr(model, children):
-            raise ValidationError("Can not set %s's parent to it's child" % object_type)
+                        form[parent] is not None and \
+                        form[parent].data is not None and \
+                        form[parent].data in getattr(model, children):
+            raise ValidationError(gettext("Can not set %(ot)s's parent to it's child[%(data)s]", ot=gettext(object_type), data=form[parent].data))
         if hasattr(form, children) and \
-           form[children] is not None and \
-           form[children].data is not None and \
-           model in form[children].data:
-            raise ValidationError('Can not set %s''s child to itself' % object_type)
+                        form[children] is not None and \
+                        form[children].data is not None and \
+                        model in form[children].data:
+            raise ValidationError(gettext("Can not set %(ot)s's child to itself[%(data)s]", ot=gettext(object_type), data=model))
