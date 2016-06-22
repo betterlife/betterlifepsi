@@ -24,7 +24,8 @@ def create_app(custom_config=None):
 
 def init_flask_security(flask_app, database):
     from flask_security import SQLAlchemyUserDatastore, Security
-    from app.models.security import User, Role
+    from app.models.user import User
+    from app.models.role import Role
     import app.config as config
     for key, value in config.BaseConfig.security_messages.items():
         flask_app.config['SECURITY_MSG_' + key] = value
