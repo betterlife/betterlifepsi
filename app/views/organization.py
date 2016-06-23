@@ -2,7 +2,7 @@
 from functools import partial
 
 from app.utils import db_util
-from app.utils.security_util import is_super_admin
+from app.utils.security_util import is_super_admin, is_root_organization
 from app.views.base import ModelViewWithAccess
 from app.views.base import CycleReferenceValidator
 from app.views.formatter import organization_formatter
@@ -74,8 +74,10 @@ class OrganizationAdmin(ModelViewWithAccess):
         # form.parent._data_list is None at this moment, so it's not feasible to change the _data_list attribute directly here
         # to set the query_factory function is the right way to implement a filter.
         form.parent.query_factory = partial(Organization.children_filter, obj)
+        # For root organization, allow blank
+        if is_root_organization(obj):
+            form.parent.allow_blank = True
         return form
-
 
     column_details_list = ('id', 'name', 'description', 'lft', 'rgt', 'parent', 'immediate_children', 'all_children')
 
@@ -92,7 +94,7 @@ class OrganizationAdmin(ModelViewWithAccess):
         from app.database import DbInfo
         db = DbInfo.get_db()
         str_id = getattr(form, "parent").raw_data[0]
-        int_id = int(str_id) if str_id is not None and len(str_id) > 0 else None
+        int_id = int(str_id) if str_id is not None and str_id != u"__None" and len(str_id) > 0 else None
         parent = Organization.query.get(int_id) if int_id is not None else None
         if is_created:  # New create
             # update all exiting node with right and left bigger than current parent's right - 1
@@ -107,7 +109,7 @@ class OrganizationAdmin(ModelViewWithAccess):
                 model.rgt = max_lft + 2
                 db.engine.execute(sql)
                 db_util.save_objects_commit(model)
-        else:
+        elif parent is not None:
             # Changing parent of a subtree or leaf.
             # Refer to http://stackoverflow.com/questions/889527/move-node-in-nested-set for detail.
             lft = model.lft
@@ -133,7 +135,7 @@ class OrganizationAdmin(ModelViewWithAccess):
     def on_model_change(self, form, model, is_created):
         """Check whether the parent organization or child organization is same as the value being edited"""
         super(OrganizationAdmin, self).on_model_change(form, model, is_created)
-        if getattr(form, "parent") is None or getattr(form, "parent")._data is None:
+        if (not is_root_organization(model)) and (getattr(form, "parent") is None or getattr(form, "parent")._data is None):
             raise ValidationError(gettext('Please specify parent organization(creation of top level organization not allowed)'))
         CycleReferenceValidator.validate(form, model, object_type='Organization', parent='parent',
                                          children='all_children', is_created=is_created)
@@ -160,5 +162,3 @@ class OrganizationAdmin(ModelViewWithAccess):
         sql = text("{u} rgt = rgt-{w} WHERE rgt > {rgt};{u} lft = lft-{w} WHERE lft > {lft}".format(rgt=model.rgt, lft=model.lft, w=width, u=self.uos))
         db.engine.execute(sql)
         db.session.commit()
-
-

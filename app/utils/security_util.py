@@ -74,3 +74,14 @@ def has_organization_field(obj):
     :return: True if organization field exists, otherwise false
     """
     return hasattr(obj, 'organization')
+
+
+def is_root_organization(obj):
+    """
+    Check whether this object(organization) is the root organization
+    This check is performed based on whether this org's parent org is None
+    According to current design, only root organization's parent org could not None
+    :param obj: object to check
+    :return: True if it's root organization, otherwise false
+    """
+    return obj is not None and obj.parent is None
