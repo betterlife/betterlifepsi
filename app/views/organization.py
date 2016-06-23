@@ -27,12 +27,15 @@ class OrganizationAdmin(ModelViewWithAccess):
         return is_super_admin()
 
     def get_query(self):
-        return self.session.query(self.model).filter(self.model.id == current_user.organization_id) \
-            if not is_super_admin() else self.session.query(self.model)
+        return self.get_query_based_on_user(self.model)
 
     def get_count_query(self):
-        return self.session.query(func.count('*')).filter(self.model.id == current_user.organization_id) \
-            if not is_super_admin() else self.session.query(func.count('*'))
+        return self.get_query_based_on_user(func.count('*'))
+
+    def get_query_based_on_user(self, return_query):
+        all_ids = Organization.get_children_self_ids(current_user.organization)
+        return (self.session.query(return_query).filter(self.model.id.in_(all_ids))
+                if not is_super_admin() else self.session.query(return_query))
 
     column_list = ('id', 'name', 'description', 'parent', 'immediate_children',)
 

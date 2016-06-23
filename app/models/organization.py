@@ -23,7 +23,7 @@ class Organization(db.Model, DataSecurityMixin):
 
     @hybrid_property
     def parent(self):
-        return (db.session.query(Organization).filter(and_(Organization.lft < self.lft, Organization.rgt > self.rgt)).order_by(desc(Organization.lft)).first())
+        return db.session.query(Organization).filter(and_(Organization.lft < self.lft, Organization.rgt > self.rgt)).order_by(desc(Organization.lft)).first()
 
     @parent.setter
     def parent(self, value):
@@ -159,10 +159,15 @@ class Organization(db.Model, DataSecurityMixin):
     @staticmethod
     def children_remover(organization):
         all_org = Organization.query.all()
-        return [org for org in all_org if org not in organization.all_children and org != organization]
+        return [org for org in all_org if (org not in organization.all_children and org != organization)]
 
     @staticmethod
     def children_self_filter(organization):
         result = organization.all_children
         result.append(organization)
         return result
+
+    @staticmethod
+    def get_children_self_ids(organization):
+        all_orgs = Organization.children_self_filter(organization)
+        return [obj.id for obj in all_orgs]
