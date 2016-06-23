@@ -1,7 +1,9 @@
 # coding=utf-8
+from functools import partial
 
 from app.utils.security_util import is_super_admin
 from app.views import ModelViewWithAccess
+from flask.ext.login import current_user
 from flask_admin.contrib.sqla import ModelView
 from flask_babelex import lazy_gettext
 from flask_security.utils import encrypt_password
@@ -9,6 +11,7 @@ from sqlalchemy import func
 from app.views.formatter import organization_formatter
 from app.models.user import User
 from wtforms import PasswordField
+from app.models import Organization
 
 
 # Customized User model for SQL-Admin
@@ -53,6 +56,7 @@ class UserAdmin(ModelViewWithAccess):
 
     form_args = dict(
         active=dict(description=lazy_gettext('Un-check this checkbox to disable a user from login to the system')),
+        organization=dict(description=lazy_gettext('You can only create/modify user belongs to your organization and sub-organization')),
         locale=dict(label=lazy_gettext('Language'), query_factory=User.locale_filter),
         timezone=dict(label=lazy_gettext('Timezone'), query_factory=User.timezone_filter),
     )
@@ -76,14 +80,12 @@ class UserAdmin(ModelViewWithAccess):
 
     def create_form(self, obj=None):
         form = super(ModelView, self).create_form(obj)
-        if not is_super_admin():
-            delattr(form, "organization")
+        form.organization.query_factory = partial(Organization.children_self_filter, current_user.organization)
         return form
 
     def edit_form(self, obj=None):
         form = super(ModelView, self).edit_form(obj)
-        if not is_super_admin():
-            delattr(form, "organization")
+        form.organization.query_factory = partial(Organization.children_self_filter, current_user.organization)
         return form
 
     # This callback executes when the user saves changes to a newly-created or edited User -- before the changes are

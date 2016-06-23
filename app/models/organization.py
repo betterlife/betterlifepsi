@@ -157,6 +157,12 @@ class Organization(db.Model, DataSecurityMixin):
         return True
 
     @staticmethod
-    def children_filter(organization):
+    def children_remover(organization):
         all_org = Organization.query.all()
         return [org for org in all_org if org not in organization.all_children and org != organization]
+
+    @staticmethod
+    def children_self_filter(organization):
+        result = organization.all_children
+        result.append(organization)
+        return result
