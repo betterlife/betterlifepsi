@@ -1,4 +1,6 @@
 # encoding=utf-8
+from functools import partial
+
 from app.utils import db_util
 from app.utils.security_util import is_super_admin
 from app.views.base import ModelViewWithAccess
@@ -66,6 +68,14 @@ class OrganizationAdmin(ModelViewWithAccess):
             allow_blank=False,
         )
     }
+
+    def edit_form(self, obj=None):
+        form = super(OrganizationAdmin, self).edit_form(obj)
+        # form.parent._data_list is None at this moment, so it's not feasible to change the _data_list attribute directly here
+        # to set the query_factory function is the right way to implement a filter.
+        form.parent.query_factory = partial(Organization.children_filter, obj)
+        return form
+
 
     column_details_list = ('id', 'name', 'description', 'lft', 'rgt', 'parent', 'immediate_children', 'all_children')
 

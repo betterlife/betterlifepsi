@@ -155,3 +155,8 @@ class Organization(db.Model, DataSecurityMixin):
         if hasattr(self, "all_children"):
             return len(self.all_children) == 0
         return True
+
+    @staticmethod
+    def children_filter(organization):
+        all_org = Organization.query.all()
+        return [org for org in all_org if org not in organization.all_children and org != organization]
