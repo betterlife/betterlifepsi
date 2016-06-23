@@ -1,12 +1,13 @@
 # encoding: utf-8
 from app.database import DbInfo
+from app.models.data_security_mixin import DataSecurityMixin
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Text
 from sqlalchemy.orm import backref, relationship
 
 db = DbInfo.get_db()
 
 
-class Supplier(db.Model):
+class Supplier(db.Model, DataSecurityMixin):
     __tablename__ = 'supplier'
     id = Column(Integer, primary_key=True)
     code = Column(String(8), unique=True, nullable=False)

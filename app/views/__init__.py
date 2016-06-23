@@ -10,7 +10,9 @@ from product import ProductAdmin
 from product_category import ProductCategoryAdmin
 from purchase_order import PurchaseOrderAdmin
 from sales_order import SalesOrderAdmin
-from security import UserAdmin, RoleAdmin, OrganizationAdmin
+from user import UserAdmin
+from role import RoleAdmin
+from organization import OrganizationAdmin
 from supplier import SupplierAdmin
 from receiving import ReceivingAdmin
 from shipping import ShippingAdmin
@@ -19,7 +21,7 @@ from product_inventory import ProductInventoryView
 from customer import CustomerAdmin
 from formatter import *
 from app.models import *
-from app.models.security import Organization
+from app.models.organization import Organization
 from flask_admin import Admin
 from flask_admin.consts import ICON_TYPE_GLYPH
 from import_store_data import ImportStoreDataView
@@ -38,7 +40,6 @@ def init_admin_views(app, db):
                                         menu_icon_value='glyphicon-import'))
     admin_views.add_view(SupplierAdmin(Supplier, db_session, name=lazy_gettext("Supplier"),
                                        category=lazy_gettext('Purchase'), menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-globe'))
-
 
     admin_views.add_view(SalesOrderAdmin(SalesOrder, db_session, name=lazy_gettext("Sales Order"),
                                          category=lazy_gettext('Sales'), menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-send'))
@@ -73,7 +74,7 @@ def init_admin_views(app, db):
     admin_views.add_view(RoleAdmin(Role, db_session, name=lazy_gettext("Role"),
                                    category=lazy_gettext('Settings'), menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-eye-close'))
     admin_views.add_view(OrganizationAdmin(Organization, db_session, name=lazy_gettext("Organization"),
-                                   category=lazy_gettext('Settings'), menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-user'))
+                                           category=lazy_gettext('Settings'), menu_icon_type=ICON_TYPE_GLYPH, menu_icon_value='glyphicon-user'))
     admin_views.add_view(EnumValuesAdmin(EnumValues, db_session, name=lazy_gettext("Enum Values"),
                                          category=lazy_gettext('Settings'), menu_icon_type=ICON_TYPE_GLYPH,
                                          menu_icon_value='glyphicon-tasks'))

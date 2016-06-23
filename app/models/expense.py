@@ -3,13 +3,14 @@
 from app.database import DbInfo
 from app import const
 from app.models.enum_values import EnumValues
+from app.models.data_security_mixin import DataSecurityMixin
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Boolean, Text, DateTime
 from sqlalchemy.orm import backref, relationship
 
 db = DbInfo.get_db()
 
 
-class Expense(db.Model):
+class Expense(db.Model, DataSecurityMixin):
     __tablename__ = 'expense'
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, nullable=False)
@@ -33,6 +34,7 @@ class Expense(db.Model):
     remark = Column(Text, nullable=False)
 
     def __init__(self, amount=0, exp_date=None, status_id=None, category_id=None):
+        super(Expense, self).__init__()
         self.amount = amount
         self.date = exp_date
         self.status_id = status_id

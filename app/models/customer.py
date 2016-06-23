@@ -2,6 +2,7 @@
 
 from app import const
 from app.database import DbInfo
+from app.models.data_security_mixin import DataSecurityMixin
 from sqlalchemy import Column, Integer, ForeignKey, String, Date, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
@@ -10,7 +11,7 @@ from app.utils import date_util
 db = DbInfo.get_db()
 
 
-class Customer(db.Model):
+class Customer(db.Model, DataSecurityMixin):
     __tablename__ = 'customer'
     id = Column(Integer, primary_key=True)
     first_name = Column(String(32), unique=False, nullable=True)

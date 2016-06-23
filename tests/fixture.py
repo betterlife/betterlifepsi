@@ -1,7 +1,3 @@
-import os
-
-from alembic import context
-
 from app.database import DbInfo
 from app import create_app, init_all
 

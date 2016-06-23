@@ -6,6 +6,7 @@ from app import const
 from app.models.inventory_transaction import InventoryTransactionLine, InventoryTransaction
 from app.utils.format_util import format_decimal
 from app.models.enum_values import EnumValues
+from app.models.data_security_mixin import DataSecurityMixin
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
@@ -13,7 +14,7 @@ from sqlalchemy.orm import backref, relationship
 db = DbInfo.get_db()
 
 
-class Shipping(db.Model):
+class Shipping(db.Model, DataSecurityMixin):
     __tablename__ = 'shipping'
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, nullable=False)

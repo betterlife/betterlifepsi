@@ -1,13 +1,14 @@
 # encoding: utf-8
 
 from app.database import DbInfo
+from app.models.data_security_mixin import DataSecurityMixin
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import backref, relationship
 
 db = DbInfo.get_db()
 
 
-class EnumValues(db.Model):
+class EnumValues(db.Model, DataSecurityMixin):
     __tablename__ = 'enum_values'
     id = Column(Integer, primary_key=True)
     type_id = Column(Integer, ForeignKey('enum_values.id'))

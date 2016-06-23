@@ -31,6 +31,7 @@ date_field = {'label': lazy_gettext('Date'), 'field': 'date'}
 order_date_field = {'label': lazy_gettext('Order Date'), 'field': 'order_date'}
 id_field = {'label': lazy_gettext('id'), 'field': 'id'}
 supplier_field = {'label': lazy_gettext('Supplier'), 'field': 'supplier'}
+name_field = {'label': lazy_gettext('Name'), 'field': 'name'}
 
 
 def _obj_formatter_str(view, context, model, value=None, model_name=None, title=None, args=None,
@@ -74,16 +75,16 @@ def _obj_formatter_str(view, context, model, value=None, model_name=None, title=
         return "<a href='%s' data-toggle='popover' title='[ %s ] 详情 <span style=\"float:right\">" \
                "<a href=\"%s\" target=\"_blank\"><span class=\"fa fa-eye glyphicon glyphicon-eye-open\"></span></a>&nbsp;&nbsp;" \
                "<a href=\"%s\" target=\"_blank\"><span class=\"fa fa-pencil glyphicon glyphicon-pencil\"></span></a>" \
-               "</span>' data-content='%s'>[ %s ]</a>"\
+               "</span>' data-content='%s'>[ %s ]</a>" \
                % ('#', title, url_for(model_name + '.details_view', id=value.id), url_for(model_name + '.edit_view', id=value.id), str_result, title)
     return ''
 
 
 def _obj_formatter(view, context, model, value=None, model_name=None, title=None, args=None,
                    detail_args=None, detail_field=None):
-        str_markup = _obj_formatter_str(view, context, model, value, model_name, title, args,
-                                        detail_args, detail_field)
-        return Markup(str_markup)
+    str_markup = _obj_formatter_str(view, context, model, value, model_name, title, args,
+                                    detail_args, detail_field)
+    return Markup(str_markup)
 
 
 def _objs_formatter(view, context, model, values, model_name, title_field='id', args=None,
@@ -105,15 +106,15 @@ def _objs_formatter(view, context, model, values, model_name, title_field='id', 
 def supplier_formatter(view, context, model, name):
     s = model.supplier
     args = (id_field,
-        {'label': '编码', 'field': 'code'},
-        {'label': '名称', 'field': 'name'},
-        {'label': 'QQ', 'field': 'qq'},
-        {'label': '电话', 'field': 'phone'},
-        {'label': '联系人', 'field': 'contact'},
-        {'label': '邮件', 'field': 'email'},
-        {'label': '起批要求', 'field': 'whole_sale_req'},
-        {'label': '可混批?', 'field': 'can_mixed_whole_sale'},
-        remark_field,)
+            {'label': '编码', 'field': 'code'},
+            {'label': '名称', 'field': 'name'},
+            {'label': 'QQ', 'field': 'qq'},
+            {'label': '电话', 'field': 'phone'},
+            {'label': '联系人', 'field': 'contact'},
+            {'label': '邮件', 'field': 'email'},
+            {'label': '起批要求', 'field': 'whole_sale_req'},
+            {'label': '可混批?', 'field': 'can_mixed_whole_sale'},
+            remark_field,)
     detail_args = (
         id_field,
         {'label': '开户名', 'field': 'account_name'},
@@ -175,7 +176,7 @@ def purchase_order_formatter(view, context, model, name):
     if s is not None:
         args = (id_field, order_date_field, supplier_field, status_field,
                 goods_amount_field, total_amount_field, remark_field)
-        detail_args = (product_field, quantity_field,unit_price_field,total_amount_field)
+        detail_args = (product_field, quantity_field, unit_price_field, total_amount_field)
         return _obj_formatter(view, context, model, value=s, model_name='purchaseorder', title=str(s.id),
                               args=args, detail_args=detail_args, detail_field='lines')
     return ''
@@ -186,7 +187,7 @@ def sales_order_formatter(view, context, model, name):
     if s is not None:
         args = (id_field, order_date_field, logistic_amount_field, actual_amount_field,
                 discount_amount_field, original_amount_field, remark_field)
-        detail_args = (product_field, quantity_field,unit_price_field,retail_price_field, price_discount_field,
+        detail_args = (product_field, quantity_field, unit_price_field, retail_price_field, price_discount_field,
                        discount_amount_field, actual_amount_field, original_amount_field,)
         return _obj_formatter(view, context, model, value=s, model_name='purchaseorder', title=str(s.id),
                               args=args, detail_args=detail_args, detail_field='lines')
@@ -208,6 +209,16 @@ def product_formatter(view, context, model, name):
     args = (id_field, code_field, lead_day_field, deliver_day_field, supplier_field, category_field, spec_link_field,
             distinguishing_feature_field)
     return _obj_formatter(view, context, model, value=model, model_name='product', title=model.name, args=args)
+
+
+def organization_formatter(view, context, model, name):
+    args = (id_field, name_field)
+    obj = getattr(model, name)
+    if obj is not None:
+        if type(obj) is list:
+            return _objs_formatter(view, context, model, values=obj, title_field='name', model_name='organization', args=args)
+        return _obj_formatter(view, context, model, value=obj, title=getattr(obj, 'name'), model_name='organization', args=args)
+    return None
 
 
 def default_date_formatter(view, context, model, name):

@@ -158,15 +158,11 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
         # Set query_factory for newly added line
         form.lines.form.product.kwargs['query_factory'] = partial(Product.supplier_filter, supplier_id)
         # Set option list of status available
-        if obj.status.code == const.PO_RECEIVED_STATUS_KEY:
-            form.status.query = [EnumValues.find_one_by_code(const.PO_RECEIVED_STATUS_KEY), ]
-        elif obj.status.code == const.PO_PART_RECEIVED_STATUS_KEY:
-            form.status.query = [EnumValues.find_one_by_code(const.PO_PART_RECEIVED_STATUS_KEY), ]
-        elif obj.status.code == const.PO_ISSUED_STATUS_KEY:
-            form.status.query = [EnumValues.find_one_by_code(const.PO_ISSUED_STATUS_KEY), ]
-        elif obj.status.code == const.PO_DRAFT_STATUS_KEY:
-            form.status.query = [EnumValues.find_one_by_code(const.PO_ISSUED_STATUS_KEY),
-                                 EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY), ]
+        if obj.status.code in [const.PO_RECEIVED_STATUS_KEY, const.PO_PART_RECEIVED_STATUS_KEY, const.PO_PART_RECEIVED_STATUS_KEY,
+                               const.PO_ISSUED_STATUS_KEY, const.PO_DRAFT_STATUS_KEY]:
+            form.status.query = [EnumValues.find_one_by_code(obj.status.code), ]
+        if obj.status.code == const.PO_DRAFT_STATUS_KEY:
+            form.status.query.append(EnumValues.find_one_by_code(const.PO_ISSUED_STATUS_KEY))
         # Set product query option for old lines(forbid to change product for existing line)
         line_entries = form.lines.entries
         products = Product.supplier_filter(supplier_id).all()

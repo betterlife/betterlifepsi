@@ -89,3 +89,13 @@ def filter_by_organization(object_type, user=current_user):
     """
     db = DbInfo.get_db()
     return db.session.query(object_type).filter_by(organization_id=user.organization_id).all()
+
+
+def id_query_to_obj(obj_type, query):
+    db = DbInfo.get_db()
+    raw_result = query.all()
+    ids = []
+    for r in raw_result:
+        ids.append(getattr(r, 'id'))
+    obj_result = db.session.query(obj_type).filter(obj_type.id.in_(ids)).all()
+    return obj_result

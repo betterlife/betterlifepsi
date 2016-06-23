@@ -3,7 +3,6 @@
 import os
 
 from flask import Flask, request, current_app, render_template
-from flask_sslify import SSLify
 from flask_login import current_user
 from flask_migrate import upgrade
 
@@ -25,7 +24,8 @@ def create_app(custom_config=None):
 
 def init_flask_security(flask_app, database):
     from flask_security import SQLAlchemyUserDatastore, Security
-    from app.models.security import User, Role
+    from app.models.user import User
+    from app.models.role import Role
     import app.config as config
     for key, value in config.BaseConfig.security_messages.items():
         flask_app.config['SECURITY_MSG_' + key] = value
@@ -43,7 +43,6 @@ def init_db(flask_app):
     from app.database import DbInfo
     from flask_sqlalchemy import SQLAlchemy
     sqlalchemy = SQLAlchemy(flask_app)
-    sqlalchemy.init_app(flask_app)
     DbInfo.set_db(sqlalchemy)
     return sqlalchemy
 
@@ -120,7 +119,9 @@ def define_route_context(flask_app, db, babel):
 
 
 def init_https(app):
-    if 'DYNO' in os.environ:  # only trigger SSLify if the app is running on Heroku
+    # only trigger SSLify if the app is running on Heroku and debug is false
+    if (app.config['DEBUG'] is False) and ('DYNO' in os.environ):
+        from flask_sslify import SSLify
         sslify = SSLify(app)
 
 

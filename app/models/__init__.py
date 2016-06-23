@@ -12,4 +12,6 @@ from inventory_transaction import InventoryTransaction, \
 from preference import Preference
 from purchase_order import PurchaseOrder, PurchaseOrderLine
 from sales_order import SalesOrder, SalesOrderLine
-from security import User, Role, roles_users, Organization
+from user import User
+from role import Role, roles_users
+from organization import Organization

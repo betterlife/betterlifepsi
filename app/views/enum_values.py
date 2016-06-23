@@ -32,4 +32,5 @@ class EnumValuesAdmin(ModelViewWithAccess):
     def on_model_change(self, form, model, is_created):
         """Check whether the parent enum value or child enum value is same as the value being edited"""
         super(EnumValuesAdmin, self).on_model_change(form, model, is_created)
-        CycleReferenceValidator.validate(form, model, object_type='Enum Value', parent='type', children='type_values')
+        CycleReferenceValidator.validate(form, model, object_type='Enum Value', parent='type',
+                                         children='type_values', is_created=is_created)

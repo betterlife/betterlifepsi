@@ -1,14 +1,17 @@
 # coding=utf-8
+from functools import partial
 
+from app.utils.security_util import is_super_admin
 from app.views import ModelViewWithAccess
-from app.views.base import CycleReferenceValidator
+from flask.ext.login import current_user
 from flask_admin.contrib.sqla import ModelView
 from flask_babelex import lazy_gettext
-from flask_login import current_user
 from flask_security.utils import encrypt_password
 from sqlalchemy import func
-from app.utils.security_util import is_super_admin, exclude_super_admin_roles
+from app.views.formatter import organization_formatter
+from app.models.user import User
 from wtforms import PasswordField
+from app.models import Organization
 
 
 # Customized User model for SQL-Admin
@@ -16,7 +19,7 @@ class UserAdmin(ModelViewWithAccess):
     # Don't display the password on the list of Users
     column_exclude_list = list = ('password',)
 
-    column_list = ('id', 'login', 'display', 'email', 'active',)
+    column_list = ('id', 'login', 'display', 'email', 'organization', 'active',)
 
     """
     Disable delete of user(use de-active instead)
@@ -47,10 +50,13 @@ class UserAdmin(ModelViewWithAccess):
     # Don't include the standard password field when creating or editing a User (but see below)
     form_excluded_columns = ('password',)
 
-    from app.models import User
+    column_formatters = {
+        'organization': organization_formatter
+    }
 
     form_args = dict(
         active=dict(description=lazy_gettext('Un-check this checkbox to disable a user from login to the system')),
+        organization=dict(description=lazy_gettext('You can only create/modify user belongs to your organization and sub-organization')),
         locale=dict(label=lazy_gettext('Language'), query_factory=User.locale_filter),
         timezone=dict(label=lazy_gettext('Timezone'), query_factory=User.timezone_filter),
     )
@@ -74,14 +80,12 @@ class UserAdmin(ModelViewWithAccess):
 
     def create_form(self, obj=None):
         form = super(ModelView, self).create_form(obj)
-        if not is_super_admin():
-            delattr(form, "organization")
+        form.organization.query_factory = partial(Organization.children_self_filter, current_user.organization)
         return form
 
     def edit_form(self, obj=None):
         form = super(ModelView, self).edit_form(obj)
-        if not is_super_admin():
-            delattr(form, "organization")
+        form.organization.query_factory = partial(Organization.children_self_filter, current_user.organization)
         return form
 
     # This callback executes when the user saves changes to a newly-created or edited User -- before the changes are
@@ -112,83 +116,3 @@ class UserAdmin(ModelViewWithAccess):
         return self.session.query(func.count('*')).select_from(self.model) \
             if is_super_admin() \
             else super(UserAdmin, self).get_count_query()
-
-
-class RoleAdmin(ModelViewWithAccess):
-    def is_accessible(self):
-        return is_super_admin()
-
-    def get_query(self):
-        if not is_super_admin():
-            return exclude_super_admin_roles(self.model.name, super(RoleAdmin, self).get_query())
-        return super(RoleAdmin, self).get_query()
-
-    def get_count_query(self):
-        if not is_super_admin():
-            return exclude_super_admin_roles(self.model.name, super(RoleAdmin, self).get_count_query())
-        return super(RoleAdmin, self).get_count_query()
-
-    def on_model_change(self, form, model, is_created):
-        """Check whether the parent role is same as child role"""
-        super(RoleAdmin, self).on_model_change(form, model, is_created)
-        CycleReferenceValidator.validate(form, model, object_type='Role', parent='parent', children='sub_roles')
-
-    column_list = ('id', 'name', 'description',)
-
-    column_searchable_list = ('name', 'description', 'parent.name', 'parent.description')
-
-    column_labels = dict(
-        id=lazy_gettext('id'),
-        name=lazy_gettext('Name'),
-        description=lazy_gettext('Description'),
-        users=lazy_gettext('User'),
-        sub_roles=lazy_gettext('Sub Roles'),
-        parent=lazy_gettext('Parent Role')
-    )
-    column_editable_list = ('description',)
-
-    column_sortable_list = ('id', 'name', 'description')
-
-    column_details_list = ('id', 'name', 'description', 'parent', 'sub_roles', 'users')
-
-
-class OrganizationAdmin(ModelViewWithAccess):
-    def on_model_change(self, form, model, is_created):
-        """Check whether the parent role is same as child role"""
-        pass
-        # super(OrganizationAdmin, self).on_model_change(form, model, is_created)
-        # CycleReferenceValidator.validate(form, model, object_type='Organization', parent='parent', children='sub_organizations')
-
-    @property
-    def can_create(self):
-        return is_super_admin()
-
-    @property
-    def can_delete(self):
-        return is_super_admin()
-
-    def get_query(self):
-        return self.session.query(self.model).filter(self.model.id == current_user.organization_id) \
-            if not is_super_admin() else self.session.query(self.model)
-
-    def get_count_query(self):
-        return self.session.query(func.count('*')).filter(self.model.id == current_user.organization_id) \
-            if not is_super_admin() else self.session.query(func.count('*'))
-
-    column_list = ('id', 'name', 'description', 'lft', 'right','parent', 'immediate_children', 'all_children')
-
-    column_sortable_list = ('id', 'name', 'description', 'lft', 'right')
-
-    column_searchable_list = ('name', 'description', 'parent.name', 'parent.description', 'lft', 'right')
-
-    column_labels = dict(
-        id=lazy_gettext('id'),
-        name=lazy_gettext('Name'),
-        description=lazy_gettext('Description'),
-        parent=lazy_gettext('Parent Organization'),
-        lft=lazy_gettext('Left'),
-        right=lazy_gettext('Right')
-    )
-    column_editable_list = ('description',)
-
-    column_details_list = ('id', 'name', 'description', 'lft', 'right', 'parent', 'immediate_children', 'all_children')
