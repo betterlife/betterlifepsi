@@ -4,7 +4,6 @@ from decimal import Decimal
 from app.database import DbInfo
 from app.utils.format_util import format_decimal
 from app.models.data_security_mixin import DataSecurityMixin
-from product import Product
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func, String
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
@@ -111,6 +110,7 @@ class SalesOrderLine(db.Model):
 
     @original_amount.expression
     def original_amount(self):
+        from product import Product
         return (select([SalesOrderLine.quantity * Product.retail_price])
                 .where(self.product_id == Product.id).label('line_original_amount'))
 

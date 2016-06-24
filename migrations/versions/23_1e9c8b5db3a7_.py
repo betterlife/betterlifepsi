@@ -7,7 +7,6 @@ Create Date: 2016-06-08 00:34:56.618766
 """
 
 from alembic import op
-import sqlalchemy as sa
 from sqlalchemy.sql import text
 
 

@@ -3,7 +3,6 @@ from decimal import Decimal
 from app import const
 
 from app.database import DbInfo
-from app.models.enum_values import EnumValues
 from app.utils.format_util import format_decimal
 from app.models.data_security_mixin import DataSecurityMixin
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
@@ -27,6 +26,7 @@ class InventoryTransaction(db.Model, DataSecurityMixin):
 
     @staticmethod
     def type_filter():
+        from app.models.enum_values import EnumValues
         return EnumValues.type_filter(const.INVENTORY_TRANSACTION_TYPE_KEY)
 
     @hybrid_property

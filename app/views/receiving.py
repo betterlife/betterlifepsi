@@ -3,17 +3,12 @@ from datetime import datetime
 from functools import partial
 
 from app.database import DbInfo
-from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.sqla.filters import FloatEqualFilter, FloatSmallerFilter
 from flask_admin.contrib.sqla.filters import FloatGreaterFilter
 from flask_admin.model import InlineFormAdmin
 from app import const
 from flask_babelex import lazy_gettext, gettext
-from app.models import ReceivingLine, Receiving, PurchaseOrderLine, PurchaseOrder, InventoryTransaction, EnumValues, \
-    InventoryTransactionLine
 from app.views import ModelViewWithAccess, DisabledStringField
-from formatter import supplier_formatter, purchase_order_formatter, inventory_transaction_formatter, \
-    default_date_formatter
 from app.views.base import DeleteValidator
 from wtforms import BooleanField
 from wtforms.validators import ValidationError
@@ -43,6 +38,9 @@ class ReceivingLineInlineAdmin(InlineFormAdmin):
 
 
 class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
+    from formatter import supplier_formatter, purchase_order_formatter, inventory_transaction_formatter, default_date_formatter
+    from app.models import ReceivingLine, Receiving, PurchaseOrder
+
     inline_models = (ReceivingLineInlineAdmin(ReceivingLine),)
     column_list = ('id', 'purchase_order', 'supplier', 'date', 'status', 'total_amount', 'inventory_transaction',
                    'remark')
@@ -125,6 +123,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
         db.session.commit()
 
     def update_purchase_order_status(self, model):
+        from app.models import EnumValues
         if model.status.code == const.RECEIVING_COMPLETE_STATUS_KEY:
             po = model.purchase_order
             finished = False
@@ -162,6 +161,8 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
 
     @staticmethod
     def save_inv_trans(model, inv_trans, set_qty_func):
+        from app.models import EnumValues, InventoryTransaction, InventoryTransactionLine
+
         inv_type = EnumValues.find_one_by_code(const.PURCHASE_IN_INV_TRANS_KEY)
         if inv_trans is None:
             inv_trans = InventoryTransaction()
@@ -191,6 +192,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
 
     def get_available_lines_info(self, model):
         # 1. Find all existing receiving bind with this PO.
+        from app.models import Receiving
         existing_res = Receiving.filter_by_po_id(model.purchase_order.id)
         available_info = {}
         if existing_res is not None:
@@ -220,11 +222,12 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
 
     @staticmethod
     def create_receiving_lines(available_info):
+        from app.models import ReceivingLine
         lines = []
-        for id, info in available_info.iteritems():
+        for line_id, info in available_info.iteritems():
             if info['quantity'] > 0:
                 r_line = ReceivingLine()
-                r_line.purchase_order_line_id = id
+                r_line.purchase_order_line_id = line_id
                 r_line.purchase_order_line, r_line.quantity, r_line.price, r_line.product_id = \
                     info['line'], info['quantity'], info['price'], info['product_id']
                 lines.append(r_line)
@@ -248,17 +251,18 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
         return received_qtys
 
     def create_form(self, obj=None):
-        form = super(ModelView, self).create_form(obj)
+        from app.models import EnumValues
+        form = super(ReceivingAdmin, self).create_form(obj)
         form.status.query = [EnumValues.find_one_by_code(const.RECEIVING_DRAFT_STATUS_KEY), ]
         form.create_lines.data = True
         return form
 
     def edit_form(self, obj=None):
-        form = super(ModelView, self).edit_form(obj)
+        from app.models import PurchaseOrderLine, EnumValues
+        form = super(ReceivingAdmin, self).edit_form(obj)
         po_id = obj.transient_po.id
         # Set query_factory for newly added line
-        form.lines.form.purchase_order_line.kwargs['query_factory'] = \
-            partial(PurchaseOrderLine.header_filter, po_id)
+        form.lines.form.purchase_order_line.kwargs['query_factory'] = partial(PurchaseOrderLine.header_filter, po_id)
         if obj is not None and obj.status is not None and obj.status.code == const.RECEIVING_COMPLETE_STATUS_KEY:
             form.status.query = [EnumValues.find_one_by_code(const.RECEIVING_COMPLETE_STATUS_KEY), ]
         # Set query option for old lines

@@ -3,16 +3,13 @@ from datetime import datetime
 from functools import partial
 
 from app import database
-from flask_admin.contrib.sqla import ModelView
 from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext
 from app.models import Preference, Incoming, Expense, Shipping, ShippingLine, EnumValues
-from app.views import ModelViewWithAccess, DisabledStringField
-from formatter import expenses_formatter, incoming_formatter, shipping_formatter, default_date_formatter
-from app.views.custom_fields import ReadonlyStringField
-from flask_admin.contrib.sqla.filters import FloatGreaterFilter, FloatSmallerFilter, FloatInListFilter, FloatEqualFilter
-from app.models import Customer, Product
-from app.utils import db_util, current_user, form_util
+from app.views.base import ModelViewWithAccess
+from app.views.custom_fields import ReadonlyStringField, DisabledStringField
+from flask_admin.contrib.sqla.filters import FloatGreaterFilter, FloatSmallerFilter, FloatEqualFilter
+from app.utils import current_user, form_util
 
 
 class SalesOrderLineInlineAdmin(InlineFormAdmin):
@@ -38,6 +35,7 @@ class SalesOrderLineInlineAdmin(InlineFormAdmin):
 
 class SalesOrderAdmin(ModelViewWithAccess):
     from app.models import SalesOrderLine, SalesOrder
+    from formatter import expenses_formatter, incoming_formatter, shipping_formatter, default_date_formatter
 
     column_list = ('id', 'customer', 'logistic_amount', 'actual_amount', 'original_amount',
                    'discount_amount', 'order_date', 'incoming', 'expense', 'so_shipping', 'remark')
@@ -110,6 +108,8 @@ class SalesOrderAdmin(ModelViewWithAccess):
     }
 
     def create_form(self, obj=None):
+        from app.models import Customer
+
         form = super(ModelViewWithAccess, self).create_form(obj)
         form.lines.form.actual_amount = None
         form.lines.form.discount_amount = None
@@ -121,6 +121,8 @@ class SalesOrderAdmin(ModelViewWithAccess):
         return form
 
     def edit_form(self, obj=None):
+        from app.models import Customer
+
         form = super(ModelViewWithAccess, self).edit_form(obj)
         form_util.filter_by_organization(form.customer, Customer)
         self.filter_product(form)
@@ -129,6 +131,8 @@ class SalesOrderAdmin(ModelViewWithAccess):
     @staticmethod
     def filter_product(form):
         # Set query factory for new created line
+        from app.models import Product
+
         form.lines.form.product.kwargs['query_factory'] = partial(Product.organization_filter, current_user.organization_id)
         # Set query object filter for existing lines
         line_entries = form.lines.entries

@@ -1,6 +1,6 @@
 # coding=utf-8
 from flask_babelex import lazy_gettext
-from app.views import ModelViewWithAccess
+from app.views.base import ModelViewWithAccess
 from app.models import ProductCategory
 from app.utils import form_util
 
@@ -28,11 +28,11 @@ class ProductCategoryAdmin(ModelViewWithAccess):
     column_list = ('code', 'name', 'parent_category')
 
     def create_form(self, obj=None):
-        form = super(ModelViewWithAccess, self).create_form(obj)
+        form = super(ProductCategoryAdmin, self).create_form(obj)
         form_util.filter_by_organization(form.parent_category, ProductCategory)
         return form
 
     def edit_form(self, obj=None):
-        form = super(ModelViewWithAccess, self).edit_form(obj)
+        form = super(ProductCategoryAdmin, self).edit_form(obj)
         form_util.filter_by_organization(form.parent_category, ProductCategory)
         return form

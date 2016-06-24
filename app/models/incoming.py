@@ -1,7 +1,6 @@
 # encoding: utf-8
 from app.database import DbInfo
 from app import const
-from app.models.enum_values import EnumValues
 from app.models.data_security_mixin import DataSecurityMixin
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime
 from sqlalchemy.orm import backref, relationship
@@ -32,10 +31,12 @@ class Incoming(db.Model, DataSecurityMixin):
 
     @staticmethod
     def status_filter():
+        from app.models.enum_values import EnumValues
         return EnumValues.type_filter(const.INCOMING_STATUS_KEY)
 
     @staticmethod
     def type_filter():
+        from app.models.enum_values import EnumValues
         return EnumValues.type_filter(const.INCOMING_TYPE_KEY)
 
     def __unicode__(self):

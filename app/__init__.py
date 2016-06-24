@@ -2,12 +2,10 @@
 
 import os
 
-from flask import Flask, request, current_app, render_template
-from flask_login import current_user
-from flask_migrate import upgrade
-
 
 def create_app(custom_config=None):
+    from flask import Flask
+
     flask_app = Flask(__name__, template_folder='templates', static_folder='static')
     if custom_config is not None:
         flask_app.config.from_object(custom_config)
@@ -48,8 +46,9 @@ def init_db(flask_app):
 
 
 def init_migrate(flask_app, database):
-    from flask_migrate import Migrate
-    migrate = Migrate(app=flask_app, db=database)
+    from flask_migrate import Migrate, upgrade
+
+    Migrate(app=flask_app, db=database)
     with flask_app.app_context():
         upgrade(directory=os.path.dirname(__file__) + "/../migrations")
 
@@ -87,6 +86,8 @@ def init_debug_toolbar(flask_app):
 
 def define_route_context(flask_app, db, babel):
     from werkzeug.utils import redirect
+    from flask_login import current_user
+    from flask import request, current_app, render_template
 
     @flask_app.route('/report')
     def report():

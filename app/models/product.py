@@ -1,8 +1,6 @@
 # encoding: utf-8
-from app.advice import InventoryAdvice
 from app.database import DbInfo
 from app import const
-from enum_values import EnumValues
 from app.utils.date_util import get_weeks_between
 from app.utils.format_util import format_decimal
 from app.models.inventory_transaction import InventoryTransactionLine, InventoryTransaction
@@ -125,6 +123,7 @@ class Product(db.Model, DataSecurityMixin):
 
     @average_unit_profit.expression
     def average_unit_profit(self):
+        from enum_values import EnumValues
         return ((select([-func.sum(InventoryTransactionLine.quantity * InventoryTransactionLine.price) /
                          func.greatest(func.sum(InventoryTransactionLine.quantity), 1)])
                  .where(self.id == InventoryTransactionLine.product_id)
@@ -141,6 +140,7 @@ class Product(db.Model, DataSecurityMixin):
 
     @weekly_average_profit.expression
     def weekly_average_profit(self):
+        from enum_values import EnumValues
         return ((select([-func.sum(InventoryTransactionLine.quantity * InventoryTransactionLine.price) /
                          func.greatest(func.sum(InventoryTransactionLine.quantity), 1)])
                  .where(self.id == InventoryTransactionLine.product_id
@@ -156,6 +156,7 @@ class Product(db.Model, DataSecurityMixin):
 
     @hybrid_property
     def inventory_advice(self):
+        from app.advice import InventoryAdvice
         return InventoryAdvice.advice(self)
 
     @inventory_advice.setter

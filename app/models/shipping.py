@@ -3,9 +3,7 @@ from decimal import Decimal
 
 from app.database import DbInfo
 from app import const
-from app.models.inventory_transaction import InventoryTransactionLine, InventoryTransaction
 from app.utils.format_util import format_decimal
-from app.models.enum_values import EnumValues
 from app.models.data_security_mixin import DataSecurityMixin
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -35,6 +33,7 @@ class Shipping(db.Model, DataSecurityMixin):
 
     @staticmethod
     def status_filter():
+        from app.models.enum_values import EnumValues
         return EnumValues.type_filter(const.SHIPPING_STATUS_KEY)
 
     @hybrid_property
@@ -58,6 +57,8 @@ class Shipping(db.Model, DataSecurityMixin):
         return str(self.id) + ' - ' + str(self.total_amount)
 
     def create_or_update_inventory_transaction(self):
+        from app.models.inventory_transaction import InventoryTransactionLine, InventoryTransaction
+        from app.models.enum_values import EnumValues
         it_type = EnumValues.find_one_by_code(const.SALES_OUT_INV_TRANS_TYPE_KEY)
         it = self.inventory_transaction
         if it is None:

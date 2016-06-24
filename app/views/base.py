@@ -61,7 +61,7 @@ class ModelViewWithAccess(ModelView):
         if isinstance(exc, ValidationError):
             flash(as_unicode(exc), category='error')
             return True
-        return super(ModelView, self).handle_view_exception(exc)
+        return super(ModelViewWithAccess, self).handle_view_exception(exc)
 
     def get_query(self):
         if has_organization_field(self.model):

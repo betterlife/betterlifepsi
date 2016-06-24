@@ -5,6 +5,8 @@ import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
+# This import should behind above two lines
+# To avoid Chinese character display issue
 from app import create_app, init_all
 
 application = create_app()

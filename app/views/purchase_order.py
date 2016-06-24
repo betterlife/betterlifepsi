@@ -3,7 +3,6 @@ from datetime import datetime
 from functools import partial
 
 from app import database
-from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.sqla.filters import FloatSmallerFilter, FloatGreaterFilter, FloatEqualFilter
 from flask_admin.model import InlineFormAdmin
 from app import const
@@ -11,7 +10,6 @@ from flask_babelex import lazy_gettext, gettext
 from app.models import Preference, Expense, PurchaseOrder, Product, EnumValues, Receiving
 from app.views import ModelViewWithAccess, DisabledStringField
 from app.views.base import DeleteValidator
-from app.views.formatter import supplier_formatter, expenses_formatter, receivings_formatter, default_date_formatter
 from app.utils import form_util
 
 
@@ -32,6 +30,7 @@ class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
 
 class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
     from app.models import PurchaseOrderLine
+    from app.views.formatter import supplier_formatter, expenses_formatter, receivings_formatter, default_date_formatter
 
     column_list = ('id', 'order_date', 'supplier', 'logistic_amount', 'goods_amount', 'total_amount',
                    'status', 'all_expenses', 'all_receivings', 'remark')
@@ -153,7 +152,7 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
         db.session.commit()
 
     def edit_form(self, obj=None):
-        form = super(ModelView, self).edit_form(obj)
+        form = super(PurchaseOrderAdmin, self).edit_form(obj)
         supplier_id = obj.transient_supplier.id
         # Set query_factory for newly added line
         form.lines.form.product.kwargs['query_factory'] = partial(Product.supplier_filter, supplier_id)
@@ -171,7 +170,7 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
         return form
 
     def create_form(self, obj=None):
-        form = super(ModelView, self).create_form(obj)
+        form = super(PurchaseOrderAdmin, self).create_form(obj)
         form.status.query = [EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY), ]
         from app.models import Supplier
         form_util.filter_by_organization(form.supplier, Supplier)

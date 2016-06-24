@@ -4,7 +4,6 @@ from decimal import Decimal
 from app.database import DbInfo
 from app import const
 from app.utils.format_util import format_decimal
-from app.models.enum_values import EnumValues
 from app.models.data_security_mixin import DataSecurityMixin
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -34,6 +33,7 @@ class Receiving(db.Model, DataSecurityMixin):
 
     @staticmethod
     def status_filter():
+        from app.models.enum_values import EnumValues
         return EnumValues.type_filter('RECEIVING_STATUS')
 
     @hybrid_property
@@ -74,11 +74,9 @@ class Receiving(db.Model, DataSecurityMixin):
     def filter_by_po_id(po_id):
         return DbInfo.get_db().session.query(Receiving).filter_by(purchase_order_id=po_id).all()
 
-    def __unicode__(self):
-        return str(self.id) + ' - ' + str(self.total_amount)
-
     @staticmethod
     def create_draft_recv_from_po(po):
+        from app.models.enum_values import EnumValues
         recv_draft_status = EnumValues.find_one_by_code(const.RECEIVING_DRAFT_STATUS_KEY)
         purchase_in_trans_type = EnumValues.find_one_by_code(const.PURCHASE_IN_INV_TRANS_KEY)
         recv = Receiving()
