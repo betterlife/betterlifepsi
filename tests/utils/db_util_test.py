@@ -3,7 +3,7 @@ import unittest
 from tests import fixture
 
 
-class TestCases(unittest.TestCase):
+class TestDbUtil(unittest.TestCase):
     def setUp(self):
         self.app = fixture.init_app()
 

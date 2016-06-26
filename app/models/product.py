@@ -246,7 +246,7 @@ class Product(db.Model, DataSecurityMixin):
     def get_profit_lost_caused_by_inventory_short(self):
         if self.average_unit_profit == 0 or self.weekly_sold_qty == 0:
             return 0
-        can_sell_day = format_decimal(self.available_quantity / self.weekly_sold_qty)
+        can_sell_day = format_decimal(self.available_quantity / self.weekly_sold_qty) * 7
         days_without_prd = (self.get_lead_deliver_day() - can_sell_day)
         return self.average_unit_profit * self.weekly_sold_qty * days_without_prd / 7
 
