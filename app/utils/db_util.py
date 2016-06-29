@@ -92,6 +92,12 @@ def filter_by_organization(object_type, user=current_user):
 
 
 def id_query_to_obj(obj_type, query):
+    """
+    Query for objects from a list of id
+    :param obj_type: object type
+    :param query: query to get list of ids
+    :return: list of objects
+    """
     db = DbInfo.get_db()
     raw_result = query.all()
     ids = []
@@ -99,3 +105,15 @@ def id_query_to_obj(obj_type, query):
         ids.append(getattr(r, 'id'))
     obj_result = db.session.query(obj_type).filter(obj_type.id.in_(ids)).all()
     return obj_result
+
+
+def get_next_id(obj_type):
+    """
+    Get next id of a obj_type
+    :param obj_type: Object type
+    :return: current id plus one
+    """
+    from sqlalchemy import func
+    db = DbInfo.get_db()
+    current_max_id = db.session.query(func.max(obj_type.id).label("max")).one()
+    return current_max_id.max + 1 if current_max_id.max is not None else 1

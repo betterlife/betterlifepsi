@@ -103,11 +103,67 @@ class PurchaseOrder(db.Model, DataSecurityMixin):
         pass
 
     def __unicode__(self):
-        return str(self.id) + \
-               ' - ' + str(self.supplier.name) + \
-               ' - ' + str(self.order_date) + \
-               ' - ' + str(self.total_amount) + \
-               ' - ' + self.status.display
+        return str(self.id) + ' - ' + str(self.supplier.name) + ' - ' + str(self.order_date) + ' - ' + str(self.total_amount) + ' - ' + self.status.display
+
+    def get_available_lines_info(self):
+        # 1. Find all existing receiving bind with this PO.
+        from app.models import Receiving
+        existing_res = Receiving.filter_by_po_id(self.id)
+        available_info = {}
+        if existing_res is not None:
+            # 2. Calculate all received line and corresponding qty.
+            received_qtys = self.get_received_quantities(existing_res)
+            # 3. Calculate all un-received line and corresponding qty
+            for line in self.lines:
+                quantity = line.quantity
+                if line.id in received_qtys.keys():
+                    quantity -= received_qtys[line.id]
+                available_info[line.id] = {
+                    'line': line, 'quantity': quantity,
+                    'price': line.unit_price, 'product_id': line.product_id
+                }
+        else:
+            # 3. Calculate un-received line info(qty, price) if there's no existing receiving
+            for line in self.lines:
+                available_info[line.id] = (line.quantity, line.unit_price)
+        return available_info
+
+    @staticmethod
+    def all_lines_received(available_info):
+        for line_id, line_info in available_info.iteritems():
+            if line_info['quantity'] > 0:
+                return False
+        return True
+
+    @staticmethod
+    def create_receiving_lines(available_info):
+        from app.models import ReceivingLine
+        lines = []
+        for line_id, info in available_info.iteritems():
+            if info['quantity'] > 0:
+                r_line = ReceivingLine()
+                r_line.purchase_order_line_id = line_id
+                r_line.purchase_order_line, r_line.quantity, r_line.price, r_line.product_id = \
+                    info['line'], info['quantity'], info['price'], info['product_id']
+                lines.append(r_line)
+        return lines
+
+    @staticmethod
+    def get_received_quantities(existing_res):
+        received_qtys = {}
+        for re in existing_res:
+            if re.lines is not None and len(re.lines) > 0:
+                for line in re.lines:
+                    line_no = line.purchase_order_line_id
+                    received_qty = None
+                    if line_no in received_qtys.keys():
+                        received_qty = received_qtys[line_no]
+                    if received_qty is None:
+                        received_qty = line.quantity
+                    else:
+                        received_qty += line.quantity
+                    received_qtys[line_no] = received_qty
+        return received_qtys
 
 
 class PurchaseOrderLine(db.Model):

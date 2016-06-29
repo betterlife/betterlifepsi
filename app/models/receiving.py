@@ -25,8 +25,7 @@ class Receiving(db.Model, DataSecurityMixin):
     purchase_order = relationship('PurchaseOrder', backref=backref('po_receivings', uselist=True, ))
 
     inventory_transaction_id = Column(Integer, ForeignKey('inventory_transaction.id'), nullable=True)
-    inventory_transaction = relationship('InventoryTransaction',
-                                         backref=backref('it_receiving', uselist=False, cascade='all, delete-orphan'))
+    inventory_transaction = relationship('InventoryTransaction', backref=backref('it_receiving', uselist=False, cascade='all, delete-orphan'))
 
     organization_id = db.Column(Integer, ForeignKey('organization.id'))
     organization = relationship('Organization', foreign_keys=[organization_id])
@@ -34,7 +33,7 @@ class Receiving(db.Model, DataSecurityMixin):
     @staticmethod
     def status_filter():
         from app.models.enum_values import EnumValues
-        return EnumValues.type_filter('RECEIVING_STATUS')
+        return EnumValues.type_filter(const.RECEIVING_STATUS_KEY)
 
     @hybrid_property
     def transient_po(self):
@@ -69,6 +68,12 @@ class Receiving(db.Model, DataSecurityMixin):
     @total_amount.setter
     def total_amount(self, value):
         pass
+
+    def __repr__(self):
+        return u"采购单: " + self.purchase_order_id + u", 供应商: " + self.supplier.name + u", 日期: " + self.date.strftime("%Y/%m/%d")
+
+    def __unicode__(self):
+        return self.__repr__()
 
     @staticmethod
     def filter_by_po_id(po_id):
@@ -107,11 +112,71 @@ class Receiving(db.Model, DataSecurityMixin):
             recv_l.inventory_transaction_line = trans_l
         return recv
 
-    def __repr__(self):
-        return u"采购单: " + self.purchase_order_id + u", 供应商: " + self.supplier.name + u", 日期: " + self.date.strftime("%Y/%m/%d")
+    def update_purchase_order_status(self):
+        """
+        Update related purchase order's status based on received qty status
+        For each line, if received >= line quantity, assume this line is finish
+         If all lines are finished, set status of the purchase order to received
+         Otherwise set the status to partially received.
+        """
+        from app.models import EnumValues
+        if self.status.code == const.RECEIVING_COMPLETE_STATUS_KEY:
+            po = self.purchase_order
+            finished = False
+            started = False
+            for line in po.lines:
+                receiving_lines = line.pol_receiving_lines
+                rd_qty = 0
+                for rl in receiving_lines:
+                    rd_qty += rl.quantity
+                if rd_qty > 0:
+                    started = True
+                if rd_qty >= line.quantity:
+                    finished = True
+            if finished is True:
+                po.status = EnumValues.find_one_by_code(const.PO_RECEIVED_STATUS_KEY)
+            elif started is True:
+                po.status = EnumValues.find_one_by_code(const.PO_PART_RECEIVED_STATUS_KEY)
+            db.session.add(po)
 
-    def __unicode__(self):
-        return self.__repr__()
+    def operate_inv_trans_by_recv_status(self):
+        inv_trans = None
+        if self.status.code == const.RECEIVING_COMPLETE_STATUS_KEY:
+            inv_trans = self.save_inv_trans(inv_trans=self.inventory_transaction)
+        elif self.status.code == const.RECEIVING_DRAFT_STATUS_KEY:
+            for line in self.lines:
+                line.price = line.purchase_order_line.unit_price
+                line.product_id = line.purchase_order_line.product_id
+            inv_trans = self.save_inv_trans(inv_trans=self.inventory_transaction)
+
+        if inv_trans is not None:
+            self.inventory_transaction = inv_trans
+            db.session.add(inv_trans)
+
+    def save_inv_trans(self, inv_trans):
+        from app.models import EnumValues, InventoryTransaction, InventoryTransactionLine
+
+        inv_type = EnumValues.find_one_by_code(const.PURCHASE_IN_INV_TRANS_KEY)
+        if inv_trans is None:
+            inv_trans = InventoryTransaction()
+            inv_trans.type_id = inv_type.id
+        inv_trans.date = self.date
+        for line in self.lines:
+            inv_line = line.inventory_transaction_line
+            if inv_line is None:
+                inv_line = InventoryTransactionLine()
+                inv_line.product = line.product
+                inv_line.inventory_transaction = inv_trans
+                inv_line.inventory_transaction_id = inv_trans.id
+                line.inventory_transaction_line = inv_line
+            inv_line.price = line.price
+            if self.status.code == const.RECEIVING_COMPLETE_STATUS_KEY:
+                inv_line.quantity = line.quantity
+                inv_line.in_transit_quantity = 0
+            elif self.status.code == const.RECEIVING_DRAFT_STATUS_KEY:
+                inv_line.quantity = 0
+                inv_line.in_transit_quantity = line.quantity
+        return inv_trans
 
 
 class ReceivingLine(db.Model):
@@ -130,9 +195,7 @@ class ReceivingLine(db.Model):
     purchase_order_line = relationship('PurchaseOrderLine', backref=backref('pol_receiving_lines', uselist=True))
 
     inventory_transaction_line_id = Column(Integer, ForeignKey('inventory_transaction_line.id'), nullable=True)
-    inventory_transaction_line = relationship('InventoryTransactionLine',
-                                              backref=backref('itl_receiving_line', uselist=False,
-                                                              cascade='all, delete-orphan'))
+    inventory_transaction_line = relationship('InventoryTransactionLine', backref=backref('itl_receiving_line', uselist=False, cascade='all, delete-orphan'))
 
     def __repr__(self):
         return "{0:s}{1:.0f}个(价格{2:.2f}元)".format(self.product.name, self.quantity, self.price)

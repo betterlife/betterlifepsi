@@ -1,5 +1,5 @@
-from app.database import DbInfo
 from app import create_app, init_all
+from app.database import DbInfo
 
 
 def init_app():
@@ -11,6 +11,12 @@ def init_app():
 
 def login_as_admin(test_client):
     return test_client.post('/login', data=dict(email='support@betterlife.io', password='password'), follow_redirects=True)
+
+
+def run_test_as_admin(test_client, func_to_run, *parameters):
+    with test_client:
+        login_as_admin(test_client)
+        func_to_run(*parameters)
 
 
 def cleanup_database(app_context):

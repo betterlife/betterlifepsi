@@ -110,7 +110,7 @@ class SalesOrderLine(db.Model):
 
     @original_amount.expression
     def original_amount(self):
-        from product import Product
+        from app.models.product import Product
         return (select([SalesOrderLine.quantity * Product.retail_price])
                 .where(self.product_id == Product.id).label('line_original_amount'))
 
