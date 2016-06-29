@@ -19,7 +19,7 @@ before_install:
   - pip install codecov
 
 install:
-  - pip install -r test_requirements.txt
+  - pip install -r requirements/test.txt
 
 script:
   - nosetests -w tests --with-coverage --cover-erase --with-xunit --cover-branches --xunit-file=nosetests.xml
