@@ -1,8 +1,6 @@
 # encoding: utf-8
-from app.advice import InventoryAdvice
 from app.database import DbInfo
 from app import const
-from enum_values import EnumValues
 from app.utils.date_util import get_weeks_between
 from app.utils.format_util import format_decimal
 from app.models.inventory_transaction import InventoryTransactionLine, InventoryTransaction
@@ -125,6 +123,7 @@ class Product(db.Model, DataSecurityMixin):
 
     @average_unit_profit.expression
     def average_unit_profit(self):
+        from enum_values import EnumValues
         return ((select([-func.sum(InventoryTransactionLine.quantity * InventoryTransactionLine.price) /
                          func.greatest(func.sum(InventoryTransactionLine.quantity), 1)])
                  .where(self.id == InventoryTransactionLine.product_id)
@@ -141,6 +140,7 @@ class Product(db.Model, DataSecurityMixin):
 
     @weekly_average_profit.expression
     def weekly_average_profit(self):
+        from enum_values import EnumValues
         return ((select([-func.sum(InventoryTransactionLine.quantity * InventoryTransactionLine.price) /
                          func.greatest(func.sum(InventoryTransactionLine.quantity), 1)])
                  .where(self.id == InventoryTransactionLine.product_id
@@ -156,6 +156,7 @@ class Product(db.Model, DataSecurityMixin):
 
     @hybrid_property
     def inventory_advice(self):
+        from app.advice import InventoryAdvice
         return InventoryAdvice.advice(self)
 
     @inventory_advice.setter
@@ -245,7 +246,7 @@ class Product(db.Model, DataSecurityMixin):
     def get_profit_lost_caused_by_inventory_short(self):
         if self.average_unit_profit == 0 or self.weekly_sold_qty == 0:
             return 0
-        can_sell_day = format_decimal(self.available_quantity / self.weekly_sold_qty)
+        can_sell_day = format_decimal(self.available_quantity / self.weekly_sold_qty) * 7
         days_without_prd = (self.get_lead_deliver_day() - can_sell_day)
         return self.average_unit_profit * self.weekly_sold_qty * days_without_prd / 7
 

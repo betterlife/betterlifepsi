@@ -15,13 +15,13 @@ class ReadonlyStringField(StringField):
         return super(ReadonlyStringField, self).__call__(**kwargs)
 
 
-''' Define a wtforms widget and field.
+class CKTextAreaWidget(widgets.TextArea):
+    """
+    Define a wtforms widget and field.
     WTForms documentation on custom widgets:
     http://wtforms.readthedocs.org/en/latest/widgets.html#custom-widgets
-'''
+    """
 
-
-class CKTextAreaWidget(widgets.TextArea):
     def __call__(self, field, **kwargs):
         # add WYSIWYG class to existing classes
         existing_classes = kwargs.pop('class', '') or kwargs.pop('class_', '')

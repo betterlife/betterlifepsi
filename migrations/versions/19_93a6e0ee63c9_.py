@@ -7,7 +7,6 @@ Create Date: 2016-04-18 19:27:39.063915
 """
 
 # revision identifiers, used by Alembic.
-from app.utils import db_util
 
 revision = '93a6e0ee63c9'
 down_revision = '8ff0624764b7'
@@ -20,7 +19,7 @@ def upgrade():
     from sqlalchemy.sql import text
     op.get_bind().execute(text("INSERT INTO role (name, description) VALUES ('super_admin', 'Super Admin Role for all Organizations');"))
     op.get_bind().execute(text("UPDATE \"user\" SET login='super_admin', display = 'Super Administrator' WHERE id=1;"))
-    op.get_bind().execute(text("UPDATE role set name='organization_admin' where name = 'admin'"))
+    op.get_bind().execute(text("UPDATE role SET name='organization_admin' WHERE name = 'admin'"))
     op.get_bind().execute(text("UPDATE role SET parent_id = (SELECT id FROM role WHERE name = 'super_admin') WHERE name LIKE '%organization_%';"))
     op.get_bind().execute(text("UPDATE role SET parent_id = (SELECT id FROM role WHERE name = 'organization_admin') WHERE name LIKE '%user_%';"))
     op.get_bind().execute(text("UPDATE role SET parent_id = (SELECT id FROM role WHERE name = 'organization_admin') WHERE name LIKE '%role_%';"))
@@ -36,6 +35,6 @@ def downgrade():
     op.get_bind().execute(text("UPDATE role SET parent_id = NULL WHERE name LIKE '%organization_%';"))
     op.get_bind().execute(text("UPDATE role SET parent_id = NULL WHERE name LIKE '%user_%';"))
     op.get_bind().execute(text("UPDATE role SET parent_id = NULL WHERE name LIKE '%role_%';"))
-    op.get_bind().execute(text("UPDATE role set name='admin' where name = 'organization_admin'"))
+    op.get_bind().execute(text("UPDATE role SET name='admin' WHERE name = 'organization_admin'"))
     op.get_bind().execute(text("DELETE FROM role WHERE name='super_admin';"))
     ### end Alembic commands ###

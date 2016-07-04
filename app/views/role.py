@@ -1,7 +1,6 @@
 # encoding=utf-8
 from app.utils.security_util import is_super_admin, exclude_super_admin_roles
-from app.views import ModelViewWithAccess
-from app.views.base import CycleReferenceValidator
+from app.views.base import ModelViewWithAccess, CycleReferenceValidator
 from flask_babelex import lazy_gettext
 
 

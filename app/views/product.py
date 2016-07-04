@@ -1,16 +1,15 @@
 # coding=utf-8
-from functools import partial
-
 from flask_babelex import lazy_gettext
 from app.models.product import Product
-from app.views.formatter import supplier_formatter
 from app.views.base import ModelViewWithAccess
-from app.views.custom_fields import DisabledStringField, CKTextAreaField, ReadonlyStringField
-from app.models import ProductCategory, Supplier
 from app.utils import form_util
 
 
 class ProductAdmin(ModelViewWithAccess):
+
+    from app.views.formatter import supplier_formatter
+    from app.views.custom_fields import DisabledStringField, CKTextAreaField, ReadonlyStringField
+
     column_editable_list = ['name', 'deliver_day', 'lead_day', 'distinguishing_feature',
                             'spec_link', 'purchase_price', 'retail_price']
     column_searchable_list = ['code', 'name', 'supplier.name', 'category.name']
@@ -79,14 +78,16 @@ class ProductAdmin(ModelViewWithAccess):
                            'distinguishing_feature',)
 
     def create_form(self, obj=None):
-        form = super(ModelViewWithAccess, self).create_form(obj)
+        from app.models import ProductCategory, Supplier
+        form = super(ProductAdmin, self).create_form(obj)
         form.code.data = Product.get_next_code()
         form_util.filter_by_organization(form.category, ProductCategory)
         form_util.filter_by_organization(form.supplier, Supplier)
         return form
 
     def edit_form(self, obj=None):
-        form = super(ModelViewWithAccess, self).edit_form(obj)
+        from app.models import ProductCategory, Supplier
+        form = super(ProductAdmin, self).edit_form(obj)
         form_util.filter_by_organization(form.category, ProductCategory)
         form_util.filter_by_organization(form.supplier, Supplier)
         return form

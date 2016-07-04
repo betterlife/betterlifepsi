@@ -1,6 +1,6 @@
 # coding=utf-8
 from flask import url_for
-from flask_babelex import gettext, lazy_gettext
+from flask_babelex import lazy_gettext
 from markupsafe import Markup
 
 has_invoice_field = {'label': lazy_gettext('Has Invoice'), 'field': 'has_invoice'}

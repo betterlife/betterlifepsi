@@ -5,7 +5,6 @@ from app.utils import db_util
 from app.utils.security_util import is_super_admin, is_root_organization
 from app.views.base import ModelViewWithAccess
 from app.views.base import CycleReferenceValidator
-from app.views.formatter import organization_formatter
 from flask.ext.admin.contrib.sqla.fields import QuerySelectField
 from flask.ext.admin.form import Select2Widget
 from flask_babelex import lazy_gettext, gettext
@@ -16,6 +15,9 @@ from wtforms import ValidationError
 
 
 class OrganizationAdmin(ModelViewWithAccess):
+
+    from app.views.formatter import organization_formatter
+
     uos = 'UPDATE ' + Organization.__tablename__ + ' SET'
 
     @property
@@ -103,10 +105,7 @@ class OrganizationAdmin(ModelViewWithAccess):
             # update all exiting node with right and left bigger than current parent's right - 1
             if parent is not None:
                 max_lft = parent.rgt - 1
-                sql = text('UPDATE organization SET rgt = rgt + 2 WHERE rgt > {val};'
-                           'UPDATE organization SET lft = lft + 2 WHERE lft > {val}'
-                           .format(val=max_lft))
-
+                sql = text('{u} rgt = rgt + 2 WHERE rgt > {val};{u} lft = lft + 2 WHERE lft > {val}'.format(val=max_lft, u=self.uos))
                 # set left and right of the new object
                 model.lft = max_lft + 1
                 model.rgt = max_lft + 2

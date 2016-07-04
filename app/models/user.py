@@ -3,7 +3,6 @@ from app import const
 from app.database import DbInfo
 from app.models.data_security_mixin import DataSecurityMixin
 from flask_security import UserMixin
-from app.models.role import roles_users
 from sqlalchemy import ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
@@ -11,6 +10,8 @@ db = DbInfo.get_db()
 
 
 class User(db.Model, UserMixin, DataSecurityMixin):
+    from app.models.role import roles_users
+
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String(64), unique=True, nullable=False)

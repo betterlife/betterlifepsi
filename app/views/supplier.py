@@ -1,7 +1,7 @@
 # coding=utf-8
 from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext
-from app.views import ModelViewWithAccess
+from app.views.base import ModelViewWithAccess
 from app.views.custom_fields import ReadonlyStringField
 
 

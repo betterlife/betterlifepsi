@@ -1,7 +1,7 @@
 # encoding=utf-8
 
 
-class DataSecurityMixin():
+class DataSecurityMixin(object):
     """
     To control security on data level
     To decide whether a user could delete/edit a specific row.

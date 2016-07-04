@@ -4,11 +4,12 @@ from flask_admin.contrib.sqla.filters import FloatGreaterFilter, FloatSmallerFil
 from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext
 from app.models import InventoryTransactionLine, InventoryTransaction
-from app.views import ModelViewWithAccess, DisabledStringField
+from app.views.base import ModelViewWithAccess
 from formatter import receivings_formatter, shipping_formatter, default_date_formatter
 
 
 class InventoryTransactionLineInlineAdmin(InlineFormAdmin):
+
     form_args = dict(
         id=dict(label=lazy_gettext('id')),
         product=dict(label=lazy_gettext('Product')),
@@ -24,6 +25,7 @@ class InventoryTransactionLineInlineAdmin(InlineFormAdmin):
     )
 
     def postprocess_form(self, form):
+        from app.views.custom_fields import DisabledStringField
         form.total_amount = DisabledStringField(label=lazy_gettext('Total Amount'))
         form.itl_receiving_line = None
         form.remark = None
@@ -64,6 +66,8 @@ class InventoryTransactionAdmin(ModelViewWithAccess):
         type=dict(query_factory=InventoryTransaction.type_filter),
         date=dict(default=datetime.now()),
     )
+
+    from app.views.custom_fields import DisabledStringField
 
     form_extra_fields = {
         'total_amount': DisabledStringField(label=lazy_gettext('Total Amount')),

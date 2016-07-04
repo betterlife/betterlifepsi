@@ -4,10 +4,11 @@ from datetime import datetime
 from flask_babelex import lazy_gettext
 from app.models.expense import Expense
 from app.views import ModelViewWithAccess
-from formatter import sales_order_formatter, purchase_order_formatter, default_date_formatter
 
 
 class ExpenseAdmin(ModelViewWithAccess):
+    from formatter import sales_order_formatter, purchase_order_formatter, default_date_formatter
+
     column_list = ('id', 'date', 'amount', 'has_invoice', 'status',
                    'category', 'purchase_order', 'sales_order', 'remark')
     column_editable_list = ['date', 'amount', 'has_invoice', 'remark']

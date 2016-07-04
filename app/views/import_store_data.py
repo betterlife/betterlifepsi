@@ -49,7 +49,7 @@ def create_or_update_product(prd_num, prd_name, pur_price, ret_price, supplier):
     return prd
 
 
-def create_or_update_sales_order(po_num, po_line_num, product, ret_price, act_price, qty, sale_date):
+def create_or_update_sales_order(po_num, po_line_num, product, act_price, qty, sale_date):
     order = get_by_external_id(SalesOrder, po_num)
     if order is None:
         order = SalesOrder()
@@ -171,7 +171,7 @@ class ImportStoreDataView(BaseView):
                     # 2. Create or update product --> return product
                     product = create_or_update_product(prd_num, prd_name, pur_price, ret_price, supplier)
                     # 3. Create or update sales order / sales order line --> return PO.
-                    order, order_line = create_or_update_sales_order(po_num, po_line_num, product, ret_price, act_price, qty, s_date)
+                    order, order_line = create_or_update_sales_order(po_num, po_line_num, product, act_price, qty, s_date)
                     # 4. Create shipping record --> return shipping id
                     shipping, shipping_line = create_or_update_shipping(order, order_line, shipping_status)
                     # 5. Create inventory transaction record --> return inventory transaction record

@@ -4,7 +4,7 @@ import unittest
 from tests import fixture
 
 
-class TestCases(unittest.TestCase):
+class TestApplicationStartupAndLogin(unittest.TestCase):
     def setUp(self):
         self.app = fixture.init_app()
         self.test_client = self.app.test_client()

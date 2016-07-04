@@ -3,7 +3,7 @@ import unittest
 from app.utils import format_util
 
 
-class TestCases(unittest.TestCase):
+class TestFormatUtil(unittest.TestCase):
     def test_format_decimal(self):
         self.assertEqual('20.00', str(format_util.format_decimal(20.0005)))
         self.assertEqual('0.01', str(format_util.format_decimal(0.009)))

@@ -1,12 +1,11 @@
 from flask_admin.contrib.sqla.filters import FloatSmallerFilter, FloatGreaterFilter
 from flask_babelex import lazy_gettext
-from app.views import ModelViewWithAccess
-from formatter import supplier_formatter, product_formatter, available_quantity_formatter, default_decimal_formatter
+from app.views.base import ModelViewWithAccess
 from app.models import Product
-from sqlalchemy import func
 
 
 class ProductInventoryView(ModelViewWithAccess):
+    from formatter import supplier_formatter, product_formatter, available_quantity_formatter, default_decimal_formatter
     can_edit = False
     can_delete = False
     can_create = False
@@ -52,7 +51,7 @@ class ProductInventoryView(ModelViewWithAccess):
     }
 
     def get_query(self):
-        return super(ModelViewWithAccess, self).get_query().filter(self.model.need_advice == True)
+        return super(ProductInventoryView, self).get_query().filter(self.model.need_advice == True)
 
     def get_count_query(self):
-        return super(ModelViewWithAccess, self).get_count_query().filter(self.model.need_advice == True)
+        return super(ProductInventoryView, self).get_count_query().filter(self.model.need_advice == True)

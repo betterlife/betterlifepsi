@@ -1,7 +1,8 @@
 # coding=utf-8
 from flask_babelex import lazy_gettext
-from app.models import *
-from app.views import ModelViewWithAccess
+from app.models import Incoming, Expense
+from app.views.base import ModelViewWithAccess
+
 
 class PreferenceAdmin(ModelViewWithAccess):
     can_create, can_delete = False, False

@@ -4,9 +4,7 @@ from datetime import datetime
 from flask_admin.contrib.sqla.filters import FloatSmallerFilter, FloatGreaterFilter, FloatEqualFilter
 from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext, gettext
-from app.models import ShippingLine, Shipping
 from app.views import ModelViewWithAccess, DisabledStringField
-from formatter import inventory_transaction_formatter, sales_order_formatter, default_date_formatter
 from wtforms import ValidationError
 
 
@@ -27,6 +25,10 @@ class ShippingLineInlineAdmin(InlineFormAdmin):
 
 
 class ShippingAdmin(ModelViewWithAccess):
+
+    from formatter import inventory_transaction_formatter, sales_order_formatter, default_date_formatter
+    from app.models import ShippingLine, Shipping
+
     inline_models = (ShippingLineInlineAdmin(ShippingLine),)
     column_list = ('id', 'status', 'date', 'total_amount', 'sales_order', 'inventory_transaction', 'remark')
 
