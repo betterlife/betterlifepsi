@@ -162,8 +162,10 @@ class Organization(db.Model, DataSecurityMixin):
 
     @staticmethod
     def children_remover(organization):
+        from flask_login import current_user
         all_org = Organization.query.all()
-        return [org for org in all_org if (org not in organization.all_children and org != organization)]
+        orgs = [org for org in all_org if (org not in organization.all_children and org != organization)]
+        return [org for org in orgs if (org in current_user.organization.all_children or org == current_user.organization)]
 
     @staticmethod
     def children_self_filter(organization):
