@@ -53,10 +53,20 @@ class TestReceiving(unittest.TestCase):
             self.assertEquals(len(po.lines), len(receiving.inventory_transaction.lines))
             self.assertEquals(po.order_date, receiving.date)
             self.assertEquals(receiving.status.code, const.RECEIVING_DRAFT_STATUS_KEY)
-            self.assertEquals(po.supplier,receiving.supplier)
-            self.assertEquals(receiving.inventory_transaction.date,po.order_date)
+            self.assertEquals(po.supplier, receiving.supplier)
+            self.assertEquals(receiving.inventory_transaction.date, po.order_date)
             self.assertEquals(receiving.inventory_transaction.type.code, const.PURCHASE_IN_INV_TRANS_KEY)
             self.assertIsNotNone(receiving.inventory_transaction)
+            for line in receiving.lines:
+                self.assertIsNotNone(line)
+                self.assertIsNotNone(line.purchase_order_line)
+                self.assertIsNotNone(line.inventory_transaction_line)
+                self.assertEquals(line.quantity, line.purchase_order_line.quantity)
+                self.assertEquals(line.price, line.purchase_order_line.unit_price)
+                self.assertEquals(line.product, line.purchase_order_line.product)
+                self.assertEquals(line.inventory_transaction_line.in_transit_quantity, line.quantity)
+                self.assertEquals(line.inventory_transaction_line.product, line.product)
+                self.assertEquals(line.inventory_transaction_line.price, line.price)
 
         from tests.fixture import run_test_as_admin
         run_test_as_admin(self.test_client, test_logic)
