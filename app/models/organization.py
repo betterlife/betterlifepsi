@@ -23,6 +23,8 @@ class Organization(db.Model, DataSecurityMixin):
 
     @hybrid_property
     def parent(self):
+        if self.lft is None or self.rgt is None:
+            return None
         return db.session.query(Organization).filter(and_(Organization.lft < self.lft, Organization.rgt > self.rgt)).order_by(desc(Organization.lft)).first()
 
     @parent.setter
