@@ -150,6 +150,8 @@ class Organization(db.Model, DataSecurityMixin):
         return self.name
 
     def can_delete(self):
+        if self.parent is None:
+            return False
         if hasattr(self, "immediate_children"):
             return len(self.immediate_children) == 0
         if hasattr(self, "all_children"):
