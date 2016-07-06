@@ -123,4 +123,7 @@ class CycleReferenceValidator(object):
                         form[children] is not None and \
                         form[children].data is not None and \
                         model in form[children].data:
-            raise ValidationError(gettext("Can not set %(ot)s's child to itself[%(data)s]", ot=gettext(object_type), data=model))
+            try:
+                raise ValidationError(gettext("Can not set %(ot)s's child to itself[%(data)s]", ot=gettext(object_type), data=model))
+            except BaseException:
+                raise ValidationError(gettext("Can not set %(ot)s's child to itself", ot=gettext(object_type)))

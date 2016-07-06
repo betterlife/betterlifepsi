@@ -114,9 +114,12 @@ def define_route_context(flask_app, db, babel):
         user profile, cookie, session, etc.
         This is the setting actually take effective
         """
-        if getattr(current_user, 'locale', None) is not None:
-            return current_user.locale.code
-        return 'zh_CN' if current_app.config['DEBUG'] else request.accept_languages.best_match(['zh_CN', 'en_US'])
+        try:
+            if getattr(current_user, 'locale', None) is not None:
+                return current_user.locale.code
+            return 'zh_CN' if current_app.config['DEBUG'] else request.accept_languages.best_match(['zh_CN', 'en_US'])
+        except BaseException:
+            return 'zh_CN' if current_app.config['DEBUG'] else request.accept_languages.best_match(['zh_CN', 'en_US'])
 
 
 def init_https(app):
