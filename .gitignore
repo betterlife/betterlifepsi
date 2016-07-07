@@ -12,3 +12,5 @@ reports
 .vscode
 pip-delete-this-directory.txt
 scripts
+dist
+*.egg-info
