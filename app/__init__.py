@@ -2,6 +2,8 @@
 
 import os
 
+__version__ = '0.6.4'
+
 
 def create_app(custom_config=None):
     from flask import Flask
