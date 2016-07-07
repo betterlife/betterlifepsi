@@ -2,6 +2,9 @@
 
 
 class DataSecurityMixin(object):
+
+    from flask_login import current_user
+
     """
     To control security on data level
     To decide whether a user could delete/edit a specific row.
@@ -16,3 +19,15 @@ class DataSecurityMixin(object):
         :return: True if can, otherwise false.
         """
         return True
+
+    def can_edit(self, user=current_user):
+        if hasattr(self, 'organization_id'):
+            return (user.organization_id == self.organization_id or
+                    self.organization in user.organization.all_children)
+        return False
+
+    def can_view_detail(self, user=current_user):
+        if hasattr(self, 'organization_id'):
+            return (user.organization_id == self.organization_id or
+                    self.organization in user.organization.all_children)
+        return False

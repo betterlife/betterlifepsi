@@ -65,18 +65,23 @@ def _obj_formatter_str(view, context, model, value=None, model_name=None, title=
                 for detail_line_val in detail_val:
                     detail_str += '<tr>'
                     for detail_key in detail_args:
-                        val = str(boolean_formatter(getattr(detail_line_val, detail_key['field'])))
-                        if val == 'None':
-                            val = ''
+                        val = '' if val == 'None' else str(boolean_formatter(getattr(detail_line_val, detail_key['field'])))
                         detail_str += '<td>' + val + '</td>\n'
                     detail_str += '</tr>'
                 detail_str += '</table>'
         str_result += detail_str
-        return "<a href='%s' data-toggle='popover' title='[ %s ] 详情 <span style=\"float:right\">" \
-               "<a href=\"%s\" target=\"_blank\"><span class=\"fa fa-eye glyphicon glyphicon-eye-open\"></span></a>&nbsp;&nbsp;" \
-               "<a href=\"%s\" target=\"_blank\"><span class=\"fa fa-pencil glyphicon glyphicon-pencil\"></span></a>" \
-               "</span>' data-content='%s'>[ %s ]</a>" \
-               % ('#', title, url_for(model_name + '.details_view', id=value.id), url_for(model_name + '.edit_view', id=value.id), str_result, title)
+        if value.can_edit():
+            edit_link = url_for(model_name + '.edit_view', id=value.id)
+            edit_link = """<a href="{link}" target="_blank"><span class="fa fa-pencil glyphicon glyphicon-pencil"></span></a>""".format(link=edit_link)
+        else:
+            edit_link = ''
+        if value.can_view_detail():
+            detail_link = url_for(model_name + '.details_view', id=value.id)
+            detail_link = """<a href="{link}" target="_blank"><span class="fa fa-eye glyphicon glyphicon-eye-open"></span></a>&nbsp;&nbsp;""".format(link=detail_link)
+        else:
+            detail_link = ''
+        title_link = """<span style="float:right">{dl}&nbsp;&nbsp;{el}</span>""".format(dl=detail_link, el=edit_link)
+        return """<a href='#' data-toggle='popover' title='[ {t} ] 详情 {tr}' data-content='{dc}'>[ {t} ]</a>""".format(t=title, tr=title_link, dc=str_result)
     return ''
 
 

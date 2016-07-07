@@ -6,6 +6,7 @@ from sqlalchemy import Integer, select, desc, func, between
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import aliased
 from sqlalchemy.sql.elements import and_
+from flask_login import current_user
 
 db = DbInfo.get_db()
 
@@ -150,6 +151,14 @@ class Organization(db.Model, DataSecurityMixin):
 
     def __unicode__(self):
         return self.name
+
+    def can_edit(self, user=current_user):
+        return self in Organization.children_self_filter(user.organization)
+
+    def can_view_detail(self, user=current_user):
+        l = Organization.children_self_filter(user.organization)
+        l.append(user.organization.parent)
+        return self in l
 
     def can_delete(self):
         if self.parent is None:
