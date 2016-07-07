@@ -269,3 +269,7 @@ ul.dropdown-menu > li > a > i.glyphicon {
     cursor: pointer;
     cursor: hand;
 }
+
+.popover-content {
+    min-width: 230px;
+}
