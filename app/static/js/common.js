@@ -30,3 +30,40 @@ $('table').each(function (a, tbl) {
         }
     });
 });
+
+function addInlineField(parent_id) {
+    parent = $("#" + parent_id);
+    $trs = parent.find(".inline-field");
+    var prefix = parent_id + '-' + $trs.length;
+
+    // Get template
+    var $template = $($('.inline-field-template-' + parent_id).text());
+
+    // Set form ID
+    $template.attr('id', prefix);
+
+    // Mark form that we just created
+    $template.addClass('fresh');
+    $template.removeClass('hide');
+    // Fix form IDs
+    $('[name]', $template).each(function (e) {
+        var me = $(this);
+
+        var id = me.attr('id');
+        var name = me.attr('name');
+
+        id = prefix + (id !== '' ? '-' + id : '');
+        name = prefix + (name !== '' ? '-' + name : '');
+
+        me.attr('id', id);
+        me.attr('name', name);
+    });
+
+    $template.appendTo(parent);
+
+    // Select first field
+    $('input:first', $template).focus();
+
+    // Apply styles
+    faForm.applyGlobalStyles($template);
+}
