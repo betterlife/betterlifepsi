@@ -2,6 +2,7 @@ include README.md
 include manage.py
 include wsgi.py
 include MANIFEST.in
+include swtag
 recursive-include app *
 recursive-include migrations * 
 recursive-include requirements * 

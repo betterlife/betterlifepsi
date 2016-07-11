@@ -2,7 +2,7 @@
 
 import os
 
-__version__ = '0.6.4'
+__version__ = '0.6.5'
 
 
 def create_app(custom_config=None):
@@ -42,7 +42,7 @@ def init_admin_views(flask_app, database):
 def init_db(flask_app):
     from app.database import DbInfo
     from flask_sqlalchemy import SQLAlchemy
-    sqlalchemy = SQLAlchemy(flask_app)
+    sqlalchemy = SQLAlchemy(flask_app, session_options={'autoflush': False})
     DbInfo.set_db(sqlalchemy)
     return sqlalchemy
 
@@ -128,7 +128,12 @@ def init_https(app):
     # only trigger SSLify if the app is running on Heroku and debug is false
     if (app.config['DEBUG'] is False) and ('DYNO' in os.environ):
         from flask_sslify import SSLify
-        sslify = SSLify(app)
+        SSLify(app)
+
+
+def init_jinja2_functions(app):
+    from app.utils.ui_util import render_version
+    app.jinja_env.globals.update(render_version=render_version)
 
 
 def init_all(app):
@@ -139,5 +144,6 @@ def init_all(app):
     init_flask_security(app, database)
     init_admin_views(app, database)
     babel = init_babel(app)
+    init_jinja2_functions(app)
     # init_debug_toolbar(app)
     define_route_context(app, database, babel)

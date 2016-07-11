@@ -11,8 +11,7 @@
   {{ super() }}
   <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
   <script src="{{ url_for('static', filename='js/common.js') }}"></script>
-  <div class='main-footer'>
-    © 2015-2016 BETTERLIFE.IO
+  <div class='main-footer'> © 2015-2016 BETTERLIFE.IO | {{render_version() | safe}}
   </div>
 {% endblock %}
 
