@@ -43,7 +43,7 @@ class ObjectFaker(object):
         supplier.qq = self.faker.pyint()
         supplier.organization = current_user.organization
         supplier.remark = self.faker.pystr(max_chars=100)
-        supplier.website = self.faker.uri()
+        supplier.website = self.faker.uri()[:64]
         return supplier
 
     def product(self, product_id=None, supplier=None):
