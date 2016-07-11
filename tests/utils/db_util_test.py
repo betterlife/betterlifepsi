@@ -34,6 +34,7 @@ class TestDbUtil(unittest.TestCase):
         def run_assert():
             supplier = object_faker.supplier()
             DbInfo.get_db().session.add(supplier)
+            DbInfo.get_db().session.commit()
             next_code = db_util.get_next_code(Supplier)
             self.assertEqual('000002', next_code)
 

@@ -34,6 +34,7 @@ class TestReceiving(unittest.TestCase):
 
             db.session.add(po)
             db.session.add(receiving)
+            db.session.commit()
             receiving_returned = receiving.filter_by_po_id(1)[0]
             self.assertEqual(receiving, receiving_returned)
 
