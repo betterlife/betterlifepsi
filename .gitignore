@@ -14,4 +14,3 @@ pip-delete-this-directory.txt
 scripts
 dist
 *.egg-info
-swtag
