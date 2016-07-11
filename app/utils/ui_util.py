@@ -1,9 +1,12 @@
 # encoding=utf-8
 
 
+
 def render_version():
     try:
-        with open('swtag', 'r') as swtag:
+        import os
+        my_dir = os.path.dirname(os.path.realpath(__file__))
+        with open(my_dir + '/../../swtag', 'r') as swtag:
 
             lead_commit = 'build commit: '
             lead_number = 'build number: '
