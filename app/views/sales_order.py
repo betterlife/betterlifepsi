@@ -18,11 +18,9 @@ class SalesOrderLineInlineAdmin(InlineFormAdmin):
         unit_price=dict(label=lazy_gettext('Unit Price')),
         quantity=dict(label=lazy_gettext('Quantity')),
         remark=dict(label=lazy_gettext('Remark')),
-        external_id=dict(label=lazy_gettext('External Id')),
     )
 
     def postprocess_form(self, form):
-        form.external_id = DisabledStringField(label=lazy_gettext('External Id'))
         form.retail_price = DisabledStringField(label=lazy_gettext('Retail Price'))
         form.price_discount = DisabledStringField(label=lazy_gettext('Price Discount'))
         form.original_amount = DisabledStringField(label=lazy_gettext('Original Amount'))
@@ -30,6 +28,7 @@ class SalesOrderLineInlineAdmin(InlineFormAdmin):
         form.discount_amount = DisabledStringField(label=lazy_gettext('Discount Amount'))
         form.remark = None
         form.sol_shipping_line = None
+        form.external_id = None
         return form
 
 
@@ -54,9 +53,9 @@ class SalesOrderAdmin(ModelViewWithAccess):
                               'customer.mobile_phone', 'customer.email', 'customer.address',
                               'customer.level.display', 'customer.join_channel.display')
 
-    form_columns = ('id', 'customer', 'transient_external_id', 'external_id', 'logistic_amount', 'order_date', 'remark', 'actual_amount',
+    form_columns = ('id', 'customer', 'logistic_amount', 'order_date', 'remark', 'actual_amount',
                     'original_amount', 'discount_amount', 'lines')
-    form_edit_rules = ('customer', 'transient_external_id', 'logistic_amount', 'order_date', 'remark', 'actual_amount',
+    form_edit_rules = ('customer', 'logistic_amount', 'order_date', 'remark', 'actual_amount',
                        'original_amount', 'discount_amount', 'lines')
     form_create_rules = ('customer', 'logistic_amount', 'order_date', 'remark', 'lines',)
 

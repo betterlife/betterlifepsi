@@ -256,8 +256,7 @@ class Product(db.Model, DataSecurityMixin):
         return '{0:06d}'.format(1 + int(prd.code))
 
     def __unicode__(self):
-        return self.supplier.name + ' - ' + self.name + ' - P:' \
-               + str(self.purchase_price) + ' - R:' + str(self.retail_price)
+        return "{0}...{1}...零售价:{2}".format(self.name, self.supplier.name[:4], str(self.retail_price))
 
     def __repr__(self):
         return self.__unicode__()
