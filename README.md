@@ -13,7 +13,7 @@ Flask based Intelligent PSI(Purchase, Sales and Inventory) management system
 [![license](https://img.shields.io/github/license/betterlife/psi.svg)](http://doge.mit-license.org)
 [![Release](https://img.shields.io/github/release/betterlife/psi.svg)](http://github.com/betterlife/psi/releases)
 [![All Downloads](https://img.shields.io/github/downloads/betterlife/psi/total.svg?label=Downlaods)](http://github.com/betterlife/psi/releases)
-[![commits since release](https://img.shields.io/github/commits-since/betterlife/psi/0.6.4.svg)](http://github.com/betterlife/psi/releases)
+[![commits since release](https://img.shields.io/github/commits-since/betterlife/psi/V0.6.4.svg)](http://github.com/betterlife/psi/releases)
 
 Try to answer follow questions:
 
