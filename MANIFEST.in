@@ -7,3 +7,4 @@ recursive-include app *
 recursive-include migrations * 
 recursive-include requirements * 
 recursive-include tests *
+recursive-include .openshift *

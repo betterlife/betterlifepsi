@@ -32,8 +32,9 @@ setup(
     keywords="Betterlife, Intelligent, Purchase Order, Sales Order, Inventory Management, Retail",
     url="https://github.com/betterlife/psi",
     install_requires=[
-        "Flask>=0.11.1",
-        "Flask-SQLAlchemy==2.0",
+        "Flask==0.11.1",
+        "sqlalchemy==1.0.14",
+        "Flask-SQLAlchemy==2.1",
         "Flask-SSLify==0.1.5",
         "MarkupSafe==0.23",
         "gunicorn==19.3.0",
@@ -44,6 +45,10 @@ setup(
         "raven==5.10.2",
         "Flask-Security==1.7.5",
         "Flask-DebugToolbar==0.10.0",
+        "Flask_Admin==1.4.0"
+    ],
+    dependency_links=[
+        "git+https://github.com/betterlife/flask-admin.git@dd26143b3cc1e2bd04a84f86b609306ca25562ee#egg=Flask_Admin-1.4.0"
     ],
     tests_require=[
         "coverage==3.7.1",
