@@ -29,12 +29,12 @@ class TestDbUtil(unittest.TestCase):
     def test_get_next_code_with_existing_one(self):
         from app.models import Supplier
         from app.utils import db_util
-        from app.database import DbInfo
+        from app.service import Info
 
         def run_assert():
             supplier = object_faker.supplier()
-            DbInfo.get_db().session.add(supplier)
-            DbInfo.get_db().session.commit()
+            Info.get_db().session.add(supplier)
+            Info.get_db().session.commit()
             next_code = db_util.get_next_code(Supplier)
             self.assertEqual('000002', next_code)
 

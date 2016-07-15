@@ -1,12 +1,12 @@
 # encoding: utf-8
 
-from app.database import DbInfo
+from app.service import Info
 from app import const
 from app.models.data_security_mixin import DataSecurityMixin
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Boolean, Text, DateTime
 from sqlalchemy.orm import backref, relationship
 
-db = DbInfo.get_db()
+db = Info.get_db()
 
 
 class Expense(db.Model, DataSecurityMixin):

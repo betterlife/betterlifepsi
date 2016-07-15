@@ -96,8 +96,8 @@ class OrganizationAdmin(ModelViewWithAccess):
         of the newly added organization to it's parent's current right and current right + 1
         """
         from sqlalchemy import text
-        from app.database import DbInfo
-        db = DbInfo.get_db()
+        from app.service import Info
+        db = Info.get_db()
         str_id = getattr(form, "parent").raw_data[0]
         int_id = int(str_id) if str_id is not None and str_id != u"__None" and len(str_id) > 0 else None
         parent = Organization.query.get(int_id) if int_id is not None else None
@@ -158,8 +158,8 @@ class OrganizationAdmin(ModelViewWithAccess):
         :return: None
         """
         from sqlalchemy import text
-        from app.database import DbInfo
-        db = DbInfo.get_db()
+        from app.service import Info
+        db = Info.get_db()
         width = model.rgt - model.lft + 1
         sql = text("{u} rgt = rgt-{w} WHERE rgt > {rgt};{u} lft = lft-{w} WHERE lft > {lft}".format(rgt=model.rgt, lft=model.lft, w=width, u=self.uos))
         db.engine.execute(sql)

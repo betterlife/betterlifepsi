@@ -2,14 +2,14 @@
 from decimal import Decimal
 from app import const
 
-from app.database import DbInfo
+from app.service import Info
 from app.utils.format_util import format_decimal
 from app.models.data_security_mixin import DataSecurityMixin
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
-db = DbInfo.get_db()
+db = Info.get_db()
 
 
 class InventoryTransaction(db.Model, DataSecurityMixin):

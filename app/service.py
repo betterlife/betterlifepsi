@@ -1,4 +1,4 @@
-class DbInfo(object):
+class Info(object):
     _db = None
 
     def __init__(self):
@@ -8,9 +8,9 @@ class DbInfo(object):
     def set_db(db):
         # This if is here to make sure there's
         # only one db instance
-        if DbInfo._db is None:
-            DbInfo._db = db
+        if Info._db is None:
+            Info._db = db
 
     @staticmethod
     def get_db():
-        return DbInfo._db
+        return Info._db

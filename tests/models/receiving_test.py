@@ -19,7 +19,7 @@ class TestReceiving(unittest.TestCase):
     def test_get_by_po_id(self):
         from app.models.receiving import Receiving
         from app.models.enum_values import EnumValues
-        from app.database import DbInfo
+        from app.service import Info
         import app.const as const
         from tests.object_faker import object_faker
 
@@ -30,7 +30,7 @@ class TestReceiving(unittest.TestCase):
             receiving.purchase_order = po
             receiving.date = datetime.now()
             receiving.status = EnumValues.find_one_by_code(const.RECEIVING_DRAFT_STATUS_KEY)
-            db = DbInfo.get_db()
+            db = Info.get_db()
 
             db.session.add(po)
             db.session.add(receiving)

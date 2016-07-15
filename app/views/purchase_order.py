@@ -2,7 +2,7 @@
 from datetime import datetime
 from functools import partial
 
-from app import database
+from app import service
 from flask_admin.contrib.sqla.filters import FloatSmallerFilter, FloatGreaterFilter, FloatEqualFilter
 from flask_admin.model import InlineFormAdmin
 from app import const
@@ -140,7 +140,7 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
 
     def after_model_change(self, form, model, is_created):
         logistic_exp, goods_exp = PurchaseOrderAdmin.create_expenses(model)
-        db = database.DbInfo.get_db()
+        db = service.Info.get_db()
         if logistic_exp is not None:
             db.session.add(logistic_exp)
         if goods_exp is not None:

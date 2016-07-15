@@ -40,10 +40,10 @@ def init_admin_views(flask_app, database):
 
 
 def init_db(flask_app):
-    from app.database import DbInfo
+    from app.service import Info
     from flask_sqlalchemy import SQLAlchemy
     sqlalchemy = SQLAlchemy(flask_app, session_options={'autoflush': False})
-    DbInfo.set_db(sqlalchemy)
+    Info.set_db(sqlalchemy)
     return sqlalchemy
 
 

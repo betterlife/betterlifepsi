@@ -1,5 +1,5 @@
 # encoding: utf-8
-from app.database import DbInfo
+from app.service import Info
 from app import const
 from app.utils.date_util import get_weeks_between
 from app.utils.format_util import format_decimal
@@ -9,7 +9,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text, selec
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
-db = DbInfo.get_db()
+db = Info.get_db()
 
 
 class Product(db.Model, DataSecurityMixin):
@@ -228,11 +228,11 @@ class Product(db.Model, DataSecurityMixin):
 
     @staticmethod
     def supplier_filter(s_id):
-        return DbInfo.get_db().session.query(Product).filter_by(supplier_id=s_id)
+        return Info.get_db().session.query(Product).filter_by(supplier_id=s_id)
 
     @staticmethod
     def organization_filter(org_id):
-        return DbInfo.get_db().session.query(Product).filter_by(organization_id=org_id)
+        return Info.get_db().session.query(Product).filter_by(organization_id=org_id)
 
     def get_lead_deliver_day(self):
         if self.deliver_day is None and self.lead_day is None:

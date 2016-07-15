@@ -25,13 +25,13 @@ class TestImportStoreDataView(unittest.TestCase):
         content = codecs.open(os.path.dirname(os.path.realpath(__file__)) + "/store_data.csv", "r", "utf-8").read()
         from app.models.user import User
         from app.models.role import Role
-        from app.database import DbInfo
-        user = DbInfo.get_db().session.query(User).filter_by(login='super_admin').first()
-        role = DbInfo.get_db().session.query(Role).filter_by(name='import_store_data').first()
+        from app.service import Info
+        user = Info.get_db().session.query(User).filter_by(login='super_admin').first()
+        role = Info.get_db().session.query(Role).filter_by(name='import_store_data').first()
         user.roles.append(role)
-        from app.database import DbInfo
-        DbInfo.get_db().session.add(user)
-        DbInfo.get_db().session.commit()
+        from app.service import Info
+        Info.get_db().session.add(user)
+        Info.get_db().session.commit()
         rv = self.test_client.get('/admin/import_store_data/', follow_redirects=True)
         self.assertEqual(200, rv.status_code)
         self.assertIn(u'导入店铺运营数据', rv.data)

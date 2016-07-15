@@ -1,12 +1,12 @@
 # encoding=utf-8
 
-from app.database import DbInfo
+from app.service import Info
 from app.models.data_security_mixin import DataSecurityMixin
 from flask_security import RoleMixin
 from sqlalchemy import ForeignKey, Integer
 from sqlalchemy.orm import relationship, backref
 
-db = DbInfo.get_db()
+db = Info.get_db()
 
 roles_users = db.Table('roles_users',
                        db.Column('id', db.Integer(), primary_key=True),

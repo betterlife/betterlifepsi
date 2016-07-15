@@ -1,10 +1,10 @@
 # encoding: utf-8
-from app.database import DbInfo
+from app.service import Info
 from app.models.data_security_mixin import DataSecurityMixin
 from sqlalchemy import Column, Integer, ForeignKey, Text
 from sqlalchemy.orm import relationship
 
-db = DbInfo.get_db()
+db = Info.get_db()
 
 
 class Preference(db.Model, DataSecurityMixin):

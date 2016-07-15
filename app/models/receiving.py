@@ -1,7 +1,7 @@
 # encoding: utf-8
 from decimal import Decimal
 
-from app.database import DbInfo
+from app.service import Info
 from app import const
 from app.utils.format_util import format_decimal
 from app.models.data_security_mixin import DataSecurityMixin
@@ -9,7 +9,7 @@ from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, sel
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
-db = DbInfo.get_db()
+db = Info.get_db()
 
 
 class Receiving(db.Model, DataSecurityMixin):
@@ -77,7 +77,7 @@ class Receiving(db.Model, DataSecurityMixin):
 
     @staticmethod
     def filter_by_po_id(po_id):
-        return DbInfo.get_db().session.query(Receiving).filter_by(purchase_order_id=po_id).all()
+        return Info.get_db().session.query(Receiving).filter_by(purchase_order_id=po_id).all()
 
     @staticmethod
     def create_draft_recv_from_po(po):

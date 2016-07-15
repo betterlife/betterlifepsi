@@ -2,7 +2,7 @@
 from datetime import datetime
 from functools import partial
 
-from app import database
+from app import service
 from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext
 from app.models import Preference, Incoming, Expense, Shipping, ShippingLine, EnumValues
@@ -207,7 +207,7 @@ class SalesOrderAdmin(ModelViewWithAccess):
         incoming = SalesOrderAdmin.create_or_update_incoming(model)
         expense = SalesOrderAdmin.create_or_update_expense(model)
         shipping = SalesOrderAdmin.create_or_update_shipping(model)
-        db = database.DbInfo.get_db()
+        db = service.Info.get_db()
         if expense is not None:
             db.session.add(expense)
         if incoming is not None:

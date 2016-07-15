@@ -1,7 +1,7 @@
 # encoding: utf-8
 from decimal import Decimal
 
-from app.database import DbInfo
+from app.service import Info
 from app import const
 from app.utils.format_util import format_decimal
 from app.models.data_security_mixin import DataSecurityMixin
@@ -9,7 +9,7 @@ from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, sel
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
-db = DbInfo.get_db()
+db = Info.get_db()
 
 
 class Shipping(db.Model, DataSecurityMixin):
@@ -51,7 +51,7 @@ class Shipping(db.Model, DataSecurityMixin):
 
     @staticmethod
     def filter_by_so_id(so_id):
-        return DbInfo.get_db().session.query(Shipping).filter_by(sales_order_id=so_id).all()
+        return Info.get_db().session.query(Shipping).filter_by(sales_order_id=so_id).all()
 
     def __unicode__(self):
         return str(self.id) + ' - ' + str(self.total_amount)
@@ -76,7 +76,7 @@ class Shipping(db.Model, DataSecurityMixin):
             itl.in_transit_quantity = 0
             itl.inventory_transaction = it
             line.inventory_transaction_line = itl
-        DbInfo.get_db().session.add(it)
+        Info.get_db().session.add(it)
 
 
 class ShippingLine(db.Model):

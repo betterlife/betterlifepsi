@@ -1,10 +1,10 @@
 # encoding: utf-8
-from app.database import DbInfo
+from app.service import Info
 from app.models.data_security_mixin import DataSecurityMixin
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Text
 from sqlalchemy.orm import backref, relationship
 
-db = DbInfo.get_db()
+db = Info.get_db()
 
 
 class Supplier(db.Model, DataSecurityMixin):

@@ -16,12 +16,12 @@ def init_app():
 
 def init_db(flask_app):
     import app.config as config
-    from app.database import DbInfo
+    from app.service import Info
 
     flask_app.config.from_object(config.BaseConfig)
     from flask.ext.sqlalchemy import SQLAlchemy
     db = SQLAlchemy(flask_app)
-    DbInfo.set_db(db)
+    Info.set_db(db)
     from app.models import Customer, EnumValues, Expense, Incoming, InventoryTransaction, InventoryTransactionLine
     from app.models import Preference, Product, ProductCategory, PurchaseOrder, PurchaseOrderLine, Receiving, ReceivingLine
     from app.models import SalesOrder, SalesOrderLine, User, Role, Organization, Shipping, ShippingLine, Supplier, PaymentMethod

@@ -64,7 +64,7 @@ class ProductAdmin(ModelViewWithAccess):
     column_list = ('id', 'supplier', 'category', 'code', 'name', 'lead_day', 'deliver_day', 'purchase_price',
                    'retail_price', 'available_quantity', 'in_transit_quantity',)
 
-    form_columns = ('category', 'supplier', 'code', 'name', 'external_id', 'lead_day', 'deliver_day', 'purchase_price',
+    form_columns = ('category', 'supplier', 'code', 'name', 'lead_day', 'deliver_day', 'purchase_price',
                     'retail_price', 'available_quantity', 'in_transit_quantity', 'spec_link', 'need_advice',
                     'distinguishing_feature',)
 

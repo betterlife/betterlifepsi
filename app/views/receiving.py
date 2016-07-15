@@ -2,7 +2,7 @@
 from datetime import datetime
 from functools import partial
 
-from app.database import DbInfo
+from app.service import Info
 from flask_admin.contrib.sqla.filters import FloatEqualFilter, FloatSmallerFilter
 from flask_admin.contrib.sqla.filters import FloatGreaterFilter
 from flask_admin.model import InlineFormAdmin
@@ -13,7 +13,7 @@ from app.views.base import DeleteValidator
 from wtforms import BooleanField
 from wtforms.validators import ValidationError
 
-db = DbInfo.get_db()
+db = Info.get_db()
 
 
 class ReceivingLineInlineAdmin(InlineFormAdmin):

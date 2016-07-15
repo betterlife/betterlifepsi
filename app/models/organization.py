@@ -1,5 +1,5 @@
 # encoding=utf-8
-from app.database import DbInfo
+from app.service import Info
 from app.models.data_security_mixin import DataSecurityMixin
 from app.utils.db_util import id_query_to_obj
 from sqlalchemy import Integer, select, desc, func, between
@@ -8,7 +8,7 @@ from sqlalchemy.orm import aliased
 from sqlalchemy.sql.elements import and_
 from flask_login import current_user
 
-db = DbInfo.get_db()
+db = Info.get_db()
 
 
 class Organization(db.Model, DataSecurityMixin):
