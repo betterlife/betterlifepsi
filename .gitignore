@@ -15,3 +15,6 @@ scripts
 dist
 *.egg-info
 PKG-INFO
+pre-commit.sh
+.#*
+run_test.sh 
