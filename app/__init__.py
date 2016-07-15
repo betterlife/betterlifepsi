@@ -133,7 +133,7 @@ def init_https(app):
 
 def init_jinja2_functions(app):
     from app.utils.ui_util import render_version
-    app.jinja_env.globals.update(render_version=render_version)
+    app.add_template_global(render_version, 'render_version')
 
 
 def init_all(app):
