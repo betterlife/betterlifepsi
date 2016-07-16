@@ -74,7 +74,10 @@ class UserAdmin(ModelViewWithAccess):
         form_class = super(UserAdmin, self).scaffold_form()
 
         # Add a password field, naming it "password2" and labeling it "New Password".
+        # autocomplete:new-password is to disable chrome to autofill password
+        # Reference: http://stackoverflow.com/questions/15738259/disabling-chrome-autofill
         form_class.password2 = PasswordField(label=lazy_gettext('New Password'),
+                                             render_kw={"autocomplete": "new-password"},
                                              description=lazy_gettext('Left blank if you don\'t want to change it, '
                                                                       'input the new password to change it'))
         return form_class
