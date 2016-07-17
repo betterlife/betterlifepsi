@@ -248,3 +248,9 @@ def default_decimal_formatter(view, context, model, name):
     if value == 0 or value == 0.00 or value is None:
         return '-'
     return value
+
+
+def rich_text_formatter(view, context, model, name):
+    from wtforms.widgets import HTMLString
+    value = getattr(model, name)
+    return HTMLString(value)

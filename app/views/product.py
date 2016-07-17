@@ -8,7 +8,7 @@ from app.views.components import ImageField
 
 
 class ProductAdmin(ModelViewWithAccess):
-    from app.views.formatter import supplier_formatter
+    from app.views.formatter import supplier_formatter, rich_text_formatter
     from app.views.components import DisabledStringField, CKTextAreaField, \
         ReadonlyStringField
 
@@ -52,7 +52,8 @@ class ProductAdmin(ModelViewWithAccess):
     }
 
     column_formatters = {
-        'supplier': supplier_formatter
+        'supplier': supplier_formatter,
+        'distinguishing_feature': rich_text_formatter
     }
 
     form_overrides = dict(distinguishing_feature=CKTextAreaField,
@@ -108,4 +109,3 @@ class ProductAdmin(ModelViewWithAccess):
         form_util.filter_by_organization(form.category, ProductCategory)
         form_util.filter_by_organization(form.supplier, Supplier)
         return form
-
