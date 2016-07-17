@@ -10,7 +10,7 @@ class TestDisabledStringField(unittest.TestCase):
 
     def DisabledStringField_test(self):
         from wtforms import form
-        from app.views.custom_fields import DisabledStringField
+        from app.views.components import DisabledStringField
 
         class SimpleForm(form.Form):
             df = DisabledStringField()
@@ -25,7 +25,7 @@ class TestReadonlyStringField(unittest.TestCase):
 
     def DisabledStringField_test(self):
         from wtforms import form
-        from app.views.custom_fields import ReadonlyStringField
+        from app.views.components import ReadonlyStringField
 
         class SimpleForm(form.Form):
             rf = ReadonlyStringField()
@@ -40,7 +40,7 @@ class TestCKTextAreaField(unittest.TestCase):
 
     def DisabledStringField_test(self):
         from wtforms import form
-        from app.views.custom_fields import CKTextAreaField
+        from app.views.components import CKTextAreaField
 
         class SimpleForm(form.Form):
             ctf = CKTextAreaField()

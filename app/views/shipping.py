@@ -4,7 +4,8 @@ from datetime import datetime
 from flask_admin.contrib.sqla.filters import FloatSmallerFilter, FloatGreaterFilter, FloatEqualFilter
 from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext, gettext
-from app.views import ModelViewWithAccess, DisabledStringField
+from app.views import ModelViewWithAccess
+from app.views.components import DisabledStringField
 from wtforms import ValidationError
 
 

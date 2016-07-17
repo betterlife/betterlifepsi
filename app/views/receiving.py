@@ -8,7 +8,8 @@ from flask_admin.contrib.sqla.filters import FloatGreaterFilter
 from flask_admin.model import InlineFormAdmin
 from app import const
 from flask_babelex import lazy_gettext, gettext
-from app.views import ModelViewWithAccess, DisabledStringField
+from app.views import ModelViewWithAccess
+from app.views.components import DisabledStringField
 from app.views.base import DeleteValidator
 from wtforms import BooleanField
 from wtforms.validators import ValidationError

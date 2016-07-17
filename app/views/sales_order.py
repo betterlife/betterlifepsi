@@ -7,7 +7,7 @@ from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext
 from app.models import Preference, Incoming, Expense, Shipping, ShippingLine, EnumValues
 from app.views.base import ModelViewWithAccess
-from app.views.custom_fields import ReadonlyStringField, DisabledStringField
+from app.views.components import ReadonlyStringField, DisabledStringField
 from flask_admin.contrib.sqla.filters import FloatGreaterFilter, FloatSmallerFilter, FloatEqualFilter
 from app.utils import current_user, form_util
 

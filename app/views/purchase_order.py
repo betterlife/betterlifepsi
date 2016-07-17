@@ -8,7 +8,8 @@ from flask_admin.model import InlineFormAdmin
 from app import const
 from flask_babelex import lazy_gettext, gettext
 from app.models import Preference, Expense, PurchaseOrder, Product, EnumValues, Receiving
-from app.views import ModelViewWithAccess, DisabledStringField
+from app.views import ModelViewWithAccess
+from app.views.components import DisabledStringField
 from app.views.base import DeleteValidator
 from app.utils import form_util
 

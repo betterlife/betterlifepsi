@@ -1,15 +1,15 @@
 # coding=utf-8
 from flask_babelex import lazy_gettext
-from app.models.product import Product
+from app.models.product import Product, ProductImage
 from app.views.base import ModelViewWithAccess
 from app.utils import form_util
 
-from app.views.custom_fields import ImageField
+from app.views.components import ImageField
 
 
 class ProductAdmin(ModelViewWithAccess):
     from app.views.formatter import supplier_formatter
-    from app.views.custom_fields import DisabledStringField, CKTextAreaField, \
+    from app.views.components import DisabledStringField, CKTextAreaField, \
         ReadonlyStringField
 
     # inline_models = (ProductImagesAdmin(ProductImage),)
@@ -96,6 +96,7 @@ class ProductAdmin(ModelViewWithAccess):
         from app.models import ProductCategory, Supplier
         form = super(ProductAdmin, self).create_form(obj)
         form.code.data = Product.get_next_code()
+        form.images_placeholder.set_object_type(ProductImage)
         form_util.filter_by_organization(form.category, ProductCategory)
         form_util.filter_by_organization(form.supplier, Supplier)
         return form
@@ -103,6 +104,7 @@ class ProductAdmin(ModelViewWithAccess):
     def edit_form(self, obj=None):
         from app.models import ProductCategory, Supplier
         form = super(ProductAdmin, self).edit_form(obj)
+        form.images_placeholder.set_object_type(ProductImage)
         form_util.filter_by_organization(form.category, ProductCategory)
         form_util.filter_by_organization(form.supplier, Supplier)
         return form

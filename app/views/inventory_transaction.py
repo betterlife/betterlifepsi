@@ -25,7 +25,7 @@ class InventoryTransactionLineInlineAdmin(InlineFormAdmin):
     )
 
     def postprocess_form(self, form):
-        from app.views.custom_fields import DisabledStringField
+        from app.views.components import DisabledStringField
         form.total_amount = DisabledStringField(label=lazy_gettext('Total Amount'))
         form.itl_receiving_line = None
         form.remark = None
@@ -67,7 +67,7 @@ class InventoryTransactionAdmin(ModelViewWithAccess):
         date=dict(default=datetime.now()),
     )
 
-    from app.views.custom_fields import DisabledStringField
+    from app.views.components import DisabledStringField
 
     form_extra_fields = {
         'total_amount': DisabledStringField(label=lazy_gettext('Total Amount')),

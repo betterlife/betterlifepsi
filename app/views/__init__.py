@@ -1,6 +1,5 @@
 # coding=utf-8
 from base import ModelViewWithAccess
-from custom_fields import DisabledStringField
 from enum_values import EnumValuesAdmin
 from expense import ExpenseAdmin
 from incoming import IncomingAdmin
