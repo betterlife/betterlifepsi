@@ -4,18 +4,23 @@ from app.models.product import Product
 from app.views.base import ModelViewWithAccess
 from app.utils import form_util
 
+from app.views.custom_fields import ImageField
+
 
 class ProductAdmin(ModelViewWithAccess):
-
     from app.views.formatter import supplier_formatter
-    from app.views.custom_fields import DisabledStringField, CKTextAreaField, ReadonlyStringField
+    from app.views.custom_fields import DisabledStringField, CKTextAreaField, \
+        ReadonlyStringField
 
-    column_editable_list = ['name', 'deliver_day', 'lead_day', 'distinguishing_feature',
-                            'spec_link', 'purchase_price', 'retail_price']
+    # inline_models = (ProductImagesAdmin(ProductImage),)
+
+    column_editable_list = ['name', 'deliver_day', 'lead_day', 'spec_link',
+                            'purchase_price', 'retail_price']
     column_searchable_list = ['code', 'name', 'supplier.name', 'category.name']
 
-    column_sortable_list = ('id', 'code', 'name', ('supplier', 'id'), ('category', 'code'),
-                            'deliver_day', 'lead_day', 'purchase_price', 'retail_price',
+    column_sortable_list = ('id', 'code', 'name', ('supplier', 'id'),
+                            ('category', 'code'), 'deliver_day', 'lead_day',
+                            'purchase_price', 'retail_price',
                             'available_quantity', 'in_transit_quantity',)
 
     column_filters = column_searchable_list
@@ -43,13 +48,16 @@ class ProductAdmin(ModelViewWithAccess):
     form_extra_fields = {
         'available_quantity': DisabledStringField(label=lazy_gettext('Available Quantity')),
         'in_transit_quantity': DisabledStringField(label=lazy_gettext('In Transit Quantity')),
+        'images_placeholder': ImageField(label=lazy_gettext('Product Images')),
     }
 
     column_formatters = {
         'supplier': supplier_formatter
     }
 
-    form_overrides = dict(distinguishing_feature=CKTextAreaField, code=ReadonlyStringField, external_id=ReadonlyStringField)
+    form_overrides = dict(distinguishing_feature=CKTextAreaField,
+                          code=ReadonlyStringField,
+                          external_id=ReadonlyStringField)
 
     form_args = dict(
         distinguishing_feature=dict(description=lazy_gettext('Distinguishing feature of this product, useful for '
@@ -58,23 +66,30 @@ class ProductAdmin(ModelViewWithAccess):
         lead_day=dict(description=lazy_gettext('Days from the day we contact supplier to the day they begin to '
                                                'ship product')),
         code=dict(description=lazy_gettext('Product code is generated automatically')),
-        need_advice=dict(description=lazy_gettext('Need running advice for this product?'))
+        need_advice=dict(description=lazy_gettext('Need running advice for this product?')),
     )
 
-    column_list = ('id', 'supplier', 'category', 'code', 'name', 'lead_day', 'deliver_day', 'purchase_price',
-                   'retail_price', 'available_quantity', 'in_transit_quantity',)
+    column_list = ('id', 'supplier', 'category', 'code', 'name', 'lead_day',
+                   'deliver_day', 'purchase_price', 'retail_price',
+                   'available_quantity', 'in_transit_quantity',)
 
-    form_columns = ('category', 'supplier', 'code', 'name', 'lead_day', 'deliver_day', 'purchase_price',
-                    'retail_price', 'available_quantity', 'in_transit_quantity', 'spec_link', 'need_advice',
+    form_columns = ('code', 'name', 'category', 'supplier', 'lead_day',
+                    'deliver_day', 'purchase_price', 'retail_price',
+                    'available_quantity', 'in_transit_quantity',
+                    'spec_link', 'need_advice', 'images_placeholder',
                     'distinguishing_feature',)
 
     form_create_rules = (
-        'category', 'supplier', 'code', 'name', 'lead_day', 'deliver_day',
-        'purchase_price', 'retail_price', 'spec_link', 'distinguishing_feature',
+        'code', 'name', 'category', 'supplier', 'lead_day', 'deliver_day',
+        'purchase_price', 'retail_price', 'spec_link', 'images_placeholder',
+        'distinguishing_feature',
     )
 
-    column_details_list = ('id', 'external_id', 'category', 'supplier', 'code', 'name', 'lead_day', 'deliver_day', 'purchase_price',
-                           'retail_price', 'available_quantity', 'in_transit_quantity', 'spec_link', 'need_advice',
+    column_details_list = ('id', 'external_id', 'code', 'name', 'category',
+                           'supplier', 'lead_day', 'deliver_day',
+                           'purchase_price', 'retail_price',
+                           'available_quantity', 'in_transit_quantity',
+                           'spec_link', 'need_advice',
                            'distinguishing_feature',)
 
     def create_form(self, obj=None):
@@ -91,3 +106,4 @@ class ProductAdmin(ModelViewWithAccess):
         form_util.filter_by_organization(form.category, ProductCategory)
         form_util.filter_by_organization(form.supplier, Supplier)
         return form
+

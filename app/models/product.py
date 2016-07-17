@@ -3,13 +3,26 @@ from app.service import Info
 from app import const
 from app.utils.date_util import get_weeks_between
 from app.utils.format_util import format_decimal
-from app.models.inventory_transaction import InventoryTransactionLine, InventoryTransaction
+from app.models.inventory_transaction import InventoryTransactionLine, \
+    InventoryTransaction
 from app.models.data_security_mixin import DataSecurityMixin
-from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text, select, func, desc, Boolean, or_
+from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text, \
+    select, func, desc, Boolean, or_
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
 db = Info.get_db()
+
+
+class ProductImage(db.Model, DataSecurityMixin):
+    __tablename__ = 'product_image'
+    id = Column(Integer, primary_key=True)
+    product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
+    # The product image need to be delete when a product got deleted
+    product = relationship('Product', backref=backref('images', cascade='all, delete'))
+    image_id = Column(Integer, ForeignKey('image.id'), nullable=False)
+    # The image need to be delete when a product image got deleted
+    image = relationship('Image', cascade="all, delete")
 
 
 class Product(db.Model, DataSecurityMixin):
@@ -29,9 +42,16 @@ class Product(db.Model, DataSecurityMixin):
     supplier_id = Column(Integer, ForeignKey('supplier.id'), nullable=False)
     supplier = relationship('Supplier', backref=backref('products', lazy='dynamic'))
     need_advice = Column(Boolean)
-
     organization_id = db.Column(Integer, ForeignKey('organization.id'))
     organization = relationship('Organization', foreign_keys=[organization_id])
+
+    @hybrid_property
+    def images_placeholder(self):
+        return self.images
+
+    @images_placeholder.setter
+    def images_placeholder(self, val):
+        pass
 
     @hybrid_property
     def in_transit_quantity(self):
@@ -256,7 +276,11 @@ class Product(db.Model, DataSecurityMixin):
         return '{0:06d}'.format(1 + int(prd.code))
 
     def __unicode__(self):
-        return "{0}...{1}...零售价:{2}".format(self.name, self.supplier.name[:4], str(self.retail_price))
+        from app.utils.security_util import user_has_role
+        if user_has_role('supplier_view'):
+            return "{0}...{1}...零售价:{2}".format(self.name, self.supplier.name[:6], str(self.retail_price))
+        else:
+            return "{0}...零售价:{1}".format(self.name, str(self.retail_price))
 
     def __repr__(self):
         return self.__unicode__()

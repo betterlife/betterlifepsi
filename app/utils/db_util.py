@@ -59,7 +59,7 @@ def save_objects_commit(*objects):
     db.session.commit()
 
 
-def delete_by_id(obj_type, id_to_del):
+def delete_by_id(obj_type, id_to_del, commit=True):
     """
     Delete model object by value
     :type obj_type: db.Model
@@ -68,7 +68,8 @@ def delete_by_id(obj_type, id_to_del):
     db = Info.get_db()
     obj = db.session.query(obj_type).get(id_to_del)
     db.session.delete(obj)
-    db.session.commit()
+    if commit:
+        db.session.commit()
 
 
 def get_first_result_raw_sql(op, sql):

@@ -1,6 +1,7 @@
 # coding=utf-8
 import os
 from flask_babelex import lazy_gettext
+from app.thirdparty.cloudinary_image_store import ImageStore
 
 
 class BaseConfig(object):
@@ -8,6 +9,7 @@ class BaseConfig(object):
     BABEL_DEFAULT_TIMEZONE = 'CST'
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
     SECRET_KEY = os.environ.get('SECRET_KEY')
     SECURITY_PASSWORD_HASH = 'pbkdf2_sha512'
     SECURITY_PASSWORD_SALT = os.environ.get('SECURITY_PASSWORD_SALT')
@@ -20,6 +22,7 @@ class BaseConfig(object):
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     SENTRY_DSN = os.environ.get('SENTRY_DSN')
     WTF_CSRF_ENABLED = True
+    IMAGE_STORE_SERVICE = ImageStore
     # TODO: Move those business related settings to a table and make it changeable via UI.
     DEFAULT_DELIVER_DAY = 5
     DEFAULT_LEAD_DAY = 3

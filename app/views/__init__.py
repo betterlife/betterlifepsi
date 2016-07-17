@@ -30,7 +30,7 @@ from app.views.report import ReportView
 
 def init_admin_views(app, db):
     db_session = db.session
-    admin_views = Admin(app, lazy_gettext('Brand Name'), index_view=AdminIndexView(),
+    admin_views = Admin(app, lazy_gettext('Betterlife'), index_view=AdminIndexView(),
                         base_template='layout.html', template_mode='bootstrap3')
     admin_views.add_view(PurchaseOrderAdmin(PurchaseOrder, db_session, name=lazy_gettext("Purchase Order"),
                                             category=lazy_gettext('Purchase'), menu_icon_type=ICON_TYPE_GLYPH,

@@ -119,9 +119,11 @@ def define_route_context(flask_app, db, babel):
         try:
             if getattr(current_user, 'locale', None) is not None:
                 return current_user.locale.code
-            return 'zh_CN' if current_app.config['DEBUG'] else request.accept_languages.best_match(['zh_CN', 'en_US'])
+            return 'zh_CN' if current_app.config['DEBUG'] else \
+                   request.accept_languages.best_match(['zh_CN', 'en_US'])
         except BaseException:
-            return 'zh_CN' if current_app.config['DEBUG'] else request.accept_languages.best_match(['zh_CN', 'en_US'])
+            return 'zh_CN' if current_app.config['DEBUG'] else \
+                   request.accept_languages.best_match(['zh_CN', 'en_US'])
 
 
 def init_https(app):
@@ -136,6 +138,16 @@ def init_jinja2_functions(app):
     app.add_template_global(render_version, 'render_version')
 
 
+def init_image_service(app):
+    """
+    Initialize image store service
+    """
+    image_store = app.config['IMAGE_STORE_SERVICE']
+    from app.service import Info
+    if image_store is not None:
+        Info.set_image_store_service(image_store(app))
+
+
 def init_all(app):
     init_logging(app)
     database = init_db(app)
@@ -146,4 +158,5 @@ def init_all(app):
     babel = init_babel(app)
     init_jinja2_functions(app)
     # init_debug_toolbar(app)
+    init_image_service(app)
     define_route_context(app, database, babel)
