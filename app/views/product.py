@@ -4,7 +4,7 @@ from app.models.product import Product, ProductImage
 from app.views.base import ModelViewWithAccess
 from app.utils import form_util
 
-from app.views.components import ImageField
+from app.views.components import ImageField, images_formatter
 
 
 class ProductAdmin(ModelViewWithAccess):
@@ -27,7 +27,7 @@ class ProductAdmin(ModelViewWithAccess):
     column_labels = {
         'id': lazy_gettext('id'),
         'supplier.name': lazy_gettext('Supplier Name'),
-        'category.name': lazy_gettext('Category Name'),
+        'category.name': lazy_gettext('CategoryName'),
         'category.code': lazy_gettext('Category Code'),
         'supplier': lazy_gettext('Supplier'),
         'name': lazy_gettext('Name'),
@@ -43,6 +43,7 @@ class ProductAdmin(ModelViewWithAccess):
         'in_transit_quantity': lazy_gettext('In Transit Quantity'),
         'need_advice': lazy_gettext('Need Running Advice'),
         'external_id': lazy_gettext('External Id'),
+        'images_placeholder': lazy_gettext('Product Images'),
     }
 
     form_extra_fields = {
@@ -53,7 +54,8 @@ class ProductAdmin(ModelViewWithAccess):
 
     column_formatters = {
         'supplier': supplier_formatter,
-        'distinguishing_feature': rich_text_formatter
+        'distinguishing_feature': rich_text_formatter,
+        'images_placeholder': images_formatter,
     }
 
     form_overrides = dict(distinguishing_feature=CKTextAreaField,
@@ -90,7 +92,7 @@ class ProductAdmin(ModelViewWithAccess):
                            'supplier', 'lead_day', 'deliver_day',
                            'purchase_price', 'retail_price',
                            'available_quantity', 'in_transit_quantity',
-                           'spec_link', 'need_advice',
+                           'spec_link', 'need_advice', 'images_placeholder',
                            'distinguishing_feature',)
 
     def create_form(self, obj=None):

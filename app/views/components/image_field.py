@@ -20,7 +20,7 @@ class ImageInput(object):
                 associated_images.append(p_i)
         else:
             associated_images = []
-        return render_template('components/image_input.html',
+        return render_template('components/images_input.html',
                                associated_images=associated_images)
 
 
@@ -52,3 +52,11 @@ class ImageField(StringField):
                 Info.get_db().session.add(image_owner)
                 images.append(image_owner)
         setattr(obj, name, images)
+
+
+def images_formatter(view, context, model, name):
+    from flask import render_template
+    from wtforms.widgets import HTMLString
+    val = getattr(model, name)
+    return HTMLString(render_template("components/images_display.html",
+                                      associated_images=val))
