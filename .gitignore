@@ -18,3 +18,5 @@ PKG-INFO
 pre-commit.sh
 .#*
 run_test.sh 
+.eggs
+.projectile
