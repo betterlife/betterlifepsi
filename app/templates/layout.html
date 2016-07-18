@@ -3,8 +3,9 @@
 
 {% block head_tail %}
   {{ super() }}
-  <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='favicon.ico') }}" rel="icon" type="image/x-icon">
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="icon" type="image/x-icon">
+  <link href="{{ url_for('static', filename='lightbox2/css/lightbox.min.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block tail %}
@@ -12,6 +13,7 @@
   <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
   <script src="{{ url_for('static', filename='js/common.js') }}"></script>
   <script src="{{ url_for('static', filename='js/image_upload.js') }}"></script>
+  <script src="{{ url_for('static', filename='lightbox2/js/lightbox.min.js') }}"></script>
   <div class='main-footer'> © 2015-2016 BETTERLIFE.IO | {{render_version() | safe}}
   </div>
 {% endblock %}
