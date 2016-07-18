@@ -20,6 +20,7 @@ before_install:
 
 install:
   - pip install -r requirements/test.txt
+  - mv setup.cfg.template setup.cfg
 
 script:
   - nosetests -w tests --with-coverage --cover-erase --with-xunit --cover-branches --xunit-file=nosetests.xml
