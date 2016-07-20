@@ -22,12 +22,24 @@ Try to answer follow questions:
   - What is the optimized quantity/date for replenish the stock?
   
 Install & Deploy
-  -  [Installation Locally](https://github.com/betterlife/flask-psi/wiki/Installation)
+  -  [Installation Locally](https://github.com/betterlife/psi/wiki/Installation)
   -  [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
   
 How to run?
+
   - Start the application
-    - For development, run **python start.py**, and then open it on __[http://localhost:5000](http://localhost:5000)__
+
+    - Be sure to startup postgresql, then set up the follow environment variables firstly:
+
+        - Required environment variables
+          - DATABASE_URL
+          - SECRET_KEY
+          - SECURITY_PASSWORD_SALT
+        - Necessary for some feature
+          - SENTRY_DSN if want sentry to be enable
+          - CLOUDINARY_URL if want cloudinary to be enable
+
+    - For development, run **python wsgi.py**, and then open it on __[http://localhost:5000](http://localhost:5000)__
     - If you run it via **heroku local**, please open it on __[http://localhost:8000](http://localhost:8000)__
   - Test the application
     - Run **./scripts/run_tests.py** to test the application
@@ -35,7 +47,7 @@ How to run?
 
 Links:
 
-  - [Dev environment(Openshift)](https://dstore-betterlife.rhcloud.com/)
+  - [Dev environment](https://psi-dev.herokuapp.com/)
     - Organization user: __support@betterlife.io / password__
     - Business user: __business@betterlife.io / password__
 
