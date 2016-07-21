@@ -14,6 +14,8 @@ $('body').on('click', function (e) {
         }
     });
 });
+
+/* Hide a column of a table if all cells of the column is empty*/
 $('table').each(function (a, tbl) {
     var currentTableRows = $(tbl).find('tbody tr').length;
     $(tbl).find('th').each(function (i) {
@@ -30,6 +32,14 @@ $('table').each(function (a, tbl) {
         }
     });
 });
+
+$("input[name^='del-']").change(function(target){
+    if (this.checked){
+        $(this).parent().parent().addClass('delete-indicate') ;
+    } else {
+        $(this).parent().parent().removeClass('delete-indicate') ;
+    }
+})
 
 function addInlineField(parent_id) {
     parent = $("#" + parent_id);

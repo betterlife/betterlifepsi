@@ -349,3 +349,8 @@ ul.dropdown-menu > li > a > i.glyphicon {
     margin-top: 20px;
     width:50%
 }
+
+.delete-indicate {
+    background-color: lightgray !important;
+    text-decoration: line-through;
+}
