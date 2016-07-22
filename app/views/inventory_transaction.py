@@ -63,7 +63,7 @@ class InventoryTransactionAdmin(ModelViewWithAccess):
     form_excluded_columns = ('it_shipping', 'it_receiving')
 
     form_args = dict(
-        type=dict(query_factory=InventoryTransaction.type_filter),
+        type=dict(query_factory=InventoryTransaction.manual_type_filter),
         date=dict(default=datetime.now()),
     )
 

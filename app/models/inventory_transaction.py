@@ -29,6 +29,17 @@ class InventoryTransaction(db.Model, DataSecurityMixin):
         from app.models.enum_values import EnumValues
         return EnumValues.type_filter(const.INVENTORY_TRANSACTION_TYPE_KEY)
 
+    @staticmethod
+    def manual_type_filter():
+        from app.models.enum_values import EnumValues
+        from sqlalchemy import or_
+        q = db.session.query(EnumValues).filter(or_(EnumValues.code == const.INVENTORY_LOST_TYPE_KEY,
+                                                    EnumValues.code == const.INVENTORY_DAMAGED_TYPE_KEY))
+        return q
+
+
+
+
     @hybrid_property
     def total_amount(self):
         return format_decimal(Decimal(abs(sum(line.total_amount for line in self.lines))))
