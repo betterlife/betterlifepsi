@@ -65,3 +65,12 @@ deploy:
       master: psi-prd
     run:
       - restart
+  
+notifications:
+  hipchat:
+    rooms:
+      - OWZ7bmNgFKzCPlPePv3aTdvkyh5ZM9vn4MZrydrT@Main
+    template:
+      - '%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message} (<a href="%{build_url}">Details</a>/<a href="%{compare_url}">Change view</a>)'
+    format: html
+    notify: true
