@@ -39,8 +39,12 @@ function handleFileSelect(evt) {
         reader.readAsDataURL(f);
     }
 }
+
 //Update the thumbnails when user select new image from local disk.
-document.getElementById('images_placeholder').addEventListener('change', handleFileSelect, false);
+var image_placeholder = document.getElementById('images_placeholder');
+if (image_placeholder != null) {
+    image_placeholder.addEventListener('change', handleFileSelect, false);
+}
 
 $(function () {
     $("#upload_image_trigger").click(function () {

@@ -1,8 +1,11 @@
 # coding=utf-8
-import StringIO
+from __future__ import print_function
 import csv
+import os
 from datetime import datetime
 from decimal import Decimal
+
+from werkzeug.utils import secure_filename
 
 from app import const
 from app.models import Supplier, Product, SalesOrder, SalesOrderLine, Shipping, ShippingLine, InventoryTransaction, \
@@ -149,35 +152,44 @@ class ImportStoreDataView(BaseView):
         if request.method == 'GET':
             return self.render('data_loading/legacy.html')
         elif request.method == 'POST':
-            content = request.form['content']
-            f = StringIO.StringIO(content)
-            reader = csv.reader(f, delimiter=',')
-            line = 0
-            shipping_status = EnumValues.find_one_by_code(const.SHIPPING_COMPLETE_STATUS_KEY)
-            it_type = EnumValues.find_one_by_code(const.SALES_OUT_INV_TRANS_TYPE_KEY)
-            incoming_category = Preference.get().def_so_incoming_type
-            incoming_status = Preference.get().def_so_incoming_status
-            for row in reader:
-                if line != 0:  # Skip header line
-                    # 订单编号(0), 订单行编号(1),商品编号(2),商品名称(3),供应商编号(4),供应商名称(5),进价(6),定价(7),卖价(8),价格折扣(9),数量(10),
-                    # 金额(11),成本(12),毛利(13),折扣(%)(14),折扣额(15),毛利率(16),操作员(17),营业员(18),时间(19)
-                    po_num, po_line_num, prd_num, prd_name, sup_num, sup_name, pur_price, ret_price, act_price, qty, s_date = \
-                        row[0].strip(), row[1].strip(), row[2].strip(), row[3].strip(), row[4].strip(), row[5].strip(), \
-                        Decimal(row[6].strip()), Decimal(row[7].strip()), Decimal(row[8].strip()), \
-                        Decimal(row[10].strip()), datetime.strptime(row[19].strip(), '%Y-%m-%d %H:%M:%S.%f')
-
-                    # 1. Create or update supplier --> return supplier
-                    supplier = create_or_update_supplier(sup_num, sup_name)
-                    # 2. Create or update product --> return product
-                    product = create_or_update_product(prd_num, prd_name, pur_price, ret_price, supplier)
-                    # 3. Create or update sales order / sales order line --> return PO.
-                    order, order_line = create_or_update_sales_order(po_num, po_line_num, product, act_price, qty, s_date)
-                    # 4. Create shipping record --> return shipping id
-                    shipping, shipping_line = create_or_update_shipping(order, order_line, shipping_status)
-                    # 5. Create inventory transaction record --> return inventory transaction record
-                    itr, itl = create_or_update_inventory_transaction(shipping, shipping_line, it_type)
-                    # 6. Create related incoming and return it.
-                    incoming = create_or_update_incoming(order, order_line, incoming_category, incoming_status)
-                    save_objects_commit(supplier, product, order, shipping, itr, incoming)
-                line += 1
-            return gettext('Upload and import into system successfully')
+            file = request.files['file']
+            if file:
+                filename = secure_filename(file.filename)
+                full_path = os.path.join(current_app.config['UPLOAD_TMP_FOLDER'], filename)
+                file.save(full_path)
+                with open(full_path, 'rb') as f:
+                    reader = csv.reader(f, delimiter=',')
+                    line, imported_line = 0,0
+                    shipping_status = EnumValues.find_one_by_code(const.SHIPPING_COMPLETE_STATUS_KEY)
+                    it_type = EnumValues.find_one_by_code(const.SALES_OUT_INV_TRANS_TYPE_KEY)
+                    incoming_category = Preference.get().def_so_incoming_type
+                    incoming_status = Preference.get().def_so_incoming_status
+                    for row in reader:
+                        if line != 0:  # Skip header line
+                            # 订单编号(0), 订单行编号(1),商品编号(2),商品名称(3),供应商编号(4),供应商名称(5),进价(6),定价(7),卖价(8),价格折扣(9),数量(10),
+                            # 金额(11),成本(12),毛利(13),折扣(%)(14),折扣额(15),毛利率(16),操作员(17),营业员(18),时间(19)
+                            if line % 100 == 0:
+                                print("Processing line: [{0}]".format(str(line)))
+                                print("Content: [{0}]".format(row))
+                            po_num, po_line_num, prd_num, prd_name, sup_num, sup_name, pur_price, ret_price, act_price, qty, s_date = \
+                                row[0].strip(), row[1].strip(), row[2].strip(), row[3].strip(), row[4].strip(), row[5].strip(), \
+                                Decimal(row[6].strip()), Decimal(row[7].strip()), Decimal(row[8].strip()), \
+                                Decimal(row[10].strip()), datetime.strptime(row[19].strip(), '%Y-%m-%d %H:%M:%S.%f')
+                            if get_by_external_id(SalesOrder, po_num) is None:
+                                imported_line += 1
+                                # 1. Create or update supplier --> return supplier
+                                supplier = create_or_update_supplier(sup_num, sup_name)
+                                # 2. Create or update product --> return product
+                                product = create_or_update_product(prd_num, prd_name, pur_price, ret_price, supplier)
+                                # 3. Create or update sales order / sales order line --> return PO.
+                                order, order_line = create_or_update_sales_order(po_num, po_line_num, product, act_price, qty, s_date)
+                                # 4. Create shipping record --> return shipping id
+                                shipping, shipping_line = create_or_update_shipping(order, order_line, shipping_status)
+                                # 5. Create inventory transaction record --> return inventory transaction record
+                                itr, itl = create_or_update_inventory_transaction(shipping, shipping_line, it_type)
+                                # 6. Create related incoming and return it.
+                                incoming = create_or_update_incoming(order, order_line, incoming_category, incoming_status)
+                                save_objects_commit(supplier, product, order, shipping, itr, incoming)
+                        line += 1
+                    print ("Import of CSV data finished, imported line: {0}".format(str(imported_line)))
+                    return gettext('Upload and import into system successfully')

@@ -4,13 +4,12 @@ var is_uploading = false;
     var do_upload_button = $("#do-upload");
     $('#triggerFile').on('click', function (e) {
         e.preventDefault();
-        $("#csv-file").trigger('click')
+        $("#csv-file").trigger('click');
     });
     do_upload_button.on('click', function (e) {
         e.preventDefault();
         if (!is_uploading) {
             is_uploading = true;
-            do_upload_button.attr('disabled', 'disabled');
             for (var i = 0; i < g_files.length; i++) {
                 UploadFile(g_files[i]);
             }
@@ -66,24 +65,20 @@ var is_uploading = false;
     }
 
     function UploadFile(file) {
-        var reader = new FileReader();
-        reader.onload = (function (f) {
-            return function (e) {
-                $.ajax({
-                    url: $("#upload-form").attr('action'),
-                    method: 'POST',
-                    data: {content: e.target.result}
-                }).done(function (data) {
-                    var return_msg_div = $('#upload-return-message');
-                    return_msg_div.html(data);
-                    return_msg_div.show().delay(5000).hide(500);
-                    is_uploading = false;
-                    do_upload_button.removeAttr('disabled');
-                });
-            };
-        })(file);
-        reader.readAsText(file);
-
+        var formData = new FormData();
+        formData.append('file', $('#csv-file')[0].files[0]);
+        $.ajax({
+            url: $("#upload-form").attr('action'),
+            method: 'POST',
+            processData: false,
+            contentType: false,
+            data: formData
+        }).done(function (data) {
+            var return_msg_div = $('#upload-return-message');
+            return_msg_div.html(data);
+            return_msg_div.show();
+            is_uploading = false;
+        });
         //xhr.open("POST", $("#upload-form").attr('action'), true);
         //xhr.setRequestHeader("X_FILENAME", encodeURIComponent(file.name));
         //xhr.send(file);

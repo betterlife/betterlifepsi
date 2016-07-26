@@ -28,6 +28,7 @@ class BaseConfig(object):
     DEFAULT_LEAD_DAY = 3
     DEFAULT_CATEGORY_ID = 1
     DASHBOARD_BI_URL = ""
+    UPLOAD_TMP_FOLDER = '/tmp'
 
     security_messages = {
         'PASSWORD_MISMATCH': (lazy_gettext('Password does not match'), 'error'),
