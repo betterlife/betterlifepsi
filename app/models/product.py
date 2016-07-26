@@ -37,6 +37,8 @@ class Product(db.Model, DataSecurityMixin):
     spec_link = Column(String(128))
     purchase_price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
     retail_price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
+    franchise_price = Column(Numeric(precision=8, scale=2,
+                                     decimal_return_scale=2), nullable=True)
     category_id = Column(Integer, ForeignKey('product_category.id'), nullable=False)
     category = relationship('ProductCategory', backref=backref('products', lazy='joined'))
     supplier_id = Column(Integer, ForeignKey('supplier.id'), nullable=False)

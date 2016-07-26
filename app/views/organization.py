@@ -39,11 +39,14 @@ class OrganizationAdmin(ModelViewWithAccess):
         return (self.session.query(return_query).filter(self.model.id.in_(all_ids))
                 if not is_super_admin() else self.session.query(return_query))
 
-    column_list = ('id', 'name', 'description', 'parent', 'immediate_children',)
+    column_list = ('id', 'name', 'description', 'type', 'parent',
+                   'immediate_children',)
 
-    column_sortable_list = ('id', 'name', 'description',)
+    column_sortable_list = ('id', 'name', 'description', 'type')
 
-    column_searchable_list = ('name', 'description', 'parent.name', 'parent.description', 'lft', 'rgt')
+    column_searchable_list = ('name', 'description', 'parent.name',
+                              'parent.description', 'lft', 'rgt',
+                              'type.code', 'type.display')
 
     column_labels = dict(
         id=lazy_gettext('id'),
@@ -52,8 +55,13 @@ class OrganizationAdmin(ModelViewWithAccess):
         parent=lazy_gettext('Parent Organization'),
         lft=lazy_gettext('Left'),
         rgt=lazy_gettext('Right'),
+        type=lazy_gettext('Type'),
         immediate_children=lazy_gettext('Immediate Children'),
         all_children=lazy_gettext('All Children'),
+    )
+
+    form_args = dict(
+        type=dict(query_factory=Organization.type_filter)
     )
 
     column_formatters = {
@@ -82,6 +90,8 @@ class OrganizationAdmin(ModelViewWithAccess):
         # For root organization, allow blank
         if is_root_organization(obj):
             form.parent.allow_blank = True
+            # Does not allow to change type for root organization
+            delattr(form, "type")
         return form
 
     column_details_list = ('id', 'name', 'description', 'lft', 'rgt', 'parent', 'immediate_children', 'all_children')

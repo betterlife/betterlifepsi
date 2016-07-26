@@ -4,7 +4,7 @@ from app.models.data_security_mixin import DataSecurityMixin
 from app.utils.db_util import id_query_to_obj
 from sqlalchemy import Integer, select, desc, func, between
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import aliased
+from sqlalchemy.orm import aliased, relationship
 from sqlalchemy.sql.elements import and_
 from flask_login import current_user
 
@@ -21,6 +21,16 @@ class Organization(db.Model, DataSecurityMixin):
     description = db.Column(db.String(255))
     lft = db.Column(Integer, unique=True, nullable=False, default=0)
     rgt = db.Column(Integer, unique=True, nullable=False, default=0)
+    type_id = db.Column(Integer, db.ForeignKey('enum_values.id'), nullable=False)
+    type = relationship('EnumValues', foreign_keys=[type_id])
+
+
+    @staticmethod
+    def type_filter():
+        from app.models.enum_values import EnumValues
+        from app.const import ORGANIZATION_TYPE_KEY
+        return EnumValues.type_filter(ORGANIZATION_TYPE_KEY)
+
 
     @hybrid_property
     def parent(self):

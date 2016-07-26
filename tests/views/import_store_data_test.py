@@ -22,7 +22,8 @@ class TestImportStoreDataView(unittest.TestCase):
         from app.models import SalesOrder, SalesOrderLine, Product, Supplier
         from app.utils import db_util
         import os
-        content = codecs.open(os.path.dirname(os.path.realpath(__file__)) + "/store_data.csv", "r", "utf-8").read()
+        file_name = os.path.dirname(os.path.realpath(__file__)) + "/store_data.csv"
+        content = codecs.open(file_name, "r", "utf-8").read()
         from app.models.user import User
         from app.models.role import Role
         from app.service import Info
@@ -35,7 +36,9 @@ class TestImportStoreDataView(unittest.TestCase):
         rv = self.test_client.get('/admin/import_store_data/', follow_redirects=True)
         self.assertEqual(200, rv.status_code)
         self.assertIn(u'导入店铺运营数据', rv.data)
-        self.test_client.post('/admin/import_store_data/', data=dict(content=content), follow_redirects=True)
+        self.test_client.post('/admin/import_store_data/', data={
+            'file': (file_name, content),
+        }, follow_redirects=True)
 
         self.assertIsNotNone(db_util.get_by_external_id(SalesOrder, '01201503090002', user=user))
 

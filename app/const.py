@@ -43,3 +43,6 @@ TIMEZONE_VALUES_KEY = u'TIMEZONES'
 
 # Super admin role
 SUPER_ADMIN_ROLE_NAME = u'super_admin'
+
+# Organization type key
+ORGANIZATION_TYPE_KEY = u'ORGANIZATION_TYPE'

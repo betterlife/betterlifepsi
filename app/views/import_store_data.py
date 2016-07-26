@@ -2,6 +2,7 @@
 from __future__ import print_function
 import csv
 import os
+import uuid
 from datetime import datetime
 from decimal import Decimal
 
@@ -155,6 +156,8 @@ class ImportStoreDataView(BaseView):
             file = request.files['file']
             if file:
                 filename = secure_filename(file.filename)
+                if len(filename) == 0:
+                    filename = str(uuid.uuid4())
                 full_path = os.path.join(current_app.config['UPLOAD_TMP_FOLDER'], filename)
                 file.save(full_path)
                 with open(full_path, 'rb') as f:
@@ -175,7 +178,8 @@ class ImportStoreDataView(BaseView):
                                 row[0].strip(), row[1].strip(), row[2].strip(), row[3].strip(), row[4].strip(), row[5].strip(), \
                                 Decimal(row[6].strip()), Decimal(row[7].strip()), Decimal(row[8].strip()), \
                                 Decimal(row[10].strip()), datetime.strptime(row[19].strip(), '%Y-%m-%d %H:%M:%S.%f')
-                            if get_by_external_id(SalesOrder, po_num) is None:
+                            line_exists = self.is_po_line_exists(line, po_line_num)
+                            if  not line_exists:
                                 imported_line += 1
                                 # 1. Create or update supplier --> return supplier
                                 supplier = create_or_update_supplier(sup_num, sup_name)
@@ -193,3 +197,12 @@ class ImportStoreDataView(BaseView):
                         line += 1
                     print ("Import of CSV data finished, imported line: {0}".format(str(imported_line)))
                     return gettext('Upload and import into system successfully')
+
+    def is_po_line_exists(self, line, po_line_num):
+        existing_order = get_by_external_id(SalesOrderLine, po_line_num)
+        line_exists = False
+        if existing_order is not None:
+            for line in existing_order.lines:
+                if line.external_id == po_line_num:
+                    line_exists = True
+        return line_exists
