@@ -29,6 +29,8 @@ class BaseConfig(object):
     DEFAULT_CATEGORY_ID = 1
     DASHBOARD_BI_URL = ""
     UPLOAD_TMP_FOLDER = '/tmp'
+    BUILDER_URL_PREFIX = 'http://devops.betterlife.io/browse'
+    GIT_URL_PREFIX = 'http://git.betterlife.io/projects/BET/repos/flask-psi/commits'
 
     security_messages = {
         'PASSWORD_MISMATCH': (lazy_gettext('Password does not match'), 'error'),
