@@ -30,6 +30,6 @@ def render_version():
                                                  commit_link=commit_link,
                                                  branch=branch,
                                                  tag=tag)
-    except IOError:
+    except:
         result = 'Unknown Version(Local Development)'
     return result
