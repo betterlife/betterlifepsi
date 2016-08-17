@@ -24,7 +24,7 @@ def is_super_admin(user=current_user):
     :param user: user to judge
     :return: True if the user is a super admin, otherwise False
     """
-    return user.has_role(SUPER_ADMIN_ROLE_NAME)
+    return user is not None and user.has_role(SUPER_ADMIN_ROLE_NAME)
 
 
 def get_user_roles(user=current_user):
@@ -35,11 +35,12 @@ def get_user_roles(user=current_user):
     """
     all_derive_roles = set()
     result = []
-    for role in user.roles:
-        all_derive_roles.add(get_all_sub_roles(role, current_result=all_derive_roles))
-    for r in all_derive_roles:
-        if r is not None:
-            result.append(r)
+    if hasattr(user, 'roles'):
+        for role in user.roles:
+            all_derive_roles.add(get_all_sub_roles(role, current_result=all_derive_roles))
+        for r in all_derive_roles:
+            if r is not None:
+                result.append(r)
     return result
 
 

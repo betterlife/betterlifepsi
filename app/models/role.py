@@ -25,5 +25,8 @@ class Role(db.Model, RoleMixin, DataSecurityMixin):
     def __unicode__(self):
         return self.name
 
+    def __str__(self):
+        return self.__unicode__()
+
     def can_delete(self):
         return len(self.sub_roles) == 0

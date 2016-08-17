@@ -75,7 +75,7 @@
                         {% endif %}
                     {% endblock %}
                     {% set column = 0 %}
-                    {% for c, name in list_columns %}
+                    {% for c, name in admin_view.get_list_columns() %}
                     <th class="column-header col-{{c}}">
                         {% if admin_view.is_sortable(c) %}
                             {% if sort_column == column %}
@@ -156,7 +156,7 @@
                     {%- endif -%}
                 {% endblock %}
 
-                {% for c, name in list_columns %}
+                {% for c, name in admin_view.get_list_columns() %}
                     <td class="col-{{c}}">
                     {% if admin_view.is_editable(c) %}
                         {% set form = list_forms[get_pk_value(row)] %}

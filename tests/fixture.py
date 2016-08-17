@@ -10,7 +10,13 @@ def init_app():
 
 
 def login_as_admin(test_client):
-    return test_client.post('/login', data=dict(email='support@betterlife.io', password='password'), follow_redirects=True)
+    return login_user(test_client, 'support@betterlife.io', 'password')
+
+
+def login_user(test_client, email, password):
+    return test_client.post('/login', data=dict(email=email,
+                                                password=password),
+                            follow_redirects=True)
 
 
 def run_test_as_admin(test_client, func_to_run, *parameters):

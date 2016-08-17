@@ -2,6 +2,8 @@
 from datetime import datetime
 from functools import partial
 
+from flask.ext.login import current_user
+
 from app import service
 from flask_admin.contrib.sqla.filters import FloatSmallerFilter, FloatGreaterFilter, FloatEqualFilter
 from flask_admin.model import InlineFormAdmin
@@ -11,7 +13,7 @@ from app.models import Preference, Expense, PurchaseOrder, Product, EnumValues, 
 from app.views import ModelViewWithAccess
 from app.views.components import DisabledStringField
 from app.views.base import DeleteValidator
-from app.utils import form_util
+from app.utils import form_util, security_util
 
 
 class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
@@ -152,11 +154,36 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
                 db.session.add(receiving)
         db.session.commit()
 
+    def get_list_columns(self):
+        """
+        This method is called instantly in list.html
+        List of columns is decided runtime during render of the table
+        Not decided during flask-admin blueprint startup.
+        """
+        columns = super(PurchaseOrderAdmin, self).get_list_columns()
+        new_col_list = []
+        local_user = current_user._get_current_object()
+        if (not security_util.is_super_admin(local_user) and
+                not security_util.user_has_role('purchase_price_view', local_user)):
+            for l in columns:
+                if (l[0] != 'goods_amount' and
+                    l[0] != 'total_amount' and
+                    l[0] != 'all_expenses'):
+                    new_col_list.append(l)
+            columns = tuple(new_col_list)
+        return columns
+
+
     def edit_form(self, obj=None):
         form = super(PurchaseOrderAdmin, self).edit_form(obj)
         supplier_id = obj.transient_supplier.id
         # Set query_factory for newly added line
         form.lines.form.product.kwargs['query_factory'] = partial(Product.supplier_filter, supplier_id)
+        if not security_util.user_has_role('purchase_price_view'):
+            form_util.del_form_field(self, form, 'goods_amount')
+            form_util.del_form_field(self, form, 'total_amount')
+            form_util.del_inline_form_field(form.lines.form, form.lines.entries, 'unit_price')
+            form_util.del_inline_form_field(form.lines.form, form.lines.entries, 'total_amount')
         # Set option list of status available
         if obj.status.code in [const.PO_RECEIVED_STATUS_KEY, const.PO_PART_RECEIVED_STATUS_KEY, const.PO_PART_RECEIVED_STATUS_KEY,
                                const.PO_ISSUED_STATUS_KEY, const.PO_DRAFT_STATUS_KEY]:
@@ -170,6 +197,7 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
             sub_line.form.product.query = products
         return form
 
+
     def create_form(self, obj=None):
         form = super(PurchaseOrderAdmin, self).create_form(obj)
         form.status.query = [EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY), ]
@@ -179,6 +207,9 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
 
     def on_model_change(self, form, model, is_created):
         super(PurchaseOrderAdmin, self).on_model_change(form, model, is_created)
+        if not security_util.user_has_role('purchase_price_view'):
+            for l in model.lines:
+                l.unit_price = l.product.purchase_price
         DeleteValidator.validate_status_for_change(model, const.PO_RECEIVED_STATUS_KEY,
                                                    gettext('Purchase order can not be update nor delete '
                                                            'on received status'))

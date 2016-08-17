@@ -279,10 +279,13 @@ class Product(db.Model, DataSecurityMixin):
 
     def __unicode__(self):
         from app.utils.security_util import user_has_role
+        result = self.name
         if user_has_role('supplier_view'):
-            return "{0}...{1}...零售价:{2}".format(self.name, self.supplier.name[:6], str(self.retail_price))
-        else:
-            return "{0}...零售价:{1}".format(self.name, str(self.retail_price))
+            result += "/供应商:{0}".format(self.supplier.name[:6])
+        if user_has_role('purchase_price_view'):
+            result += "/进货价:{0}".format(self.purchase_price)
+        result += '/零售价:{0}'.format(self.retail_price)
+        return result
 
     def __repr__(self):
         return self.__unicode__()
