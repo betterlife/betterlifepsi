@@ -1,4 +1,4 @@
-"""empty message
+"""Add purchase_price_view role
 
 Revision ID: db9ee0625c86
 Revises: 7868d8cd502d
