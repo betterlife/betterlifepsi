@@ -112,6 +112,12 @@ class ProductAdmin(ModelViewWithAccess):
         form_util.filter_by_organization(form.supplier, Supplier)
         return form
 
+    def get_details_columns(self):
+        columns = super(ProductAdmin, self).get_details_columns()
+        columns = security_util.filter_columns_by_role(columns, ['purchase_price'],
+                                                       'purchase_price_view')
+        return columns
+
     def get_list_columns(self):
         """
         This method is called instantly in list.html

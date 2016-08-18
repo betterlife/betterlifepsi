@@ -50,6 +50,8 @@ class TestDbUtil(unittest.TestCase):
     def test_get_next_id_with_existing_one(self):
         from app.utils import db_util
         from app.models import ProductCategory
-        object_faker.category()
-        next_id = db_util.get_next_id(ProductCategory)
-        self.assertEquals(2, next_id)
+        with self.test_client:
+            fixture.login_as_admin(self.test_client)
+            object_faker.category()
+            next_id = db_util.get_next_id(ProductCategory)
+            self.assertEquals(2, next_id)

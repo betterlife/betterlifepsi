@@ -166,6 +166,13 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
                                                        'purchase_price_view')
         return columns
 
+    def get_details_columns(self):
+        cols = ['goods_amount', 'total_amount', 'all_expenses']
+        columns = super(PurchaseOrderAdmin, self).get_details_columns()
+        columns = security_util.filter_columns_by_role(columns, cols,
+                                                       'purchase_price_view')
+        return columns
+
     def edit_form(self, obj=None):
         form = super(PurchaseOrderAdmin, self).edit_form(obj)
         supplier_id = obj.transient_supplier.id

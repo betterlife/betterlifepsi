@@ -72,12 +72,18 @@ def delete_by_id(obj_type, id_to_del, commit=True):
         db.session.commit()
 
 
-def get_first_result_raw_sql(op, sql):
-    res = op.get_bind().execute(sql)
+def get_result_raw_sql(sql):
+    """
+    Get first returned value of a raw sql as a tuple
+    :param sql: The sql to execute
+    :return: a tuple contains first result
+    """
+    res = Info.get_db().engine.execute(sql)
     results = res.fetchall()
     result = None
     for r in results:
-        result = r[0]
+        result = r
+        break
     return result
 
 
