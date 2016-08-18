@@ -54,7 +54,7 @@ class ModelViewWithAccess(ModelView):
         if obj is None:
             same_org = True
         else:
-            same_org = (obj.organization == current_user.organization) if has_organization_field(obj) else True
+            same_org = (obj.organization.id == current_user.organization.id) if has_organization_field(obj) else True
         return (is_super_admin()) or (same_org and current_user.is_authenticated and (tablename + '_' + operation in get_user_roles()))
 
     def handle_view_exception(self, exc):
