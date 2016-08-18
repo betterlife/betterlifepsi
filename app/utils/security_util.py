@@ -29,7 +29,8 @@ def is_super_admin(user=current_user):
 
 def get_user_roles(user=current_user):
     """
-    Get all roles of a user, included derived roles not directly assigned to the user.
+    Get all roles of a user, included derived roles not directly assigned to
+    the user.
     :param user: user
     :return: A set of all roles assigned to the user
     """
@@ -37,7 +38,8 @@ def get_user_roles(user=current_user):
     result = []
     if hasattr(user, 'roles'):
         for role in user.roles:
-            all_derive_roles.add(get_all_sub_roles(role, current_result=all_derive_roles))
+            all_derive_roles.add(
+                get_all_sub_roles(role, current_result=all_derive_roles))
         for r in all_derive_roles:
             if r is not None:
                 result.append(r)
@@ -81,8 +83,28 @@ def is_root_organization(obj):
     """
     Check whether this object(organization) is the root organization
     This check is performed based on whether this org's parent org is None
-    According to current design, only root organization's parent org could not None
+    According to current design, only root organization's parent org could
+    not None
     :param obj: object to check
     :return: True if it's root organization, otherwise false
     """
     return obj is not None and obj.parent is None
+
+
+def filter_columns_by_role(columns, to_filter_cols, role):
+    """
+    Filter columns based on user's role
+    :param columns: Columns to be filtered
+    :param to_filter_cols: columns to remove if user does not have that role
+    :param role: User need this role to show the to_filter_cols
+    :return: A filtered column list
+    """
+    from flask.ext.login import current_user
+    new_col_list = []
+    local_user = current_user._get_current_object()
+    if (not is_super_admin(local_user) and not user_has_role(role, local_user)):
+        for l in columns:
+            if l[0] not in to_filter_cols:
+                new_col_list.append(l)
+        columns = tuple(new_col_list)
+    return columns

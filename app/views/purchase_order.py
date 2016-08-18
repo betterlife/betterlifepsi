@@ -161,18 +161,10 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
         Not decided during flask-admin blueprint startup.
         """
         columns = super(PurchaseOrderAdmin, self).get_list_columns()
-        new_col_list = []
-        local_user = current_user._get_current_object()
-        if (not security_util.is_super_admin(local_user) and
-                not security_util.user_has_role('purchase_price_view', local_user)):
-            for l in columns:
-                if (l[0] != 'goods_amount' and
-                    l[0] != 'total_amount' and
-                    l[0] != 'all_expenses'):
-                    new_col_list.append(l)
-            columns = tuple(new_col_list)
+        cols = ['goods_amount', 'total_amount', 'all_expenses']
+        columns = security_util.filter_columns_by_role(columns, cols,
+                                                       'purchase_price_view')
         return columns
-
 
     def edit_form(self, obj=None):
         form = super(PurchaseOrderAdmin, self).edit_form(obj)
@@ -196,7 +188,6 @@ class PurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
         for sub_line in line_entries:
             sub_line.form.product.query = products
         return form
-
 
     def create_form(self, obj=None):
         form = super(PurchaseOrderAdmin, self).create_form(obj)

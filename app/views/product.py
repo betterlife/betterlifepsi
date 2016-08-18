@@ -2,7 +2,7 @@
 from flask_babelex import lazy_gettext
 from app.models.product import Product, ProductImage
 from app.views.base import ModelViewWithAccess
-from app.utils import form_util
+from app.utils import form_util, security_util
 
 from app.views.components import ImageField, images_formatter
 
@@ -111,3 +111,15 @@ class ProductAdmin(ModelViewWithAccess):
         form_util.filter_by_organization(form.category, ProductCategory)
         form_util.filter_by_organization(form.supplier, Supplier)
         return form
+
+    def get_list_columns(self):
+        """
+        This method is called instantly in list.html
+        List of columns is decided runtime during render of the table
+        Not decided during flask-admin blueprint startup(which is the default
+        behavior of flask-admin).
+        """
+        columns = super(ProductAdmin, self).get_list_columns()
+        columns = security_util.filter_columns_by_role(columns, ['purchase_price'],
+                                                       'purchase_price_view')
+        return columns

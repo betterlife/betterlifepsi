@@ -70,4 +70,16 @@ class ObjectFaker(object):
         category.name = self.faker.name()
         return category
 
+    def user(self):
+        from app.models import User
+        from flask_security.utils import encrypt_password
+        user = User()
+        user.active = True
+        user.display = self.faker.name()
+        user.email = self.faker.email()
+        user.login = self.faker.name()
+        password = self.faker.password()
+        user.password = encrypt_password(password)
+        return user, password
+
 object_faker = ObjectFaker()

@@ -20,4 +20,5 @@ def upgrade():
 
 
 def downgrade():
-    pass
+    from sqlalchemy.sql import text
+    op.get_bind().execute(text("DELETE FROM role where name ='purchase_price_view'"))
