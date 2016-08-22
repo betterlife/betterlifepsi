@@ -18,6 +18,7 @@ class ObjectFaker(object):
         po.logistic_amount = self.faker.pyfloat(positive=True, left_digits=2, right_digits=0)
         po.order_date = self.faker.date()
         po.status = EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY)
+        po.type = EnumValues.find_one_by_code(const.DIRECT_PO_TYPE_KEY)
         po.id = po_id if po_id is not None else db_util.get_next_id(PurchaseOrder)
         po.organization = creator.organization
         po.supplier = self.supplier()
