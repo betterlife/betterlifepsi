@@ -24,6 +24,9 @@ class SalesOrder(db.Model, DataSecurityMixin):
     organization_id = db.Column(Integer, ForeignKey('organization.id'))
     organization = relationship('Organization', foreign_keys=[organization_id])
 
+    type_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
+    type = relationship('EnumValues', foreign_keys=[type_id])
+
     remark = Column(Text)
 
     @hybrid_property

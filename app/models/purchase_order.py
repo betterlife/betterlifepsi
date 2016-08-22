@@ -23,6 +23,9 @@ class PurchaseOrder(db.Model, DataSecurityMixin):
     status_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
     status = relationship('EnumValues', foreign_keys=[status_id])
 
+    type_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
+    type = relationship('EnumValues', foreign_keys=[type_id])
+
     organization_id = db.Column(Integer, ForeignKey('organization.id'))
     organization = relationship('Organization', foreign_keys=[organization_id])
 
