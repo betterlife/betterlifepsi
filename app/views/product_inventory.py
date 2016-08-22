@@ -11,6 +11,9 @@ class ProductInventoryView(ModelViewWithAccess):
     can_create = False
     can_view_details = False
 
+    @property
+    def role_identify(self): return "product_inventory"
+
     column_list = ('name', 'available_quantity', 'in_transit_quantity',
                    'average_purchase_price', 'average_retail_price', 'average_unit_profit', 'weekly_sold_qty',
                    'weekly_average_profit', 'inventory_advice')

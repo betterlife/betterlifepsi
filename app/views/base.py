@@ -47,15 +47,19 @@ class ModelViewWithAccess(ModelView):
         """
         return True
 
+    @property
+    def role_identify(self):
+        return self.model.__tablename__
+
     def can(self, operation='view'):
-        tablename = self.model.__tablename__
         obj_id = get_mdict_item_or_list(request.args, 'id') if has_request_context() else None
         obj = None if obj_id is None else self.get_one(obj_id)
         if obj is None:
             same_org = True
         else:
             same_org = (obj.organization.id == current_user.organization.id) if has_organization_field(obj) else True
-        return (is_super_admin()) or (same_org and current_user.is_authenticated and (tablename + '_' + operation in get_user_roles()))
+        role_assigned = same_org and current_user.is_authenticated and (self.role_identify + '_' + operation in get_user_roles())
+        return (is_super_admin()) or (role_assigned)
 
     def handle_view_exception(self, exc):
         if isinstance(exc, ValidationError):
