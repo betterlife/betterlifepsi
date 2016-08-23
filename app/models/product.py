@@ -1,4 +1,6 @@
 # encoding: utf-8
+from flask.ext.login import current_user
+
 from app.service import Info
 from app import const
 from app.utils.date_util import get_weeks_between
@@ -286,9 +288,16 @@ class Product(db.Model, DataSecurityMixin):
         result = self.name
         if user_has_role('supplier_view'):
             result += "/供应商:{0}".format(self.supplier.name[:6])
-        if user_has_role('purchase_price_view'):
+        if (user_has_role('purchase_price_view') and
+            current_user.organization.type.code ==
+            const.DIRECT_SELLING_STORE_ORG_TYPE_KEY):
             result += "/进货价:{0}".format(self.purchase_price)
-        result += '/零售价:{0}'.format(self.retail_price)
+            result += '/零售价:{0}'.format(self.retail_price)
+        elif (user_has_role('purchase_price_view') and
+            current_user.organization.type.code ==
+            const.FRANCHISE_STORE_ORG_TYPE_KEY):
+            result += "/拿货价:{0}".format(self.franchise_price)
+            result += '/建议零售价:{0}'.format(self.retail_price)
         return result
 
     def __repr__(self):
