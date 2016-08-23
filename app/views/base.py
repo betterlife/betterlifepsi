@@ -57,7 +57,13 @@ class ModelViewWithAccess(ModelView):
         if obj is None:
             same_org = True
         else:
-            same_org = (obj.organization.id == current_user.organization.id) if has_organization_field(obj) else True
+            if has_organization_field(obj):
+                if obj.organization is None:
+                    same_org = False
+                else:
+                    same_org = (obj.organization.id == current_user.organization.id)
+            else:
+                same_org = True
         role_assigned = same_org and current_user.is_authenticated and (self.role_identify + '_' + operation in get_user_roles())
         return (is_super_admin()) or (role_assigned)
 
