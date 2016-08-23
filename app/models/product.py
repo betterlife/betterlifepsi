@@ -253,6 +253,10 @@ class Product(db.Model, DataSecurityMixin):
         return Info.get_db().session.query(Product).filter_by(supplier_id=s_id)
 
     @staticmethod
+    def organization_filter(o_id):
+        return Info.get_db().session.query(Product).filter_by(organization_id=o_id)
+
+    @staticmethod
     def organization_filter(org_id):
         return Info.get_db().session.query(Product).filter_by(organization_id=org_id)
 
