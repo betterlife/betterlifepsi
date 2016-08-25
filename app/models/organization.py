@@ -12,10 +12,12 @@ db = Info.get_db()
 
 
 class Organization(db.Model, DataSecurityMixin):
+
     """
     Organization, for data isolation
     """
     __tablename__ = 'organization'
+    uos = 'UPDATE ' + __tablename__ + ' SET'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
@@ -40,7 +42,19 @@ class Organization(db.Model, DataSecurityMixin):
 
     @parent.setter
     def parent(self, value):
-        pass
+        from app.service import Info
+        from sqlalchemy import text
+        from utils import db_util
+        db = Info.get_db()
+        max_lft = value.rgt - 1
+        sql = text(
+            '{u} rgt = rgt + 2 WHERE rgt > {val};{u} lft = lft + 2 WHERE '
+            'lft > {val}'.format(val=max_lft, u=self.uos))
+        # set left and right of the new object
+        self.lft = max_lft + 1
+        self.rgt = max_lft + 2
+        db.engine.execute(sql)
+        db_util.save_objects_commit(self)
 
     @parent.expression
     def parent(self):

@@ -114,13 +114,7 @@ class OrganizationAdmin(ModelViewWithAccess):
         if is_created:  # New create
             # update all exiting node with right and left bigger than current parent's right - 1
             if parent is not None:
-                max_lft = parent.rgt - 1
-                sql = text('{u} rgt = rgt + 2 WHERE rgt > {val};{u} lft = lft + 2 WHERE lft > {val}'.format(val=max_lft, u=self.uos))
-                # set left and right of the new object
-                model.lft = max_lft + 1
-                model.rgt = max_lft + 2
-                db.engine.execute(sql)
-                db_util.save_objects_commit(model)
+                model.parent = parent
         elif parent is not None:
             # Changing parent of a subtree or leaf.
             # Refer to http://stackoverflow.com/questions/889527/move-node-in-nested-set for detail.
