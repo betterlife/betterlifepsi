@@ -1,4 +1,4 @@
-# coding=utf-8
+#coding=utf-8
 from __future__ import print_function
 import csv
 import os
@@ -172,13 +172,12 @@ class ImportStoreDataView(BaseView):
                             # 订单编号(0), 订单行编号(1),商品编号(2),商品名称(3),供应商编号(4),供应商名称(5),进价(6),定价(7),卖价(8),价格折扣(9),数量(10),
                             # 金额(11),成本(12),毛利(13),折扣(%)(14),折扣额(15),毛利率(16),操作员(17),营业员(18),时间(19)
                             if line % 100 == 0:
-                                print("Processing line: [{0}]".format(str(line)))
-                                print("Content: [{0}]".format(row))
+                                print("Processing line: [{0}]\nContent: [{1}]".format(str(line), ",".join(row).decode('utf-8')))
                             po_num, po_line_num, prd_num, prd_name, sup_num, sup_name, pur_price, ret_price, act_price, qty, s_date = \
                                 row[0].strip(), row[1].strip(), row[2].strip(), row[3].strip(), row[4].strip(), row[5].strip(), \
                                 Decimal(row[6].strip()), Decimal(row[7].strip()), Decimal(row[8].strip()), \
                                 Decimal(row[10].strip()), datetime.strptime(row[19].strip(), '%Y-%m-%d %H:%M:%S.%f')
-                            line_exists = self.is_po_line_exists(line, po_line_num)
+                            line_exists = self.is_po_line_exists(po_num, po_line_num)
                             if  not line_exists:
                                 imported_line += 1
                                 # 1. Create or update supplier --> return supplier
@@ -198,11 +197,10 @@ class ImportStoreDataView(BaseView):
                     print ("Import of CSV data finished, imported line: {0}".format(str(imported_line)))
                     return gettext('Upload and import into system successfully')
 
-    def is_po_line_exists(self, line, po_line_num):
-        existing_order = get_by_external_id(SalesOrderLine, po_line_num)
-        line_exists = False
+    def is_po_line_exists(self, po_num, po_line_num):
+        existing_order = get_by_external_id(SalesOrder, po_num)
         if existing_order is not None:
             for line in existing_order.lines:
                 if line.external_id == po_line_num:
-                    line_exists = True
-        return line_exists
+                    return True
+        return False
