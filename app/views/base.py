@@ -68,9 +68,13 @@ class ModelViewWithAccess(ModelView):
         return (is_super_admin()) or (role_assigned)
 
     def handle_view_exception(self, exc):
+        from sqlalchemy.exc import InvalidRequestError
         if isinstance(exc, ValidationError):
             flash(as_unicode(exc), category='error')
-            return True
+            return False
+        elif isinstance(exc, InvalidRequestError):
+            flash(as_unicode(exc), category='error')
+            return False
         return super(ModelViewWithAccess, self).handle_view_exception(exc)
 
     def get_query(self):

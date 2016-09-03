@@ -17,7 +17,7 @@ class PurchaseOrder(db.Model, DataSecurityMixin):
     id = Column(Integer, primary_key=True)
     logistic_amount = Column(Numeric(precision=8, scale=2, decimal_return_scale=2))
     order_date = Column(DateTime, nullable=False)
-    supplier_id = Column(Integer, ForeignKey('supplier.id'), nullable=False)
+    supplier_id = Column(Integer, ForeignKey('supplier.id'), nullable=True)
     supplier = relationship('Supplier', backref=backref('purchaseOrders', lazy='dynamic'))
 
     status_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
@@ -28,6 +28,9 @@ class PurchaseOrder(db.Model, DataSecurityMixin):
 
     organization_id = db.Column(Integer, ForeignKey('organization.id'))
     organization = relationship('Organization', foreign_keys=[organization_id])
+
+    to_organization_id = db.Column(Integer, ForeignKey('organization.id'), nullable=True)
+    to_organization = relationship('Organization', foreign_keys=[to_organization_id])
 
     @staticmethod
     def status_filter(status_codes):

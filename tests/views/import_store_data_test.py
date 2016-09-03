@@ -3,6 +3,8 @@ import unittest
 from datetime import datetime
 
 import codecs
+
+from app import const
 from tests import fixture
 
 
@@ -62,8 +64,10 @@ class TestImportStoreDataView(unittest.TestCase):
         sales_order = db_util.get_by_external_id(SalesOrder, '01201503130003', user=user)
         """:type: SalesOrder"""
         self.assertEqual(3, len(sales_order.lines))
+        self.assertEqual(const.DIRECT_SO_TYPE_KEY, sales_order.type.code)
 
         sales_order = db_util.get_by_external_id(SalesOrder, '01201503130001', user=user)
+        self.assertEqual(const.DIRECT_SO_TYPE_KEY, sales_order.type.code)
         self.assertEqual(user.organization_id, sales_order.organization_id)
         self.assertEqual(1, len(sales_order.lines))
         line = sales_order.lines[0]

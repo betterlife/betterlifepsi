@@ -44,7 +44,7 @@ class Organization(db.Model, DataSecurityMixin):
     def parent(self, value):
         from app.service import Info
         from sqlalchemy import text
-        from utils import db_util
+        from app.utils import db_util
         db = Info.get_db()
         max_lft = value.rgt - 1
         sql = text(
@@ -196,7 +196,7 @@ class Organization(db.Model, DataSecurityMixin):
     @staticmethod
     def children_remover(organization):
         from flask_login import current_user
-        all_org = Organization.query.all()
+        all_org = db.session.query(Organization).all()
         orgs = [org for org in all_org if (org not in organization.all_children and org != organization)]
         return [org for org in orgs if (org in current_user.organization.all_children or org == current_user.organization)]
 

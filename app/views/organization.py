@@ -110,7 +110,7 @@ class OrganizationAdmin(ModelViewWithAccess):
         db = Info.get_db()
         str_id = getattr(form, "parent").raw_data[0]
         int_id = int(str_id) if str_id is not None and str_id != u"__None" and len(str_id) > 0 else None
-        parent = Organization.query.get(int_id) if int_id is not None else None
+        parent = db.session.query(Organization).get(int_id) if int_id is not None else None
         if is_created:  # New create
             # update all exiting node with right and left bigger than current parent's right - 1
             if parent is not None:

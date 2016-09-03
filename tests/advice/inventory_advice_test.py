@@ -91,4 +91,4 @@ class TestInventoryAdvice(unittest.TestCase):
         self.assertIn('可销售<span class="i_a_number">3.50</span>天', advice)
         self.assertIn('补货需要<span class="i_a_number">5.00</span>天', advice)
         self.assertIn('补货期间损失利润额<span class="i_a_number i_a_warning">30.00</span>元', advice)
-        self.assertIn('<a href="/admin/purchaseorder/new/" target="_blank">点此补货</a>', advice)
+        self.assertIn('<a href="/admin/dpo/new/" target="_blank">点此补货</a>', advice)

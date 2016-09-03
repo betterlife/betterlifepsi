@@ -15,13 +15,9 @@ def recreate_database(config):
     import commands
     db_uri = config.SQLALCHEMY_DATABASE_URI
     db_name = db_uri[db_uri.rindex("/") + 1:]
-    (s_d, o_d) = commands.getstatusoutput(
-        '/opt/PostgreSQL/9.2/bin/psql -U postgres -c "DROP DATABASE {0}"'
-            .format(db_name))
+    (s_d, o_d) = commands.getstatusoutput('psql -U postgres -c "DROP DATABASE {0}"'.format(db_name))
     print(s_d, o_d)
-    (s_c, o_c) = commands.getstatusoutput(
-        '/opt/PostgreSQL/9.2/bin/psql -U postgres -c "CREATE DATABASE {0}"'
-            .format(db_name))
+    (s_c, o_c) = commands.getstatusoutput('psql -U postgres -c "CREATE DATABASE {0}"'.format(db_name))
     print(s_c, o_c)
 
 

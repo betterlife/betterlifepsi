@@ -2,7 +2,7 @@
 from datetime import datetime
 from functools import partial
 
-from app import service
+from app import service, const
 from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext
 from app.models import Preference, Incoming, Expense, Shipping, ShippingLine, EnumValues
@@ -202,6 +202,11 @@ class SalesOrderAdmin(ModelViewWithAccess):
         sl.product_id = sales_order_line.product_id
         sl.sales_order_line_id = sales_order_line.id
         return sl
+
+    def on_model_change(self, form, model, is_created):
+        if is_created:
+            model.type = EnumValues.find_one_by_code(const.DIRECT_SO_TYPE_KEY)
+            model.organization = current_user.organization
 
     def after_model_change(self, form, model, is_created):
         incoming = SalesOrderAdmin.create_or_update_incoming(model)

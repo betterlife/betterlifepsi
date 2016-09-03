@@ -7,6 +7,7 @@ import app.const as const
 
 from app.utils import db_util
 
+
 class ObjectFaker(object):
     def __init__(self):
         self.faker = Faker()
@@ -74,8 +75,8 @@ class ObjectFaker(object):
         category.organization = creator.organization
         return category
 
-    def user(self):
-        from app.models import User
+    def user(self, role_names=[], organization=None):
+        from app.models import User, Role
         from flask_security.utils import encrypt_password
         user = User()
         user.active = True
@@ -84,10 +85,16 @@ class ObjectFaker(object):
         user.login = self.faker.name()
         password = self.faker.password()
         user.password = encrypt_password(password)
-        user.organization = self.organization()
+        if organization is None:
+            user.organization = self.organization()
+        else:
+            user.organization = organization
+        for role_name in role_names:
+            role = Role.query.filter_by(name=role_name).first()
+            user.roles.append(role)
         return user, password
 
-    def organization(self, organization_id = None):
+    def organization(self, organization_id = None, type=None, parent=None):
         from app.models import Organization
         from app.models import EnumValues
         organization = Organization()
@@ -98,7 +105,12 @@ class ObjectFaker(object):
         organization.lft = result[0] + 1
         organization.rgt = result[1] + 1
         organization.id = organization_id if organization_id is not None else db_util.get_next_id(Organization)
-        organization.type = EnumValues.find_one_by_code(u"DIRECT_SELLING_STORE")
+        if type is None:
+            organization.type = EnumValues.find_one_by_code(u"DIRECT_SELLING_STORE")
+        else:
+            organization.type = type
+        if parent is not None:
+            organization.parent = parent
         return organization
 
 object_faker = ObjectFaker()
