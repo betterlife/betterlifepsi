@@ -3,6 +3,8 @@ from flask import url_for
 from flask_babelex import lazy_gettext
 from markupsafe import Markup
 
+from app.views.views_mapping import get_endpoint_by_type_attr
+
 has_invoice_field = {'label': lazy_gettext('Has Invoice'), 'field': 'has_invoice'}
 goods_amount_field = {'label': lazy_gettext('Goods Amount'), 'field': 'goods_amount'}
 unit_price_field = {'label': lazy_gettext('Unit Price'), 'field': 'unit_price'}
@@ -70,13 +72,14 @@ def _obj_formatter_str(view, context, model, value=None, model_name=None, title=
                     detail_str += '</tr>'
                 detail_str += '</table>'
         str_result += detail_str
+        endpoint = get_endpoint_by_type_attr(value, model_name)
         if value.can_edit():
-            edit_link = url_for(model_name + '.edit_view', id=value.id)
+            edit_link = url_for(endpoint + '.edit_view', id=value.id)
             edit_link = """<a href="{link}" target="_blank"><span class="fa fa-pencil glyphicon glyphicon-pencil"></span></a>""".format(link=edit_link)
         else:
             edit_link = ''
-        if value.can_view_detail():
-            detail_link = url_for(model_name + '.details_view', id=value.id)
+        if value.can_view_details():
+            detail_link = url_for(endpoint + '.details_view', id=value.id)
             detail_link = """<a href="{link}" target="_blank"><span class="fa fa-eye glyphicon glyphicon-eye-open"></span></a>&nbsp;&nbsp;""".format(link=detail_link)
         else:
             detail_link = ''
