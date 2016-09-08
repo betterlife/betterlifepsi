@@ -14,6 +14,13 @@ from wtforms import ValidationError
 
 
 class ModelViewWithAccess(ModelView):
+    """
+    This base object controls the delete, view detail and edit permission
+    on view definition level,
+    If object level access control is needed, please implement DataSecurityMixin
+    in the corresponding model.
+    """
+
     def is_accessible(self):
         return self.can()
 
