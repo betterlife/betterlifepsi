@@ -179,7 +179,7 @@ class Organization(db.Model, DataSecurityMixin):
     def can_edit(self, user=current_user):
         return self in Organization.children_self_filter(user.organization)
 
-    def can_view_detail(self, user=current_user):
+    def can_view_details(self, user=current_user):
         l = Organization.children_self_filter(user.organization)
         l.append(user.organization.parent)
         return self in l
