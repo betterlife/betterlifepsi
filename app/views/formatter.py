@@ -67,7 +67,9 @@ def _obj_formatter_str(view, context, model, value=None, model_name=None, title=
                 for detail_line_val in detail_val:
                     detail_str += '<tr>'
                     for detail_key in detail_args:
-                        val = '' if val == 'None' else str(boolean_formatter(getattr(detail_line_val, detail_key['field'])))
+                        val = str(boolean_formatter(getattr(detail_line_val, detail_key['field'])))
+                        if val == 'None' or val is None:
+                            val = ''
                         detail_str += '<td>' + val + '</td>\n'
                     detail_str += '</tr>'
                 detail_str += '</table>'
@@ -130,8 +132,10 @@ def supplier_formatter(view, context, model, name):
         {'label': '开户行', 'field': 'bank_name'},
         {'label': '分行', 'field': 'bank_branch'},
     )
-    return _obj_formatter(view, context, model, value=s, model_name='supplier',
-                          title=s.name, args=args, detail_args=detail_args, detail_field='paymentMethods')
+    if s != None:
+        return _obj_formatter(view, context, model, value=s, model_name='supplier',
+                              title=s.name, args=args, detail_args=detail_args, detail_field='paymentMethods')
+    return ''
 
 
 def expenses_formatter(view, context, model, name):
