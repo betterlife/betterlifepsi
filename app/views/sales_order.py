@@ -169,8 +169,9 @@ class SalesOrderAdmin(ModelViewWithAccess):
             obj.status_id = status_id
             obj.category_id = type_id
         obj.amount = value
-        obj.sales_order_id = model.id
+        obj.sales_order = model
         obj.date = model.order_date
+        obj.organization = model.organization
         return obj
 
     @staticmethod

@@ -13,7 +13,7 @@ views_mapping = {
 
 def get_endpoint_by_type_attr(value, low_case_model_name):
     """
-    Get endpoint of an object based on it's type attribute
+    Get endpoint of an object based on it's type code
     If there's no type attribute exists for the object,
     It's low case model name will be returned by default
     :param value: value of the object

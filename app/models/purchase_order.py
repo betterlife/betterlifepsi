@@ -111,7 +111,11 @@ class PurchaseOrder(db.Model, DataSecurityMixin):
         pass
 
     def __unicode__(self):
-        return str(self.id) + ' - ' + str(self.supplier.name) + ' - ' + str(self.order_date) + ' - ' + str(self.total_amount) + ' - ' + self.status.display
+        if self.type.code == const.DIRECT_PO_TYPE_KEY:
+            s = str(self.supplier.name)
+        else:
+            s = str(self.organization.name)
+        return str(self.id) + ' - ' + s + ' - ' + str(self.order_date) + ' - ' + str(self.total_amount) + ' - ' + self.status.display
 
     def get_available_lines_info(self):
         # 1. Find all existing receiving bind with this PO.
@@ -202,10 +206,10 @@ class PurchaseOrder(db.Model, DataSecurityMixin):
                                 preference.def_po_goods_exp_status_id,
                                 preference.def_po_goods_exp_type_id)
         if logistic_exp is not None:
-            logistic_exp.purchase_order_id = self.id
+            logistic_exp.purchase_order = self
             logistic_exp.organization = self.organization
         if goods_exp is not None:
-            goods_exp.purchase_order_id = self.id
+            goods_exp.purchase_order = self
             goods_exp.organization = self.organization
         return logistic_exp, goods_exp
 
@@ -262,6 +266,11 @@ class PurchaseOrderLine(db.Model):
 
     @staticmethod
     def header_filter(po_id):
+        """
+        Query lines by purchase order id
+        :param po_id: purchase order id
+        :return: list of purchase order lines
+        """
         return db.session.query(PurchaseOrderLine).filter_by(purchase_order_id=po_id)
 
     def __unicode__(self):

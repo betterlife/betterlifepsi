@@ -6,10 +6,11 @@ from flask_babelex import lazy_gettext
 
 from app import const
 from app.models import Product, EnumValues
-from app.utils import form_util, security_util
+from app.utils import form_util, security_util, db_util
 from app.views.base import DeleteValidator
 from app.views.components import DisabledStringField
 from app.views.base_purchase_order import BasePurchaseOrderAdmin
+from views import SalesOrderAdmin
 
 
 class FranchisePurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
@@ -83,9 +84,51 @@ class FranchisePurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
         return form
 
     def on_model_change(self, form, model, is_created):
+        from app.service import Info
         super(FranchisePurchaseOrderAdmin, self).on_model_change(form, model, is_created)
+        db = Info.get_db()
         for l in model.lines:
             if l.unit_price is None:
-                l.unit_price = l.product.franchise_pric
+                l.unit_price = l.product.franchise_price
         if is_created:
-            model.to_organization = current_user.organization.parent
+                model.to_organization = current_user.organization.parent
+        status = model.status
+        if status.code == const.PO_ISSUED_STATUS_KEY:
+            sales_order, incoming, expense = self.create_so_from_fpo(model)
+            related_value = self.create_related_value(sales_order, model)
+            db_util.save_objects_commit(sales_order, incoming, expense, related_value)
+
+    @staticmethod
+    def create_so_from_fpo(purchase_order):
+        from app.models import SalesOrder, SalesOrderLine, EnumValues
+        so_type = EnumValues.find_one_by_code(const.FRANCHISE_SO_TYPE_KEY)
+        sales_order = SalesOrder()
+        sales_order.id = db_util.get_next_id(SalesOrder)
+        sales_order.order_date = purchase_order.order_date
+        sales_order.type = so_type
+        sales_order.remark = "PO ID: [{0}]".format(purchase_order.id)
+        sales_order.organization = purchase_order.to_organization
+        lines = []
+        for line in purchase_order.lines:
+            sol = SalesOrderLine()
+            sol.unit_price = line.unit_price
+            sol.quantity = line.quantity
+            sol.sales_order = sales_order
+            sol.product = line.product
+            sol.remark = "PO Line ID:[{0}]".format(line.id)
+            lines.append(sol)
+        incoming = SalesOrderAdmin.create_or_update_incoming(sales_order)
+        expense = SalesOrderAdmin.create_or_update_expense(sales_order)
+        return sales_order, incoming, expense
+
+    @staticmethod
+    def create_related_value(sales_order, purchase_order):
+        from app.models import RelatedValues
+        rv = RelatedValues()
+        rv.from_object_id = purchase_order.id
+        rv.from_object_type = "PurchaseOrder"
+        rv.to_object_id = sales_order.id
+        rv.to_object_type = "SalesOrder"
+        return rv
+
+

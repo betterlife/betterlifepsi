@@ -64,10 +64,6 @@ class SalesOrder(db.Model, DataSecurityMixin):
     def discount_amount(self, value):
         pass
 
-    @hybrid_property
-    def so_shipping_str(self):
-        return self.so_shipping.__unicode__()
-
     def __unicode__(self):
         return str(self.id) + ' - ' + str(self.actual_amount)
 

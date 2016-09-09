@@ -55,7 +55,8 @@ def save_objects_commit(*objects):
     """
     db = Info.get_db()
     for obj in objects:
-        db.session.add(obj)
+        if obj is not None:
+            db.session.add(obj)
     db.session.commit()
 
 

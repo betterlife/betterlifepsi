@@ -7,7 +7,7 @@ from flask_babelex import lazy_gettext, gettext
 from flask_admin.contrib.sqla.filters import FloatSmallerFilter, \
     FloatGreaterFilter, FloatEqualFilter
 from app import service, const
-from app.models import Preference, Expense, PurchaseOrder, Receiving, EnumValues
+from app.models import PurchaseOrder, EnumValues
 from app.utils import security_util
 from app.views import ModelViewWithAccess
 from app.views.base import DeleteValidator
@@ -87,75 +87,6 @@ class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
     """Type code of the purchase orders should be displayed in the subview."""
     type_code = None
 
-    @staticmethod
-    def create_expenses(model):
-        expenses = model.expenses
-        logistic_exp = None
-        preference = Preference.get()
-        goods_exp = None
-        if expenses is None:
-            expenses = dict()
-        for expense in expenses:
-            if (
-                expense.category_id ==
-                        preference.def_po_logistic_exp_type_id) and (
-                model.logistic_amount != 0):
-                logistic_exp = expense
-                logistic_exp.amount = model.logistic_amount
-            elif (
-                expense.category_id == preference.def_po_goods_exp_type_id) \
-                    and (
-                model.goods_amount != 0):
-                goods_exp = expense
-                goods_exp.amount = model.goods_amount
-        if (logistic_exp is None) and (
-                model.logistic_amount is not None and model.logistic_amount
-                    != 0):
-            logistic_exp = Expense(model.logistic_amount, model.order_date,
-                                   preference.def_po_logistic_exp_status_id,
-                                   preference.def_po_logistic_exp_type_id)
-        if (goods_exp is None) and (
-                model.goods_amount is not None and model.goods_amount != 0):
-            goods_exp = Expense(model.goods_amount, model.order_date,
-                                preference.def_po_goods_exp_status_id,
-                                preference.def_po_goods_exp_type_id)
-        if logistic_exp is not None:
-            logistic_exp.purchase_order_id = model.id
-            logistic_exp.organization = model.organization
-        if goods_exp is not None:
-            goods_exp.purchase_order_id = model.id
-            goods_exp.organization = model.organization
-        return logistic_exp, goods_exp
-
-    inline_models = (PurchaseOrderLineInlineAdmin(PurchaseOrderLine),)
-
-    @staticmethod
-    def create_receiving_if_not_exist(model):
-        """
-        Draft receiving document is created from purchase order only
-         if there's no associated receiving exists for this PO.
-        :param model: the Purchase order model
-        :return: Receiving document if a new one created, or None
-        """
-        receivings = model.po_receivings
-        if receivings is None or len(receivings) == 0:
-            recv = Receiving.create_draft_recv_from_po(model)
-            return recv
-        return None
-
-    def after_model_change(self, form, model, is_created):
-        logistic_exp, goods_exp = BasePurchaseOrderAdmin.create_expenses(model)
-        db = service.Info.get_db()
-        if logistic_exp is not None:
-            db.session.add(logistic_exp)
-        if goods_exp is not None:
-            db.session.add(goods_exp)
-        if model.status.code == const.PO_ISSUED_STATUS_KEY:
-            receiving = BasePurchaseOrderAdmin.create_receiving_if_not_exist(model)
-            if receiving is not None:
-                db.session.add(receiving)
-        db.session.commit()
-
     def get_list_columns(self):
         """
         This method is called instantly in list.html
@@ -221,5 +152,20 @@ class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
             model,const.PO_RECEIVED_STATUS_KEY,
             gettext('Purchase order can not be '
                     'update nor delete on received status'))
+
+    inline_models = (PurchaseOrderLineInlineAdmin(PurchaseOrderLine),)
+
+    def after_model_change(self, form, model, is_created):
+        if model.status.code == const.PO_ISSUED_STATUS_KEY:
+            logistic_exp, goods_exp = model.create_expenses()
+            db = service.Info.get_db()
+            if logistic_exp is not None:
+                db.session.add(logistic_exp)
+            if goods_exp is not None:
+                db.session.add(goods_exp)
+            receiving = model.create_receiving_if_not_exist()
+            if receiving is not None:
+                db.session.add(receiving)
+            db.session.commit()
 
 
