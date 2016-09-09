@@ -70,7 +70,10 @@ class Receiving(db.Model, DataSecurityMixin):
         pass
 
     def __repr__(self):
-        return u"采购单: " + self.purchase_order_id + u", 供应商: " + self.supplier.name + u", 日期: " + self.date.strftime("%Y/%m/%d")
+        po_id = str(self.purchase_order_id)
+        if self.supplier is not None:
+            return u"采购单: " + po_id + u", 供应商: " + self.supplier.name + u", 日期: " + self.date.strftime("%Y/%m/%d")
+        return u"采购单: " + po_id + u", 日期: " + self.date.strftime("%Y/%m/%d")
 
     def __unicode__(self):
         return self.__repr__()
@@ -86,14 +89,15 @@ class Receiving(db.Model, DataSecurityMixin):
         purchase_in_trans_type = EnumValues.find_one_by_code(const.PURCHASE_IN_INV_TRANS_KEY)
         recv = Receiving()
         recv.purchase_order = po
-        recv.purchase_order_id = po.id
         recv.date = po.order_date
+        recv.organization = po.organization
         recv.status = recv_draft_status
         recv.supplier = po.supplier
         from app.models import InventoryTransaction
         trans = InventoryTransaction()
         trans.date = recv.date
         trans.type = purchase_in_trans_type
+        trans.organization = po.organization
         recv.inventory_transaction = trans
         for line in po.lines:
             recv_l = ReceivingLine()

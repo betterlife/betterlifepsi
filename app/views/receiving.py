@@ -120,7 +120,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
             # 5. Create receiving lines based on the calculated result.
             if model.create_lines:
                 model.lines = PurchaseOrder.create_receiving_lines(available_info)
-        model.operate_inv_trans_by_recv_status(model)
+        model.operate_inv_trans_by_recv_status()
         model.update_purchase_order_status()
         db.session.commit()
 
