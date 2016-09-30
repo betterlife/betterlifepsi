@@ -31,12 +31,12 @@ def init_flask_security(flask_app, database):
         flask_app.config['SECURITY_MSG_' + key] = value
     user_datastore = SQLAlchemyUserDatastore(database, User, Role)
     from views.login_form import LoginForm
-    Security(flask_app, user_datastore, login_form=LoginForm)
+    return Security(flask_app, user_datastore, login_form=LoginForm)
 
 
 def init_admin_views(flask_app, database):
     from app.views import init_admin_views
-    init_admin_views(flask_app, database)
+    return init_admin_views(flask_app, database)
 
 
 def init_db(flask_app):
@@ -153,10 +153,18 @@ def init_all(app):
     database = init_db(app)
     init_https(app)
     init_migrate(app, database)
-    init_flask_security(app, database)
+    security = init_flask_security(app, database)
     init_admin_views(app, database)
     babel = init_babel(app)
     init_jinja2_functions(app)
     # init_debug_toolbar(app)
     init_image_service(app)
     define_route_context(app, database, babel)
+    # define a context processor for merging flask-admin's template context into the
+    # flask-security views.
+    @security.context_processor
+    def security_context_processor():
+        from flask import url_for
+        return dict(
+            get_url=url_for
+        )

@@ -1,6 +1,7 @@
 Flask==0.11.1
 Jinja2==2.8
 sqlalchemy==1.0.14
+Flask-Admin==1.4.2
 Flask-SQLAlchemy==2.1
 Flask-SSLify==0.1.5
 MarkupSafe==0.23
@@ -14,4 +15,3 @@ raven==5.10.2
 Flask-Security==1.7.5
 Flask-DebugToolbar==0.10.0
 cloudinary==1.4.0
--e git+https://github.com/betterlife/flask-admin.git@dd26143b3cc1e2bd04a84f86b609306ca25562ee#egg=Flask_Admin
