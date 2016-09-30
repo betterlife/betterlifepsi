@@ -201,7 +201,7 @@ def sales_order_formatter(view, context, model, name):
                 discount_amount_field, original_amount_field, remark_field)
         detail_args = (product_field, quantity_field, unit_price_field, retail_price_field, price_discount_field,
                        discount_amount_field, actual_amount_field, original_amount_field,)
-        return _obj_formatter(view, context, model, value=s, model_name='purchaseorder', title=str(s.id),
+        return _obj_formatter(view, context, model, value=s, model_name='salesorder', title=str(s.id),
                               args=args, detail_args=detail_args, detail_field='lines')
     return ''
 
