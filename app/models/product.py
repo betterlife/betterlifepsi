@@ -187,6 +187,10 @@ class Product(db.Model, DataSecurityMixin):
     def inventory_advice(self, value):
         pass
 
+    @inventory_advice.expression
+    def inventory_advice(self):
+        pass
+
     @hybrid_property
     def weekly_sold_qty(self):
         """
