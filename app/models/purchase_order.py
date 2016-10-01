@@ -62,15 +62,26 @@ class PurchaseOrder(db.Model, DataSecurityMixin):
 
     @hybrid_property
     def all_expenses(self):
-        return ''.join(str(expense.id) + " - " + str(expense.amount) + ", " for expense in self.expenses)
+        rep = ''
+        for e in self.expenses:
+            rep += str(e.id) + " - " + str(e.amount) + ", "
+        return rep
 
     @all_expenses.setter
     def all_expenses(self, value):
         pass
 
+    @all_expenses.expression
+    def all_expenses(self):
+        pass
+
     @hybrid_property
     def all_receivings(self):
         return ''.join(r.__unicode__() + ", " for r in self.po_receivings)
+
+    @all_receivings.expression
+    def all_receivings(self):
+        pass
 
     @all_receivings.setter
     def all_receivings(self, value):

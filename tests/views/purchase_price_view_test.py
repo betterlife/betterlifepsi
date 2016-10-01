@@ -120,7 +120,7 @@ class TestPurchasePriceView(unittest.TestCase):
         from app.service import Info
         from app.models.role import Role
         from app.utils.db_util import save_objects_commit
-        with self.test_client:
+        def test_logic():
             fixture.login_as_admin(self.test_client)
             user, password = object_faker.user(role_names=[
                 'purchase_price_view', 'direct_purchase_order_view', 'product_view'
@@ -164,3 +164,6 @@ class TestPurchasePriceView(unittest.TestCase):
             self.assertNotIn(purchase_price_label, rv.data)
             fixture.logout_user(self.test_client)
 
+        from tests.fixture import run_test_as_admin
+
+        run_test_as_admin(self.test_client, test_logic)

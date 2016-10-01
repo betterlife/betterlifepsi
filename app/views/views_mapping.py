@@ -7,7 +7,7 @@ views_mapping = {
     'purchaseorder' : {
         const.DIRECT_PO_TYPE_KEY : 'dpo',
         const.FRANCHISE_PO_TYPE_KEY : 'fpo'
-    }
+    },
 }
 
 

@@ -1,9 +1,18 @@
 class Info(object):
     __db = None
     __image_store_service = None
+    __caches = dict()
 
     def __init__(self):
         pass
+
+    @staticmethod
+    def get(key, get_func):
+        value = Info.__caches.get(key)
+        if value is None:
+            value = get_func(key)
+            Info.__caches[key] = value
+        return value
 
     @staticmethod
     def set_db(db):

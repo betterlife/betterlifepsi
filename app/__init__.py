@@ -150,7 +150,20 @@ def init_image_service(app):
 
 def init_all(app):
     init_logging(app)
-    database = init_db(app)
+    from app.service import Info
+    #=== Important notice to the maintainer ===
+    # This line was use to database = init_db(app)
+    # But we found session can not be cleaned among different
+    # Unit tests, so we add this to avoid issue
+    # sqlalchemy-object-already-attached-to-session
+    # http://stackoverflow.com/questions/24291933/sqlalchemy-object-already-attached-to-session
+    # A similar issue was captured on
+    # https://github.com/jarus/flask-testing/issues/32
+    # Please don't try to modify the follow four liens.
+    if Info.get_db() is None:
+        database = init_db(app)
+    else:
+        database = Info.get_db()
     init_https(app)
     init_migrate(app, database)
     security = init_flask_security(app, database)

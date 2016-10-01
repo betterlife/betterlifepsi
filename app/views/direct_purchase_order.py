@@ -93,8 +93,7 @@ class DirectPurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
     def create_form(self, obj=None):
         from app.models import Supplier
         form = super(DirectPurchaseOrderAdmin, self).create_form(obj)
-        form.status.query = [
-            EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY), ]
+        form.status.query = [EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY), ]
         form_util.filter_by_organization(form.supplier, Supplier)
         return form
 

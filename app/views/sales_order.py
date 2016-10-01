@@ -36,7 +36,7 @@ class SalesOrderAdmin(ModelViewWithAccess):
     from app.models import SalesOrderLine, SalesOrder
     from formatter import expenses_formatter, incoming_formatter, shipping_formatter, default_date_formatter
 
-    column_list = ('id', 'customer', 'logistic_amount', 'actual_amount', 'original_amount',
+    column_list = ('id', 'type', 'customer', 'logistic_amount', 'actual_amount', 'original_amount',
                    'discount_amount', 'order_date', 'incoming', 'expense', 'so_shipping', 'remark')
     column_filters = ('order_date', 'logistic_amount',
                       FloatSmallerFilter(SalesOrder.actual_amount, lazy_gettext('Actual Amount')),
@@ -49,7 +49,7 @@ class SalesOrderAdmin(ModelViewWithAccess):
                       FloatGreaterFilter(SalesOrder.original_amount, lazy_gettext('Total Amount')),
                       FloatEqualFilter(SalesOrder.original_amount, lazy_gettext('Total Amount')),)
 
-    column_searchable_list = ('customer.first_name', 'customer.last_name', 'remark',
+    column_searchable_list = ('customer.first_name', 'customer.last_name', 'remark', 'type.display', 'type.code',
                               'customer.mobile_phone', 'customer.email', 'customer.address',
                               'customer.level.display', 'customer.join_channel.display')
 
@@ -59,8 +59,9 @@ class SalesOrderAdmin(ModelViewWithAccess):
                        'original_amount', 'discount_amount', 'lines')
     form_create_rules = ('customer', 'logistic_amount', 'order_date', 'remark', 'lines',)
 
-    column_details_list = ('id', 'customer', 'external_id', 'logistic_amount', 'order_date', 'remark', 'actual_amount',
-                           'original_amount', 'discount_amount', 'incoming', 'expense', 'so_shipping', 'lines',)
+    column_details_list = ('id', 'type', 'customer', 'external_id', 'logistic_amount', 'order_date', 'remark',
+                           'actual_amount', 'original_amount', 'discount_amount', 'incoming', 'expense',
+                           'so_shipping', 'lines',)
 
     column_editable_list = ('remark',)
 
@@ -212,7 +213,9 @@ class SalesOrderAdmin(ModelViewWithAccess):
     def after_model_change(self, form, model, is_created):
         incoming = SalesOrderAdmin.create_or_update_incoming(model)
         expense = SalesOrderAdmin.create_or_update_expense(model)
-        shipping = SalesOrderAdmin.create_or_update_shipping(model)
+        shipping = None
+        if model.type.code == const.DIRECT_SO_TYPE_KEY:
+            shipping = SalesOrderAdmin.create_or_update_shipping(model)
         db = service.Info.get_db()
         if expense is not None:
             db.session.add(expense)

@@ -2,11 +2,11 @@
 from datetime import datetime
 
 from flask_babelex import lazy_gettext
-from app.models.expense import Expense
 from app.views import ModelViewWithAccess
 
 
 class ExpenseAdmin(ModelViewWithAccess):
+    from app.models import Expense
     from formatter import sales_order_formatter, purchase_order_formatter, default_date_formatter
 
     column_list = ('id', 'date', 'amount', 'has_invoice', 'status',

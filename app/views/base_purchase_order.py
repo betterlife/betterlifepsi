@@ -133,8 +133,7 @@ class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
                 l.unit_price = l.product.purchase_price
         DeleteValidator.validate_status_for_change(
             model, const.PO_RECEIVED_STATUS_KEY,
-            gettext('Purchase order can not be update nor delete '
-                    'on received status')
+            gettext('Purchase order can not be update nor delete on received status')
         )
         if is_created:
             model.type = EnumValues.find_one_by_code(self.type_code)

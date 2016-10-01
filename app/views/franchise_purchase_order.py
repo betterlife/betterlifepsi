@@ -10,7 +10,7 @@ from app.utils import form_util, security_util, db_util
 from app.views.base import DeleteValidator
 from app.views.components import DisabledStringField
 from app.views.base_purchase_order import BasePurchaseOrderAdmin
-from views import SalesOrderAdmin
+from app.views import SalesOrderAdmin
 
 
 class FranchisePurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
@@ -84,9 +84,7 @@ class FranchisePurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
         return form
 
     def on_model_change(self, form, model, is_created):
-        from app.service import Info
         super(FranchisePurchaseOrderAdmin, self).on_model_change(form, model, is_created)
-        db = Info.get_db()
         for l in model.lines:
             if l.unit_price is None:
                 l.unit_price = l.product.franchise_price

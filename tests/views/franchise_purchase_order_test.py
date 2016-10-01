@@ -9,7 +9,7 @@ from tests.object_faker import object_faker
 from app.utils import db_util
 
 
-class TestTestFranchisePurchaseOrderView(unittest.TestCase):
+class TestFranchisePurchaseOrderView(unittest.TestCase):
     def setUp(self):
         self.app = fixture.init_app()
         self.test_client = self.app.test_client()
@@ -18,9 +18,16 @@ class TestTestFranchisePurchaseOrderView(unittest.TestCase):
 
     def tearDown(self):
         self.app_context.pop()
-        fixture.cleanup_database(self.app_context)
+        from app.service import Info
+        Info.get_db().session.remove()
+        Info.get_db().engine.execute('DROP TABLE alembic_version')
+        Info.get_db().engine.execute('DROP VIEW sales_order_detail')
+        Info.get_db().session.commit()
+        Info.get_db().reflect()
+        Info.get_db().drop_all()
 
     def test_to_organization_hide(self):
+
         from app.models import EnumValues, PurchaseOrder, Organization
         from app.service import Info
         from datetime import datetime
@@ -32,35 +39,33 @@ class TestTestFranchisePurchaseOrderView(unittest.TestCase):
         user, password = object_faker.user(
             ['franchise_purchase_order_create', 'franchise_purchase_order_edit',
              'franchise_purchase_order_view', 'franchise_purchase_order_delete'],
-            organization = organization
+            organization=organization
         )
         db_util.save_objects_commit(user)
-        with self.test_client:
-            fixture.login_user(self.test_client, user.email, password)
-            po_url = url_for('fpo.create_view')
-            rv = self.test_client.get(po_url, follow_redirects=True)
-            self.assertEqual(rv.status_code, 200)
-            self.assertNotIn('to_organization', rv.data)
+        fixture.login_user(self.test_client, user.email, password)
+        rv = self.test_client.get('/admin/fpo/new/', follow_redirects=True)
+        self.assertEqual(rv.status_code, 200)
+        self.assertNotIn('to_organization', rv.data)
 
-            remark = u'-备注信息-'
-            order_date = '2016-08-25 23:18:55'
-            rv = self.test_client.post(po_url,
-                                       follow_redirects=True,
-                                       data=dict(status=draft_status_id,
-                                                 logistic_amount=20,
-                                                 order_date=order_date,
-                                                 _continue_editing=u'保存并继续编辑',
-                                                 remark=remark))
-            print (rv.data)
-            self.assertEquals(rv.status_code,200)
+        remark = u'-备注信息-'
+        order_date = '2016-08-25 23:18:55'
+        rv = self.test_client.post('/admin/fpo/new/',
+                                   follow_redirects=True,
+                                   data=dict(status=draft_status_id,
+                                             logistic_amount=20,
+                                             order_date=order_date,
+                                             _continue_editing=u'保存并继续编辑',
+                                             remark=remark))
+        print (rv.data)
+        self.assertEquals(rv.status_code,200)
 
-            po = PurchaseOrder.query.filter_by(remark=remark).first()
-            self.assertIsNotNone(po)
-            self.assertEquals(po.remark,remark)
-            self.assertEquals(po.logistic_amount,20)
-            self.assertEquals(po.status,draft_status)
-            self.assertEqual(po.order_date,
-                             datetime.strptime(order_date, "%Y-%m-%d %H:%M:%S"))
-            self.assertEqual(po.to_organization, parent)
-            self.assertEquals(po.organization, organization)
+        po = PurchaseOrder.query.filter_by(remark=remark).first()
+        self.assertIsNotNone(po)
+        self.assertEquals(po.remark,remark)
+        self.assertEquals(po.logistic_amount,20)
+        self.assertEquals(po.status.id, draft_status.id)
+        self.assertEqual(po.order_date,
+                         datetime.strptime(order_date, "%Y-%m-%d %H:%M:%S"))
+        self.assertEqual(po.to_organization, parent)
+        self.assertEquals(po.organization, organization)
 

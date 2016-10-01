@@ -1,10 +1,14 @@
 from __future__ import print_function
+
+import warnings
+
 from app import create_app, init_all
 from app.service import Info
 
 
 def init_app():
     from app.config import TestConfig
+    # warnings.warn("Recreating DB")
     # recreate_database(TestConfig)
     application = create_app(TestConfig)
     init_all(application)
@@ -26,6 +30,7 @@ def login_as_admin(test_client):
 
 
 def login_user(test_client, email, password):
+    logout_user(test_client)
     return test_client.post('/login', data=dict(email=email,
                                                 password=password),
                             follow_redirects=True)
@@ -47,4 +52,5 @@ def cleanup_database(app_context):
         Info.get_db().engine.execute('DROP TABLE alembic_version')
         Info.get_db().engine.execute('DROP VIEW sales_order_detail')
         Info.get_db().session.commit()
+        Info.get_db().reflect()
         Info.get_db().drop_all()
