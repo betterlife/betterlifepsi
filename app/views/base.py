@@ -21,6 +21,12 @@ class ModelViewWithAccess(ModelView):
     in the corresponding model.
     """
 
+    column_default_sort = ('id', True)
+    """
+    By default records in all list view is sorted by id descending
+    """
+
+
     def is_accessible(self):
         return self.can()
 
