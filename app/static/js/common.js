@@ -1,3 +1,10 @@
+//With bootbox
+bootbox.addLocale('zh_CN', {
+    OK: '确定',
+    CANCEL: '取消',
+    CONFIRM: '确定'
+});
+
 $(document).ready(function () {
     $('[data-toggle="popover"]').popover({
         html: true, placement: "auto",
@@ -77,3 +84,20 @@ function addInlineField(parent_id) {
     // Apply styles
     faForm.applyGlobalStyles($template);
 }
+
+function mark_ship_row_action(id, status_id) {
+    bootbox.confirm('Confirm to mark this sales order as shipped?', function(result) {
+        if (result == true){
+            $("#mark_ship_row_action_" + id).attr('class', 'fa fa-spin fa-spinner');
+            $.ajax({
+                url: '/api/sales_order/'+ id +'?status_id=' + status_id,
+                type: 'PUT',
+                success: function( response ) {
+                    $("#mark_ship_row_action_" + id).attr('class', 'glyphicon glyphicon-ok');
+                    $("#mark_ship_row_action_" + id).fadeOut(5000);
+                }
+            });
+        }
+    });
+}
+

@@ -6,14 +6,25 @@
   <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
   <link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="icon" type="image/x-icon">
   <link href="{{ url_for('static', filename='lightbox2/css/lightbox.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='Font-Awesome-4.6.3/css/font-awesome.min.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block tail %}
   {{ super() }}
   <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
+  <script src="{{ url_for('static', filename='lightbox2/js/lightbox.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='bootbox/bootbox.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/common.js') }}"></script>
   <script src="{{ url_for('static', filename='js/image_upload.js') }}"></script>
-  <script src="{{ url_for('static', filename='lightbox2/js/lightbox.min.js') }}"></script>
+  <script>
+    {% if current_user.is_authenticated %}
+      {% if current_user.locale != None %}
+        bootbox.setDefaults({
+            locale: "{{current_user.locale.code}}"
+        });
+      {% endif %}
+    {% endif %}
+  </script>
   <div class='main-footer'> © 2015-2016 BETTERLIFE.IO | {{render_version() | safe}}
   </div>
 {% endblock %}

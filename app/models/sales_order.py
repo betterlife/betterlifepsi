@@ -1,6 +1,9 @@
 # encoding: utf-8
 from decimal import Decimal
 
+from flask.ext.login import current_user
+
+from app import const
 from app.service import Info
 from app.utils.format_util import format_decimal
 from app.models.data_security_mixin import DataSecurityMixin
@@ -26,6 +29,9 @@ class SalesOrder(db.Model, DataSecurityMixin):
 
     type_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
     type = relationship('EnumValues', foreign_keys=[type_id])
+
+    status_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
+    status = relationship('EnumValues', foreign_keys=[status_id])
 
     remark = Column(Text)
 
@@ -66,6 +72,14 @@ class SalesOrder(db.Model, DataSecurityMixin):
 
     def __unicode__(self):
         return str(self.id) + ' - ' + str(self.actual_amount)
+
+    def can_delete(self):
+        can = super(SalesOrder, self).can_delete()
+        return can and self.status.code == const.SO_CREATED_STATUS_KEY
+
+    def can_edit(self, user=current_user):
+        can = super(SalesOrder, self).can_edit()
+        return can and self.status.code != const.SO_DELIVERED_STATUS_KEY
 
 
 class SalesOrderLine(db.Model):

@@ -12,6 +12,34 @@ class ObjectFaker(object):
     def __init__(self):
         self.faker = Faker()
 
+    def sales_order(self, so_id=None, number_of_line=1, creator=current_user, type=None):
+        from app.models import SalesOrder, EnumValues, SalesOrderLine
+        from app.const import SO_CREATED_STATUS_KEY, DIRECT_SO_TYPE_KEY
+        so = SalesOrder()
+        so.remark = self.faker.text()
+        so.logistic_amount = self.faker.pyfloat(positive=True, left_digits=2,
+                                                right_digits=0)
+        so.order_date = self.faker.date()
+        created_status = EnumValues.find_one_by_code(SO_CREATED_STATUS_KEY)
+        so.status_id = created_status.id
+        if type is None:
+            direct_so_type = EnumValues.find_one_by_code(DIRECT_SO_TYPE_KEY)
+            so.type_id = direct_so_type.id
+        else:
+            so.type = type
+        so.id = so_id if so_id is not None else db_util.get_next_id(SalesOrder)
+        for i in range(0, number_of_line):
+            line = SalesOrderLine()
+            line.remark = self.faker.text()
+            line.id = i
+            line.product = self.product(creator=creator)
+            line.sales_order = so
+            line.quantity = self.faker.pyint()
+            line.unit_price = self.faker.pydecimal(positive=True,
+                                                   left_digits=4,
+                                                   right_digits=0)
+        return so
+
     def purchase_order(self, po_id=None, number_of_line=1, creator=current_user):
         from app.models import PurchaseOrder, PurchaseOrderLine, EnumValues
         po = PurchaseOrder()
