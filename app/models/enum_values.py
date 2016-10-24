@@ -19,10 +19,10 @@ class EnumValues(db.Model, DataSecurityMixin):
 
     @staticmethod
     def find_one_by_code(v_code):
-        def inner_find(code):
-            return db.session.query(EnumValues).filter_by(code=code).first()
-        val = Info.get(v_code, inner_find)
-        return val
+        #def inner_find(code):
+        return db.session.query(EnumValues).filter_by(code=v_code).first()
+        #val = Info.get(v_code, inner_find)
+        #return val
 
     @staticmethod
     def type_filter(type_code):

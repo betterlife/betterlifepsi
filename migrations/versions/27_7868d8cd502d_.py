@@ -46,6 +46,16 @@ def upgrade():
     op.get_bind().execute(text("UPDATE sales_order set type_id = (SELECT id FROM enum_values WHERE code='DIRECT_SALES_ORDER')"))
     op.get_bind().execute(text("ALTER TABLE sales_order ALTER COLUMN type_id SET NOT NULL;"))
 
+    # Sales order
+    op.add_column('sales_order', sa.Column('status_id', sa.Integer(), nullable=True))
+    op.create_foreign_key(None, 'sales_order', 'enum_values', ['status_id'], ['id'])
+    op.get_bind().execute(text("INSERT INTO enum_values (type_id, code, display) values (1, 'SALES_ORDER_STATUS', '销售单状态');"))
+    op.get_bind().execute(text("INSERT INTO enum_values (type_id, code, display) values ((SELECT id FROM enum_values WHERE code='SALES_ORDER_STATUS'), 'SALES_ORDER_CREATED', '已创建');"))
+    op.get_bind().execute(text("INSERT INTO enum_values (type_id, code, display) values ((SELECT id FROM enum_values WHERE code='SALES_ORDER_STATUS'), 'SALES_ORDER_SHIPPED', '已发货');"))
+    op.get_bind().execute(text("INSERT INTO enum_values (type_id, code, display) values ((SELECT id FROM enum_values WHERE code='SALES_ORDER_STATUS'), 'SALES_ORDER_DELIVERED', '已交货');"))
+    op.get_bind().execute(text("UPDATE sales_order set status_id = (SELECT id FROM enum_values WHERE code='SALES_ORDER_DELIVERED')"))
+    op.get_bind().execute(text("ALTER TABLE sales_order ALTER COLUMN status_id SET NOT NULL;"))
+
     # New inventory transaction type
     op.get_bind().execute(text("INSERT INTO enum_values (type_id, code, display) values ((SELECT id FROM enum_values WHERE code='INVENTORY_TRANSACTION_TYPE'), 'FRANCHISE_SALES_OUT', '加盟商销售出库');"))
     op.get_bind().execute(text("UPDATE enum_values set code='DIRECT_SALES_OUT', display='直接销售出库' WHERE code='SALES_OUT'"))
@@ -104,7 +114,10 @@ def downgrade():
     op.get_bind().execute(text("UPDATE enum_values set code='SALES_OUT', display='销售出库' WHERE code='DIRECT_SALES_OUT'"))
     op.get_bind().execute(text("DELETE FROM enum_values where code = 'FRANCHISE_SALES_OUT'"))
 
-    # Delete Sales Order type
+    # Delete Sales Order status and type
+    op.drop_column('sales_order', 'status_id')
+    op.get_bind().execute(text("DELETE FROM enum_values where code in ('SALES_ORDER_STATUS', 'SALES_ORDER_CREATED', 'SALES_ORDER_SHIPPED', 'SALES_ORDER_DELIVERED')"))
+
     op.drop_column('sales_order', 'type_id')
     op.get_bind().execute(text("DELETE FROM enum_values where code in ('SALES_ORDER_TYPE', 'DIRECT_SALES_ORDER', 'FRANCHISE_SALES_ORDER')"))
 

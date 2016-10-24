@@ -8,7 +8,8 @@ __version__ = '0.6.5'
 def create_app(custom_config=None):
     from flask import Flask
 
-    flask_app = Flask(__name__, template_folder='templates', static_folder='static')
+    flask_app = Flask(__name__, template_folder='templates',
+                      static_folder='static')
     if custom_config is not None:
         flask_app.config.from_object(custom_config)
     else:
@@ -30,7 +31,7 @@ def init_flask_security(flask_app, database):
     for key, value in config.BaseConfig.security_messages.items():
         flask_app.config['SECURITY_MSG_' + key] = value
     user_datastore = SQLAlchemyUserDatastore(database, User, Role)
-    from views.login_form import LoginForm
+    from app.views.login_form import LoginForm
     return Security(flask_app, user_datastore, login_form=LoginForm)
 
 
@@ -89,11 +90,7 @@ def init_debug_toolbar(flask_app):
 def define_route_context(flask_app, db, babel):
     from werkzeug.utils import redirect
     from flask_login import current_user
-    from flask import request, current_app, render_template
-
-    @flask_app.route('/report')
-    def report():
-        return render_template('report.html')
+    from flask import request, current_app
 
     @flask_app.route('/')
     def hello():
@@ -148,10 +145,20 @@ def init_image_service(app):
         Info.set_image_store_service(image_store(app))
 
 
+def init_flask_restful(app):
+    """
+    Initialize flask restful api
+    """
+    from flask_restful import Api
+    from app.api import init_all_apis
+    flask_restful = Api(app)
+    init_all_apis(flask_restful)
+
+
 def init_all(app):
     init_logging(app)
     from app.service import Info
-    #=== Important notice to the maintainer ===
+    # === Important notice to the maintainer ===
     # This line was use to database = init_db(app)
     # But we found session can not be cleaned among different
     # Unit tests, so we add this to avoid issue
@@ -169,12 +176,14 @@ def init_all(app):
     security = init_flask_security(app, database)
     init_admin_views(app, database)
     babel = init_babel(app)
+    init_flask_restful(app)
     init_jinja2_functions(app)
     # init_debug_toolbar(app)
     init_image_service(app)
     define_route_context(app, database, babel)
-    # define a context processor for merging flask-admin's template context into the
-    # flask-security views.
+    # define a context processor for merging flask-admin's template context
+    # into the flask-security views.
+
     @security.context_processor
     def security_context_processor():
         from flask import url_for

@@ -57,12 +57,12 @@ class TestFranchisePurchaseOrderView(unittest.TestCase):
                                              _continue_editing=u'保存并继续编辑',
                                              remark=remark))
         print (rv.data)
-        self.assertEquals(rv.status_code,200)
+        self.assertEquals(rv.status_code, 200)
 
         po = PurchaseOrder.query.filter_by(remark=remark).first()
         self.assertIsNotNone(po)
-        self.assertEquals(po.remark,remark)
-        self.assertEquals(po.logistic_amount,20)
+        self.assertEquals(po.remark, remark)
+        self.assertEquals(po.logistic_amount, 20)
         self.assertEquals(po.status.id, draft_status.id)
         self.assertEqual(po.order_date,
                          datetime.strptime(order_date, "%Y-%m-%d %H:%M:%S"))
