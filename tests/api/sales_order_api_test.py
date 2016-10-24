@@ -4,7 +4,7 @@ from tests import fixture
 from tests.object_faker import object_faker
 from app.utils import db_util
 from app.const import SO_DELIVERED_STATUS_KEY, SO_SHIPPED_STATUS_KEY, FRANCHISE_SO_TYPE_KEY
-from tests.fixture import run_test_as_admin
+from tests.fixture import run_as_admin
 from app.service import Info
 
 
@@ -47,7 +47,7 @@ class TestSalesOrderApi(unittest.TestCase):
             so_from_db = Info.get_db().session.query(SalesOrder).get(so_id)
             self.assertIsNotNone(so_from_db)
             self.assertEquals(SO_DELIVERED_STATUS_KEY, so_from_db.status.code)
-        run_test_as_admin(self.test_client, test_logic)
+        run_as_admin(self.test_client, test_logic)
 
     def test_update_sales_order_shipped_status_success(self):
         from app.models import EnumValues, SalesOrder
@@ -75,7 +75,7 @@ class TestSalesOrderApi(unittest.TestCase):
             so_from_db = Info.get_db().session.query(SalesOrder).get(so_id)
             self.assertIsNotNone(so_from_db)
             self.assertEquals(SO_SHIPPED_STATUS_KEY, so_from_db.status.code)
-        run_test_as_admin(self.test_client, test_logic)
+        run_as_admin(self.test_client, test_logic)
 
     def test_update_sales_order_unauthorized(self):
         from app.models import EnumValues, SalesOrder
@@ -97,7 +97,7 @@ class TestSalesOrderApi(unittest.TestCase):
                                       follow_redirects=True,
                                       data=dict(status_id=delivered_status.id))
             self.assertEqual(rv.status_code, 403)
-        run_test_as_admin(self.test_client, test_logic)
+        run_as_admin(self.test_client, test_logic)
 
     def test_update_sales_order_has_no_role(self):
         from app.models import EnumValues, SalesOrder
@@ -119,7 +119,7 @@ class TestSalesOrderApi(unittest.TestCase):
                                       follow_redirects=True,
                                       data=dict(status_id=delivered_status.id))
             self.assertEqual(rv.status_code, 403)
-        run_test_as_admin(self.test_client, test_logic)
+        run_as_admin(self.test_client, test_logic)
 
     def test_update_sales_order_status_invalid(self):
         from app.models import EnumValues, SalesOrder
@@ -143,7 +143,7 @@ class TestSalesOrderApi(unittest.TestCase):
             self.assertEqual(rv.status_code, 201)
             self.assertIn('message', rv.data)
             self.assertIn('Invalid sales order status parameter', rv.data)
-        run_test_as_admin(self.test_client, test_logic)
+        run_as_admin(self.test_client, test_logic)
 
     def test_update_sales_order_status_not_allowed(self):
         from app.models import EnumValues, SalesOrder
@@ -169,4 +169,4 @@ class TestSalesOrderApi(unittest.TestCase):
             self.assertEqual(rv.status_code, 201)
             self.assertIn('message', rv.data)
             self.assertIn('Status update not allowed', rv.data)
-        run_test_as_admin(self.test_client, test_logic)
+        run_as_admin(self.test_client, test_logic)

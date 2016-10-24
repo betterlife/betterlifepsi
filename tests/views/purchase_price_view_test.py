@@ -164,6 +164,6 @@ class TestPurchasePriceView(unittest.TestCase):
             self.assertNotIn(purchase_price_label, rv.data)
             fixture.logout_user(self.test_client)
 
-        from tests.fixture import run_test_as_admin
+        from tests.fixture import run_as_admin
 
-        run_test_as_admin(self.test_client, test_logic)
+        run_as_admin(self.test_client, test_logic)

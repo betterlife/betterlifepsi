@@ -36,7 +36,7 @@ def login_user(test_client, email, password):
                             follow_redirects=True)
 
 
-def run_test_as_admin(test_client, func_to_run, *parameters):
+def run_as_admin(test_client, func_to_run, *parameters):
     with test_client:
         login_as_admin(test_client)
         func_to_run(*parameters)

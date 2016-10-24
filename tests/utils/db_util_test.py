@@ -23,8 +23,8 @@ class TestDbUtil(unittest.TestCase):
             next_code = db_util.get_next_code(Supplier)
             self.assertEqual('000001', next_code)
 
-        from tests.fixture import run_test_as_admin
-        run_test_as_admin(self.test_client, run_assert)
+        from tests.fixture import run_as_admin
+        run_as_admin(self.test_client, run_assert)
 
     def test_get_next_code_with_existing_one(self):
         from app.models import Supplier
@@ -38,8 +38,8 @@ class TestDbUtil(unittest.TestCase):
             next_code = db_util.get_next_code(Supplier)
             self.assertEqual('000002', next_code)
 
-        from tests.fixture import run_test_as_admin
-        run_test_as_admin(self.test_client, run_assert)
+        from tests.fixture import run_as_admin
+        run_as_admin(self.test_client, run_assert)
 
     def test_get_next_id(self):
         from app.utils import db_util
