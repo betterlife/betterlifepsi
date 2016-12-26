@@ -21,3 +21,4 @@ run_test.sh
 .eggs
 .projectile
 .noseids
+app/static/uploaded
