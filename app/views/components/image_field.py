@@ -15,7 +15,8 @@ class ImageInput(object):
         # Use field.data to get current data.
         from flask import render_template
         associated_images = []
-        if field.data is not None and len(field.data.filename) > 0:
+        if ((field.data is not None and hasattr(field.data, 'filename') and len(field.data.filename) > 0)
+            or (field.data is not None and hasattr(field.data, '__len__') and len(field.data) > 0)):
             for p_i in field.data:
                 associated_images.append(p_i)
         else:
