@@ -54,11 +54,14 @@ class DevConfig(BaseConfig):
     abs_path = os.path.dirname(os.path.abspath(__file__))
     UPLOAD_FOLDER = os.path.join(abs_path, "static", "uploaded")
 
+
 class TestConfig(BaseConfig):
     DEBUG = False
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or 'postgres://flask_sit:flask_sit@localhost:5432/flask_sit'
     WTF_CSRF_ENABLED = False
+    abs_path = os.path.dirname(os.path.abspath(__file__))
+    UPLOAD_FOLDER = os.path.join(abs_path, "static", "uploaded")
 
 
 class ProductionConfig(BaseConfig):
