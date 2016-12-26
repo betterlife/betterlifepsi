@@ -116,7 +116,6 @@ def _objs_formatter(view, context, model, values, model_name, title_field='id', 
 def supplier_formatter(view, context, model, name):
     s = model.supplier
     args = (id_field,
-            {'label': '编码', 'field': 'code'},
             {'label': '名称', 'field': 'name'},
             {'label': 'QQ', 'field': 'qq'},
             {'label': '电话', 'field': 'phone'},
@@ -218,7 +217,7 @@ def inventory_transaction_formatter(view, context, model, name):
 
 
 def product_formatter(view, context, model, name):
-    args = (id_field, code_field, lead_day_field, deliver_day_field, supplier_field, category_field, spec_link_field,
+    args = (id_field, lead_day_field, deliver_day_field, supplier_field, category_field, spec_link_field,
             distinguishing_feature_field)
     return _obj_formatter(view, context, model, value=model, model_name='product', title=model.name, args=args)
 

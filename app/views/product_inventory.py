@@ -18,7 +18,7 @@ class ProductInventoryView(ModelViewWithAccess):
                    'average_purchase_price', 'average_retail_price', 'average_unit_profit', 'weekly_sold_qty',
                    'weekly_average_profit', 'inventory_advice')
 
-    column_searchable_list = ('name', 'code', 'supplier.name', 'supplier.code')
+    column_searchable_list = ('name', 'supplier.name')
 
     column_filters = (FloatSmallerFilter(Product.available_quantity, lazy_gettext('Available Quantity')),
                       FloatGreaterFilter(Product.available_quantity, lazy_gettext('Available Quantity')),

@@ -30,7 +30,6 @@ class ProductImage(db.Model, DataSecurityMixin):
 class Product(db.Model, DataSecurityMixin):
     __tablename__ = 'product'
     id = Column(Integer, primary_key=True)
-    code = Column(String(8), unique=True, nullable=False)
     name = Column(String(128), unique=False, nullable=False)
     external_id = Column(String(), nullable=True, unique=False)
     deliver_day = Column(Integer, nullable=False)
@@ -281,11 +280,6 @@ class Product(db.Model, DataSecurityMixin):
         can_sell_day = format_decimal(self.available_quantity / self.weekly_sold_qty) * 7
         days_without_prd = (self.get_lead_deliver_day() - can_sell_day)
         return self.average_unit_profit * self.weekly_sold_qty * days_without_prd / 7
-
-    @staticmethod
-    def get_next_code():
-        prd = db.session.query(Product).order_by(desc(Product.id)).first()
-        return '{0:06d}'.format(1 + int(prd.code))
 
     def __unicode__(self):
         from app.utils.security_util import user_has_role
