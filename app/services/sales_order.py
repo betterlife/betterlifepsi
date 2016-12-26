@@ -1,3 +1,6 @@
+from app.models import Preference, Incoming, EnumValues, ShippingLine
+
+
 class SalesOrderService(object):
 
     @staticmethod
@@ -5,6 +8,7 @@ class SalesOrderService(object):
         status = EnumValues.find_one_by_code('SHIPPING_COMPLETE')
         shipping = sales_order.so_shipping
         if shipping is None:
+            from app.models import Shipping
             shipping = Shipping()
         shipping.date = sales_order.order_date
         shipping.sales_order = sales_order
@@ -44,8 +48,10 @@ class SalesOrderService(object):
     @staticmethod
     def create_or_update_expense(sales_order):
         expense = sales_order.expense
+        from app.models import Preference
         preference = Preference.get()
         if (sales_order.logistic_amount is not None) and (sales_order.logistic_amount > 0):
+            from app.models import Expense
             default_obj = Expense(sales_order.logistic_amount, sales_order.order_date,
                                   preference.def_so_exp_status_id, preference.def_so_exp_type_id)
             expense = SalesOrderService.create_associated_obj(expense, sales_order,

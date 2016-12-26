@@ -106,6 +106,7 @@ class FranchisePurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
         sales_order.type = so_type
         sales_order.remark = "PO ID: [{0}]".format(purchase_order.id)
         sales_order.organization = purchase_order.to_organization
+        sales_order.status = EnumValues.find_one_by_code(const.SO_CREATED_STATUS_KEY)
         lines = []
         for line in purchase_order.lines:
             sol = SalesOrderLine()
@@ -115,8 +116,9 @@ class FranchisePurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
             sol.product = line.product
             sol.remark = "PO Line ID:[{0}]".format(line.id)
             lines.append(sol)
-        incoming = SalesOrderAdmin.create_or_update_incoming(sales_order)
-        expense = SalesOrderAdmin.create_or_update_expense(sales_order)
+        from app.services import SalesOrderService
+        incoming = SalesOrderService.create_or_update_incoming(sales_order)
+        expense = SalesOrderService.create_or_update_expense(sales_order)
         return sales_order, incoming, expense
 
     @staticmethod
