@@ -129,6 +129,9 @@ class FranchisePurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
         rv.from_object_type = "PurchaseOrder"
         rv.to_object_id = sales_order.id
         rv.to_object_type = "SalesOrder"
+        from app.const import FRANCHISE_PO_TO_SO_RT_KEY
+        related_type = EnumValues.find_one_by_code(FRANCHISE_PO_TO_SO_RT_KEY)
+        rv.relation_type = related_type
         return rv
 
 

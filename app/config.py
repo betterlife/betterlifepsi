@@ -35,6 +35,8 @@ class BaseConfig(object):
     BUILDER_URL_PREFIX = 'http://devops.betterlife.io/browse'
     GIT_URL_PREFIX = 'http://git.betterlife.io/projects/BET/repos/psi/commits'
     IMAGE_ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+    abs_path = os.path.dirname(os.path.abspath(__file__))
+    UPLOAD_FOLDER = os.path.join(abs_path, "static", "uploaded")
 
     security_messages = {
         'PASSWORD_MISMATCH': (lazy_gettext('Password does not match'), 'error'),
@@ -51,8 +53,6 @@ class DevConfig(BaseConfig):
     DEBUG = True
     SQLALCHEMY_ECHO = False
     IMAGE_STORE_SERVICE = LocalImageStore
-    abs_path = os.path.dirname(os.path.abspath(__file__))
-    UPLOAD_FOLDER = os.path.join(abs_path, "static", "uploaded")
 
 
 class TestConfig(BaseConfig):
@@ -60,8 +60,6 @@ class TestConfig(BaseConfig):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or 'postgres://flask_sit:flask_sit@localhost:5432/flask_sit'
     WTF_CSRF_ENABLED = False
-    abs_path = os.path.dirname(os.path.abspath(__file__))
-    UPLOAD_FOLDER = os.path.join(abs_path, "static", "uploaded")
 
 
 class ProductionConfig(BaseConfig):
