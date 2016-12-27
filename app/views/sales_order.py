@@ -29,13 +29,11 @@ class MarkShipRowAction(BaseListRowAction):
         #automatically.
         kwargs = dict(self.url_args) if self.url_args else {}
         kwargs[self.id_arg] = row_id
-        so_shipped_status = EnumValues.find_one_by_code(
-            const.SO_SHIPPED_STATUS_KEY
-        )
-        if row.status.code == const.SO_CREATED_STATUS_KEY:
-            return Markup("<a href='javascript:mark_ship_row_action("
-                          + str(row_id) + ", " + str(so_shipped_status.id)
-                          + ")'><i id='mark_ship_row_action_" + str(row_id) + "' class='fa fa-truck'></i></a>")
+        so_shipped_status = EnumValues.find_one_by_code(const.SO_SHIPPED_STATUS_KEY)
+        if row.status.code == const.SO_CREATED_STATUS_KEY and row.type.code == const.FRANCHISE_SO_TYPE_KEY:
+            return Markup("""<a href='javascript:mark_ship_row_action({0}, {1})'>
+                               <i id='mark_ship_row_action_{0}' class='fa fa-truck'></i>
+                            </a>""".format(row_id, so_shipped_status.id))
         else:
             return ''
 
