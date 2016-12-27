@@ -86,7 +86,7 @@ def _obj_formatter_str(view, context, model, value=None, model_name=None, title=
         else:
             detail_link = ''
         title_link = """<span style="float:right">{dl}&nbsp;&nbsp;{el}</span>""".format(dl=detail_link, el=edit_link)
-        return """<a href='#' data-toggle='popover' title='[ {t} ] 详情 {tr}' data-content='{dc}'>[ {t} ]</a>""".format(t=title, tr=title_link, dc=str_result)
+        return """<a style='cursor:help' data-toggle='popover' title='[ {t} ] 详情 {tr}' data-content='{dc}'>[ {t} ]</a>""".format(t=title, tr=title_link, dc=str_result)
     return ''
 
 
