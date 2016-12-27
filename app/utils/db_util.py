@@ -121,7 +121,11 @@ def get_next_id(obj_type):
     :param obj_type: Object type
     :return: current id plus one
     """
-    from sqlalchemy import func
+    from sqlalchemy import text
     db = Info.get_db()
-    current_max_id = db.session.query(func.max(obj_type.id).label("max")).one()
-    return current_max_id.max + 1 if current_max_id.max is not None else 1
+    sql = text("select nextval('{0}_id_seq')".format(obj_type.__tablename__))
+    result = db.engine.execute(sql)
+    next_val = 1
+    for row in result:
+        next_val = row[0]
+    return next_val
