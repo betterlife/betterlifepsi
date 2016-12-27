@@ -99,9 +99,9 @@ function mark_ship_row_action(id, status_id) {
                         icon.fadeOut(5000);
                         displayElem = $("#ajax-message-success");
                     } else if (response.status == 'error') {
-                        icon.attr('class', 'glyphicon glyphicon-exclamation-sign');
+                        icon.attr('class', 'fa fa-exclamation-triangle');
                         icon.attr('style', 'color:red;cursor:help');
-                        icon.parent().removeAttr('href');
+                        icon.parent().attr('href', "#");
                         icon.parent().tooltip({
                             title: response.message,
                             placement: 'top',

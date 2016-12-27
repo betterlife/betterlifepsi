@@ -32,7 +32,7 @@ class MarkShipRowAction(BaseListRowAction):
         so_shipped_status = EnumValues.find_one_by_code(const.SO_SHIPPED_STATUS_KEY)
         if row.status.code == const.SO_CREATED_STATUS_KEY and row.type.code == const.FRANCHISE_SO_TYPE_KEY:
             return Markup("""<a class='icon' href='javascript:mark_ship_row_action({0}, {1})'>
-                               <i id='mark_ship_row_action_{0}' class='fa fa-truck'></i>
+                               <span id='mark_ship_row_action_{0}' class='fa fa-truck'></span>
                             </a>""".format(row_id, so_shipped_status.id))
         else:
             return ''
