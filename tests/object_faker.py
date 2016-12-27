@@ -14,15 +14,17 @@ class ObjectFaker(object):
 
     def sales_order(self, so_id=None, number_of_line=1, creator=current_user, type=None):
         from app.models import SalesOrder, EnumValues, SalesOrderLine
-        from app.const import SO_CREATED_STATUS_KEY, DIRECT_SO_TYPE_KEY
+        from app.const import SO_CREATED_STATUS_KEY
+        from app.services import SalesOrderService
         so = SalesOrder()
-        so.remark = self.faker.text()
+        so.remark = self.faker.text(max_nb_chars=20)
         so.logistic_amount = self.faker.pyfloat(positive=True, left_digits=2,
                                                 right_digits=0)
         so.customer = self.customer(creator=creator)
         so.order_date = self.faker.date()
         created_status = EnumValues.find_one_by_code(SO_CREATED_STATUS_KEY)
         so.status_id = created_status.id
+        so.organization = creator.organization
         if type is None:
             types = EnumValues.type_filter(const.SO_TYPE_KEY).all()
             so.type = random.choice(types)
@@ -31,20 +33,22 @@ class ObjectFaker(object):
         so.id = so_id if so_id is not None else db_util.get_next_id(SalesOrder)
         for i in range(0, number_of_line):
             line = SalesOrderLine()
-            line.remark = self.faker.text()
+            line.remark = self.faker.text(max_nb_chars=10)
             line.id = db_util.get_next_id(SalesOrderLine)
             line.product = self.product(creator=creator)
             line.sales_order = so
-            line.quantity = self.faker.pyint()
+            line.quantity = random.randint(1, 100)
             line.unit_price = self.faker.pydecimal(positive=True,
-                                                   left_digits=4,
+                                                   left_digits=3,
                                                    right_digits=0)
+        SalesOrderService.create_or_update_incoming(so)
+        SalesOrderService.create_or_update_expense(so)
         return so
 
     def purchase_order(self, po_id=None, number_of_line=1, creator=current_user):
         from app.models import PurchaseOrder, PurchaseOrderLine, EnumValues
         po = PurchaseOrder()
-        po.remark = self.faker.text()
+        po.remark = self.faker.text(max_nb_chars=20)
         po.logistic_amount = self.faker.pyfloat(positive=True, left_digits=2, right_digits=0)
         po.order_date = self.faker.date()
         draft_status = EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY)
@@ -57,12 +61,12 @@ class ObjectFaker(object):
         po.supplier = self.supplier(creator=creator)
         for i in range(0, number_of_line):
             line = PurchaseOrderLine()
-            line.remark = self.faker.text()
+            line.remark = self.faker.text(max_nb_chars=10)
             line.id = db_util.get_next_id(PurchaseOrderLine)
             line.product = self.product(supplier=po.supplier, creator=creator)
             line.purchase_order = po
-            line.quantity = self.faker.pyint()
-            line.unit_price = self.faker.pydecimal(positive=True, left_digits=4, right_digits=0)
+            line.quantity = random.randint(1, 100)
+            line.unit_price = self.faker.pydecimal(positive=True, left_digits=3, right_digits=0)
         return po
 
     def supplier(self, supplier_id=None, creator=current_user):
@@ -93,7 +97,7 @@ class ObjectFaker(object):
         customer.join_channel = random.choice(customer.join_channel_filter().all())
         customer.level = random.choice(customer.level_filter().all())
         customer.organization = creator.organization
-        customer.points =self.faker.pyint()
+        customer.points = self.faker.pyint()
         return customer
 
     def product(self, product_id=None, supplier=None, creator=current_user):
@@ -107,8 +111,8 @@ class ObjectFaker(object):
         product.distinguishing_feature = self.faker.paragraphs(nb=3)
         product.lead_day = random.randint(1, 5)
         product.need_advice = self.faker.pybool()
-        product.purchase_price = 20
-        product.retail_price = 50
+        product.purchase_price = random.randint(1, 100)
+        product.retail_price = product.purchase_price + random.randint(1, 100)
         product.organization = creator.organization
         return product
 
@@ -146,7 +150,7 @@ class ObjectFaker(object):
         from app.models import Organization
         from app.models import EnumValues
         organization = Organization()
-        organization.description = self.faker.text()
+        organization.description = self.faker.text(max_nb_chars=10)
         organization.name = self.faker.name()
         result = db_util.get_result_raw_sql("select max(lft), max(rgt) from organization")
 

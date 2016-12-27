@@ -5,7 +5,8 @@ class SalesOrderService(object):
 
     @staticmethod
     def create_or_update_shipping(sales_order):
-        status = EnumValues.find_one_by_code('SHIPPING_COMPLETE')
+        from app.const import SHIPPING_COMPLETE_STATUS_KEY
+        status = EnumValues.find_one_by_code(SHIPPING_COMPLETE_STATUS_KEY)
         shipping = sales_order.so_shipping
         if shipping is None:
             from app.models import Shipping

@@ -58,7 +58,8 @@ def generate_fake_order():
     for i in range(5):
         purchase_order = object_faker.purchase_order(creator=user, number_of_line=randint(1,9))
         sales_order = object_faker.sales_order(creator=user, number_of_line=randint(1, 9))
-        database.session.add(purchase_order, sales_order)
+        database.session.add(purchase_order)
+        database.session.add(sales_order)
     database.session.commit()
 
 @application.teardown_appcontext
