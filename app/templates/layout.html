@@ -45,3 +45,9 @@
     </ul>
   {% endif %}
 {% endblock %}
+
+{% block messages %}
+    {{ super() }}
+    <div id="ajax-message-error" style="display:none" class="alert alert-danger alert-dismissable">Ajax message</div>
+    <div id="ajax-message-success" style="display:none" class="alert alert-success alert-dismissable">Ajax message</div>
+{% endblock %}

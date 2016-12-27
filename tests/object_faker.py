@@ -56,6 +56,11 @@ class ObjectFaker(object):
         types = EnumValues.type_filter(const.PO_TYPE_KEY).all()
         po_type = random.choice(types)
         po.type_id = po_type.id
+        if po_type.code == const.FRANCHISE_PO_TYPE_KEY:
+            if creator.organization.parent is not None:
+                po.to_organization = creator.organization.parent
+            else:
+                po.to_organization = creator.organization
         po.id = po_id if po_id is not None else db_util.get_next_id(PurchaseOrder)
         po.organization = creator.organization
         po.supplier = self.supplier(creator=creator)

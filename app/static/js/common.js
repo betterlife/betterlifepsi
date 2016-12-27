@@ -86,15 +86,31 @@ function addInlineField(parent_id) {
 }
 
 function mark_ship_row_action(id, status_id) {
+    var icon = $("#mark_ship_row_action_" + id), displayElem;
     bootbox.confirm('Confirm to mark this sales order as shipped?', function(result) {
         if (result == true){
-            $("#mark_ship_row_action_" + id).attr('class', 'fa fa-spin fa-spinner');
+            icon.attr('class', 'fa fa-spin fa-spinner');
             $.ajax({
                 url: '/api/sales_order/'+ id +'?status_id=' + status_id,
                 type: 'PUT',
                 success: function( response ) {
-                    $("#mark_ship_row_action_" + id).attr('class', 'glyphicon glyphicon-ok');
-                    $("#mark_ship_row_action_" + id).fadeOut(5000);
+                    if (response.status == 'success') {
+                        icon.attr('class', 'glyphicon glyphicon-ok');
+                        icon.fadeOut(5000);
+                        displayElem = $("#ajax-message-success");
+                    } else if (response.status == 'error') {
+                        icon.attr('class', 'glyphicon glyphicon-exclamation-sign');
+                        icon.attr('style', 'color:red;cursor:help');
+                        icon.parent().removeAttr('href');
+                        icon.parent().tooltip({
+                            title: response.message,
+                            placement: 'top',
+                            trigger:'hover'
+                        });
+                        displayElem = $("#ajax-message-error");
+                    }
+                    displayElem.html(response.message);
+                    displayElem.show().delay(4000).fadeOut();
                 }
             });
         }
