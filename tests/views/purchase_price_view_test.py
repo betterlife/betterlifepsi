@@ -23,27 +23,19 @@ class TestPurchasePriceView(unittest.TestCase):
         Info.get_db().session.commit()
         Info.get_db().drop_all()
 
-    def create_user(self):
-        from app.models.role import Role
-        from app.service import Info
-        user, password = object_faker.user()
-        role1 = Info.get_db().session.query(Role).filter_by(name='product_view').first()
-        user.roles.append(role1)
-        role2 = Info.get_db().session.query(Role).filter_by(name='purchase_order_view').first()
-        user.roles.extend([role1, role2])
-        return user, password
-
     def test_purchase_order_hide_and_show(self):
         from app.service import Info
         from app.models.role import Role
         from app.utils.db_util import save_objects_commit
         role = Info.get_db().session.query(Role).filter_by(
             name='purchase_price_view').first()
-        user, password = self.create_user()
+        user, password = object_faker.user(
+            ['product_view', 'direct_purchase_order_view']
+        )
         save_objects_commit(user, role)
         fixture.login_user(self.test_client, user.email, password)
 
-        rv = self.test_client.get('/admin/purchaseorder/',
+        rv = self.test_client.get('/admin/dpo/',
                                   follow_redirects=True)
         self.assertEqual(rv.status_code, 200)
         self.assertNotIn('<th class="column-header col-goods_amount">', rv.data,
@@ -64,7 +56,7 @@ class TestPurchasePriceView(unittest.TestCase):
         user.roles.append(role)
         save_objects_commit(user, role)
 
-        rv = self.test_client.get('/admin/purchaseorder/',
+        rv = self.test_client.get('/admin/dpo/',
                                   follow_redirects=True)
         self.assertEqual(rv.status_code, 200)
         self.assertIn('<th class="column-header col-goods_amount">', rv.data,
@@ -84,12 +76,12 @@ class TestPurchasePriceView(unittest.TestCase):
         from app.utils.db_util import save_objects_commit
         role = Info.get_db().session.query(Role).filter_by(
             name='purchase_price_view').first()
-        user, password = self.create_user()
+        user, password = object_faker.user(['product_view', 'direct_purchase_order_view'])
         user.roles.append(role)
         save_objects_commit(user, role)
 
         fixture.login_user(self.test_client, user.email, password)
-        rv = self.test_client.get('/admin/purchaseorder/',
+        rv = self.test_client.get('/admin/dpo/',
                                   follow_redirects=True)
         self.assertEqual(rv.status_code, 200)
         self.assertIn('<th class="column-header col-goods_amount">', rv.data,
@@ -105,7 +97,7 @@ class TestPurchasePriceView(unittest.TestCase):
         user.roles.remove(role)
         save_objects_commit(user, role)
 
-        rv = self.test_client.get('/admin/purchaseorder/',
+        rv = self.test_client.get('/admin/dpo/',
                                   follow_redirects=True)
         self.assertEqual(rv.status_code, 200)
         self.assertNotIn('<th class="column-header col-goods_amount">', rv.data,
@@ -128,23 +120,15 @@ class TestPurchasePriceView(unittest.TestCase):
         from app.service import Info
         from app.models.role import Role
         from app.utils.db_util import save_objects_commit
-        with self.test_client:
+        def test_logic():
             fixture.login_as_admin(self.test_client)
-            user, password = object_faker.user()
+            user, password = object_faker.user(role_names=[
+                'purchase_price_view', 'direct_purchase_order_view', 'product_view'
+            ])
             purchase_order = object_faker.purchase_order(number_of_line=1,
                                                          creator=user)
-            role1 = Info.get_db().session.query(Role).filter_by(
-                name='purchase_price_view'
-            ).first()
-            role2 = Info.get_db().session.query(Role).filter_by(
-                name='purchase_order_view'
-            ).first()
-            role3 = Info.get_db().session.query(Role).filter_by(
-                name='product_view'
-            ).first()
-            user.roles.extend([role1, role2, role3])
             save_objects_commit(purchase_order, user)
-            po_url = url_for('purchaseorder.details_view', id=purchase_order.id)
+            po_url = url_for('dpo.details_view', id=purchase_order.id)
             product_url = url_for('product.details_view',
                                   id=purchase_order.lines[0].product.id)
             fixture.logout_user(self.test_client)
@@ -161,8 +145,10 @@ class TestPurchasePriceView(unittest.TestCase):
             purchase_price_label = gettext('Purchase Price')
             self.assertIn(purchase_price_label, rv.data)
             fixture.logout_user(self.test_client)
-
-            user.roles.remove(role1)
+            role = Info.get_db().session.query(Role).filter_by(
+                name='purchase_price_view'
+            ).first()
+            user.roles.remove(role)
             save_objects_commit(user)
 
             fixture.login_user(self.test_client, user.email, password)
@@ -178,3 +164,6 @@ class TestPurchasePriceView(unittest.TestCase):
             self.assertNotIn(purchase_price_label, rv.data)
             fixture.logout_user(self.test_client)
 
+        from tests.fixture import run_as_admin
+
+        run_as_admin(self.test_client, test_logic)

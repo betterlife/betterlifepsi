@@ -17,7 +17,7 @@ class InventoryAdvice(object):
                    + u'补货期间损失利润:<span class="i_a_warning i_a_number">' \
                    + str(format_decimal(product.get_profit_lost_caused_by_inventory_short())) \
                    + u'</span>元，' \
-                   + u'<a href="/admin/purchaseorder/new/" target="_blank">点此补货</a>'
+                   + u'<a href="/admin/dpo/new/" target="_blank">点此补货</a>'
         elif product.weekly_sold_qty > 0:
             can_sell_day = format_decimal(product.available_quantity / (product.weekly_sold_qty/7))
             if can_sell_day > lead_deliver_day:
@@ -29,6 +29,6 @@ class InventoryAdvice(object):
                        + u'补货期间损失利润额<span class="i_a_number i_a_warning">' \
                        + str(format_decimal(product.get_profit_lost_caused_by_inventory_short())) \
                        + u'</span>元，' \
-                       + u'<a href="/admin/purchaseorder/new/" target="_blank">点此补货</a>'
+                       + u'<a href="/admin/dpo/new/" target="_blank">点此补货</a>'
         else:
             return u'-'

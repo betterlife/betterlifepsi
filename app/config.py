@@ -1,7 +1,10 @@
 # coding=utf-8
 import os
+
 from flask_babelex import lazy_gettext
-from app.thirdparty.cloudinary_image_store import ImageStore
+
+from app.thirdparty.cloudinary_image_store import CloudinaryImageStore
+from app.thirdparty.local_image_store import LocalImageStore
 
 
 class BaseConfig(object):
@@ -22,7 +25,7 @@ class BaseConfig(object):
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     SENTRY_DSN = os.environ.get('SENTRY_DSN')
     WTF_CSRF_ENABLED = True
-    IMAGE_STORE_SERVICE = ImageStore
+    IMAGE_STORE_SERVICE = CloudinaryImageStore
     # TODO: Move those business related settings to a table and make it changeable via UI.
     DEFAULT_DELIVER_DAY = 5
     DEFAULT_LEAD_DAY = 3
@@ -31,6 +34,9 @@ class BaseConfig(object):
     UPLOAD_TMP_FOLDER = '/tmp'
     BUILDER_URL_PREFIX = 'http://devops.betterlife.io/browse'
     GIT_URL_PREFIX = 'http://git.betterlife.io/projects/BET/repos/psi/commits'
+    IMAGE_ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+    abs_path = os.path.dirname(os.path.abspath(__file__))
+    UPLOAD_FOLDER = os.path.join(abs_path, "static", "uploaded")
 
     security_messages = {
         'PASSWORD_MISMATCH': (lazy_gettext('Password does not match'), 'error'),
@@ -46,6 +52,7 @@ class BaseConfig(object):
 class DevConfig(BaseConfig):
     DEBUG = True
     SQLALCHEMY_ECHO = False
+    IMAGE_STORE_SERVICE = LocalImageStore
 
 
 class TestConfig(BaseConfig):

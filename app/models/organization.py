@@ -12,10 +12,12 @@ db = Info.get_db()
 
 
 class Organization(db.Model, DataSecurityMixin):
+
     """
     Organization, for data isolation
     """
     __tablename__ = 'organization'
+    uos = 'UPDATE ' + __tablename__ + ' SET'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
@@ -40,7 +42,19 @@ class Organization(db.Model, DataSecurityMixin):
 
     @parent.setter
     def parent(self, value):
-        pass
+        from app.service import Info
+        from sqlalchemy import text
+        from app.utils import db_util
+        db = Info.get_db()
+        max_lft = value.rgt - 1
+        sql = text(
+            '{u} rgt = rgt + 2 WHERE rgt > {val};{u} lft = lft + 2 WHERE '
+            'lft > {val}'.format(val=max_lft, u=self.uos))
+        # set left and right of the new object
+        self.lft = max_lft + 1
+        self.rgt = max_lft + 2
+        db.engine.execute(sql)
+        db_util.save_objects_commit(self)
 
     @parent.expression
     def parent(self):
@@ -165,7 +179,7 @@ class Organization(db.Model, DataSecurityMixin):
     def can_edit(self, user=current_user):
         return self in Organization.children_self_filter(user.organization)
 
-    def can_view_detail(self, user=current_user):
+    def can_view_details(self, user=current_user):
         l = Organization.children_self_filter(user.organization)
         l.append(user.organization.parent)
         return self in l
@@ -182,7 +196,7 @@ class Organization(db.Model, DataSecurityMixin):
     @staticmethod
     def children_remover(organization):
         from flask_login import current_user
-        all_org = Organization.query.all()
+        all_org = db.session.query(Organization).all()
         orgs = [org for org in all_org if (org not in organization.all_children and org != organization)]
         return [org for org in orgs if (org in current_user.organization.all_children or org == current_user.organization)]
 

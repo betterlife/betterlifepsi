@@ -61,6 +61,8 @@ def create_or_update_sales_order(po_num, po_line_num, product, act_price, qty, s
         order.logistic_amount = 0
         order.organization_id = current_user.organization_id
     order.order_date = sale_date
+    order.type = EnumValues.find_one_by_code(const.DIRECT_SO_TYPE_KEY)
+    order.status = EnumValues.find_one_by_code(const.SO_SHIPPED_STATUS_KEY)
     existing = False
     line = None
     for line in order.lines:

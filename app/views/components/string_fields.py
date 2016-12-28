@@ -12,6 +12,12 @@ class ReadonlyStringField(StringField):
         kwargs['readonly'] = 'readonly'
         return super(ReadonlyStringField, self).__call__(**kwargs)
 
+
+class HiddenField(StringField):
+    def __call__(self, **kwargs):
+        kwargs['type'] = 'hidden'
+        return super(HiddenField, self).__call__(**kwargs)
+
 class CKTextAreaWidget(widgets.TextArea):
     """
     Define a wtforms widget and field.

@@ -70,7 +70,10 @@ class Receiving(db.Model, DataSecurityMixin):
         pass
 
     def __repr__(self):
-        return u"采购单: " + self.purchase_order_id + u", 供应商: " + self.supplier.name + u", 日期: " + self.date.strftime("%Y/%m/%d")
+        po_id = str(self.purchase_order_id)
+        if self.supplier is not None:
+            return u"采购单: " + po_id + u", 供应商: " + self.supplier.name + u", 日期: " + self.date.strftime("%Y/%m/%d")
+        return u"采购单: " + po_id + u", 日期: " + self.date.strftime("%Y/%m/%d")
 
     def __unicode__(self):
         return self.__repr__()
@@ -86,14 +89,15 @@ class Receiving(db.Model, DataSecurityMixin):
         purchase_in_trans_type = EnumValues.find_one_by_code(const.PURCHASE_IN_INV_TRANS_KEY)
         recv = Receiving()
         recv.purchase_order = po
-        recv.purchase_order_id = po.id
         recv.date = po.order_date
+        recv.organization = po.organization
         recv.status = recv_draft_status
         recv.supplier = po.supplier
         from app.models import InventoryTransaction
         trans = InventoryTransaction()
         trans.date = recv.date
         trans.type = purchase_in_trans_type
+        trans.organization = po.organization
         recv.inventory_transaction = trans
         for line in po.lines:
             recv_l = ReceivingLine()
@@ -122,8 +126,7 @@ class Receiving(db.Model, DataSecurityMixin):
         from app.models import EnumValues
         if self.status.code == const.RECEIVING_COMPLETE_STATUS_KEY:
             po = self.purchase_order
-            finished = False
-            started = False
+            not_finished,started = False, False
             for line in po.lines:
                 receiving_lines = line.pol_receiving_lines
                 rd_qty = 0
@@ -131,9 +134,9 @@ class Receiving(db.Model, DataSecurityMixin):
                     rd_qty += rl.quantity
                 if rd_qty > 0:
                     started = True
-                if rd_qty >= line.quantity:
-                    finished = True
-            if finished is True:
+                if rd_qty < line.quantity:
+                    not_finished = True
+            if not_finished is False:
                 po.status = EnumValues.find_one_by_code(const.PO_RECEIVED_STATUS_KEY)
             elif started is True:
                 po.status = EnumValues.find_one_by_code(const.PO_PART_RECEIVED_STATUS_KEY)
@@ -159,7 +162,7 @@ class Receiving(db.Model, DataSecurityMixin):
         inv_type = EnumValues.find_one_by_code(const.PURCHASE_IN_INV_TRANS_KEY)
         if inv_trans is None:
             inv_trans = InventoryTransaction()
-            inv_trans.type_id = inv_type.id
+            inv_trans.type = inv_type
         inv_trans.date = self.date
         for line in self.lines:
             inv_line = line.inventory_transaction_line
@@ -176,6 +179,10 @@ class Receiving(db.Model, DataSecurityMixin):
             elif self.status.code == const.RECEIVING_DRAFT_STATUS_KEY:
                 inv_line.quantity = 0
                 inv_line.in_transit_quantity = line.quantity
+            line.inventory_transaction_line = inv_line
+        for line in inv_trans.lines:
+            if line.itl_receiving_line is None:
+                db.session.delete(line)
         return inv_trans
 
 

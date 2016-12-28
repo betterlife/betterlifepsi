@@ -1,4 +1,5 @@
 # coding=utf-8
+from flask.ext.admin import expose
 from flask_babelex import gettext
 
 from flask import url_for, request, flash, has_request_context
@@ -14,6 +15,19 @@ from wtforms import ValidationError
 
 
 class ModelViewWithAccess(ModelView):
+    """
+    This base object controls the delete, view detail and edit permission
+    on view definition level,
+    If object level access control is needed, please implement DataSecurityMixin
+    in the corresponding model.
+    """
+
+    column_default_sort = ('id', True)
+    """
+    By default records in all list view is sorted by id descending
+    """
+
+
     def is_accessible(self):
         return self.can()
 
@@ -47,18 +61,32 @@ class ModelViewWithAccess(ModelView):
         """
         return True
 
+    @property
+    def role_identify(self):
+        return self.model.__tablename__
+
     def can(self, operation='view'):
-        tablename = self.model.__tablename__
         obj_id = get_mdict_item_or_list(request.args, 'id') if has_request_context() else None
         obj = None if obj_id is None else self.get_one(obj_id)
         if obj is None:
             same_org = True
         else:
-            same_org = (obj.organization.id == current_user.organization.id) if has_organization_field(obj) else True
-        return (is_super_admin()) or (same_org and current_user.is_authenticated and (tablename + '_' + operation in get_user_roles()))
+            if has_organization_field(obj):
+                if obj.organization is None:
+                    same_org = False
+                else:
+                    same_org = (obj.organization.id == current_user.organization.id)
+            else:
+                same_org = True
+        role_assigned = same_org and current_user.is_authenticated and (self.role_identify + '_' + operation in get_user_roles())
+        return (is_super_admin()) or (role_assigned)
 
     def handle_view_exception(self, exc):
+        from sqlalchemy.exc import InvalidRequestError
         if isinstance(exc, ValidationError):
+            flash(as_unicode(exc), category='error')
+            return True
+        elif isinstance(exc, InvalidRequestError):
             flash(as_unicode(exc), category='error')
             return True
         return super(ModelViewWithAccess, self).handle_view_exception(exc)
@@ -97,6 +125,52 @@ class ModelViewWithAccess(ModelView):
             else:
                 # login
                 return redirect(url_for('security.login', next=request.url))
+
+    def get_model_return_url(self):
+        from flask.ext.admin.helpers import get_redirect_target
+        return_url = get_redirect_target() or self.get_url('.index_view')
+        model_id = get_mdict_item_or_list(request.args, 'id')
+        model = self.get_one(model_id)
+        return model, return_url
+
+    @expose('/edit/', methods=('GET', 'POST'))
+    def edit_view(self):
+        """
+            Edit model view with model specific can_edit support
+            Whether the model could be edit will be decided by model.
+        """
+        model, return_url = self.get_model_return_url()
+        if not model.can_edit():
+            return redirect(return_url)
+        return super(ModelViewWithAccess, self).edit_view()
+
+    @expose('/details/')
+    def details_view(self):
+        """
+            Details model view with model specific can_view_details support.
+            Whether the model detail could be viewed will be decided by model
+        """
+        model, return_url = self.get_model_return_url()
+        if not model.can_view_details():
+            return redirect(return_url)
+        return super(ModelViewWithAccess, self).details_view()
+
+    @expose('/delete/', methods=('POST',))
+    def delete_view(self):
+        """
+            Delete model view. Only POST method is allowed.
+            Whether the model could be deleted is decided by model
+        """
+        from flask.ext.admin.helpers import get_redirect_target
+        return_url = get_redirect_target() or self.get_url('.index_view')
+        form = self.delete_form()
+        if self.validate_form(form):
+             # id is InputRequired()
+            model_id = form.id.data
+            model = self.get_one(model_id)
+            if not model.can_delete():
+                return redirect(return_url)
+        return super(ModelViewWithAccess, self).delete_view()
 
 
 class DeleteValidator(object):

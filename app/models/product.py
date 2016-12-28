@@ -1,4 +1,6 @@
 # encoding: utf-8
+from flask.ext.login import current_user
+
 from app.service import Info
 from app import const
 from app.utils.date_util import get_weeks_between
@@ -28,7 +30,6 @@ class ProductImage(db.Model, DataSecurityMixin):
 class Product(db.Model, DataSecurityMixin):
     __tablename__ = 'product'
     id = Column(Integer, primary_key=True)
-    code = Column(String(8), unique=True, nullable=False)
     name = Column(String(128), unique=False, nullable=False)
     external_id = Column(String(), nullable=True, unique=False)
     deliver_day = Column(Integer, nullable=False)
@@ -73,7 +74,7 @@ class Product(db.Model, DataSecurityMixin):
     def in_transit_quantity(self):
         return (select([func.sum(InventoryTransactionLine.in_transit_quantity)])
                 .where(self.id == InventoryTransactionLine.product_id)
-                .label('in_transit_stock'))
+                .label('in_transit_quantity'))
 
     @hybrid_property
     def available_quantity(self):
@@ -185,6 +186,10 @@ class Product(db.Model, DataSecurityMixin):
     def inventory_advice(self, value):
         pass
 
+    @inventory_advice.expression
+    def inventory_advice(self):
+        pass
+
     @hybrid_property
     def weekly_sold_qty(self):
         """
@@ -253,6 +258,10 @@ class Product(db.Model, DataSecurityMixin):
         return Info.get_db().session.query(Product).filter_by(supplier_id=s_id)
 
     @staticmethod
+    def organization_filter(o_id):
+        return Info.get_db().session.query(Product).filter_by(organization_id=o_id)
+
+    @staticmethod
     def organization_filter(org_id):
         return Info.get_db().session.query(Product).filter_by(organization_id=org_id)
 
@@ -272,19 +281,21 @@ class Product(db.Model, DataSecurityMixin):
         days_without_prd = (self.get_lead_deliver_day() - can_sell_day)
         return self.average_unit_profit * self.weekly_sold_qty * days_without_prd / 7
 
-    @staticmethod
-    def get_next_code():
-        prd = db.session.query(Product).order_by(desc(Product.id)).first()
-        return '{0:06d}'.format(1 + int(prd.code))
-
     def __unicode__(self):
         from app.utils.security_util import user_has_role
         result = self.name
         if user_has_role('supplier_view'):
             result += "/供应商:{0}".format(self.supplier.name[:6])
-        if user_has_role('purchase_price_view'):
+        if (user_has_role('purchase_price_view') and
+            current_user.organization.type.code ==
+            const.DIRECT_SELLING_STORE_ORG_TYPE_KEY):
             result += "/进货价:{0}".format(self.purchase_price)
-        result += '/零售价:{0}'.format(self.retail_price)
+            result += '/零售价:{0}'.format(self.retail_price)
+        elif (user_has_role('purchase_price_view') and
+            current_user.organization.type.code ==
+            const.FRANCHISE_STORE_ORG_TYPE_KEY):
+            result += "/拿货价:{0}".format(self.franchise_price)
+            result += '/建议零售价:{0}'.format(self.retail_price)
         return result
 
     def __repr__(self):
