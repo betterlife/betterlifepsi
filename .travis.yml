@@ -25,7 +25,6 @@ after_success:
   - echo "$TRAVIS_COMMIT $TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_ID $TRAVIS_BRANCH $TRAVIS_TAG $BUILD_DATE"
   - echo "$TRAVIS_COMMIT $TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_ID $TRAVIS_BRANCH $TRAVIS_TAG $BUILD_DATE" > swtag
 deploy:
-  matrix:
   - provider: heroku
     skip_cleanup: true
     api_key:
