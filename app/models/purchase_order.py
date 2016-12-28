@@ -10,6 +10,7 @@ from app.models.data_security_mixin import DataSecurityMixin
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
+from app.utils import user_has_role
 
 db = Info.get_db()
 
@@ -126,7 +127,10 @@ class PurchaseOrder(db.Model, DataSecurityMixin):
             s = str(self.supplier.name)
         else:
             s = str(self.organization.name)
-        return str(self.id) + ' - ' + s + ' - ' + str(self.order_date) + ' - ' + str(self.total_amount) + ' - ' + self.status.display
+        result = "{0}/{1}/{2}/{3}".format(str(self.id), s, str(self.order_date), self.status.display)
+        if user_has_role('purchase_price_view'):
+            result += "/" + str(self.total_amount)
+        return result
 
     def get_available_lines_info(self):
         # 1. Find all existing receiving bind with this PO.
@@ -285,6 +289,7 @@ class PurchaseOrderLine(db.Model):
         return db.session.query(PurchaseOrderLine).filter_by(purchase_order_id=po_id)
 
     def __unicode__(self):
-        return 'H:' + str(self.purchase_order_id) + \
-               ' - L:' + str(self.id) + ' - N:' + str(self.product.name) + \
-               ' - Q:' + str(self.quantity) + ' - P:' + str(self.unit_price)
+        result =  '产品:{0}/数量:{1}'.format(str(self.product.name), str(self.quantity))
+        if user_has_role('purchase_price_view'):
+            result += "/价格:{0}".format(str(self.unit_price))
+        return result

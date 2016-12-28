@@ -2,6 +2,7 @@
 from flask import url_for
 from flask_babelex import lazy_gettext
 from markupsafe import Markup
+from app.utils import user_has_role
 
 from app.views.views_mapping import get_endpoint_by_type_attr
 
@@ -155,8 +156,12 @@ def receivings_formatter(view, context, model, name):
         receivings = [model.it_receiving]
     else:
         receivings = [model.po_receivings]
-    args = (id_field, date_field, total_amount_field, status_field, remark_field,)
-    detail_args = (product_field, quantity_field, price_field, total_amount_field)
+    if user_has_role('purchase_price_view'):
+        args = (id_field, date_field, total_amount_field, status_field, remark_field,)
+        detail_args = (product_field, quantity_field, price_field, total_amount_field)
+    else:
+        args = (id_field, date_field, status_field, remark_field,)
+        detail_args = (product_field, quantity_field)
     return _objs_formatter(view, context, model, values=receivings, model_name='receiving',
                            args=args, detail_field='lines', detail_args=detail_args)
 
@@ -187,9 +192,13 @@ def shipping_formatter(view, context, model, name):
 def purchase_order_formatter(view, context, model, name):
     s = model.purchase_order
     if s is not None:
-        args = (id_field, order_type_field, order_status_field, order_date_field, supplier_field, status_field,
-                goods_amount_field, total_amount_field, remark_field)
-        detail_args = (product_field, quantity_field, unit_price_field, total_amount_field)
+        if user_has_role('purchase_price_view'):
+            args = (id_field, order_type_field, order_status_field, order_date_field, supplier_field,
+                    goods_amount_field, total_amount_field, remark_field)
+            detail_args = (product_field, quantity_field, unit_price_field, total_amount_field)
+        else:
+            args = (id_field, order_type_field, order_status_field, order_date_field, supplier_field, remark_field)
+            detail_args = (product_field, quantity_field)
         return _obj_formatter(view, context, model, value=s, model_name='purchaseorder', title=str(s.id),
                               args=args, detail_args=detail_args, detail_field='lines')
     return ''
@@ -210,9 +219,13 @@ def sales_order_formatter(view, context, model, name):
 def inventory_transaction_formatter(view, context, model, name):
     s = model.inventory_transaction
     if s is not None:
-        args = (id_field, date_field, type_field, total_amount_field, remark_field,)
-        detail_args = (product_field, in_transit_quantity_field, quantity_field, price_field,
-                       total_amount_field, remark_field)
+        if user_has_role('purchase_price_view'):
+            args = (id_field, date_field, type_field, total_amount_field, remark_field,)
+            detail_args = (product_field, in_transit_quantity_field, quantity_field, price_field,
+                           total_amount_field, remark_field)
+        else:
+            args = (id_field, date_field, type_field, remark_field,)
+            detail_args = (product_field, in_transit_quantity_field, quantity_field, remark_field)
         return _obj_formatter(view, context, model, value=s, model_name='inventorytransaction', title=str(s.id),
                               args=args, detail_args=detail_args, detail_field='lines')
     return ''
