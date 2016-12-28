@@ -1,6 +1,7 @@
 class Info(object):
     __db = None
     __image_store_service = None
+    __logger = None
     __caches = dict()
 
     def __init__(self):
@@ -35,3 +36,13 @@ class Info(object):
     @staticmethod
     def get_image_store_service():
         return Info.__image_store_service
+
+
+    @staticmethod
+    def get_logger():
+        return Info.__logger
+
+    @staticmethod
+    def set_logger(logger):
+        if Info.__logger is None:
+            Info.__logger = logger

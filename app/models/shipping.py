@@ -21,6 +21,9 @@ class Shipping(db.Model, DataSecurityMixin):
     status_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
     status = relationship('EnumValues', foreign_keys=[status_id])
 
+    type_id = Column(Integer, ForeignKey('enum_values.id'), nullable=False)
+    type = relationship('EnumValues', foreign_keys=[type_id])
+
     sales_order_id = Column(Integer, ForeignKey('sales_order.id'), nullable=False)
     sales_order = relationship('SalesOrder', backref=backref('so_shipping', uselist=False))
 
@@ -59,13 +62,17 @@ class Shipping(db.Model, DataSecurityMixin):
     def create_or_update_inventory_transaction(self):
         from app.models.inventory_transaction import InventoryTransactionLine, InventoryTransaction
         from app.models.enum_values import EnumValues
-        it_type = EnumValues.find_one_by_code(const.SALES_OUT_INV_TRANS_TYPE_KEY)
+        if self.type.code == const.DIRECT_SHIPPING_TYPE_KEY:
+            it_type = EnumValues.find_one_by_code(const.SALES_OUT_INV_TRANS_TYPE_KEY)
+        else:
+            it_type = EnumValues.find_one_by_code(const.FRANCHISE_SALES_OUT_INV_TRANS_TYPE_KEY)
         it = self.inventory_transaction
         if it is None:
             it = InventoryTransaction()
             it.type = it_type
             self.inventory_transaction = it
         it.date = self.date
+        it.organization = self.organization
         for line in self.lines:
             itl = line.inventory_transaction_line
             if itl is None:

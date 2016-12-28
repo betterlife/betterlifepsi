@@ -41,9 +41,9 @@ class TestSalesOrderApi(unittest.TestCase):
             rv = self.test_client.put('/api/sales_order/' + str(so_id),
                                       follow_redirects=True,
                                       data=dict(status_id=delivered_status.id))
-            self.assertEqual(rv.status_code, 200)
             self.assertIn('message', rv.data)
             self.assertIn('Status update successfully', rv.data)
+            self.assertEqual(rv.status_code, 200)
             so_from_db = Info.get_db().session.query(SalesOrder).get(so_id)
             self.assertIsNotNone(so_from_db)
             self.assertEquals(SO_DELIVERED_STATUS_KEY, so_from_db.status.code)
@@ -60,8 +60,10 @@ class TestSalesOrderApi(unittest.TestCase):
                 'franchise_sales_order_edit',
                 'product_view'
             ])
+            franchise_so_type = EnumValues.find_one_by_code(FRANCHISE_SO_TYPE_KEY)
             sales_order = object_faker.sales_order(creator=user,
-                                                   number_of_line=1)
+                                                   number_of_line=1,
+                                                   type=franchise_so_type)
             db_util.save_objects_commit(sales_order, user)
             so_id = sales_order.id
             shipped_status = EnumValues.find_one_by_code(SO_SHIPPED_STATUS_KEY)
@@ -69,9 +71,9 @@ class TestSalesOrderApi(unittest.TestCase):
             rv = self.test_client.put('/api/sales_order/' + str(so_id),
                                       follow_redirects=True,
                                       data=dict(status_id=shipped_status.id))
-            self.assertEqual(rv.status_code, 200)
             self.assertIn('message', rv.data)
             self.assertIn('Status update successfully', rv.data)
+            self.assertEqual(rv.status_code, 200)
             so_from_db = Info.get_db().session.query(SalesOrder).get(so_id)
             self.assertIsNotNone(so_from_db)
             self.assertEquals(SO_SHIPPED_STATUS_KEY, so_from_db.status.code)

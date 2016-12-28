@@ -64,21 +64,11 @@ def init_babel(flask_app):
 
 def init_logging(flask_app):
     from raven.contrib.flask import Sentry
-    # Init Sentry if not in debug mode
-    if not flask_app.config['DEBUG']:
-        Sentry().init_app(flask_app)
-    else:
-        # Set log level to debug and redirect all the logs to stand out
-        import logging
-        from logging import StreamHandler
-        log_handler = StreamHandler()
-        flask_app.logger.setLevel(logging.DEBUG)
-        flask_app.logger.addHandler(log_handler)
-
-        # Disable werkzeug log
-        log = logging.getLogger('werkzeug')
-        log.setLevel(logging.ERROR)
-
+    import logging
+    from logging import StreamHandler
+    from app.service import Info
+    sentry = Sentry(flask_app, logging=True, level=logging.WARNING)
+    Info.set_logger(sentry)
 
 def init_debug_toolbar(flask_app):
     from flask_debugtoolbar import DebugToolbarExtension

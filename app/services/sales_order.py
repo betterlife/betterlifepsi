@@ -1,19 +1,24 @@
-from app.models import Preference, Incoming, EnumValues, ShippingLine
+from app.const import DIRECT_SHIPPING_TYPE_KEY, FRANCHISE_SHIPPING_TYPE_KEY, SHIPPING_COMPLETE_STATUS_KEY, DIRECT_PO_TYPE_KEY, FRANCHISE_PO_TYPE_KEY, \
+    DIRECT_SO_TYPE_KEY, FRANCHISE_SO_TYPE_KEY
+from app.models import Preference, Incoming, EnumValues, ShippingLine, Shipping
 
 
 class SalesOrderService(object):
 
     @staticmethod
     def create_or_update_shipping(sales_order):
-        from app.const import SHIPPING_COMPLETE_STATUS_KEY
         status = EnumValues.find_one_by_code(SHIPPING_COMPLETE_STATUS_KEY)
         shipping = sales_order.so_shipping
         if shipping is None:
-            from app.models import Shipping
             shipping = Shipping()
         shipping.date = sales_order.order_date
         shipping.sales_order = sales_order
         shipping.status = status
+        if sales_order.type.code == DIRECT_SO_TYPE_KEY:
+            shipping.type = EnumValues.find_one_by_code(DIRECT_SHIPPING_TYPE_KEY)
+        elif sales_order.type.code == FRANCHISE_SO_TYPE_KEY:
+            shipping.type = EnumValues.find_one_by_code(FRANCHISE_SHIPPING_TYPE_KEY)
+        shipping.organization = sales_order.organization
         for line in sales_order.lines:
             new_sl = None
             for old_sl in shipping.lines:
