@@ -162,7 +162,7 @@ class Receiving(db.Model, DataSecurityMixin):
         inv_type = EnumValues.find_one_by_code(const.PURCHASE_IN_INV_TRANS_KEY)
         if inv_trans is None:
             inv_trans = InventoryTransaction()
-            inv_trans.type_id = inv_type.id
+            inv_trans.type = inv_type
         inv_trans.date = self.date
         for line in self.lines:
             inv_line = line.inventory_transaction_line
@@ -179,6 +179,10 @@ class Receiving(db.Model, DataSecurityMixin):
             elif self.status.code == const.RECEIVING_DRAFT_STATUS_KEY:
                 inv_line.quantity = 0
                 inv_line.in_transit_quantity = line.quantity
+            line.inventory_transaction_line = inv_line
+        for line in inv_trans.lines:
+            if line.itl_receiving_line is None:
+                db.session.delete(line)
         return inv_trans
 
 
