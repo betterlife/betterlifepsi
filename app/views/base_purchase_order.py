@@ -149,8 +149,10 @@ class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
     def on_model_delete(self, model):
         DeleteValidator.validate_status_for_change(
             model,const.PO_RECEIVED_STATUS_KEY,
-            gettext('Purchase order can not be '
-                    'update nor delete on received status'))
+            gettext('Purchase order can not be update nor delete on received status'))
+        DeleteValidator.validate_status_for_change(
+            model,const.PO_ISSUED_STATUS_KEY,
+            gettext('Purchase order can not be update nor delete on issued status'))
 
     inline_models = (PurchaseOrderLineInlineAdmin(PurchaseOrderLine),)
 

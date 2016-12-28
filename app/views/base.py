@@ -1,4 +1,5 @@
 # coding=utf-8
+from flask.ext.admin import expose
 from flask_babelex import gettext
 
 from flask import url_for, request, flash, has_request_context
@@ -84,10 +85,10 @@ class ModelViewWithAccess(ModelView):
         from sqlalchemy.exc import InvalidRequestError
         if isinstance(exc, ValidationError):
             flash(as_unicode(exc), category='error')
-            return False
+            return True
         elif isinstance(exc, InvalidRequestError):
             flash(as_unicode(exc), category='error')
-            return False
+            return True
         return super(ModelViewWithAccess, self).handle_view_exception(exc)
 
     def get_query(self):
@@ -124,6 +125,52 @@ class ModelViewWithAccess(ModelView):
             else:
                 # login
                 return redirect(url_for('security.login', next=request.url))
+
+    def get_model_return_url(self):
+        from flask.ext.admin.helpers import get_redirect_target
+        return_url = get_redirect_target() or self.get_url('.index_view')
+        model_id = get_mdict_item_or_list(request.args, 'id')
+        model = self.get_one(model_id)
+        return model, return_url
+
+    @expose('/edit/', methods=('GET', 'POST'))
+    def edit_view(self):
+        """
+            Edit model view with model specific can_edit support
+            Whether the model could be edit will be decided by model.
+        """
+        model, return_url = self.get_model_return_url()
+        if not model.can_edit():
+            return redirect(return_url)
+        return super(ModelViewWithAccess, self).edit_view()
+
+    @expose('/details/')
+    def details_view(self):
+        """
+            Details model view with model specific can_view_details support.
+            Whether the model detail could be viewed will be decided by model
+        """
+        model, return_url = self.get_model_return_url()
+        if not model.can_view_details():
+            return redirect(return_url)
+        return super(ModelViewWithAccess, self).details_view()
+
+    @expose('/delete/', methods=('POST',))
+    def delete_view(self):
+        """
+            Delete model view. Only POST method is allowed.
+            Whether the model could be deleted is decided by model
+        """
+        from flask.ext.admin.helpers import get_redirect_target
+        return_url = get_redirect_target() or self.get_url('.index_view')
+        form = self.delete_form()
+        if self.validate_form(form):
+             # id is InputRequired()
+            model_id = form.id.data
+            model = self.get_one(model_id)
+            if not model.can_delete():
+                return redirect(return_url)
+        return super(ModelViewWithAccess, self).delete_view()
 
 
 class DeleteValidator(object):
