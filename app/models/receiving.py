@@ -126,8 +126,7 @@ class Receiving(db.Model, DataSecurityMixin):
         from app.models import EnumValues
         if self.status.code == const.RECEIVING_COMPLETE_STATUS_KEY:
             po = self.purchase_order
-            finished = False
-            started = False
+            not_finished,started = False, False
             for line in po.lines:
                 receiving_lines = line.pol_receiving_lines
                 rd_qty = 0
@@ -135,9 +134,9 @@ class Receiving(db.Model, DataSecurityMixin):
                     rd_qty += rl.quantity
                 if rd_qty > 0:
                     started = True
-                if rd_qty >= line.quantity:
-                    finished = True
-            if finished is True:
+                if rd_qty < line.quantity:
+                    not_finished = True
+            if not_finished is False:
                 po.status = EnumValues.find_one_by_code(const.PO_RECEIVED_STATUS_KEY)
             elif started is True:
                 po.status = EnumValues.find_one_by_code(const.PO_PART_RECEIVED_STATUS_KEY)
