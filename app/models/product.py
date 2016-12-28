@@ -74,7 +74,7 @@ class Product(db.Model, DataSecurityMixin):
     def in_transit_quantity(self):
         return (select([func.sum(InventoryTransactionLine.in_transit_quantity)])
                 .where(self.id == InventoryTransactionLine.product_id)
-                .label('in_transit_stock'))
+                .label('in_transit_quantity'))
 
     @hybrid_property
     def available_quantity(self):
