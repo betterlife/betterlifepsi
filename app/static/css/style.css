@@ -356,5 +356,5 @@ ul.dropdown-menu > li > a > i.glyphicon {
 }
 
 #ajax-message-error, #ajax-message-success {
-    position: fixed;width: 50%;top: 20%;left: 25%;z-index: 1000;display:none
+    position: fixed;width: 23%;top: 80%;left: 75%;z-index: 1000;display:none;
 }
