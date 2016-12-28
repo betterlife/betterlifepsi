@@ -109,9 +109,9 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
                                                    gettext('Receiving document can not be update '
                                                            'nor delete on complete status'))
 
-    def on_model_change(self, form, model, is_created):
+    def after_model_change(self, form, model, is_created):
         from app.models import PurchaseOrder
-        super(ReceivingAdmin, self).on_model_change(form, model, is_created)
+        super(ReceivingAdmin, self).after_model_change(form, model, is_created)
         if is_created:
             available_info = model.purchase_order.get_available_lines_info()
             # 4. Check any qty available for receiving?
