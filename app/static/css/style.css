@@ -354,3 +354,7 @@ ul.dropdown-menu > li > a > i.glyphicon {
     background-color: lightgray !important;
     text-decoration: line-through;
 }
+
+#ajax-message-error, #ajax-message-success {
+    position: fixed;width: 50%;top: 20%;left: 25%;z-index: 1000;display:none
+}
