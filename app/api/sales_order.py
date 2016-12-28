@@ -5,7 +5,8 @@ from flask_restful import Resource, reqparse
 from app.models import RelatedValues
 from app.service import Info
 from app.models import EnumValues, SalesOrder, PurchaseOrder
-from app.const import SO_STATUS_KEY, SO_CREATED_STATUS_KEY, FRANCHISE_PO_TO_SO_RT_KEY, PO_SHIPPED_STATUS_KEY, SO_TYPE_KEY
+from app.const import SO_STATUS_KEY, SO_CREATED_STATUS_KEY, \
+    FRANCHISE_PO_TO_SO_RT_KEY, PO_SHIPPED_STATUS_KEY, FRANCHISE_SO_TYPE_KEY
 from app.services import SalesOrderService
 from app.utils import has_role, db_util
 
@@ -19,7 +20,7 @@ class SalesOrderApi(Resource):
         rt = EnumValues.find_one_by_code(FRANCHISE_PO_TO_SO_RT_KEY)
         session = Info.get_db().session
         related_value, purchase_order = None, None
-        if sales_order.type.code == SO_TYPE_KEY:
+        if sales_order.type.code == FRANCHISE_SO_TYPE_KEY:
             related_value = session.query(RelatedValues).filter_by(to_object_id=sales_order.id, relation_type_id=rt.id).first()
         if related_value is not None:
             purchase_order = session.query(PurchaseOrder).get(related_value.from_object_id)
@@ -27,7 +28,6 @@ class SalesOrderApi(Resource):
                 po_shipped = EnumValues.find_one_by_code(PO_SHIPPED_STATUS_KEY)
                 purchase_order.status = po_shipped
         return purchase_order
-
 
     @has_role("franchise_sales_order_edit")
     def put(self, sales_order_id):
