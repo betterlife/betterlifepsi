@@ -1,7 +1,7 @@
 from cloudinary import uploader
 
 
-class ImageStore(object):
+class CloudinaryImageStore(object):
     def __init__(self, app):
         pass
 

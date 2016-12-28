@@ -16,6 +16,9 @@ class TestReceiving(unittest.TestCase):
         fixture.cleanup_database(self.app_context)
         self.app_context.pop()
 
+    def test_dummy(self):
+        pass
+
     def test_get_by_po_id(self):
         from app.models.receiving import Receiving
         from app.models.enum_values import EnumValues
@@ -38,8 +41,8 @@ class TestReceiving(unittest.TestCase):
             receiving_returned = receiving.filter_by_po_id(1)[0]
             self.assertEqual(receiving, receiving_returned)
 
-        from tests.fixture import run_test_as_admin
-        run_test_as_admin(self.test_client, test_logic)
+        from tests.fixture import run_as_admin
+        run_as_admin(self.test_client, test_logic)
 
     def test_create_draft_recv_from_po(self):
         from app.models.receiving import Receiving
@@ -69,5 +72,5 @@ class TestReceiving(unittest.TestCase):
                 self.assertEquals(line.inventory_transaction_line.product, line.product)
                 self.assertEquals(line.inventory_transaction_line.price, line.price)
 
-        from tests.fixture import run_test_as_admin
-        run_test_as_admin(self.test_client, test_logic)
+        from tests.fixture import run_as_admin
+        run_as_admin(self.test_client, test_logic)

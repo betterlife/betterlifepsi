@@ -13,9 +13,11 @@
     </li>
     {%- endif -%}
     {%- if admin_view.can_edit -%}
-    <li>
-        <a href="{{ get_url('.edit_view', id=request.args.get('id'), url=return_url) }}">{{ _gettext('Edit') }}</a>
-    </li>
+      {% if model.can_edit() %}
+        <li>
+            <a href="{{ get_url('.edit_view', id=request.args.get('id'), url=return_url) }}">{{ _gettext('Edit') }}</a>
+        </li>
+      {% endif %}
     {%- endif -%}
     <li class="active">
         <a href="javascript:void(0)">{{ _gettext('Details') }}</a>

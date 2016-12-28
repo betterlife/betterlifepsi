@@ -10,7 +10,6 @@ db = Info.get_db()
 class Supplier(db.Model, DataSecurityMixin):
     __tablename__ = 'supplier'
     id = Column(Integer, primary_key=True)
-    code = Column(String(8), unique=True, nullable=False)
     name = Column(String(128), unique=False, nullable=False)
     external_id = Column(String(), nullable=True, unique=False)
     qq = Column(String(16))

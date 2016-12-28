@@ -19,7 +19,7 @@
     }
 }
 
-.glyphicon-pencil, .glyphicon-eye-open {
+.list-buttons-column .glyphicon, .list-buttons-column .fa {
     margin-right: 5px;
 }
 
@@ -353,4 +353,8 @@ ul.dropdown-menu > li > a > i.glyphicon {
 .delete-indicate {
     background-color: lightgray !important;
     text-decoration: line-through;
+}
+
+#ajax-message-error, #ajax-message-success {
+    position: fixed;width: 23%;top: 80%;left: 75%;z-index: 1000;display:none;
 }

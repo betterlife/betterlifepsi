@@ -4,6 +4,7 @@ from flask_admin.contrib.sqla.filters import FloatGreaterFilter, FloatSmallerFil
 from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext
 from app.models import InventoryTransactionLine, InventoryTransaction
+from app.utils import security_util
 from app.views.base import ModelViewWithAccess
 from formatter import receivings_formatter, shipping_formatter, default_date_formatter
 
@@ -80,3 +81,24 @@ class InventoryTransactionAdmin(ModelViewWithAccess):
     }
 
     inline_models = (InventoryTransactionLineInlineAdmin(InventoryTransactionLine),)
+
+    def get_list_columns(self):
+        """
+        This method is called instantly in list.html
+        List of columns is decided runtime during render of the table
+        Not decided during flask-admin blueprint startup.
+        """
+        columns = super(InventoryTransactionAdmin, self).get_list_columns()
+        cols = ['total_amount']
+        columns = security_util.filter_columns_by_role(
+            columns, cols,'purchase_price_view'
+        )
+        return columns
+
+    def get_details_columns(self):
+        cols = ['total_amount']
+        columns = super(InventoryTransactionAdmin, self).get_details_columns()
+        columns = security_util.filter_columns_by_role(
+            columns, cols,'purchase_price_view'
+        )
+        return columns

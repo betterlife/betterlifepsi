@@ -1,3 +1,10 @@
+//With bootbox
+bootbox.addLocale('zh_CN', {
+    OK: '确定',
+    CANCEL: '取消',
+    CONFIRM: '确定'
+});
+
 $(document).ready(function () {
     $('[data-toggle="popover"]').popover({
         html: true, placement: "auto",
@@ -77,3 +84,36 @@ function addInlineField(parent_id) {
     // Apply styles
     faForm.applyGlobalStyles($template);
 }
+
+function mark_ship_row_action(id, status_id) {
+    var icon = $("#mark_ship_row_action_" + id), displayElem;
+    bootbox.confirm('Confirm to mark this sales order as shipped?', function(result) {
+        if (result == true){
+            icon.attr('class', 'fa fa-spin fa-spinner');
+            $.ajax({
+                url: '/api/sales_order/'+ id +'?status_id=' + status_id,
+                type: 'PUT',
+                success: function( response ) {
+                    if (response.status == 'success') {
+                        icon.attr('class', 'glyphicon glyphicon-ok');
+                        icon.fadeOut(5000);
+                        displayElem = $("#ajax-message-success");
+                    } else if (response.status == 'error') {
+                        icon.attr('class', 'fa fa-exclamation-triangle');
+                        icon.attr('style', 'color:red;cursor:help');
+                        icon.parent().attr('href', "#");
+                        icon.parent().tooltip({
+                            title: response.message,
+                            placement: 'top',
+                            trigger:'hover'
+                        });
+                        displayElem = $("#ajax-message-error");
+                    }
+                    displayElem.html(response.message);
+                    displayElem.show().delay(4000).fadeOut();
+                }
+            });
+        }
+    });
+}
+

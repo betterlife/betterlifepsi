@@ -13,4 +13,4 @@ application = create_app()
 init_all(application)
 
 if __name__ == '__main__':
-    application.run()
+    application.run(debug=True, threaded=True)

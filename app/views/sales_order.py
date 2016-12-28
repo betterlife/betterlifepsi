@@ -2,7 +2,10 @@
 from datetime import datetime
 from functools import partial
 
-from app import service
+from flask.ext.admin.model.template import BaseListRowAction
+from markupsafe import Markup
+
+from app import service, const
 from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext
 from app.models import Preference, Incoming, Expense, Shipping, ShippingLine, EnumValues
@@ -10,6 +13,29 @@ from app.views.base import ModelViewWithAccess
 from app.views.components import ReadonlyStringField, DisabledStringField
 from flask_admin.contrib.sqla.filters import FloatGreaterFilter, FloatSmallerFilter, FloatEqualFilter
 from app.utils import current_user, form_util
+from app.services.sales_order import SalesOrderService
+
+
+class MarkShipRowAction(BaseListRowAction):
+    def __init__(self, icon_class, title=None, id_arg='id', url_args=None):
+        super(MarkShipRowAction, self).__init__(title=title)
+
+        self.icon_class = icon_class
+        self.id_arg = id_arg
+        self.url_args = url_args
+
+    def render(self, context, row_id, row):
+        #TODO Find a way to change MarkShipRowAction to mark_ship_row_action
+        #automatically.
+        kwargs = dict(self.url_args) if self.url_args else {}
+        kwargs[self.id_arg] = row_id
+        so_shipped_status = EnumValues.find_one_by_code(const.SO_SHIPPED_STATUS_KEY)
+        if row.status.code == const.SO_CREATED_STATUS_KEY and row.type.code == const.FRANCHISE_SO_TYPE_KEY:
+            return Markup("""<a class='icon' href='javascript:mark_ship_row_action({0}, {1})'>
+                               <span id='mark_ship_row_action_{0}' class='fa fa-truck'></span>
+                            </a>""".format(row_id, so_shipped_status.id))
+        else:
+            return ''
 
 
 class SalesOrderLineInlineAdmin(InlineFormAdmin):
@@ -36,7 +62,11 @@ class SalesOrderAdmin(ModelViewWithAccess):
     from app.models import SalesOrderLine, SalesOrder
     from formatter import expenses_formatter, incoming_formatter, shipping_formatter, default_date_formatter
 
-    column_list = ('id', 'customer', 'logistic_amount', 'actual_amount', 'original_amount',
+    column_extra_row_actions = [
+        MarkShipRowAction('fa fa-camera-retro'),
+    ]
+
+    column_list = ('id', 'type', 'status', 'customer', 'logistic_amount', 'actual_amount', 'original_amount',
                    'discount_amount', 'order_date', 'incoming', 'expense', 'so_shipping', 'remark')
     column_filters = ('order_date', 'logistic_amount',
                       FloatSmallerFilter(SalesOrder.actual_amount, lazy_gettext('Actual Amount')),
@@ -49,9 +79,9 @@ class SalesOrderAdmin(ModelViewWithAccess):
                       FloatGreaterFilter(SalesOrder.original_amount, lazy_gettext('Total Amount')),
                       FloatEqualFilter(SalesOrder.original_amount, lazy_gettext('Total Amount')),)
 
-    column_searchable_list = ('customer.first_name', 'customer.last_name', 'remark',
-                              'customer.mobile_phone', 'customer.email', 'customer.address',
-                              'customer.level.display', 'customer.join_channel.display')
+    column_searchable_list = ('customer.first_name', 'customer.last_name', 'remark', 'type.display', 'type.code',
+                              'status.display', 'status.code', 'customer.mobile_phone', 'customer.email',
+                              'customer.address', 'customer.level.display', 'customer.join_channel.display')
 
     form_columns = ('id', 'customer', 'logistic_amount', 'order_date', 'remark', 'actual_amount',
                     'original_amount', 'discount_amount', 'lines')
@@ -59,8 +89,9 @@ class SalesOrderAdmin(ModelViewWithAccess):
                        'original_amount', 'discount_amount', 'lines')
     form_create_rules = ('customer', 'logistic_amount', 'order_date', 'remark', 'lines',)
 
-    column_details_list = ('id', 'customer', 'external_id', 'logistic_amount', 'order_date', 'remark', 'actual_amount',
-                           'original_amount', 'discount_amount', 'incoming', 'expense', 'so_shipping', 'lines',)
+    column_details_list = ('id', 'type', 'status', 'customer', 'external_id', 'logistic_amount', 'order_date', 'remark',
+                           'actual_amount', 'original_amount', 'discount_amount', 'incoming', 'expense',
+                           'so_shipping', 'lines',)
 
     column_editable_list = ('remark',)
 
@@ -79,7 +110,8 @@ class SalesOrderAdmin(ModelViewWithAccess):
     )
     form_excluded_columns = ('incoming', 'expense', 'so_shipping')
     column_sortable_list = ('id', 'logistic_amount', 'actual_amount', 'original_amount', 'discount_amount',
-                            'order_date')
+                            'order_date',('status', 'status.display'), ('type', 'type.display'))
+
     inline_models = (SalesOrderLineInlineAdmin(SalesOrderLine),)
 
     column_formatters = {
@@ -103,7 +135,9 @@ class SalesOrderAdmin(ModelViewWithAccess):
         'lines': lazy_gettext('Lines'),
         'external_id': lazy_gettext('External Id'),
         'customer': lazy_gettext('Customer'),
-        'customer.name': lazy_gettext('Customer')
+        'customer.name': lazy_gettext('Customer'),
+        'status': lazy_gettext('Status'),
+        'type': lazy_gettext('Type'),
     }
 
     def create_form(self, obj=None):
@@ -138,75 +172,18 @@ class SalesOrderAdmin(ModelViewWithAccess):
         for sub_line in line_entries:
             form_util.filter_by_organization(sub_line.form.product, Product)
 
-    @staticmethod
-    def create_or_update_incoming(model):
-        incoming = model.incoming
-        preference = Preference.get()
-        incoming = SalesOrderAdmin.create_associated_obj(incoming, model, default_obj=Incoming(),
-                                                         value=model.actual_amount,
-                                                         status_id=preference.def_so_incoming_status_id,
-                                                         type_id=preference.def_so_incoming_type_id)
-        return incoming
-
-    @staticmethod
-    def create_or_update_expense(model):
-        expense = model.expense
-        preference = Preference.get()
-        if (model.logistic_amount is not None) and (model.logistic_amount > 0):
-            default_obj = Expense(model.logistic_amount, model.order_date,
-                                  preference.def_so_exp_status_id, preference.def_so_exp_type_id)
-            expense = SalesOrderAdmin.create_associated_obj(expense, model,
-                                                            default_obj=default_obj,
-                                                            value=model.logistic_amount,
-                                                            status_id=preference.def_so_exp_status_id,
-                                                            type_id=preference.def_so_exp_type_id)
-        return expense
-
-    @staticmethod
-    def create_associated_obj(obj, model, default_obj, value, status_id, type_id):
-        if obj is None:
-            obj = default_obj
-            obj.status_id = status_id
-            obj.category_id = type_id
-        obj.amount = value
-        obj.sales_order_id = model.id
-        obj.date = model.order_date
-        return obj
-
-    @staticmethod
-    def create_or_update_shipping(model):
-        status = EnumValues.find_one_by_code('SHIPPING_COMPLETE')
-        shipping = model.so_shipping
-        if shipping is None:
-            shipping = Shipping()
-        shipping.date = model.order_date
-        shipping.sales_order = model
-        shipping.status = status
-        for line in model.lines:
-            new_sl = None
-            for old_sl in shipping.lines:
-                if old_sl.sales_order_line_id == line.id:
-                    new_sl = old_sl
-                    break
-            new_sl = SalesOrderAdmin.copy_sales_order_line_to_shipping_line(line, new_sl)
-            new_sl.shipping = shipping
-        shipping.create_or_update_inventory_transaction()
-        return shipping
-
-    @staticmethod
-    def copy_sales_order_line_to_shipping_line(sales_order_line, sl):
-        if sl is None:
-            sl = ShippingLine()
-        sl.quantity = sales_order_line.quantity
-        sl.price = sales_order_line.unit_price
-        sl.product_id = sales_order_line.product_id
-        sl.sales_order_line_id = sales_order_line.id
-        return sl
+    def on_model_change(self, form, model, is_created):
+        if is_created:
+            model.type = EnumValues.find_one_by_code(const.DIRECT_SO_TYPE_KEY)
+            model.status = EnumValues.find_one_by_code(const.SO_DELIVERED_STATUS_KEY)
+            model.organization = current_user.organization
 
     def after_model_change(self, form, model, is_created):
-        incoming = SalesOrderAdmin.create_or_update_incoming(model)
-        expense = SalesOrderAdmin.create_or_update_expense(model)
-        shipping = SalesOrderAdmin.create_or_update_shipping(model)
+        incoming = SalesOrderService.create_or_update_incoming(model)
+        expense = SalesOrderService.create_or_update_expense(model)
+        shipping = None
+        if model.type.code == const.DIRECT_SO_TYPE_KEY:
+            shipping = SalesOrderService.create_or_update_shipping(model)
         db = service.Info.get_db()
         if expense is not None:
             db.session.add(expense)
