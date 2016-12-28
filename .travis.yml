@@ -2,75 +2,48 @@ sudo: false
 language: python
 python:
   - '2.7'
-
 env:
   global:
     - DATABASE_URL=postgresql://localhost/flask_psi_test
     - TEST_DATABASE_URL=postgresql://localhost/flask_psi_test
     - TESTING="True"
-
 services:
   - postgresql
-
 before_script:
   - psql -U postgres -c 'CREATE DATABASE flask_psi_test;'
-  - openssl aes-256-cbc -K $encrypted_c17ec31a4ad7_key -iv $encrypted_c17ec31a4ad7_iv -in .travis/deploy.pem.enc -out .travis/deploy.pem -d
-  - echo "Host 121.201.68.243" >> ~/.ssh/config
-  - echo "   StrictHostKeyChecking no" >> ~/.ssh/config
-  - echo "   CheckHostIP no" >> ~/.ssh/config
-  - echo "   UserKnownHostsFile=/dev/null" >> ~/.ssh/config
-
 before_install:
   - pip install codecov
-
 install:
   - pip install -r requirements/test.txt
   - mv setup.cfg.template setup.cfg
-
 script:
   - nosetests -w tests --with-coverage --cover-erase --with-xunit --cover-branches --xunit-file=nosetests.xml
-
 after_success:
   - codecov
   - export BUILD_DATE_FORMAT="+%Y-%m-%d"
   - export BUILD_DATE=`date $BUILD_DATE_FORMAT`
   - echo "$TRAVIS_COMMIT $TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_ID $TRAVIS_BRANCH $TRAVIS_TAG $BUILD_DATE"
   - echo "$TRAVIS_COMMIT $TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_ID $TRAVIS_BRANCH $TRAVIS_TAG $BUILD_DATE" > swtag
-
 deploy:
-#  - provider: heroku
-#    skip_cleanup: true
-#    api_key:
-#      secure: f0rWigeIF6dUiF0H4/fZNov/es33QQaEsXtzlZDjAGN7j5wRawSJfmHT/3O5Olhragww3Kgs5Wv8ejiU4JwHxVeU4kl2hUF+Ih4H4i87WBoGRm8/f6OYtGASN1HflhZzzcSDe4FsXRD6a0u9p/O9orF839ag8Bx+WJyqQngACI24Nm4LqhkPYSkGKpb7R0Wc5TT602SXBVOa49RsJ/eIZaFTqRGSpgjN2KtOv3YbZmPkyzM2aErFMg1uc+vMs+Ln6hQb5+xtDrb041V8bNPsPn/oRexWlErdXkxUAnu+m5MIHFErc75I7+fbB6m+nAtyNAkpmE8hDWGqj80Y1RU4WaCjpG5JEo4qmaZfvd5QdtC8yw0W2ZKVUEgtDcPx0SSqX9lbHNNfuKpQ60XVPdiq9WjYHLff2BOV5OhRW6et7u7Lqlyqqy4K/+3ieIcwGaYuLUK4DMbv7/V9ttk/gwv9liFlxCgEzj3WDB5SMLQblsnenAI9W90c5DR1nsPkciq+7OJ9scpbtG826FQQi6NLpxAItifMBL8ouRNKelSlFnfTeWrv/0qPW7iU46DnOEKQs6F//j7wB0L6x12MRy93UfVVu1+4jnOeKnGljjQA1fk9123PHHRonFBaGRu2tTmSGZLiBZlOfi/8py/ZkrSSFzZ9NS6biDktPXDcg6uq/r0=
-#    app: psi-dev
-#    on:
-#      repo: betterlife/psi
-#      all_branches: true
-#    run:
-#      - restart
+  matrix:
   - provider: heroku
     skip_cleanup: true
     api_key:
-      secure: f0rWigeIF6dUiF0H4/fZNov/es33QQaEsXtzlZDjAGN7j5wRawSJfmHT/3O5Olhragww3Kgs5Wv8ejiU4JwHxVeU4kl2hUF+Ih4H4i87WBoGRm8/f6OYtGASN1HflhZzzcSDe4FsXRD6a0u9p/O9orF839ag8Bx+WJyqQngACI24Nm4LqhkPYSkGKpb7R0Wc5TT602SXBVOa49RsJ/eIZaFTqRGSpgjN2KtOv3YbZmPkyzM2aErFMg1uc+vMs+Ln6hQb5+xtDrb041V8bNPsPn/oRexWlErdXkxUAnu+m5MIHFErc75I7+fbB6m+nAtyNAkpmE8hDWGqj80Y1RU4WaCjpG5JEo4qmaZfvd5QdtC8yw0W2ZKVUEgtDcPx0SSqX9lbHNNfuKpQ60XVPdiq9WjYHLff2BOV5OhRW6et7u7Lqlyqqy4K/+3ieIcwGaYuLUK4DMbv7/V9ttk/gwv9liFlxCgEzj3WDB5SMLQblsnenAI9W90c5DR1nsPkciq+7OJ9scpbtG826FQQi6NLpxAItifMBL8ouRNKelSlFnfTeWrv/0qPW7iU46DnOEKQs6F//j7wB0L6x12MRy93UfVVu1+4jnOeKnGljjQA1fk9123PHHRonFBaGRu2tTmSGZLiBZlOfi/8py/ZkrSSFzZ9NS6biDktPXDcg6uq/r0=
+      secure: TE6DJdPpAU9bkW9G4+i8uZtegaQ2hCuXl4HcFOVSI+P1VSCuW2ESrQKpkOob4Ym8WEOwfLmCp0bzebModbkbJ1KpzxLS/KAmzr6crBJTPm04seKOKRXOjZeVZlp+nn9QvCA7OIFgdbDWeumH6+4DzR/rjvnfacJ8jvt5wm8nlvL57D7psr3CEIbTvsDdcTaKGlbaFnaXUTRoR3Lrc3ACqvNRAl3sXR1s4RBwKd+3cD3o/606IUeSCV2NUEs07JsJyQY3nTabdyiM5COxiE268aPE+BE3OqDRSESuIMBRhjmO7FW8QJfd+R0E3MDl/t/CPufkvC20OnM49sbDjQgXpijVga/znu32ZTC6a4Nq6bQlEWFiM01GbOKb4ZgGoqQhILxFW7LIJg+yiLz7I0FKc79o4o/hc3NL3z4tHZXjxtV7p7c86Db1W+mbGe1iwrnmxQN4T3hQFs4Nwm6mFEcBWkq1wQQ9F2m7Pm8Bt7Hg9w+90zNmcug8YyU4YdrHW0Uu/hmkGglrZJe/Cl1wM1ONCTOVRideKGMQigBudFXeuH6Ey0pMbp7dxH9y9Q0ZATex07QP/JtBNan+CSO0C0l8zUOs/TV1GSzCeYwc0V0sL4nNygmTArIq/0ZHJIJOLxjWvSDLPA4OqP0UL6TN9Z9QzoNlR74C45GxKbdsqDZBeYw=
+    app: psi-dev
+    on:
+      repo: betterlife/psi
+      all_branches: true
+    run:
+    - restart
+  - provider: heroku
+    skip_cleanup: true
+    api_key:
+        secure: TE6DJdPpAU9bkW9G4+i8uZtegaQ2hCuXl4HcFOVSI+P1VSCuW2ESrQKpkOob4Ym8WEOwfLmCp0bzebModbkbJ1KpzxLS/KAmzr6crBJTPm04seKOKRXOjZeVZlp+nn9QvCA7OIFgdbDWeumH6+4DzR/rjvnfacJ8jvt5wm8nlvL57D7psr3CEIbTvsDdcTaKGlbaFnaXUTRoR3Lrc3ACqvNRAl3sXR1s4RBwKd+3cD3o/606IUeSCV2NUEs07JsJyQY3nTabdyiM5COxiE268aPE+BE3OqDRSESuIMBRhjmO7FW8QJfd+R0E3MDl/t/CPufkvC20OnM49sbDjQgXpijVga/znu32ZTC6a4Nq6bQlEWFiM01GbOKb4ZgGoqQhILxFW7LIJg+yiLz7I0FKc79o4o/hc3NL3z4tHZXjxtV7p7c86Db1W+mbGe1iwrnmxQN4T3hQFs4Nwm6mFEcBWkq1wQQ9F2m7Pm8Bt7Hg9w+90zNmcug8YyU4YdrHW0Uu/hmkGglrZJe/Cl1wM1ONCTOVRideKGMQigBudFXeuH6Ey0pMbp7dxH9y9Q0ZATex07QP/JtBNan+CSO0C0l8zUOs/TV1GSzCeYwc0V0sL4nNygmTArIq/0ZHJIJOLxjWvSDLPA4OqP0UL6TN9Z9QzoNlR74C45GxKbdsqDZBeYw=
     on:
       repo: betterlife/psi
       tags: true
     app:
-      master: psi-qa 
+      master: psi-qa
     run:
-      - restart
-  - provider: script
-    skip_cleanup: true
-    script: ./deploy.sh
-    on:
-      repo: betterlife/psi
-      # tags: true
-
-notifications:
-  hipchat:
-    rooms:
-      - OWZ7bmNgFKzCPlPePv3aTdvkyh5ZM9vn4MZrydrT@Main
-    template:
-      - '%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message} (<a href="%{build_url}">Details</a>/<a href="%{compare_url}">Change view</a>)'
-    format: html
-    notify: true
+    - restart

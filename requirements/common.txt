@@ -10,7 +10,7 @@ psycopg2==2.6
 wsgiref==0.1.2
 Flask_BabelEx==0.9.2
 Flask-Migrate==1.4.0
-raven==5.10.2
+raven==5.32.0
 Flask-Security==1.7.5
 Flask-DebugToolbar==0.10.0
 cloudinary==1.4.0
