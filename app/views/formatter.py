@@ -31,6 +31,8 @@ type_field = {'label': lazy_gettext('Type'), 'field': 'type'}
 amount_field = {'label': lazy_gettext('Total Amount'), 'field': 'amount'}
 date_field = {'label': lazy_gettext('Date'), 'field': 'date'}
 order_date_field = {'label': lazy_gettext('Order Date'), 'field': 'order_date'}
+order_status_field = {'label': lazy_gettext('Order Status'), 'field': 'status'}
+order_type_field = {'label': lazy_gettext('Order Type'), 'field': 'type'}
 id_field = {'label': lazy_gettext('id'), 'field': 'id'}
 supplier_field = {'label': lazy_gettext('Supplier'), 'field': 'supplier'}
 name_field = {'label': lazy_gettext('Name'), 'field': 'name'}
@@ -185,7 +187,7 @@ def shipping_formatter(view, context, model, name):
 def purchase_order_formatter(view, context, model, name):
     s = model.purchase_order
     if s is not None:
-        args = (id_field, order_date_field, supplier_field, status_field,
+        args = (id_field, order_type_field, order_status_field, order_date_field, supplier_field, status_field,
                 goods_amount_field, total_amount_field, remark_field)
         detail_args = (product_field, quantity_field, unit_price_field, total_amount_field)
         return _obj_formatter(view, context, model, value=s, model_name='purchaseorder', title=str(s.id),
@@ -196,7 +198,7 @@ def purchase_order_formatter(view, context, model, name):
 def sales_order_formatter(view, context, model, name):
     s = model.sales_order
     if s is not None:
-        args = (id_field, order_date_field, logistic_amount_field, actual_amount_field,
+        args = (id_field, order_type_field, order_status_field, order_date_field, logistic_amount_field, actual_amount_field,
                 discount_amount_field, original_amount_field, remark_field)
         detail_args = (product_field, quantity_field, unit_price_field, retail_price_field, price_discount_field,
                        discount_amount_field, actual_amount_field, original_amount_field,)
