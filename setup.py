@@ -32,20 +32,20 @@ setup(
     keywords="Betterlife, Intelligent, Purchase Order, Sales Order, Inventory Management, Retail",
     url="https://github.com/betterlife/psi",
     install_requires=[
-        "Flask==0.11.1",
-        "sqlalchemy==1.0.14",
+        "Flask==0.12",
+        "sqlalchemy==1.1.4",
         "Flask-SQLAlchemy==2.1",
         "Flask-SSLify==0.1.5",
         "MarkupSafe==0.23",
-        "gunicorn==19.3.0",
+        "gunicorn==19.6.0",
         "psycopg2==2.6",
         "wsgiref==0.1.2",
         "Flask_BabelEx==0.9.2",
-        "Flask-Migrate==1.4.0",
-        "raven==5.10.2",
+        "Flask-Migrate==2.0.2",
+        "raven==5.32.0",
         "Flask-Security==1.7.5",
         "Flask-DebugToolbar==0.10.0",
-        "Flask_Admin==1.4.0"
+        "Flask_Admin==1.4.2"
     ],
     dependency_links=[
         "git+https://github.com/betterlife/flask-admin.git@dd26143b3cc1e2bd04a84f86b609306ca25562ee#egg=Flask_Admin-1.4.0"
@@ -53,8 +53,8 @@ setup(
     tests_require=[
         "coverage==3.7.1",
         "nose==1.3.7",
-        "codecov==2.0.3",
-        "fake-factory==0.5.8",
+        "codecov==2.0.5",
+        "fake-factory==0.7.7",
     ],
     setup_requires=['nose==1.3.7'],
     classifiers=[
@@ -66,6 +66,7 @@ setup(
         'Topic :: Office/Business :: Financial',
         'Topic :: Office/Business :: Financial :: Accounting',
         'Natural Language :: Chinese (Simplified)',
+        'Natural Language :: English',
         'Framework :: Flask',
      ],
 )
