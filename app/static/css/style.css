@@ -358,3 +358,11 @@ ul.dropdown-menu > li > a > i.glyphicon {
 #ajax-message-error, #ajax-message-success {
     position: fixed;width: 23%;top: 80%;left: 75%;z-index: 1000;display:none;
 }
+
+.col-active .fa-check-circle {
+    color:green;
+}
+
+.col-active .fa-minus-circle {
+    color:red;
+}
