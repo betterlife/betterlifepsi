@@ -66,7 +66,7 @@ var is_uploading = false;
 
     function UploadFile(file) {
         var formData = new FormData();
-        formData.append('file', $('#csv-file')[0].files[0]);
+        formData.append('file', file);
         $.ajax({
             url: $("#upload-form").attr('action'),
             method: 'POST',

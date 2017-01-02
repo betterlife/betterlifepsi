@@ -1,5 +1,7 @@
 #coding=utf-8
 from __future__ import print_function
+
+import codecs
 import csv
 import os
 import uuid
@@ -11,7 +13,7 @@ from werkzeug.utils import secure_filename
 from app import const
 from app.models import Supplier, Product, SalesOrder, SalesOrderLine, Shipping, ShippingLine, InventoryTransaction, \
     InventoryTransactionLine, EnumValues, Incoming, Preference
-from app.utils import get_next_code, get_by_external_id, save_objects_commit, get_by_name
+from app.utils import get_by_external_id, save_objects_commit, get_by_name
 from flask import request, current_app
 from flask_admin import BaseView
 from flask_babelex import gettext
@@ -27,7 +29,6 @@ def create_or_update_supplier(sup_num, sup_name):
         supplier = get_by_name(Supplier, sup_name)
         if supplier is None:
             supplier = Supplier()
-            supplier.code = get_next_code(Supplier)
             supplier.organization_id = current_user.organization_id
         supplier.external_id = sup_num
     supplier.name = sup_name
@@ -40,7 +41,6 @@ def create_or_update_product(prd_num, prd_name, pur_price, ret_price, supplier):
         prd = get_by_name(Product, prd_name)
         if prd is None:
             prd = Product()
-            prd.code = get_next_code(Product)
         prd.external_id = prd_num
         prd.deliver_day = current_app.config.get('DEFAULT_DELIVER_DAY')
         prd.lead_day = current_app.config.get('DEFAULT_LEAD_DAY')
@@ -162,7 +162,7 @@ class ImportStoreDataView(BaseView):
                     filename = str(uuid.uuid4())
                 full_path = os.path.join(current_app.config['UPLOAD_TMP_FOLDER'], filename)
                 file.save(full_path)
-                with open(full_path, 'rb') as f:
+                with codecs.open(full_path, 'rb', 'UTF-8') as f:
                     reader = csv.reader(f, delimiter=',')
                     line, imported_line = 0,0
                     shipping_status = EnumValues.find_one_by_code(const.SHIPPING_COMPLETE_STATUS_KEY)
