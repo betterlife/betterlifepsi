@@ -19,9 +19,11 @@ class TestUIUtil(unittest.TestCase):
 
     def test_render_version(self):
         from app.utils.ui_util import render_version
-        result = render_version()
+        import os
+        my_dir = os.path.dirname(os.path.realpath(__file__))
+        result = render_version(swtag_file=my_dir + "/swtag")
         self.assertIn("""Build: <a href="{url}/144799860" target="_blank">254</a>,""".format(url=current_app.config['BUILDER_URL_PREFIX']), result)
         self.assertIn("""Commit: <a href="{url}/8ab8044" target="_blank">8ab8044</a>,""".format(url=current_app.config['GIT_URL_PREFIX']), result)
         self.assertIn("""Branch: master,""", result)
-        self.assertIn("""Tag: None,""", result)
+        self.assertIn("""Tag: V0.6.5,""", result)
         self.assertIn("""Date: 2016.7.14""", result)
