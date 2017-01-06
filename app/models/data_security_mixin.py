@@ -24,10 +24,10 @@ class DataSecurityMixin(object):
         if hasattr(self, 'organization_id') and hasattr(self, 'organization'):
             return (user.organization_id == self.organization_id or
                     self.organization in user.organization.all_children)
-        return False
+        return True
 
     def can_view_details(self, user=current_user):
         if hasattr(self, 'organization_id') and hasattr(self, 'organization'):
             return (user.organization_id == self.organization_id or
                     self.organization in user.organization.all_children)
-        return False
+        return True
