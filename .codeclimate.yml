@@ -9,6 +9,12 @@ engines:
     enabled: true
   csslint:
     enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+        javascript:
+        python:
 
 # required for grades to appear in web UI
 ratings:
@@ -19,3 +25,4 @@ exclude_paths:
 - migrations
 - app/static/ckeditor
 - app/static/echarts
+- tests
