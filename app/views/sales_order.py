@@ -16,6 +16,26 @@ from app.utils import current_user, form_util
 from app.services.sales_order import SalesOrderService
 
 
+class MarkInvalidRowAction(BaseListRowAction):
+    def __init__(self, icon_class, title=None, id_arg='id', url_args=None):
+        super(MarkInvalidRowAction, self).__init__(title=title)
+
+        self.icon_class = icon_class
+        self.id_arg = id_arg
+        self.url_args = url_args
+
+    def render(self, context, row_id, row):
+        kwargs = dict(self.url_args) if self.url_args else {}
+        kwargs[self.id_arg] = row_id
+        so_invalid_status = EnumValues.find_one_by_code(const.SO_INVALID_STATUS_KEY)
+        if row.status.code == const.SO_CREATED_STATUS_KEY and row.type.code == const.FRANCHISE_SO_TYPE_KEY:
+            return Markup("""<a class='icon' href='javascript:MarkInvalidRowAction({0}, {1})'>
+                               <span id='mark_invalid_row_action_{0}' class='fa fa-minus-circle'></span>
+                            </a>""".format(row_id, so_invalid_status.id))
+        else:
+            return ''
+
+
 class MarkShipRowAction(BaseListRowAction):
     def __init__(self, icon_class, title=None, id_arg='id', url_args=None):
         super(MarkShipRowAction, self).__init__(title=title)
@@ -25,13 +45,11 @@ class MarkShipRowAction(BaseListRowAction):
         self.url_args = url_args
 
     def render(self, context, row_id, row):
-        #TODO Find a way to change MarkShipRowAction to mark_ship_row_action
-        #automatically.
         kwargs = dict(self.url_args) if self.url_args else {}
         kwargs[self.id_arg] = row_id
         so_shipped_status = EnumValues.find_one_by_code(const.SO_SHIPPED_STATUS_KEY)
         if row.status.code == const.SO_CREATED_STATUS_KEY and row.type.code == const.FRANCHISE_SO_TYPE_KEY:
-            return Markup("""<a class='icon' href='javascript:mark_ship_row_action({0}, {1})'>
+            return Markup("""<a class='icon' href='javascript:MarkShipRowAction({0}, {1})'>
                                <span id='mark_ship_row_action_{0}' class='fa fa-truck'></span>
                             </a>""".format(row_id, so_shipped_status.id))
         else:
@@ -64,6 +82,7 @@ class SalesOrderAdmin(ModelViewWithAccess):
 
     column_extra_row_actions = [
         MarkShipRowAction('fa fa-camera-retro'),
+        MarkInvalidRowAction('fa fa-minus-circle')
     ]
 
     column_list = ('id', 'type', 'status', 'customer', 'logistic_amount', 'actual_amount', 'original_amount',

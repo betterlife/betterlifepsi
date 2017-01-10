@@ -1,4 +1,7 @@
 # encoding=utf-8
+from flask.ext.babelex import gettext
+from werkzeug.exceptions import abort
+
 from app.const import SUPER_ADMIN_ROLE_NAME
 from flask_login import current_user
 
@@ -107,3 +110,19 @@ def filter_columns_by_role(columns, to_filter_cols, role):
                 new_col_list.append(l)
         columns = tuple(new_col_list)
     return columns
+
+
+def return_error_as_json():
+    """
+    Return 403 error information as a dict(and possible render as json)
+    :return:
+    """
+    return dict(message=gettext("You don't have permission to do this action"), status='error'), 403
+
+
+def default_action_on_error():
+    """
+    Default action on 403 error
+    :return:
+    """
+    abort(403)

@@ -1,6 +1,7 @@
 from app.const import DIRECT_SHIPPING_TYPE_KEY, FRANCHISE_SHIPPING_TYPE_KEY, SHIPPING_COMPLETE_STATUS_KEY, DIRECT_PO_TYPE_KEY, FRANCHISE_PO_TYPE_KEY, \
-    DIRECT_SO_TYPE_KEY, FRANCHISE_SO_TYPE_KEY
-from app.models import Preference, Incoming, EnumValues, ShippingLine, Shipping
+    DIRECT_SO_TYPE_KEY, FRANCHISE_SO_TYPE_KEY, FRANCHISE_PO_TO_SO_RT_KEY
+from app.models import Preference, Incoming, EnumValues, ShippingLine, Shipping, RelatedValues, PurchaseOrder
+from app.service import Info
 
 
 class SalesOrderService(object):
@@ -78,3 +79,24 @@ class SalesOrderService(object):
         obj.date = sales_order.order_date
         obj.organization = sales_order.organization
         return obj
+
+    @staticmethod
+    def get_related_po(sales_order):
+        rt = EnumValues.find_one_by_code(FRANCHISE_PO_TO_SO_RT_KEY)
+        session = Info.get_db().session
+        related_value, purchase_order = None, None
+        if sales_order.type.code == FRANCHISE_SO_TYPE_KEY:
+            related_value = session.query(RelatedValues).filter_by(to_object_id=sales_order.id, relation_type_id=rt.id).first()
+        if related_value is not None:
+            purchase_order = session.query(PurchaseOrder).get(related_value.from_object_id)
+        return purchase_order
+
+    @staticmethod
+    def update_related_po_status(sales_order, status_code):
+        purchase_order = SalesOrderService.get_related_po(sales_order)
+        session = Info.get_db().session
+        if purchase_order is not None:
+            status = EnumValues.find_one_by_code(status_code)
+            purchase_order.status = status
+            session.add(purchase_order)
+        return purchase_order

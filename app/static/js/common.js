@@ -85,31 +85,52 @@ function addInlineField(parent_id) {
     faForm.applyGlobalStyles($template);
 }
 
-function mark_ship_row_action(id, status_id) {
-    var icon = $("#mark_ship_row_action_" + id), displayElem;
-    bootbox.confirm('Confirm to mark this sales order as shipped?', function(result) {
-        if (result == true){
+function MarkInvalidRowAction(id, status_id) {
+    markRowAction(id, status_id, "mark_invalid_row_action_" + id, 'invalid');
+}
+
+function MarkShipRowAction(id, status_id) {
+    markRowAction(id, status_id, "mark_ship_row_action_" + id, 'shipped');
+}
+
+function markRowAction(id, status_id, iconElem, message) {
+    var icon = $("#" + iconElem), displayElem, errorMsg;
+
+    function prepare_error_message(message) {
+        icon.attr('class', 'fa fa-exclamation-triangle');
+        icon.attr('style', 'color:red;cursor:help');
+        icon.parent().attr('href', "#");
+        icon.parent().tooltip({
+            title: message,
+            placement: 'top',
+            trigger: 'hover'
+        });
+    }
+
+    bootbox.confirm('Confirm to mark this sales order as ' + message + '?', function (result) {
+        if (result == true) {
             icon.attr('class', 'fa fa-spin fa-spinner');
             $.ajax({
-                url: '/api/sales_order/'+ id +'?status_id=' + status_id,
+                url: '/api/sales_order/' + id + '?status_id=' + status_id,
                 type: 'PUT',
-                success: function( response ) {
+                success: function (response) {
+                    errorMsg = response.message;
                     if (response.status == 'success') {
                         icon.attr('class', 'glyphicon glyphicon-ok');
                         icon.fadeOut(5000);
                         displayElem = $("#ajax-message-success");
                     } else if (response.status == 'error') {
-                        icon.attr('class', 'fa fa-exclamation-triangle');
-                        icon.attr('style', 'color:red;cursor:help');
-                        icon.parent().attr('href', "#");
-                        icon.parent().tooltip({
-                            title: response.message,
-                            placement: 'top',
-                            trigger:'hover'
-                        });
+                        prepare_error_message(errorMsg);
                         displayElem = $("#ajax-message-error");
                     }
-                    displayElem.html(response.message);
+                    displayElem.html(errorMsg);
+                    displayElem.show().delay(4000).fadeOut();
+                },
+                error: function (response) {
+                    errorMsg = response.responseJSON.message;
+                    prepare_error_message(errorMsg);
+                    displayElem = $("#ajax-message-error");
+                    displayElem.html(errorMsg);
                     displayElem.show().delay(4000).fadeOut();
                 }
             });

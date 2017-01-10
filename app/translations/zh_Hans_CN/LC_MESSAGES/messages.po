@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-06-26 07:25+0800\n"
-"PO-Revision-Date: 2017-01-10 10:27+0800\n"
+"PO-Revision-Date: 2017-01-10 12:04+0800\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -567,3 +567,18 @@ msgstr "加盟商采购单创建失败：您的组织不是加盟商"
 
 msgid "Franchise purchase order creation failed, your organization does not have a valid parent organization"
 msgstr "加盟商采购单创建失败，您的组织没有父组织"
+
+msgid "You don't have permission to do this action"
+msgstr "您没有权限进行该操作"
+
+msgid "Status update successfully"
+msgstr "状态更新成功"
+
+msgid "Status update not allowed"
+msgstr "禁止将该单据更新到该状态"
+
+msgid "Invalid sales order status parameter"
+msgstr "错误的订单状态参数"
+
+msgid "Failed to change sales order status<br>{0}"
+msgstr "修改订单状态失败<br>{0}"
