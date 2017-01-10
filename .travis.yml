@@ -20,7 +20,7 @@ install:
 script:
   - nosetests -w tests --with-coverage --cover-erase --with-xunit --cover-branches --xunit-file=nosetests.xml
 after_success:
-  - CODECLIMATE_REPO_TOKEN=b66ce794c42bc566d01713825caa2dfd117ba2b8e67e17dcb64ebb85dd2655ba
+  - export CODECLIMATE_REPO_TOKEN=b66ce794c42bc566d01713825caa2dfd117ba2b8e67e17dcb64ebb85dd2655ba
   - codeclimate-test-reporter
   - export BUILD_DATE_FORMAT="+%Y-%m-%d"
   - export BUILD_DATE=`date $BUILD_DATE_FORMAT`
