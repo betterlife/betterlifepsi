@@ -18,6 +18,9 @@ install:
   - mv setup.cfg.template setup.cfg
 script:
   - nosetests -w tests --with-coverage --cover-erase --with-xunit --cover-branches --xunit-file=nosetests.xml
+addons:
+    code_climate:
+        repo_token: b66ce794c42bc566d01713825caa2dfd117ba2b8e67e17dcb64ebb85dd2655ba  
 after_success:
   - codecov
   - export BUILD_DATE_FORMAT="+%Y-%m-%d"
