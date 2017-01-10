@@ -18,8 +18,8 @@ class ProductAdmin(ModelViewWithAccess):
                             'purchase_price', 'retail_price']
     column_searchable_list = ['name', 'supplier.name', 'category.name']
 
-    column_sortable_list = ('id', 'name', ('supplier', 'id'),
-                            'category', 'deliver_day', 'lead_day',
+    column_sortable_list = ('id', 'name', ('supplier', 'supplier.id'),
+                            ('category','category.id'), 'deliver_day', 'lead_day',
                             'purchase_price', 'retail_price',
                             'available_quantity', 'in_transit_quantity',)
 
