@@ -3,8 +3,11 @@ from app.utils.security_util import is_super_admin, exclude_super_admin_roles
 from app.views.base import ModelViewWithAccess, CycleReferenceValidator
 from flask_babelex import lazy_gettext
 
+from app.views.components import DisabledBooleanField, ReadonlyStringField
+
 
 class RoleAdmin(ModelViewWithAccess):
+
     def is_accessible(self):
         return is_super_admin()
 
@@ -21,6 +24,8 @@ class RoleAdmin(ModelViewWithAccess):
     def on_model_change(self, form, model, is_created):
         """Check whether the parent role is same as child role"""
         super(RoleAdmin, self).on_model_change(form, model, is_created)
+        if is_created: # All models created from UI is not system role.
+            model.is_system = False
         CycleReferenceValidator.validate(form, model, object_type='Role', parent='parent',
                                          children='sub_roles', is_created=is_created)
 
@@ -28,16 +33,33 @@ class RoleAdmin(ModelViewWithAccess):
 
     column_searchable_list = ('name', 'description', 'parent.name', 'parent.description')
 
+    form_extra_fields = {
+        'shadow_is_system': DisabledBooleanField(label=lazy_gettext('System Role')),
+        'shadow_name': ReadonlyStringField(label=lazy_gettext('Name'))
+    }
+
+    form_args = dict(
+        name=dict(label=lazy_gettext('Name'),
+                  description=lazy_gettext('Name will not be editable after the role been created.')),
+    )
+
     column_labels = dict(
         id=lazy_gettext('id'),
-        name=lazy_gettext('Name'),
         description=lazy_gettext('Description'),
         users=lazy_gettext('User'),
         sub_roles=lazy_gettext('Sub Roles'),
-        parent=lazy_gettext('Parent Role')
+        parent=lazy_gettext('Parent Role'),
+        is_system = lazy_gettext('System Role')
     )
+
+    form_columns = ('parent', 'name', 'shadow_name','description', 'shadow_is_system', 'sub_roles', 'users')
+
+    form_create_rules =  ('parent', 'name', 'description', 'shadow_is_system', 'sub_roles', 'users')
+
+    form_edit_rules =  ('parent', 'shadow_name', 'description', 'shadow_is_system', 'sub_roles', 'users')
+
     column_editable_list = ('description',)
 
     column_sortable_list = ('id', 'name', 'description')
 
-    column_details_list = ('id', 'name', 'description', 'parent', 'sub_roles', 'users')
+    column_details_list = ('id', 'name', 'description', 'is_system', 'parent', 'sub_roles', 'users')

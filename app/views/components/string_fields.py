@@ -1,10 +1,17 @@
 # encoding=utf-8
-from wtforms import StringField, widgets, fields
+from wtforms import StringField, widgets, fields, BooleanField
+
 
 class DisabledStringField(StringField):
     def __call__(self, **kwargs):
         kwargs['disabled'] = True
         return super(DisabledStringField, self).__call__(**kwargs)
+
+
+class DisabledBooleanField(BooleanField):
+    def __call__(self, **kwargs):
+        kwargs['disabled'] = True
+        return super(DisabledBooleanField, self).__call__(**kwargs)
 
 
 class ReadonlyStringField(StringField):
@@ -17,6 +24,7 @@ class HiddenField(StringField):
     def __call__(self, **kwargs):
         kwargs['type'] = 'hidden'
         return super(HiddenField, self).__call__(**kwargs)
+
 
 class CKTextAreaWidget(widgets.TextArea):
     """
