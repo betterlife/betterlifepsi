@@ -5,7 +5,7 @@ import codecs
 import csv
 import os
 import uuid
-from datetime import datetime
+from datetime import datetime, time
 from decimal import Decimal
 
 from werkzeug.utils import secure_filename
@@ -88,6 +88,7 @@ def create_or_update_shipping(order, order_line, status):
         shipping.date = order.order_date
         shipping.status = status
         shipping.organization_id = current_user.organization_id
+        shipping.type = EnumValues.find_one_by_code(const.DIRECT_SHIPPING_TYPE_KEY)
     shipping_line = None
     existing = False
     for shipping_line in shipping.lines:
@@ -123,7 +124,7 @@ def create_or_update_inventory_transaction(shipping, shipping_line, it_type):
         it_line = InventoryTransactionLine()
         it_line.inventory_transaction = it
     shipping_line.inventory_transaction_line = it_line
-    it_line.quantity = shipping_line.quantity
+    it_line.quantity = -shipping_line.quantity
     it_line.product = shipping_line.product
     it_line.price = shipping_line.price
     return it, it_line
@@ -155,6 +156,7 @@ class ImportStoreDataView(BaseView):
         if request.method == 'GET':
             return self.render('data_loading/legacy.html')
         elif request.method == 'POST':
+            start_time = int(time.time())
             file = request.files['file']
             if file:
                 filename = secure_filename(file.filename)
@@ -196,7 +198,10 @@ class ImportStoreDataView(BaseView):
                                 incoming = create_or_update_incoming(order, order_line, incoming_category, incoming_status)
                                 save_objects_commit(supplier, product, order, shipping, itr, incoming)
                         line += 1
-                    print ("Import of CSV data finished, imported line: {0}".format(str(imported_line)))
+                    end_time = int(time.time())
+                    time_spent = end_time - start_time
+                    print ("Import of CSV data finished, imported line: {0}, time spent: {1} seconds"
+                           .format(str(imported_line), time_spent))
                     return gettext('Upload and import into system successfully')
 
     def is_po_line_exists(self, po_num, po_line_num):
