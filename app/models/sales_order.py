@@ -75,7 +75,7 @@ class SalesOrder(db.Model, DataSecurityMixin):
 
     def can_delete(self):
         can = super(SalesOrder, self).can_delete()
-        return can and self.status.code == const.SO_CREATED_STATUS_KEY
+        return can and self.status.code == const.SO_CREATED_STATUS_KEY and self.type.code != const.FRANCHISE_SO_TYPE_KEY
 
     def can_edit(self, user=current_user):
         can = super(SalesOrder, self).can_edit()
