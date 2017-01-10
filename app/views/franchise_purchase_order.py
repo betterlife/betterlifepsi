@@ -2,7 +2,7 @@
 from functools import partial
 
 from flask.ext.login import current_user
-from flask_babelex import lazy_gettext
+from flask_babelex import lazy_gettext, gettext
 
 from app import const
 from app.models import Product, EnumValues
@@ -84,10 +84,15 @@ class FranchisePurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
         return form
 
     def on_model_change(self, form, model, is_created):
+        from wtforms import ValidationError
         super(FranchisePurchaseOrderAdmin, self).on_model_change(form, model, is_created)
         for l in model.lines:
             if l.unit_price is None:
                 l.unit_price = l.product.franchise_price
+        if current_user.organization.type.code != const.FRANCHISE_STORE_ORG_TYPE_KEY:
+            raise ValidationError(gettext("Your organization is not a franchise store and is not allowed to create franchise purchase order"))
+        if current_user.organization.parent is None:
+            raise ValidationError(gettext("Franchise purchase order creation failed, your organization does not have a valid parent organization"))
         if is_created:
                 model.to_organization = current_user.organization.parent
         status = model.status
