@@ -31,7 +31,7 @@ def login_as_admin(test_client):
 
 def login_user(test_client, email, password):
     logout_user(test_client)
-    return test_client.post('/login', data=dict(email=email,
+    return test_client.post('/login', data=dict(email_or_login=email,
                                                 password=password),
                             follow_redirects=True)
 
