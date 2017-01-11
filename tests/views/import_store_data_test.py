@@ -24,7 +24,7 @@ class TestImportStoreDataView(unittest.TestCase):
         from app.models import SalesOrder, SalesOrderLine, Product, Supplier
         from app.utils import db_util
         import os
-        file_name = os.path.dirname(os.path.realpath(__file__)) + "/store_data.csv"
+        file_name = os.path.dirname(os.path.realpath(__file__)) + "/../resources/store_data.csv"
         content = codecs.open(file_name, "r", "utf-8").read()
         from app.models.user import User
         from app.models.role import Role

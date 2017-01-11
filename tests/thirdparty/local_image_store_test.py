@@ -16,7 +16,7 @@ class TestLocalImageStore(unittest.TestCase):
         self.test_client = self.app.test_client()
         self.app_context = self.app.test_request_context()
         self.app_context.push()
-        test_image_file_path = os.path.join(os.path.dirname(__file__), 'image.png')
+        test_image_file_path = os.path.join(os.path.dirname(__file__), '../resources/image.png')
         self.image_file = open(test_image_file_path)
 
     def tearDown(self):
