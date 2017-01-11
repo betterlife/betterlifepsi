@@ -5,7 +5,8 @@ import codecs
 import csv
 import os
 import uuid
-from datetime import datetime, time
+import time
+from datetime import datetime
 from decimal import Decimal
 
 from werkzeug.utils import secure_filename

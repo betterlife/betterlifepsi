@@ -22,20 +22,22 @@ class LocalImageStore(object):
             filename = "{0}.{1}".format(public_id, extension)
             file_path_all = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             image_file.save(file_path_all)
-            result = {'url': "/static/uploaded/" + filename}
+            result = {'url': "/static/uploaded/" + filename, 'filename': filename}
         else:
             result = {}
         return result
 
     @staticmethod
-    def remove(path):
+    def remove(path, public_id):
         """
            Remove a file from operation system and omit the error if it's not existing.
-           :param filename: name of the file
+           :param public_id: public_id of the file(used for public storage service to save it's id)
+           :param path: path of the file when render it in UI
            :return: None
            """
         try:
-            os.remove(path)
+            file_absolute_path = os.path.join(app.config['UPLOAD_FOLDER'], os.path.basename(path))
+            os.remove(file_absolute_path)
         except OSError as e:
             # errno.ENOENT = no such file or directory
             if e.errno != errno.ENOENT:

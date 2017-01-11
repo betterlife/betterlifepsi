@@ -7,10 +7,6 @@ import os
 
 db = Info.get_db()
 
-# Figure out base upload path
-base_path = op.join(op.dirname(__file__), 'static')
-
-
 class Image(db.Model):
     """
     Meta for images uploaded to the system
@@ -34,10 +30,5 @@ def _handle_image_delete(mapper, conn, target):
     :param target: image object to be deleted
     :return:
     """
-    try:
-        if target.path:
-            os.remove(op.join(base_path, target.path))
-    except:
-        pass
-    if target.public_id is not None:
-        Info.get_image_store_service().remove(target.public_id)
+    # TODO.xqliu The delete of image is not working for local image store
+    Info.get_image_store_service().remove(target.path, target.public_id)

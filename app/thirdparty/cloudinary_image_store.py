@@ -14,6 +14,6 @@ class CloudinaryImageStore(object):
         return res
 
     @staticmethod
-    def remove(public_id):
+    def remove(path, public_id):
         res = uploader.destroy(public_id)
         return res

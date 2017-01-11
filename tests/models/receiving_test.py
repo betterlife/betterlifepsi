@@ -16,9 +16,6 @@ class TestReceiving(unittest.TestCase):
         fixture.cleanup_database(self.app_context)
         self.app_context.pop()
 
-    def test_dummy(self):
-        pass
-
     def test_get_by_po_id(self):
         from app.models.receiving import Receiving
         from app.models.enum_values import EnumValues
