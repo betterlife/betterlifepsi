@@ -127,7 +127,7 @@ class ModelViewWithAccess(ModelView):
                 return redirect(url_for('security.login', next=request.url))
 
     def get_model_return_url(self):
-        from flask.ext.admin.helpers import get_redirect_target
+        from flask_admin.helpers import get_redirect_target
         return_url = get_redirect_target() or self.get_url('.index_view')
         model_id = get_mdict_item_or_list(request.args, 'id')
         model = self.get_one(model_id)
