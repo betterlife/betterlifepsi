@@ -1,8 +1,8 @@
 # coding=utf-8
 from flask.ext.security.utils import get_message
 from flask_security import LoginForm as BaseLoginForm
-from flask.ext.security.forms import _datastore
-from flask.ext.security.utils import verify_and_update_password
+from flask_security.forms import _datastore
+from flask_security.utils import verify_and_update_password
 from flask_babelex import lazy_gettext
 from wtforms import fields
 
