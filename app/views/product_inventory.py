@@ -1,3 +1,4 @@
+import time
 from flask_admin.contrib.sqla.filters import FloatSmallerFilter, FloatGreaterFilter
 from flask_babelex import lazy_gettext
 from app.views.base import ModelViewWithAccess
@@ -54,7 +55,26 @@ class ProductInventoryView(ModelViewWithAccess):
     }
 
     def get_query(self):
+        self.update_need_advice_flag()
         return super(ProductInventoryView, self).get_query().filter(self.model.need_advice == True)
+
+    def update_need_advice_flag(self):
+        def get_time_in_second(key):
+            return int(time.time())
+        from app.service import Info
+        from flask import current_app
+        last_update = Info.get('need_advice_last_update_timestamp', get_time_in_second)
+        if int((time.time() - last_update)) > current_app.config['NEED_ADVICE_UPDATE_SECONDS']:
+            session = Info.get_db().session
+            all_products = Product.query.all()
+            for p in all_products:
+                p.need_advice = False
+                session.add(p)
+            products = Product.query.order_by(Product.weekly_average_profit).limit(50).all()
+            for p in products:
+                p.need_advice = True
+                session.add(p)
+            session.commit()
 
     def get_count_query(self):
         return super(ProductInventoryView, self).get_count_query().filter(self.model.need_advice == True)

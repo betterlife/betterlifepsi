@@ -37,6 +37,7 @@ class BaseConfig(object):
     IMAGE_ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
     abs_path = os.path.dirname(os.path.abspath(__file__))
     UPLOAD_FOLDER = os.path.join(abs_path, "static", "uploaded")
+    NEED_ADVICE_UPDATE_SECONDS = 2*60 # IN Seconds
 
     security_messages = {
         'PASSWORD_MISMATCH': (lazy_gettext('Password does not match'), 'error'),
