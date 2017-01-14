@@ -39,7 +39,7 @@ class PurchaseOrder(db.Model, DataSecurityMixin):
     def status_filter(status_codes):
         from app.models.enum_values import EnumValues
         return db.session.query(PurchaseOrder) \
-            .join(EnumValues).filter(EnumValues.code.in_(status_codes))
+            .join(PurchaseOrder.status).filter(EnumValues.code.in_(status_codes))
 
     @staticmethod
     def status_option_filter():
