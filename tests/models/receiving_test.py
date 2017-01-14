@@ -3,6 +3,7 @@ import unittest
 from datetime import datetime
 
 from tests import fixture
+import app.const as const
 
 
 class TestReceiving(unittest.TestCase):
@@ -20,7 +21,6 @@ class TestReceiving(unittest.TestCase):
         from app.models.receiving import Receiving
         from app.models.enum_values import EnumValues
         from app.service import Info
-        import app.const as const
         from tests.object_faker import object_faker
 
         def test_logic():
