@@ -59,6 +59,7 @@ class DevConfig(BaseConfig):
 class TestConfig(BaseConfig):
     DEBUG = False
     TESTING = True
+    IMAGE_STORE_SERVICE = LocalImageStore
     SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or 'postgres://flask_sit:flask_sit@localhost:5432/flask_sit'
     WTF_CSRF_ENABLED = False
 
