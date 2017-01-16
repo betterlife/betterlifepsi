@@ -54,3 +54,4 @@ def cleanup_database(app_context):
         Info.get_db().session.commit()
         Info.get_db().reflect()
         Info.get_db().drop_all()
+

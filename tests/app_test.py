@@ -2,16 +2,10 @@
 import unittest
 
 from tests import fixture
+from tests.base_test_case import BaseTestCase
 
 
-class TestApplicationStartupAndLogin(unittest.TestCase):
-    def setUp(self):
-        self.app = fixture.init_app()
-        self.test_client = self.app.test_client()
-        self.app_context = self.app.app_context()
-
-    def tearDown(self):
-        fixture.cleanup_database(self.app_context)
+class TestApplicationStartupAndLogin(BaseTestCase):
 
     def test_empty_db(self):
         rv = self.test_client.get('/login')

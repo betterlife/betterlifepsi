@@ -3,19 +3,11 @@ import unittest
 import app.const as const
 from app.utils import db_util
 from tests import fixture
+from tests.base_test_case import BaseTestCase
 from tests.object_faker import object_faker as of
 
 
-class TestPurchaseOrder(unittest.TestCase):
-    def setUp(self):
-        self.app = fixture.init_app()
-        self.test_client = self.app.test_client()
-        self.app_context = self.app.test_request_context()
-        self.app_context.push()
-
-    def tearDown(self):
-        fixture.cleanup_database(self.app_context)
-        self.app_context.pop()
+class TestPurchaseOrder(BaseTestCase):
 
     def test_status_filter(self):
         from app.models import PurchaseOrder

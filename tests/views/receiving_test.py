@@ -5,25 +5,17 @@ from flask.ext.babelex import lazy_gettext
 from wtforms import ValidationError
 
 from tests import fixture
+from tests.base_test_case import BaseTestCase
 
 
-class TestReceivingAdmin(unittest.TestCase):
-    def setUp(self):
-        self.app = fixture.init_app()
-        self.test_client = self.app.test_client()
-        self.app_context = self.app.app_context()
-        self.app_context.push()
-        fixture.login_as_admin(self.test_client)
-
-    def tearDown(self):
-        fixture.cleanup_database(self.app_context)
-        self.app_context.pop()
+class TestReceivingAdmin(BaseTestCase):
 
     def test_on_model_delete(self):
         from app.models import Receiving, EnumValues
         from app.views.receiving import ReceivingAdmin
         from app import const
         from app.service import Info
+        fixture.login_as_admin(self.test_client)
         receiving = Receiving()
         complete_status = EnumValues.find_one_by_code(const.RECEIVING_COMPLETE_STATUS_KEY)
         receiving.status = complete_status

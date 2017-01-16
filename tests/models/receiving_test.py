@@ -4,18 +4,10 @@ from datetime import datetime
 
 from tests import fixture
 import app.const as const
+from tests.base_test_case import BaseTestCase
 
 
-class TestReceiving(unittest.TestCase):
-    def setUp(self):
-        self.app = fixture.init_app()
-        self.test_client = self.app.test_client()
-        self.app_context = self.app.test_request_context()
-        self.app_context.push()
-
-    def tearDown(self):
-        fixture.cleanup_database(self.app_context)
-        self.app_context.pop()
+class TestReceiving(BaseTestCase):
 
     def test_get_by_po_id(self):
         from app.models.receiving import Receiving

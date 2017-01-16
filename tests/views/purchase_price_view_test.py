@@ -4,24 +4,11 @@ from flask import url_for
 from flask.ext.admin.babel import gettext
 
 from tests import fixture
+from tests.base_test_case import BaseTestCase
 from tests.object_faker import object_faker
 
 
-class TestPurchasePriceView(unittest.TestCase):
-    def setUp(self):
-        self.app = fixture.init_app()
-        self.test_client = self.app.test_client()
-        self.app_context = self.app.app_context()
-        self.app_context.push()
-
-    def tearDown(self):
-        self.app_context.pop()
-        from app.service import Info
-        Info.get_db().session.remove()
-        Info.get_db().engine.execute('DROP TABLE alembic_version')
-        Info.get_db().engine.execute('DROP VIEW sales_order_detail')
-        Info.get_db().session.commit()
-        Info.get_db().drop_all()
+class TestPurchasePriceView(BaseTestCase):
 
     def test_purchase_order_hide_and_show(self):
         from app.service import Info

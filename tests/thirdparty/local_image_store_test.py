@@ -7,21 +7,17 @@ import io
 from werkzeug.datastructures import FileStorage
 
 from app.thirdparty.local_image_store import LocalImageStore
-from tests import fixture
+from tests.base_test_case import BaseTestCase
 
 
-class TestLocalImageStore(unittest.TestCase):
+class TestLocalImageStore(BaseTestCase):
     def setUp(self):
-        self.app = fixture.init_app()
-        self.test_client = self.app.test_client()
-        self.app_context = self.app.test_request_context()
-        self.app_context.push()
+        super(TestLocalImageStore, self).setUp()
         test_image_file_path = os.path.join(os.path.dirname(__file__), '../resources/image.png')
         self.image_file = open(test_image_file_path)
 
     def tearDown(self):
-        fixture.cleanup_database(self.app_context)
-        self.app_context.pop()
+        super(TestLocalImageStore, self).tearDown()
         self.image_file.close()
 
     def testLocalImageSaveAndRemove(self):

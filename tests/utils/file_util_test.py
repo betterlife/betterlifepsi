@@ -7,22 +7,20 @@ from werkzeug.datastructures import FileStorage
 
 from app.utils.file_util import save_image
 from tests import fixture
+from tests.base_test_case import BaseTestCase
 
 
-class TestFileUtil(unittest.TestCase):
+class TestFileUtil(BaseTestCase):
 
     def setUp(self):
-        self.app = fixture.init_app()
-        self.test_client = self.app.test_client()
-        self.app_context = self.app.test_request_context()
-        self.app_context.push()
+        super(TestFileUtil, self).setUp()
         test_image_file_path = os.path.join(os.path.dirname(__file__), '../resources/image.png')
         self.image_file = open(test_image_file_path)
 
     def tearDown(self):
-        fixture.cleanup_database(self.app_context)
+        super(TestFileUtil, self).tearDown()
         self.image_file.close()
-        self.app_context.pop()
+
 
     def testSaveImage(self):
         from app.models.product import ProductImage

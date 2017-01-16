@@ -1,6 +1,7 @@
 import unittest
 
 from tests import fixture
+from tests.base_test_case import BaseTestCase
 from tests.object_faker import object_faker
 from app.utils import db_util
 from app.const import SO_DELIVERED_STATUS_KEY, SO_SHIPPED_STATUS_KEY, FRANCHISE_SO_TYPE_KEY
@@ -8,16 +9,7 @@ from tests.fixture import run_as_admin
 from app.service import Info
 
 
-class TestSalesOrderApi(unittest.TestCase):
-    def setUp(self):
-        self.app = fixture.init_app()
-        self.test_client = self.app.test_client()
-        self.app_context = self.app.test_request_context()
-        self.app_context.push()
-
-    def tearDown(self):
-        fixture.cleanup_database(self.app_context)
-        self.app_context.pop()
+class TestSalesOrderApi(BaseTestCase):
 
     def test_update_sales_order_complete_status_success(self):
         from app.models import EnumValues, SalesOrder

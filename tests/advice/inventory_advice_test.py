@@ -5,15 +5,13 @@ from datetime import datetime, timedelta
 from app.advice.inventory_advice import InventoryAdvice
 from app.const import *
 from tests import fixture
+from tests.base_test_case import BaseTestCase
 
 
-class TestInventoryAdvice(unittest.TestCase):
+class TestInventoryAdvice(BaseTestCase):
     def setUp(self):
+        super(TestInventoryAdvice, self).setUp()
         from app.utils import get_next_code
-        self.app = fixture.init_app()
-        self.test_client = self.app.test_client()
-        self.app_context = self.app.app_context()
-        self.app_context.push()
         fixture.login_as_admin(self.test_client)
         from app.models import Product, User
         self.product = Product()
@@ -24,8 +22,7 @@ class TestInventoryAdvice(unittest.TestCase):
         self.product.id = 1
 
     def tearDown(self):
-        fixture.cleanup_database(self.app_context)
-        self.app_context.pop()
+        super(TestInventoryAdvice, self).tearDown()
 
     def test_no_available_qty(self):
         self.assertIn(u'-', InventoryAdvice.advice(self.product))
@@ -75,7 +72,6 @@ class TestInventoryAdvice(unittest.TestCase):
         self.product.deliver_day = 3
         advice = InventoryAdvice.advice(self.product)
         self.assertIn('当前库存可供销售<span class="i_a_number">6.00</span>天', advice)
-
 
     def test_not_enough_qty(self):
         TestInventoryAdvice.adjust_product_quantity(self.product, datetime.today() - timedelta(days=14), 35, 20, PURCHASE_IN_INV_TRANS_KEY)

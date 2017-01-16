@@ -6,24 +6,16 @@ import codecs
 
 from app import const
 from tests import fixture
+from tests.base_test_case import BaseTestCase
 
 
-class TestImportStoreDataView(unittest.TestCase):
-    def setUp(self):
-        self.app = fixture.init_app()
-        self.test_client = self.app.test_client()
-        self.app_context = self.app.app_context()
-        self.app_context.push()
-        fixture.login_as_admin(self.test_client)
-
-    def tearDown(self):
-        fixture.cleanup_database(self.app_context)
-        self.app_context.pop()
+class TestImportStoreDataView(BaseTestCase):
 
     def test_import(self):
         from app.models import SalesOrder, SalesOrderLine, Product, Supplier
         from app.utils import db_util
         import os
+        fixture.login_as_admin(self.test_client)
         file_name = os.path.dirname(os.path.realpath(__file__)) + "/../resources/store_data.csv"
         content = codecs.open(file_name, "r", "utf-8").read()
         from app.models.user import User

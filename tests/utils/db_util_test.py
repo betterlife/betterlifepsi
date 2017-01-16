@@ -1,19 +1,11 @@
 import unittest
 
 from tests import fixture
+from tests.base_test_case import BaseTestCase
 from tests.object_faker import object_faker
 
 
-class TestDbUtil(unittest.TestCase):
-    def setUp(self):
-        self.app = fixture.init_app()
-        self.test_client = self.app.test_client()
-        self.app_context = self.app.test_request_context()
-        self.app_context.push()
-
-    def tearDown(self):
-        fixture.cleanup_database(self.app_context)
-        self.app_context.pop()
+class TestDbUtil(BaseTestCase):
 
     def test_get_next_id(self):
         from app.utils import db_util
