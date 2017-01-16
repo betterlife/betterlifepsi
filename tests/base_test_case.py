@@ -15,7 +15,12 @@ class BaseTestCase(unittest.TestCase):
         fixture.cleanup_database(self.app_context)
         self.app_context.pop()
 
-    def assert_page_render_correct(self, method, endpoint):
-        rv = method(endpoint, follow_redirects=True)
+    def assertPageRenderCorrect(self, endpoint, method=None, data=None, expect_content=None):
+        if method is None:
+            method = self.test_client.get
+        rv = method(endpoint, data=data, follow_redirects=True)
         self.assertEqual(200, rv.status_code)
+        if expect_content is not None:
+            for c in expect_content:
+                self.assertIn(c, rv.data)
         return rv
