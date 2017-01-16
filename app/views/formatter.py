@@ -250,7 +250,7 @@ def organization_formatter(view, context, model, name):
 def default_date_formatter(view, context, model, name):
     value = getattr(model, name)
     if value is not None:
-        return value.strftime("%Y/%m/%d")
+        return value.strftime("%Y-%m-%d")
     return ''
 
 
