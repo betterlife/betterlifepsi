@@ -24,5 +24,7 @@ ratings:
 exclude_paths:
 - migrations
 - app/static/ckeditor
-- app/static/echarts
+- app/static/Font-Awesome-4.6.3
+- app/static/bootbox
+- app/static/lightbox2
 - tests
