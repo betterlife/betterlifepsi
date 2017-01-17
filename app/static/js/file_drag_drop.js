@@ -21,6 +21,8 @@ var is_uploading = false;
     }
     // initialize
     function Init() {
+        //The follow two lines should not be changed to $("#csv-file") and $("#filedrag")
+        //The optimize will not work.
         var file_input = document.getElementById("csv-file");
         var file_drag = document.getElementById("filedrag");
         file_input.addEventListener("change", FileSelectHandler, false);
@@ -37,9 +39,9 @@ var is_uploading = false;
     function FileDragHover(e) {
         e.stopPropagation();
         e.preventDefault();
-        if (e.type == 'dragover') {
+        if (e.type === 'dragover') {
             $("#filedrag").addClass('hover');
-        } else if (e.type == 'dragleave' || e.type == 'drop') {
+        } else if (e.type === 'dragleave' || e.type === 'drop') {
             $("#filedrag").removeClass('hover');
         }
     }
@@ -51,12 +53,13 @@ var is_uploading = false;
         var files = e.target.files || e.dataTransfer.files;
         // process all File objects
         g_files = [];
-        var max_size = $("#MAX_FILE_SIZE").val();
-        for (var i = 0, f; f = files[i]; i++) {
-            if (f.type != "text/csv") {
-                alert('当前系统只支持CSV文件的导入');
+        var max_size = $("#MAX_FILE_SIZE").val(), f;
+        for (var i = 0; i < files.length; i++) {
+            f = files[i];
+            if (f.type !== "text/csv") {
+                bootbox.alert('当前系统只支持CSV文件的导入');
             } else if (f.size > max_size) {
-                alert('上传文件超过系统允许的最大文件大小: ' + (parseFloat(max_size / 1024 / 1024)).toFixed(1) + "MB");
+                bootbox.alert('上传文件超过系统允许的最大文件大小: ' + (parseFloat(max_size / 1024 / 1024)).toFixed(1) + "MB");
             } else {
                 g_files.push(f);
                 ParseFile(f);
@@ -85,8 +88,7 @@ var is_uploading = false;
     }
 
     function ParseFile(file) {
-        $("#file-drag-message").html("已选择文件: " + file.name
-                + "，文件大小: " + file.size + "KB, 请点击下面的按钮上传");
+        $("#file-drag-message").html("已选择文件: {0}，大小: {1}KB, 请点击下面的按钮上传".format(file.name, file.size));
     }
 
 })(jQuery);
