@@ -31,9 +31,14 @@ def login_as_admin(test_client):
 
 def login_user(test_client, email, password):
     logout_user(test_client)
-    return test_client.post('/login', data=dict(email_or_login=email,
-                                                password=password),
-                            follow_redirects=True)
+    return test_client.post('/login', data=dict(email_or_login=email, password=password), follow_redirects=True)
+
+
+def run_as_user(test_client, email, password, func_to_run, *parameters):
+    logout_user(test_client)
+    with test_client:
+        test_client.post('/login', data=dict(email_or_login=email, password=password), follow_redirects=True)
+        func_to_run(*parameters)
 
 
 def run_as_admin(test_client, func_to_run, *parameters):

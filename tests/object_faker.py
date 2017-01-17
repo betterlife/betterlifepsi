@@ -45,7 +45,7 @@ class ObjectFaker(object):
         SalesOrderService.create_or_update_expense(so)
         return so
 
-    def purchase_order(self, po_id=None, number_of_line=1, creator=current_user):
+    def purchase_order(self, po_id=None, number_of_line=1, creator=current_user, type=None):
         from app.models import PurchaseOrder, PurchaseOrderLine, EnumValues
         po = PurchaseOrder()
         po.remark = self.faker.text(max_nb_chars=20)
@@ -53,14 +53,16 @@ class ObjectFaker(object):
         po.order_date = self.faker.date()
         draft_status = EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY)
         po.status_id = draft_status.id
-        types = EnumValues.type_filter(const.PO_TYPE_KEY).all()
-        po_type = random.choice(types)
-        po.type_id = po_type.id
-        if po_type.code == const.FRANCHISE_PO_TYPE_KEY:
-            if creator.organization.parent is not None:
-                po.to_organization = creator.organization.parent
-            else:
-                po.to_organization = creator.organization
+        if type is None:
+            types = EnumValues.type_filter(const.PO_TYPE_KEY).all()
+            type = random.choice(types)
+            if type.code == const.FRANCHISE_PO_TYPE_KEY:
+                if creator.organization.parent is not None:
+                    po.to_organization = creator.organization.parent
+                else:
+                    po.to_organization = creator.organization
+        po.type = type
+        po.type_id = type.id
         po.id = po_id if po_id is not None else db_util.get_next_id(PurchaseOrder)
         po.organization = creator.organization
         po.supplier = self.supplier(creator=creator)
