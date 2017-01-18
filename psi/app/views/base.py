@@ -1,5 +1,5 @@
 # coding=utf-8
-from flask.ext.admin import expose
+from flask_admin import expose
 from flask_babelex import gettext
 
 from flask import url_for, request, flash, has_request_context
@@ -161,7 +161,7 @@ class ModelViewWithAccess(ModelView):
             Delete model view. Only POST method is allowed.
             Whether the model could be deleted is decided by model
         """
-        from flask.ext.admin.helpers import get_redirect_target
+        from flask_admin.helpers import get_redirect_target
         return_url = get_redirect_target() or self.get_url('.index_view')
         form = self.delete_form()
         if self.validate_form(form):

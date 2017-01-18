@@ -6,7 +6,7 @@ from psi.app.models.data_security_mixin import DataSecurityMixin
 from psi.app.service import Info
 from psi.app.utils import user_has_role
 from psi.app.utils.format_util import format_decimal
-from flask.ext.login import current_user
+from flask_login import current_user
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship

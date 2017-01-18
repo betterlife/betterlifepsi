@@ -1,1 +1,1 @@
-web: gunicorn wsgi:application --log-file=- --timeout 3000
+web: gunicorn psi.wsgi:application --log-file=- --timeout 3000

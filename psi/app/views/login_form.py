@@ -1,5 +1,5 @@
 # coding=utf-8
-from flask.ext.security.utils import get_message
+from flask_security.utils import get_message
 from flask_security import LoginForm as BaseLoginForm
 from flask_security.forms import _datastore
 from flask_security.utils import verify_and_update_password

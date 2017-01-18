@@ -1,5 +1,5 @@
 
-# Betterlife Intelligent PSI [![Travis Build Status](https://img.shields.io/travis/betterlife/psi.svg?label=Travis&style=flat-square)](https://travis-ci.org/betterlife/psi)
+# Betterlife Intelligent PSI [![Travis Build Status](https://img.shields.io/travis/betterlife/psi.svg?label=Travis&style=flat-square)](https://travis-ci.org/betterlife/psi) [![CircleCI](https://img.shields.io/circleci/project/github/betterlife/psi.svg?label=CircleCI&style=flat-square)](https://circleci.com/gh/betterlife/psi)
 
 Intelligent PSI(Purchase, Sales and Inventory) management system
 
@@ -26,8 +26,8 @@ Intelligent PSI(Purchase, Sales and Inventory) management system
 ## Links
 
   - [Demo environment](https://psi-dev.herokuapp.com/)
-    - Organization user: __support@betterlife.io / password__
-    - Business user: __business@betterlife.io / password__
+    - Organization user: __super_admin / password__
+    - Business user: __ / password__
   - [Knowledge Center](https://github.com/betterlife/psi/wiki)    
   - [Story management](https://betterlife.atlassian.net)
   

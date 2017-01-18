@@ -7,7 +7,7 @@ from psi.app.models import EnumValues
 from psi.app.services.sales_order import SalesOrderService
 from psi.app.utils import current_user, form_util
 from psi.app.views.components import ReadonlyStringField, DisabledStringField
-from flask.ext.admin.model.template import BaseListRowAction
+from flask_admin.model.template import BaseListRowAction
 from flask_admin.contrib.sqla.filters import FloatGreaterFilter, FloatSmallerFilter, FloatEqualFilter
 from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext

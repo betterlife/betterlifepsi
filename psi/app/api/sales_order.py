@@ -5,7 +5,7 @@ from psi.app.const import *
 from psi.app.models import EnumValues, SalesOrder
 from psi.app.service import Info
 from psi.app.utils import has_role, return_error_as_json
-from flask.ext.babelex import gettext
+from flask_babelex import gettext
 from flask_restful import Resource, reqparse
 
 from psi.app.services import SalesOrderService

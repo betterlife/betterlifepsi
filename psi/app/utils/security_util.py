@@ -1,5 +1,5 @@
 # encoding=utf-8
-from flask.ext.babelex import gettext
+from flask_babelex import gettext
 from werkzeug.exceptions import abort
 
 from psi.app.const import SUPER_ADMIN_ROLE_NAME
@@ -101,7 +101,7 @@ def filter_columns_by_role(columns, to_filter_cols, role):
     :param role: User need this role to show the to_filter_cols
     :return: A filtered column list
     """
-    from flask.ext.login import current_user
+    from flask_login import current_user
     new_col_list = []
     local_user = current_user._get_current_object()
     if (not is_super_admin(local_user) and not user_has_role(role, local_user)):

@@ -5,7 +5,7 @@ from psi.app.models.inventory_transaction import InventoryTransactionLine, \
 from psi.app.service import Info
 from psi.app.utils.date_util import get_weeks_between
 from psi.app.utils.format_util import format_decimal
-from flask.ext.login import current_user
+from flask_login import current_user
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text, \
     select, func, Boolean, or_
 from sqlalchemy.ext.hybrid import hybrid_property

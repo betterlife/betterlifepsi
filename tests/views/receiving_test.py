@@ -1,5 +1,5 @@
-from flask.ext.admin.consts import ICON_TYPE_GLYPH
-from flask.ext.babelex import lazy_gettext
+from flask_admin.consts import ICON_TYPE_GLYPH
+from flask_babelex import lazy_gettext
 from wtforms import ValidationError
 
 from tests import fixture

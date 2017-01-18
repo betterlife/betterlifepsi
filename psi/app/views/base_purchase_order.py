@@ -7,7 +7,7 @@ from psi.app.utils import security_util
 from psi.app.views import ModelViewWithAccess
 from psi.app.views.base import DeleteValidator
 from psi.app.views.components import DisabledStringField
-from flask.ext.login import current_user
+from flask_login import current_user
 from flask_admin.contrib.sqla.filters import FloatSmallerFilter, \
     FloatGreaterFilter, FloatEqualFilter
 from flask_admin.model import InlineFormAdmin

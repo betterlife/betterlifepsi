@@ -3,8 +3,8 @@ from functools import partial
 
 from psi.app.models import Organization
 from psi.app.utils.security_util import is_super_admin, is_root_organization
-from flask.ext.admin.contrib.sqla.fields import QuerySelectField
-from flask.ext.admin.form import Select2Widget
+from flask_admin.contrib.sqla.fields import QuerySelectField
+from flask_admin.form import Select2Widget
 from flask_babelex import lazy_gettext, gettext
 from flask_login import current_user
 from sqlalchemy import func

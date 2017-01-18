@@ -12,12 +12,12 @@ sys.setdefaultencoding("utf-8")
 
 
 def init_manager(app):
-    from flask.ext.script import Manager
+    from flask_script import Manager
     return Manager(app)
 
 
 def init_migrate_command(m):
-    from flask.ext.migrate import Migrate, MigrateCommand
+    from flask_migrate import Migrate, MigrateCommand
     migrate = Migrate(application, database, directory="psi/migrations")
     m.add_command('db', MigrateCommand)
 

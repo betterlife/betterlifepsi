@@ -1,5 +1,5 @@
 from flask import url_for
-from flask.ext.admin.babel import gettext
+from flask_admin.babel import gettext
 
 from tests import fixture
 from tests.base_test_case import BaseTestCase

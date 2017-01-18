@@ -4,7 +4,7 @@ import random
 import psi.app.const as const
 from psi.app.utils import db_util
 from faker import Faker
-from flask.ext.login import current_user
+from flask_login import current_user
 
 
 class ObjectFaker(object):

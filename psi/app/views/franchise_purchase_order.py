@@ -6,7 +6,7 @@ from psi.app.models import Product, EnumValues
 from psi.app.utils import form_util, security_util, db_util
 from psi.app.views.base_purchase_order import BasePurchaseOrderAdmin
 from psi.app.views.components import DisabledStringField
-from flask.ext.login import current_user
+from flask_login import current_user
 from flask_babelex import lazy_gettext, gettext
 
 from psi.app.views.base import DeleteValidator
