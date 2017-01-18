@@ -1,7 +1,6 @@
 # coding=utf-8
 import unittest
 
-from tests import fixture
 from tests.base_test_case import BaseTestCase
 
 

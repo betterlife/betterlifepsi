@@ -4,8 +4,8 @@
 from __future__ import print_function
 import sys
 
-from app.service import Info
-from app import create_app, init_all
+from psi.app.service import Info
+from psi.app import create_app, init_all
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -20,7 +20,7 @@ def init_manager(app):
 def init_migrate_command(m):
     from flask.ext.migrate import Migrate, MigrateCommand
 
-    migrate = Migrate(application, database)
+    migrate = Migrate(application, database, directory="psi/migrations")
     m.add_command('db', MigrateCommand)
 
 
@@ -52,7 +52,7 @@ def generate_fake_order():
     * 5 purchase orders and sales_orders
     """
     from tests.object_faker import object_faker
-    from app.models import User
+    from psi.app.models import User
     from random import randint
     user = database.session.query(User).get(1)
     for i in range(5):

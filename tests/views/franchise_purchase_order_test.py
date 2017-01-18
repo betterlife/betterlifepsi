@@ -1,8 +1,9 @@
 # coding=utf-8
 import random
 
-from app import const
-from app.utils import db_util
+from psi.app import const
+from psi.app.utils import db_util
+
 from tests import fixture
 from tests.base_test_case import BaseTestCase
 from tests.fixture import login_as_admin, login_user, run_as_admin
@@ -13,8 +14,8 @@ class TestFranchisePurchaseOrderView(BaseTestCase):
 
     def test_to_organization_hide(self):
 
-        from app.models import EnumValues, PurchaseOrder, Organization
-        from app.service import Info
+        from psi.app.models import EnumValues, PurchaseOrder, Organization
+        from psi.app.service import Info
         from datetime import datetime
         t = EnumValues.find_one_by_code(const.FRANCHISE_STORE_ORG_TYPE_KEY)
         draft_status = EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY)
@@ -55,11 +56,11 @@ class TestFranchisePurchaseOrderView(BaseTestCase):
 
     def test_create_so_from_po(self):
         def test_login():
-            from app.models import EnumValues
+            from psi.app.models import EnumValues
             f_type = EnumValues.find_one_by_code(const.FRANCHISE_PO_TYPE_KEY)
             po = object_faker.purchase_order(number_of_line=random.randint(1, 10), type=f_type)
             db_util.save_objects_commit(po)
-            from app.views import FranchisePurchaseOrderAdmin
+            from psi.app.views import FranchisePurchaseOrderAdmin
             sales_order, incoming, expense = FranchisePurchaseOrderAdmin.create_so_from_fpo(po)
             self.assertEquals(len(po.lines), len(sales_order.lines))
             self.assertEqual(sales_order.order_date, po.order_date)
@@ -74,7 +75,7 @@ class TestFranchisePurchaseOrderView(BaseTestCase):
         run_as_admin(self.test_client, test_login)
 
     def test_not_allowed_if_not_franchise_organization(self):
-        from app.models import EnumValues, Organization, PurchaseOrder
+        from psi.app.models import EnumValues, Organization, PurchaseOrder
         with self.test_client:
             login_as_admin(self.test_client)
             org_type = EnumValues.find_one_by_code(const.DIRECT_SELLING_STORE_ORG_TYPE_KEY)
@@ -100,7 +101,7 @@ class TestFranchisePurchaseOrderView(BaseTestCase):
             self.assertEqual(0, len(po))
 
     def test_franchise_purchase_order_pages(self):
-        from app.models import EnumValues, Organization
+        from psi.app.models import EnumValues, Organization
         with self.test_client:
             login_as_admin(self.test_client)
             org_type = EnumValues.find_one_by_code(const.FRANCHISE_STORE_ORG_TYPE_KEY)

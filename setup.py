@@ -6,7 +6,7 @@ from setuptools import setup
 
 _version_re = re.compile(r'__version__\s+=\s+(.*)')
 
-with open('app/__init__.py', 'rb') as f:
+with open('psi/app/__init__.py', 'rb') as f:
     version = str(ast.literal_eval(_version_re.search(
         f.read().decode('utf-8')).group(1)))
 
@@ -22,7 +22,7 @@ except(IOError, ImportError):
 setup(
     name="betterlife-psi",
     version=version,
-    packages=['app', 'migrations'],
+    packages=['psi'],
     include_package_data=True,
     author="Lawrence Liu",
     author_email="lawrence@betterlife.io",
@@ -46,9 +46,6 @@ setup(
         "Flask-Security==1.7.5",
         "Flask-DebugToolbar==0.10.0",
         "Flask_Admin==1.4.2"
-    ],
-    dependency_links=[
-        "git+https://github.com/betterlife/flask-admin.git@dd26143b3cc1e2bd04a84f86b609306ca25562ee#egg=Flask_Admin-1.4.0"
     ],
     tests_require=[
         "coverage==3.7.1",

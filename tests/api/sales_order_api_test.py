@@ -3,16 +3,16 @@ import unittest
 from tests import fixture
 from tests.base_test_case import BaseTestCase
 from tests.object_faker import object_faker
-from app.utils import db_util
-from app.const import SO_DELIVERED_STATUS_KEY, SO_SHIPPED_STATUS_KEY, FRANCHISE_SO_TYPE_KEY
+from psi.app.utils import db_util
+from psi.app.const import SO_DELIVERED_STATUS_KEY, SO_SHIPPED_STATUS_KEY, FRANCHISE_SO_TYPE_KEY
 from tests.fixture import run_as_admin
-from app.service import Info
+from psi.app.service import Info
 
 
 class TestSalesOrderApi(BaseTestCase):
 
     def test_update_sales_order_complete_status_success(self):
-        from app.models import EnumValues, SalesOrder
+        from psi.app.models import EnumValues, SalesOrder
 
         def test_logic():
             fixture.login_as_admin(self.test_client)
@@ -42,7 +42,7 @@ class TestSalesOrderApi(BaseTestCase):
         run_as_admin(self.test_client, test_logic)
 
     def test_update_sales_order_shipped_status_success(self):
-        from app.models import EnumValues, SalesOrder
+        from psi.app.models import EnumValues, SalesOrder
 
         def test_logic():
             fixture.login_as_admin(self.test_client)
@@ -72,7 +72,7 @@ class TestSalesOrderApi(BaseTestCase):
         run_as_admin(self.test_client, test_logic)
 
     def test_update_sales_order_unauthorized(self):
-        from app.models import EnumValues, SalesOrder
+        from psi.app.models import EnumValues, SalesOrder
 
         def test_logic():
             fixture.login_as_admin(self.test_client)
@@ -94,7 +94,7 @@ class TestSalesOrderApi(BaseTestCase):
         run_as_admin(self.test_client, test_logic)
 
     def test_update_sales_order_has_no_role(self):
-        from app.models import EnumValues, SalesOrder
+        from psi.app.models import EnumValues
 
         def test_logic():
             fixture.login_as_admin(self.test_client)
@@ -116,8 +116,6 @@ class TestSalesOrderApi(BaseTestCase):
         run_as_admin(self.test_client, test_logic)
 
     def test_update_sales_order_status_invalid(self):
-        from app.models import EnumValues, SalesOrder
-
         def test_logic():
             fixture.login_as_admin(self.test_client)
             user, password = object_faker.user(role_names=[
@@ -140,7 +138,7 @@ class TestSalesOrderApi(BaseTestCase):
         run_as_admin(self.test_client, test_logic)
 
     def test_update_sales_order_status_not_allowed(self):
-        from app.models import EnumValues, SalesOrder
+        from psi.app.models import EnumValues
 
         def test_logic():
             fixture.login_as_admin(self.test_client)

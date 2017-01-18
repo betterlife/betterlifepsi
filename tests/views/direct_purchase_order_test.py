@@ -1,7 +1,7 @@
 import random
 
-from app import const
-from app.utils import db_util
+from psi.app import const
+from psi.app.utils import db_util
 from tests.base_test_case import BaseTestCase
 from tests.fixture import run_as_admin
 from tests.object_faker import object_faker
@@ -9,7 +9,7 @@ from tests.object_faker import object_faker
 
 class TestDirectPurchaseOrderPages(BaseTestCase):
     def test_direct_purchase_order_pages(self):
-        from app.models import EnumValues
+        from psi.app.models import EnumValues
 
         def test_logic():
             supplier = object_faker.supplier()

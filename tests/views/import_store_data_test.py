@@ -1,10 +1,9 @@
 # coding=utf-8
-import unittest
 from datetime import datetime
 
 import codecs
+from psi.app import const
 
-from app import const
 from tests import fixture
 from tests.base_test_case import BaseTestCase
 
@@ -12,19 +11,19 @@ from tests.base_test_case import BaseTestCase
 class TestImportStoreDataView(BaseTestCase):
 
     def test_import(self):
-        from app.models import SalesOrder, SalesOrderLine, Product, Supplier
-        from app.utils import db_util
+        from psi.app.models import SalesOrder, SalesOrderLine, Product, Supplier
+        from psi.app.utils import db_util
         import os
         fixture.login_as_admin(self.test_client)
         file_name = os.path.dirname(os.path.realpath(__file__)) + "/../resources/store_data.csv"
         content = codecs.open(file_name, "r", "utf-8").read()
-        from app.models.user import User
-        from app.models.role import Role
-        from app.service import Info
+        from psi.app.models.user import User
+        from psi.app.models.role import Role
+        from psi.app.service import Info
         user = Info.get_db().session.query(User).filter_by(login='super_admin').first()
         role = Info.get_db().session.query(Role).filter_by(name='import_store_data').first()
         user.roles.append(role)
-        from app.service import Info
+        from psi.app.service import Info
         Info.get_db().session.add(user)
         Info.get_db().session.commit()
         rv = self.test_client.get('/admin/import_store_data/', follow_redirects=True)

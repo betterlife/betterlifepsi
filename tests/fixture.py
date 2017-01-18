@@ -1,13 +1,11 @@
 from __future__ import print_function
 
-import warnings
-
-from app import create_app, init_all
-from app.service import Info
+from psi.app import create_app, init_all
+from psi.app.service import Info
 
 
 def init_app():
-    from app.config import TestConfig
+    from psi.app.config import TestConfig
     # warnings.warn("Recreating DB")
     # recreate_database(TestConfig)
     application = create_app(TestConfig)

@@ -2,7 +2,7 @@
 import unittest
 from datetime import datetime, date, time, timedelta
 
-from app.utils import date_util
+from psi.app.utils import date_util
 
 
 class TestDateUtil(unittest.TestCase):

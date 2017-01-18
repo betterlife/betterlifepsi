@@ -1,13 +1,6 @@
-import unittest
-
-import random
-
-from app import const
-from app.utils import db_util
 from tests import fixture
 from tests.base_test_case import BaseTestCase
 from tests.fixture import run_as_admin
-from tests.object_faker import object_faker
 
 
 class TestOpenDashboardPage(BaseTestCase):
