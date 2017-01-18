@@ -27,7 +27,7 @@ Intelligent PSI(Purchase, Sales and Inventory) management system
 
   - [Demo environment](https://psi-dev.herokuapp.com/)
     - Organization user: __super_admin / password__
-    - Business user: __ / password__
+    - Business user: _bu_ / password__
   - [Knowledge Center](https://github.com/betterlife/psi/wiki)    
   - [Story management](https://betterlife.atlassian.net)
   
