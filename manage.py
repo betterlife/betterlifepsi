@@ -13,13 +13,11 @@ sys.setdefaultencoding("utf-8")
 
 def init_manager(app):
     from flask.ext.script import Manager
-
     return Manager(app)
 
 
 def init_migrate_command(m):
     from flask.ext.migrate import Migrate, MigrateCommand
-
     migrate = Migrate(application, database, directory="psi/migrations")
     m.add_command('db', MigrateCommand)
 
@@ -41,7 +39,10 @@ def test():
     "" python manage.py test
     """
     import subprocess
-    subprocess.call('nosetests -w tests --with-coverage --cover-erase --with-xunit --cover-branches --xunit-file=nosetests.xml', shell=True)
+    return_code = subprocess.call("""nosetests -w tests \
+            --with-coverage --cover-erase --cover-branches \
+            --with-xunit --xunit-file=nosetests.xml""", shell=True)
+    sys.exit(return_code)
 
 
 @manager.command
@@ -195,6 +196,7 @@ def clean_database():
         DROP TABLE alembic_version;
         commit;
     """)
+
 
 @application.teardown_appcontext
 def shutdown_session(exception=None):
