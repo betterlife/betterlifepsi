@@ -18,7 +18,7 @@ Intelligent PSI(Purchase, Sales and Inventory) management system
   - When do I need to replenish the stock and how much do I lost if that's not done?
   - What is the optimized quantity/date for replenish the stock?
   
-## Install & Run & Deploy  [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy) 
+## Install & Run & Deploy  [![Deploy](https://img.shields.io/badge/Heroku-Deploy-brightgreen.svg?style=flat-square)](https://heroku.com/deploy) 
 
   -  [Installation locally](https://github.com/betterlife/psi/wiki/Installation)
   -  [Run application locally](https://github.com/betterlife/psi/wiki/Run-the-application)  
@@ -27,7 +27,7 @@ Intelligent PSI(Purchase, Sales and Inventory) management system
 
   - [Demo environment](https://psi-dev.herokuapp.com/)
     - Organization user: __super_admin / password__
-    - Business user: _bu_ / password__
+    - Business user: __bu__ / __password__
   - [Knowledge Center](https://github.com/betterlife/psi/wiki)    
   - [Story management](https://betterlife.atlassian.net)
   
