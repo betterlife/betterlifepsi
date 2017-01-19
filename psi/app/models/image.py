@@ -1,11 +1,10 @@
 # coding=utf-8
 
 from psi.app.service import Info
-import os.path as op
 from sqlalchemy import event
-import os
 
 db = Info.get_db()
+
 
 class Image(db.Model):
     """

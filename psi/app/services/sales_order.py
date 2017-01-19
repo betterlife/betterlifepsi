@@ -1,4 +1,4 @@
-from psi.app.const import DIRECT_SHIPPING_TYPE_KEY, FRANCHISE_SHIPPING_TYPE_KEY, SHIPPING_COMPLETE_STATUS_KEY, DIRECT_PO_TYPE_KEY, FRANCHISE_PO_TYPE_KEY, \
+from psi.app.const import DIRECT_SHIPPING_TYPE_KEY, FRANCHISE_SHIPPING_TYPE_KEY, SHIPPING_COMPLETE_STATUS_KEY, \
     DIRECT_SO_TYPE_KEY, FRANCHISE_SO_TYPE_KEY, FRANCHISE_PO_TO_SO_RT_KEY
 from psi.app.models import Preference, Incoming, EnumValues, ShippingLine, Shipping, RelatedValues, PurchaseOrder
 from psi.app.service import Info

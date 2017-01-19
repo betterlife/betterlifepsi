@@ -158,13 +158,13 @@ class ImportStoreDataView(BaseView):
             return self.render('data_loading/legacy.html')
         elif request.method == 'POST':
             start_time = int(time.time())
-            file = request.files['file']
-            if file:
-                filename = secure_filename(file.filename)
+            csv_file = request.files['file']
+            if csv_file:
+                filename = secure_filename(csv_file.filename)
                 if len(filename) == 0:
                     filename = str(uuid.uuid4())
                 full_path = os.path.join(current_app.config['UPLOAD_TMP_FOLDER'], filename)
-                file.save(full_path)
+                csv_file.save(full_path)
                 with codecs.open(full_path, 'rb', 'UTF-8') as f:
                     reader = csv.reader(f, delimiter=',')
                     line, imported_line = 0,0

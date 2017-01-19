@@ -261,10 +261,6 @@ class Product(db.Model, DataSecurityMixin):
     def organization_filter(o_id):
         return Info.get_db().session.query(Product).filter_by(organization_id=o_id)
 
-    @staticmethod
-    def organization_filter(org_id):
-        return Info.get_db().session.query(Product).filter_by(organization_id=org_id)
-
     def get_lead_deliver_day(self):
         if self.deliver_day is None and self.lead_day is None:
             return 0

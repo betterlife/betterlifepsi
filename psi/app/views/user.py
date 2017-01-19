@@ -3,7 +3,6 @@ from functools import partial
 
 from psi.app.utils.security_util import is_super_admin
 from flask_login import current_user
-from flask_admin.contrib.sqla import ModelView
 from flask_babelex import lazy_gettext
 from flask_security.utils import encrypt_password
 from sqlalchemy import func
