@@ -86,14 +86,14 @@ class UserAdmin(ModelViewWithAccess):
     def create_form(self, obj=None):
         from psi.app.models import Organization
 
-        form = super(ModelView, self).create_form(obj)
+        form = super(UserAdmin, self).create_form(obj)
         form.organization.query_factory = partial(Organization.children_self_filter, current_user.organization)
         return form
 
     def edit_form(self, obj=None):
         from psi.app.models import Organization
 
-        form = super(ModelView, self).edit_form(obj)
+        form = super(UserAdmin, self).edit_form(obj)
         form.organization.query_factory = partial(Organization.children_self_filter, current_user.organization)
         return form
 

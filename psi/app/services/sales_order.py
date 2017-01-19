@@ -55,7 +55,6 @@ class SalesOrderService(object):
     @staticmethod
     def create_or_update_expense(sales_order):
         expense = sales_order.expense
-        from psi.app.models import Preference
         preference = Preference.get()
         if (sales_order.logistic_amount is not None) and (sales_order.logistic_amount > 0):
             from psi.app.models import Expense

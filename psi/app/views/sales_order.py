@@ -162,7 +162,7 @@ class SalesOrderAdmin(ModelViewWithAccess):
     def create_form(self, obj=None):
         from psi.app.models import Customer
 
-        form = super(ModelViewWithAccess, self).create_form(obj)
+        form = super(SalesOrderAdmin, self).create_form(obj)
         form.lines.form.actual_amount = None
         form.lines.form.discount_amount = None
         form.lines.form.original_amount = None
@@ -175,7 +175,7 @@ class SalesOrderAdmin(ModelViewWithAccess):
     def edit_form(self, obj=None):
         from psi.app.models import Customer
 
-        form = super(ModelViewWithAccess, self).edit_form(obj)
+        form = super(SalesOrderAdmin, self).edit_form(obj)
         form_util.filter_by_organization(form.customer, Customer)
         self.filter_product(form)
         return form

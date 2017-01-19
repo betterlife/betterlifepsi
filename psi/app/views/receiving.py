@@ -4,7 +4,7 @@ from functools import partial
 
 from psi.app import const
 from psi.app.service import Info
-from psi.app.utils import security_util
+from psi.app.utils import security_util, form_util
 from psi.app.views import ModelViewWithAccess
 from psi.app.views.components import DisabledStringField
 from flask_admin.contrib.sqla.filters import FloatEqualFilter, FloatSmallerFilter
@@ -144,7 +144,6 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
         # Set query option for old lines
         line_entries = form.lines.entries
         po_lines = PurchaseOrderLine.header_filter(po_id).all()
-        from psi.app.utils import security_util, form_util
         if not security_util.user_has_role('purchase_price_view'):
             form_util.del_form_field(self, form, 'total_amount')
             form_util.del_inline_form_field(form.lines.form, form.lines.entries, 'transient_price')

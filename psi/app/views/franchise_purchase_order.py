@@ -2,7 +2,7 @@
 from functools import partial
 
 from psi.app import const
-from psi.app.models import Product, EnumValues
+from psi.app.models import Product, EnumValues, SalesOrder, SalesOrderLine
 from psi.app.utils import form_util, security_util, db_util
 from psi.app.views.base_purchase_order import BasePurchaseOrderAdmin
 from psi.app.views.components import DisabledStringField
@@ -102,7 +102,6 @@ class FranchisePurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
 
     @staticmethod
     def create_so_from_fpo(purchase_order):
-        from psi.app.models import SalesOrder, SalesOrderLine, EnumValues
         so_type = EnumValues.find_one_by_code(const.FRANCHISE_SO_TYPE_KEY)
         sales_order = SalesOrder()
         sales_order.id = db_util.get_next_id(SalesOrder)
