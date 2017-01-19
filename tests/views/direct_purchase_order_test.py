@@ -14,37 +14,37 @@ class TestDirectPurchaseOrderPages(BaseTestCase):
         def test_logic():
             supplier = object_faker.supplier()
             db_util.save_objects_commit(supplier)
-            self.assertPageRenderCorrect(endpoint='/admin/dpo/')
-            self.assertPageRenderCorrect(endpoint='/admin/dpo/new/')
+            self.assertPageRendered(endpoint='/admin/dpo/')
+            self.assertPageRendered(endpoint='/admin/dpo/new/')
             draft_status = EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY)
             order_date = object_faker.faker.date_time_this_year()
             logistic_amount = random.randint(0, 100)
             remark = object_faker.faker.text(max_nb_chars=50)
 
             expect_content = [supplier.name, draft_status.display, str(logistic_amount), order_date.strftime("%Y-%m-%d"), remark]
-            self.assertPageRenderCorrect(method=self.test_client.post,
-                                         data=dict(supplier=supplier.id, status=draft_status.id, order_date=order_date,
+            self.assertPageRendered(method=self.test_client.post,
+                                    data=dict(supplier=supplier.id, status=draft_status.id, order_date=order_date,
                                                    logistic_amount=logistic_amount, remark=remark),
-                                         endpoint='/admin/dpo/new/?url=%2Fadmin%2Fdpo%2F',
-                                         expect_content=expect_content)
+                                    endpoint='/admin/dpo/new/?url=%2Fadmin%2Fdpo%2F',
+                                    expect_contents=expect_content)
 
-            self.assertPageRenderCorrect(expect_content=expect_content, endpoint='/admin/dpo/edit/?url=%2Fadmin%2Fdpo%2F&id=1')
+            self.assertPageRendered(expect_contents=expect_content, endpoint='/admin/dpo/edit/?url=%2Fadmin%2Fdpo%2F&id=1')
 
             new_remark = object_faker.faker.text(max_nb_chars=50)
             new_logistic_amount = random.randint(0, 100)
             new_order_date = object_faker.faker.date_time_this_year()
             new_expect_content = [supplier.name, draft_status.display, str(new_logistic_amount),
                                   new_order_date.strftime("%Y-%m-%d"), new_remark]
-            self.assertPageRenderCorrect(method=self.test_client.post,
-                                         endpoint='/admin/dpo/edit/?url=%2Fadmin%2Fdpo%2F&id=1',
-                                         data=dict(supplier=supplier.id, status=draft_status.id,
+            self.assertPageRendered(method=self.test_client.post,
+                                    endpoint='/admin/dpo/edit/?url=%2Fadmin%2Fdpo%2F&id=1',
+                                    data=dict(supplier=supplier.id, status=draft_status.id,
                                                    order_date=new_order_date, logistic_amount=new_logistic_amount,
                                                    remark=new_remark),
-                                         expect_content=new_expect_content)
+                                    expect_contents=new_expect_content)
 
-            rv = self.assertPageRenderCorrect(method=self.test_client.post,
-                                              endpoint='/admin/dpo/delete/',
-                                              data=dict(url='/admin/dpo/', id='1'))
+            rv = self.assertPageRendered(method=self.test_client.post,
+                                         endpoint='/admin/dpo/delete/',
+                                         data=dict(url='/admin/dpo/', id='1'))
             self.assertNotIn(supplier.name, rv.data)
             self.assertNotIn(draft_status.display, rv.data)
             self.assertNotIn(new_order_date.strftime("%Y-%m-%d"), rv.data)

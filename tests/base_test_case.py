@@ -15,12 +15,36 @@ class BaseTestCase(unittest.TestCase):
         fixture.cleanup_database(self.app_context)
         self.app_context.pop()
 
-    def assertPageRenderCorrect(self, endpoint, method=None, data=None, expect_content=None):
+    def assertPageRendered(self, endpoint, method=None, data=None, expect_contents=None):
         if method is None:
             method = self.test_client.get
         rv = method(endpoint, data=data, follow_redirects=True)
         self.assertEqual(200, rv.status_code)
-        if expect_content is not None:
-            for c in expect_content:
+        if expect_contents is not None:
+            for c in expect_contents:
                 self.assertIn(c, rv.data)
         return rv
+
+    def assertCreateFail(self, endpoint, data=None, create_data=None):
+        return self.assertDataNotInResponse(data, endpoint, create_data)
+
+    def assertDeleteSuccessful(self, endpoint, data=None, deleted_data=None):
+        return self.assertDataNotInResponse(data, endpoint, deleted_data)
+
+    def assertDataNotInResponse(self, data, endpoint, not_expect_contents):
+        rv = self.test_client.post(endpoint, data=data, follow_redirects=True)
+        self.assertEqual(200, rv.status_code)
+        if not_expect_contents is not None:
+            for c in not_expect_contents:
+                self.assertNotIn(c, rv.data)
+        return
+
+    def assertDeleteFail(self, endpoint, data=None, deleted_data=None):
+        rv = self.test_client.post(endpoint, data=data, follow_redirects=True)
+        self.assertEqual(200, rv.status_code)
+        if deleted_data is not None:
+            for c in deleted_data:
+                self.assertIn(c, rv.data)
+        return rv
+
+

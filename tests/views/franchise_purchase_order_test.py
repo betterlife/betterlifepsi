@@ -113,37 +113,35 @@ class TestFranchisePurchaseOrderView(BaseTestCase):
             self.test_client.post('/login', data=dict(email_or_login=user.email,  password=pwd), follow_redirects=True)
             db_util.save_objects_commit(user, organization)
             login_user(self.test_client, user.email, pwd)
-            self.assertPageRenderCorrect(endpoint='/admin/fpo/')
-            self.assertPageRenderCorrect(endpoint='/admin/fpo/new/')
+            self.assertPageRendered(endpoint='/admin/fpo/')
+            self.assertPageRendered(endpoint='/admin/fpo/new/')
             draft_status = EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY)
             order_date = object_faker.faker.date_time_this_year()
             logistic_amount = random.randint(0, 100)
             remark = object_faker.faker.text(max_nb_chars=50)
 
-            expect_content = [draft_status.display, str(logistic_amount), order_date.strftime("%Y-%m-%d"), remark]
-            self.assertPageRenderCorrect(method=self.test_client.post,
-                                         data=dict(status=draft_status.id, order_date=order_date,
-                                                   logistic_amount=logistic_amount, remark=remark),
-                                         endpoint='/admin/fpo/new/?url=%2Fadmin%2Ffpo%2F',
-                                         expect_content=expect_content)
+            expect_contents = [draft_status.display, str(logistic_amount), order_date.strftime("%Y-%m-%d"), remark]
+            self.assertPageRendered(method=self.test_client.post,
+                                    data=dict(status=draft_status.id, order_date=order_date,
+                                              logistic_amount=logistic_amount, remark=remark),
+                                    endpoint='/admin/fpo/new/?url=%2Fadmin%2Ffpo%2F',
+                                    expect_contents=expect_contents)
 
-            self.assertPageRenderCorrect(expect_content=expect_content, endpoint='/admin/fpo/edit/?url=%2Fadmin%2Ffpo%2F&id=1')
+            self.assertPageRendered(expect_contents=expect_contents, endpoint='/admin/fpo/edit/?url=%2Fadmin%2Ffpo%2F&id=1')
 
             new_remark = object_faker.faker.text(max_nb_chars=50)
             new_logistic_amount = random.randint(0, 100)
             new_order_date = object_faker.faker.date_time_this_year()
-            new_expect_content = [draft_status.display, str(new_logistic_amount),
-                                  new_order_date.strftime("%Y-%m-%d"), new_remark]
-            self.assertPageRenderCorrect(method=self.test_client.post,
-                                         endpoint='/admin/fpo/edit/?url=%2Fadmin%2Ffpo%2F&id=1',
-                                         data=dict(status=draft_status.id,
-                                                   order_date=new_order_date, logistic_amount=new_logistic_amount,
-                                                   remark=new_remark),
-                                         expect_content=new_expect_content)
+            new_expect_contents = [draft_status.display, str(new_logistic_amount),
+                                   new_order_date.strftime("%Y-%m-%d"), new_remark]
+            self.assertPageRendered(method=self.test_client.post,
+                                    endpoint='/admin/fpo/edit/?url=%2Fadmin%2Ffpo%2F&id=1',
+                                    data=dict(status=draft_status.id,
+                                              order_date=new_order_date, logistic_amount=new_logistic_amount,
+                                              remark=new_remark),
+                                    expect_contents=new_expect_contents)
 
-            rv = self.assertPageRenderCorrect(method=self.test_client.post,
-                                              endpoint='/admin/fpo/delete/',
-                                              data=dict(url='/admin/fpo/', id='1'))
-            self.assertNotIn(draft_status.display, rv.data)
-            self.assertNotIn(new_order_date.strftime("%Y-%m-%d"), rv.data)
-            self.assertNotIn(new_remark, rv.data)
+            rv = self.assertDeleteSuccessful(endpoint='/admin/fpo/delete/',
+                                             deleted_data=[draft_status.display, new_remark,
+                                                           new_order_date.strftime("%Y-%m-%d")],
+                                             data=dict(url='/admin/fpo/', id='1'))
