@@ -1,5 +1,5 @@
 
-# Betterlife Intelligent PSI [![Travis Build Status](https://img.shields.io/travis/betterlife/psi.svg?label=Travis&style=flat-square)](https://travis-ci.org/betterlife/psi) [![CircleCI](https://img.shields.io/circleci/project/github/betterlife/psi.svg?label=CircleCI&style=flat-square)](https://circleci.com/gh/betterlife/psi)
+# Betterlife Intelligent PSI [![CircleCI](https://img.shields.io/circleci/project/github/betterlife/psi.svg?label=Build&style=flat-square)](https://circleci.com/gh/betterlife/psi)
 
 Intelligent PSI(Purchase, Sales and Inventory) management system
 
