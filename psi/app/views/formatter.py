@@ -134,7 +134,7 @@ def supplier_formatter(view, context, model, name):
         {'label': '开户行', 'field': 'bank_name'},
         {'label': '分行', 'field': 'bank_branch'},
     )
-    if s != None:
+    if s is not None:
         return _obj_formatter(view, context, model, value=s, model_name='supplier',
                               title=s.name, args=args, detail_args=detail_args, detail_field='paymentMethods')
     return ''
