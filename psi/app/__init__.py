@@ -10,15 +10,14 @@ def create_app(custom_config=None):
 
     flask_app = Flask(__name__, template_folder='../templates', static_folder='../static')
     if custom_config is not None:
-        flask_app.config.from_object(custom_config)
+        active_config = custom_config
     else:
         import psi.app.config as default_config
-        if os.environ.get('TESTING') == 'True':
-            flask_app.config.from_object(default_config.TestConfig)
-        elif os.environ.get('DEBUG') == 'True':
-            flask_app.config.from_object(default_config.DevConfig)
-        elif custom_config is None:
-            flask_app.config.from_object(default_config.ProductionConfig)
+        if os.environ.get('DEBUG') == 'True':
+            active_config = default_config.DevConfig
+        else:
+            active_config = default_config.ProductionConfig
+    flask_app.config.from_object(active_config)
     return flask_app
 
 
