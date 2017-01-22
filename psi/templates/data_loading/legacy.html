@@ -50,5 +50,5 @@
 {% endblock %}
 {% block tail %}
   {{ super() }}
-  <script src="{{ url_for('static', filename='js/file_drag_drop.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/file_drag_drop.js', v=resource_version()) }}"></script>
 {% endblock %}

@@ -17,6 +17,7 @@ def create_app(custom_config=None):
             active_config = default_config.DevConfig
         else:
             active_config = default_config.ProductionConfig
+    active_config.VERSION = __version__
     flask_app.config.from_object(active_config)
     return flask_app
 
@@ -66,6 +67,7 @@ def init_logging(flask_app):
     from psi.app.service import Info
     sentry = Sentry(flask_app, logging=True, level=logging.WARNING)
     Info.set_logger(sentry)
+
 
 def init_debug_toolbar(flask_app):
     from flask_debugtoolbar import DebugToolbarExtension
@@ -118,8 +120,9 @@ def init_https(app):
 
 
 def init_jinja2_functions(app):
-    from psi.app.utils.ui_util import render_version
+    from psi.app.utils.ui_util import render_version, resource_version
     app.add_template_global(render_version, 'render_version')
+    app.add_template_global(resource_version, 'resource_version')
 
 
 def init_image_service(app):

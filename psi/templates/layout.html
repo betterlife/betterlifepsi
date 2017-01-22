@@ -3,7 +3,7 @@
 
 {% block head_tail %}
   {{ super() }}
-  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/style.css', v=resource_version()) }}" rel="stylesheet">
   <link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="icon" type="image/x-icon">
   <link href="{{ url_for('static', filename='lightbox2/css/lightbox.min.css') }}" rel="stylesheet">
   <link href="{{ url_for('static', filename='Font-Awesome-4.6.3/css/font-awesome.min.css') }}" rel="stylesheet">
@@ -14,8 +14,8 @@
   <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
   <script src="{{ url_for('static', filename='lightbox2/js/lightbox.min.js') }}"></script>
   <script src="{{ url_for('static', filename='bootbox/bootbox.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/common.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/image_upload.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/common.js', v=resource_version()) }}"></script>
+  <script src="{{ url_for('static', filename='js/image_upload.js', v=resource_version()) }}"></script>
   <script>
     {% if current_user.is_authenticated %}
       {% if current_user.locale != None %}

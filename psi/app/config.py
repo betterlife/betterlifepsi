@@ -66,11 +66,11 @@ class TestConfig(BaseConfig):
 
 class CITestConfig(BaseConfig):
     IMAGE_STORE_SERVICE = CloudinaryImageStore
+    TESTING_MODE = 'CI'
 
 
 class ProductionConfig(BaseConfig):
     DEBUG = False
     TESTING = False
-    CI_TESTING = False
 
 
