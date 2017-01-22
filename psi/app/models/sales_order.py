@@ -1,15 +1,15 @@
 # encoding: utf-8
 from decimal import Decimal
 
-from psi.app import const
-from psi.app.service import Info
-from psi.app.utils.format_util import format_decimal
+from app import const
+from app.service import Info
+from app.utils.format_util import format_decimal
 from flask_login import current_user
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func, String
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
-from psi.app.models.data_security_mixin import DataSecurityMixin
+from app.models.data_security_mixin import DataSecurityMixin
 
 db = Info.get_db()
 
@@ -123,7 +123,7 @@ class SalesOrderLine(db.Model):
 
     @original_amount.expression
     def original_amount(self):
-        from psi.app.models.product import Product
+        from app.models.product import Product
         return (select([SalesOrderLine.quantity * Product.retail_price])
                 .where(self.product_id == Product.id).label('line_original_amount'))
 

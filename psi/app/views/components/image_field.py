@@ -36,9 +36,9 @@ class ImageField(StringField):
 
     def populate_obj(self, obj, name):
         from flask import request
-        from psi.app.service import Info
-        from psi.app.utils import db_util
-        from psi.app.utils import file_util
+        from app.service import Info
+        from app.utils import db_util
+        from app.utils import file_util
         images_to_del = request.form.get('images-to-delete')
         if len(images_to_del) > 0:
             to_del_ids = images_to_del.split(',')

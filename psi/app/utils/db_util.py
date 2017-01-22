@@ -1,4 +1,4 @@
-from psi.app.service import Info
+from app.service import Info
 from flask_login import current_user
 from sqlalchemy import desc
 

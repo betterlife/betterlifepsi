@@ -1,6 +1,6 @@
 import unittest
 
-from psi.app.utils import format_util
+from app.utils import format_util
 
 
 class TestFormatUtil(unittest.TestCase):

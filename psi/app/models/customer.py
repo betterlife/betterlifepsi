@@ -1,9 +1,9 @@
 # encoding: utf-8
 
-from psi.app import const
-from psi.app.models.data_security_mixin import DataSecurityMixin
-from psi.app.service import Info
-from psi.app.utils import date_util
+from app import const
+from app.models.data_security_mixin import DataSecurityMixin
+from app.service import Info
+from app.utils import date_util
 from sqlalchemy import Column, Integer, ForeignKey, String, Date, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
@@ -73,7 +73,7 @@ class Customer(db.Model, DataSecurityMixin):
 
     @total_spent.expression
     def total_spent(self):
-        from psi.app.models.sales_order import SalesOrder, SalesOrderLine
+        from app.models.sales_order import SalesOrder, SalesOrderLine
         return (select([func.sum(SalesOrderLine.quantity * SalesOrderLine.unit_price)])
                 .where(SalesOrder.id == SalesOrderLine.sales_order_id)
                 .where(self.id == SalesOrder.customer_id)
@@ -81,12 +81,12 @@ class Customer(db.Model, DataSecurityMixin):
 
     @staticmethod
     def join_channel_filter():
-        from psi.app.models.enum_values import EnumValues
+        from app.models.enum_values import EnumValues
         return EnumValues.type_filter(const.CUSTOMER_JOIN_CHANNEL_KEY)
 
     @staticmethod
     def level_filter():
-        from psi.app.models.enum_values import EnumValues
+        from app.models.enum_values import EnumValues
         return EnumValues.type_filter(const.CUSTOMER_LEVEL_KEY)
 
     def __repr__(self):

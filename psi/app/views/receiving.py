@@ -2,11 +2,11 @@
 from datetime import datetime
 from functools import partial
 
-from psi.app import const
-from psi.app.service import Info
-from psi.app.utils import security_util, form_util
-from psi.app.views import ModelViewWithAccess
-from psi.app.views.components import DisabledStringField
+from app import const
+from app.service import Info
+from app.utils import security_util, form_util
+from app.views import ModelViewWithAccess
+from app.views.components import DisabledStringField
 from flask_admin.contrib.sqla.filters import FloatEqualFilter, FloatSmallerFilter
 from flask_admin.contrib.sqla.filters import FloatGreaterFilter
 from flask_admin.model import InlineFormAdmin
@@ -14,7 +14,7 @@ from flask_babelex import lazy_gettext, gettext
 from wtforms import BooleanField
 from wtforms.validators import ValidationError
 
-from psi.app.views.base import DeleteValidator
+from app.views.base import DeleteValidator
 
 db = Info.get_db()
 
@@ -42,7 +42,7 @@ class ReceivingLineInlineAdmin(InlineFormAdmin):
 
 class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
     from formatter import supplier_formatter, purchase_order_formatter, inventory_transaction_formatter, default_date_formatter
-    from psi.app.models import ReceivingLine, Receiving, PurchaseOrder
+    from app.models import ReceivingLine, Receiving, PurchaseOrder
 
     inline_models = (ReceivingLineInlineAdmin(ReceivingLine),)
     column_list = ('id', 'purchase_order', 'supplier', 'date', 'status', 'total_amount', 'inventory_transaction',
@@ -112,7 +112,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
                                                            'nor delete on complete status'))
 
     def after_model_change(self, form, model, is_created):
-        from psi.app.models import PurchaseOrder
+        from app.models import PurchaseOrder
         super(ReceivingAdmin, self).after_model_change(form, model, is_created)
         if is_created:
             available_info = model.purchase_order.get_available_lines_info()
@@ -127,14 +127,14 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
         db.session.commit()
 
     def create_form(self, obj=None):
-        from psi.app.models import EnumValues
+        from app.models import EnumValues
         form = super(ReceivingAdmin, self).create_form(obj)
         form.status.query = [EnumValues.find_one_by_code(const.RECEIVING_DRAFT_STATUS_KEY), ]
         form.create_lines.data = True
         return form
 
     def edit_form(self, obj=None):
-        from psi.app.models import PurchaseOrderLine, EnumValues
+        from app.models import PurchaseOrderLine, EnumValues
         form = super(ReceivingAdmin, self).edit_form(obj)
         po_id = obj.transient_po.id
         # Set query_factory for newly added line

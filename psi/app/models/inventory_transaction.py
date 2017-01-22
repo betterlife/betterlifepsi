@@ -1,10 +1,10 @@
 # encoding: utf-8
 from decimal import Decimal
 
-from psi.app import const
-from psi.app.models.data_security_mixin import DataSecurityMixin
-from psi.app.service import Info
-from psi.app.utils.format_util import format_decimal
+from app import const
+from app.models.data_security_mixin import DataSecurityMixin
+from app.service import Info
+from app.utils.format_util import format_decimal
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
@@ -26,12 +26,12 @@ class InventoryTransaction(db.Model, DataSecurityMixin):
 
     @staticmethod
     def type_filter():
-        from psi.app.models.enum_values import EnumValues
+        from app.models.enum_values import EnumValues
         return EnumValues.type_filter(const.INVENTORY_TRANSACTION_TYPE_KEY)
 
     @staticmethod
     def manual_type_filter():
-        from psi.app.models.enum_values import EnumValues
+        from app.models.enum_values import EnumValues
         from sqlalchemy import or_
         q = db.session.query(EnumValues).filter(or_(EnumValues.code == const.INVENTORY_LOST_TYPE_KEY,
                                                     EnumValues.code == const.INVENTORY_DAMAGED_TYPE_KEY))

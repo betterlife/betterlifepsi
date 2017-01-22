@@ -4,8 +4,8 @@
 from __future__ import print_function
 import sys
 
-from psi.app.service import Info
-from psi.app import create_app, init_all
+from app.service import Info
+from app import create_app, init_all
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -39,7 +39,7 @@ def test():
     "" python manage.py test
     """
     import subprocess
-    return_code = subprocess.call("""nosetests -w tests \
+    return_code = subprocess.call("""nosetests ./tests \
             --with-coverage --cover-erase --cover-branches \
             --with-xunit --xunit-file=nosetests.xml""", shell=True)
     sys.exit(return_code)

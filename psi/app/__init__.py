@@ -1,6 +1,7 @@
 # encoding=utf-8
 
 import os
+import socketio
 
 __version__ = '0.6.6'
 
@@ -12,7 +13,7 @@ def create_app(custom_config=None):
     if custom_config is not None:
         active_config = custom_config
     else:
-        import psi.app.config as default_config
+        import app.config as default_config
         if os.environ.get('DEBUG') == 'True':
             active_config = default_config.DevConfig
         else:
@@ -24,23 +25,23 @@ def create_app(custom_config=None):
 
 def init_flask_security(flask_app, database):
     from flask_security import SQLAlchemyUserDatastore, Security
-    from psi.app.models.user import User
-    from psi.app.models.role import Role
-    import psi.app.config as config
+    from app.models.user import User
+    from app.models.role import Role
+    import app.config as config
     for key, value in config.BaseConfig.security_messages.items():
         flask_app.config['SECURITY_MSG_' + key] = value
     user_datastore = SQLAlchemyUserDatastore(database, User, Role)
-    from psi.app.views.login_form import LoginForm
+    from app.views.login_form import LoginForm
     return Security(flask_app, user_datastore, login_form=LoginForm)
 
 
 def init_admin_views(flask_app, database):
-    from psi.app.views import init_admin_views
+    from app.views import init_admin_views
     return init_admin_views(flask_app, database)
 
 
 def init_db(flask_app):
-    from psi.app.service import Info
+    from app.service import Info
     from flask_sqlalchemy import SQLAlchemy
     sqlalchemy = SQLAlchemy(flask_app, session_options={'autoflush': False})
     Info.set_db(sqlalchemy)
@@ -64,7 +65,7 @@ def init_babel(flask_app):
 def init_logging(flask_app):
     from raven.contrib.flask import Sentry
     import logging
-    from psi.app.service import Info
+    from app.service import Info
     sentry = Sentry(flask_app, logging=True, level=logging.WARNING)
     Info.set_logger(sentry)
 
@@ -120,7 +121,7 @@ def init_https(app):
 
 
 def init_jinja2_functions(app):
-    from psi.app.utils.ui_util import render_version, resource_version
+    from app.utils.ui_util import render_version, resource_version
     app.add_template_global(render_version, 'render_version')
     app.add_template_global(resource_version, 'resource_version')
 
@@ -130,7 +131,7 @@ def init_image_service(app):
     Initialize image store service
     """
     image_store = app.config['IMAGE_STORE_SERVICE']
-    from psi.app.service import Info
+    from app.service import Info
     if image_store is not None:
         Info.set_image_store_service(image_store(app))
 
@@ -140,14 +141,33 @@ def init_flask_restful(app):
     Initialize flask restful api
     """
     from flask_restful import Api
-    from psi.app.api import init_all_apis
+    from app.api import init_all_apis
     flask_restful = Api(app)
     init_all_apis(flask_restful)
 
 
+def init_socket_io(app):
+    from flask_socketio import SocketIO
+    socket_io = SocketIO(app)
+
+    @socket_io.on('message')
+    def handle_message(message):
+        print('received message: ' + message)
+
+    @socket_io.on('json')
+    def handle_json(json):
+        print('received json: ' + str(json))
+
+    @socket_io.on('my event')
+    def handle_my_custom_event(json):
+        print('received json: ' + str(json))
+
+    return socket_io
+
+
 def init_all(app):
     init_logging(app)
-    from psi.app.service import Info
+    from app.service import Info
     # === Important notice to the maintainer ===
     # This line was use to database = init_db(app)
     # But we found session can not be cleaned among different
@@ -170,10 +190,11 @@ def init_all(app):
     init_jinja2_functions(app)
     # init_debug_toolbar(app)
     init_image_service(app)
+    socket_io = init_socket_io(app)
     define_route_context(app, database, babel)
+    return socket_io
     # define a context processor for merging flask-admin's template context
     # into the flask-security views.
-
     @security.context_processor
     def security_context_processor():
         from flask import url_for

@@ -1,13 +1,13 @@
 from datetime import datetime
 
-from psi.app.models import InventoryTransactionLine, InventoryTransaction
-from psi.app.utils import security_util
+from app.models import InventoryTransactionLine, InventoryTransaction
+from app.utils import security_util
 from flask_admin.contrib.sqla.filters import FloatGreaterFilter, FloatSmallerFilter
 from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext
 
 from formatter import receivings_formatter, shipping_formatter, default_date_formatter
-from psi.app.views.base import ModelViewWithAccess
+from app.views.base import ModelViewWithAccess
 
 
 class InventoryTransactionLineInlineAdmin(InlineFormAdmin):
@@ -27,7 +27,7 @@ class InventoryTransactionLineInlineAdmin(InlineFormAdmin):
     )
 
     def postprocess_form(self, form):
-        from psi.app.views.components import DisabledStringField
+        from app.views.components import DisabledStringField
         form.total_amount = DisabledStringField(label=lazy_gettext('Total Amount'))
         form.itl_receiving_line = None
         form.remark = None
@@ -69,7 +69,7 @@ class InventoryTransactionAdmin(ModelViewWithAccess):
         date=dict(default=datetime.now()),
     )
 
-    from psi.app.views.components import DisabledStringField
+    from app.views.components import DisabledStringField
 
     form_extra_fields = {
         'total_amount': DisabledStringField(label=lazy_gettext('Total Amount')),

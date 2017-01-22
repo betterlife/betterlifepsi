@@ -7,7 +7,7 @@ from flask_admin._compat import as_unicode
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.model.helpers import get_mdict_item_or_list
 from flask_security import current_user
-from psi.app.utils import get_user_roles, has_organization_field, is_super_admin
+from app.utils import get_user_roles, has_organization_field, is_super_admin
 from sqlalchemy import func
 from werkzeug.exceptions import abort
 from werkzeug.utils import redirect

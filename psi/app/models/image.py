@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from psi.app.service import Info
+from app.service import Info
 from sqlalchemy import event
 
 db = Info.get_db()

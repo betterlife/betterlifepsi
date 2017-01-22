@@ -2,8 +2,8 @@
 {% import 'admin/static.html' as admin_static with context %}
 <html>
 <head>
-  <link href="{{ admin_static.url(filename='bootstrap/bootstrap3/css/bootstrap.min.css', v='3.3.5') }}" rel="stylesheet">
-  <link href="{{ admin_static.url(filename='bootstrap/bootstrap3/css/bootstrap-theme.min.css', v='3.3.5') }}" rel="stylesheet">
+  <link href="/admin/static/bootstrap/bootstrap3/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+  <link href="/admin/static/bootstrap/bootstrap3/css/bootstrap-theme.min.css?v=3.3.5" rel="stylesheet">
   <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
   <link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="icon" type="image/x-icon">
 </head>

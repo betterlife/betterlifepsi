@@ -1,10 +1,10 @@
 # coding=utf-8
-from psi.app.utils import user_has_role
+from app.utils import user_has_role
 from flask import url_for
 from flask_babelex import lazy_gettext
 from markupsafe import Markup
 
-from psi.app.views.views_mapping import get_endpoint_by_type_attr
+from app.views.views_mapping import get_endpoint_by_type_attr
 
 has_invoice_field = {'label': lazy_gettext('Has Invoice'), 'field': 'has_invoice'}
 goods_amount_field = {'label': lazy_gettext('Goods Amount'), 'field': 'goods_amount'}

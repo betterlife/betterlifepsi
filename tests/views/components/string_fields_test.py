@@ -10,7 +10,7 @@ class TestDisabledStringField(unittest.TestCase):
 
     def DisabledStringField_test(self):
         from wtforms import form
-        from psi.app.views.components import DisabledStringField
+        from app.views.components import DisabledStringField
 
         class SimpleForm(form.Form):
             df = DisabledStringField()
@@ -25,7 +25,7 @@ class TestReadonlyStringField(unittest.TestCase):
 
     def DisabledStringField_test(self):
         from wtforms import form
-        from psi.app.views.components import ReadonlyStringField
+        from app.views.components import ReadonlyStringField
 
         class SimpleForm(form.Form):
             rf = ReadonlyStringField()
@@ -40,7 +40,7 @@ class TestHiddenStringField(unittest.TestCase):
 
     def DisabledStringField_test(self):
         from wtforms import form
-        from psi.app.views.components import HiddenField
+        from app.views.components import HiddenField
 
         class SimpleForm(form.Form):
             hf = HiddenField()
@@ -55,7 +55,7 @@ class TestCKTextAreaField(unittest.TestCase):
 
     def DisabledStringField_test(self):
         from wtforms import form
-        from psi.app.views.components import CKTextAreaField
+        from app.views.components import CKTextAreaField
 
         class SimpleForm(form.Form):
             ctf = CKTextAreaField()
@@ -70,7 +70,7 @@ class TestDisabledBooleanField(unittest.TestCase):
 
     def DisabledStringField_test(self):
         from wtforms import form
-        from psi.app.views.components import DisabledBooleanField
+        from app.views.components import DisabledBooleanField
 
         class SimpleForm(form.Form):
             dbf = DisabledBooleanField()

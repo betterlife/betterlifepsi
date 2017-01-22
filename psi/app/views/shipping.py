@@ -6,8 +6,8 @@ from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext, gettext
 from wtforms import ValidationError
 
-from psi.app.views.components import DisabledStringField
-from psi.app.views import ModelViewWithAccess
+from app.views.components import DisabledStringField
+from app.views import ModelViewWithAccess
 
 
 class ShippingLineInlineAdmin(InlineFormAdmin):
@@ -29,7 +29,7 @@ class ShippingLineInlineAdmin(InlineFormAdmin):
 class ShippingAdmin(ModelViewWithAccess):
 
     from formatter import inventory_transaction_formatter, sales_order_formatter, default_date_formatter
-    from psi.app.models import ShippingLine, Shipping
+    from app.models import ShippingLine, Shipping
 
     inline_models = (ShippingLineInlineAdmin(ShippingLine),)
     column_list = ('id', 'status', 'date', 'total_amount', 'sales_order', 'inventory_transaction', 'remark')

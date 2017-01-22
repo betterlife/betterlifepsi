@@ -9,11 +9,11 @@ from decimal import Decimal
 
 import codecs
 import os
-from psi.app import const
-from psi.app.models import Supplier, Product, SalesOrder, SalesOrderLine, Shipping, ShippingLine, InventoryTransaction, \
+from app import const
+from app.models import Supplier, Product, SalesOrder, SalesOrderLine, Shipping, ShippingLine, InventoryTransaction, \
     InventoryTransactionLine, EnumValues, Incoming, Preference
-from psi.app.utils import get_by_external_id, save_objects_commit, get_by_name
-from psi.app.utils.security_util import user_has_role
+from app.utils import get_by_external_id, save_objects_commit, get_by_name
+from app.utils.security_util import user_has_role
 from flask import request, current_app
 from flask_admin import BaseView
 from flask_admin import expose
@@ -21,7 +21,7 @@ from flask_babelex import gettext
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 
-from psi.app.utils.decorations import has_role
+from app.utils.decorations import has_role
 
 
 def create_or_update_supplier(sup_num, sup_name):

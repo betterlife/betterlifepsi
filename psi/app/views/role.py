@@ -1,9 +1,9 @@
 # encoding=utf-8
-from psi.app.utils.security_util import is_super_admin, exclude_super_admin_roles
-from psi.app.views.components import DisabledBooleanField, ReadonlyStringField
+from app.utils.security_util import is_super_admin, exclude_super_admin_roles
+from app.views.components import DisabledBooleanField, ReadonlyStringField
 from flask_babelex import lazy_gettext
 
-from psi.app.views.base import ModelViewWithAccess, CycleReferenceValidator
+from app.views.base import ModelViewWithAccess, CycleReferenceValidator
 
 
 class RoleAdmin(ModelViewWithAccess):

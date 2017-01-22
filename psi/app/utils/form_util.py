@@ -1,5 +1,5 @@
 # encoding=utf-8
-from psi.app.utils import db_util
+from app.utils import db_util
 
 
 def filter_by_organization(field, object_type):

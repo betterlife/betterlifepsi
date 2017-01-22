@@ -1,17 +1,17 @@
 # encoding: utf-8
-from psi.app import const
-from psi.app.service import Info
+from app import const
+from app.service import Info
 from flask_security import UserMixin
 from sqlalchemy import ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
-from psi.app.models.data_security_mixin import DataSecurityMixin
+from app.models.data_security_mixin import DataSecurityMixin
 
 db = Info.get_db()
 
 
 class User(db.Model, UserMixin, DataSecurityMixin):
-    from psi.app.models.role import roles_users
+    from app.models.role import roles_users
 
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -34,10 +34,10 @@ class User(db.Model, UserMixin, DataSecurityMixin):
 
     @staticmethod
     def locale_filter():
-        from psi.app.models import EnumValues
+        from app.models import EnumValues
         return EnumValues.type_filter(const.LANGUAGE_VALUES_KEY)
 
     @staticmethod
     def timezone_filter():
-        from psi.app.models import EnumValues
+        from app.models import EnumValues
         return EnumValues.type_filter(const.TIMEZONE_VALUES_KEY)

@@ -9,9 +9,9 @@ from tests.object_faker import object_faker
 class TestPurchasePriceView(BaseTestCase):
 
     def test_purchase_order_hide_and_show(self):
-        from psi.app.service import Info
-        from psi.app.models.role import Role
-        from psi.app.utils import save_objects_commit
+        from app.service import Info
+        from app.models.role import Role
+        from app.utils import save_objects_commit
         role = Info.get_db().session.query(Role).filter_by(
             name='purchase_price_view').first()
         user, password = object_faker.user(
@@ -56,9 +56,9 @@ class TestPurchasePriceView(BaseTestCase):
         fixture.logout_user(self.test_client)
 
     def test_purchase_price_show_and_hidden(self):
-        from psi.app.service import Info
-        from psi.app.models.role import Role
-        from psi.app.utils import save_objects_commit
+        from app.service import Info
+        from app.models.role import Role
+        from app.utils import save_objects_commit
         role = Info.get_db().session.query(Role).filter_by(
             name='purchase_price_view').first()
         user, password = object_faker.user(['product_view', 'direct_purchase_order_view'])
@@ -102,9 +102,9 @@ class TestPurchasePriceView(BaseTestCase):
         fixture.logout_user(self.test_client)
 
     def test_purchase_price_show_and_hidden_detail_page(self):
-        from psi.app.service import Info
-        from psi.app.models.role import Role
-        from psi.app.utils import save_objects_commit
+        from app.service import Info
+        from app.models.role import Role
+        from app.utils import save_objects_commit
         def test_logic():
             fixture.login_as_admin(self.test_client)
             user, password = object_faker.user(role_names=[

@@ -1,11 +1,11 @@
 # encoding=utf-8
-from psi.app.service import Info
+from app.service import Info
 from flask_security import RoleMixin
 from sqlalchemy import ForeignKey, Integer
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, backref
 
-from psi.app.models.data_security_mixin import DataSecurityMixin
+from app.models.data_security_mixin import DataSecurityMixin
 
 db = Info.get_db()
 

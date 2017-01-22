@@ -1,7 +1,7 @@
-from psi.app.const import DIRECT_SHIPPING_TYPE_KEY, FRANCHISE_SHIPPING_TYPE_KEY, SHIPPING_COMPLETE_STATUS_KEY, \
+from app.const import DIRECT_SHIPPING_TYPE_KEY, FRANCHISE_SHIPPING_TYPE_KEY, SHIPPING_COMPLETE_STATUS_KEY, \
     DIRECT_SO_TYPE_KEY, FRANCHISE_SO_TYPE_KEY, FRANCHISE_PO_TO_SO_RT_KEY
-from psi.app.models import Preference, Incoming, EnumValues, ShippingLine, Shipping, RelatedValues, PurchaseOrder
-from psi.app.service import Info
+from app.models import Preference, Incoming, EnumValues, ShippingLine, Shipping, RelatedValues, PurchaseOrder
+from app.service import Info
 
 
 class SalesOrderService(object):
@@ -57,7 +57,7 @@ class SalesOrderService(object):
         expense = sales_order.expense
         preference = Preference.get()
         if (sales_order.logistic_amount is not None) and (sales_order.logistic_amount > 0):
-            from psi.app.models import Expense
+            from app.models import Expense
             default_obj = Expense(sales_order.logistic_amount, sales_order.order_date,
                                   preference.def_so_exp_status_id, preference.def_so_exp_type_id)
             expense = SalesOrderService.create_associated_obj(expense, sales_order,

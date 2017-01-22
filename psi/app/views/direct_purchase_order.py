@@ -1,15 +1,15 @@
 # encoding=utf-8
 from functools import partial
 
-from psi.app import const
-from psi.app.models import Product, \
+from app import const
+from app.models import Product, \
     EnumValues
-from psi.app.utils import form_util, security_util
-from psi.app.views.base_purchase_order import BasePurchaseOrderAdmin
-from psi.app.views.components import DisabledStringField
+from app.utils import form_util, security_util
+from app.views.base_purchase_order import BasePurchaseOrderAdmin
+from app.views.components import DisabledStringField
 from flask_babelex import lazy_gettext
 
-from psi.app.views.base import DeleteValidator
+from app.views.base import DeleteValidator
 
 
 class DirectPurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
@@ -91,7 +91,7 @@ class DirectPurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
         return form
 
     def create_form(self, obj=None):
-        from psi.app.models import Supplier
+        from app.models import Supplier
         form = super(DirectPurchaseOrderAdmin, self).create_form(obj)
         form.status.query = [EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY), ]
         form_util.filter_by_organization(form.supplier, Supplier)

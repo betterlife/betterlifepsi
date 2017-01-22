@@ -1,8 +1,8 @@
 # coding=utf-8
-from psi.app.models import Incoming, Expense
+from app.models import Incoming, Expense
 from flask_babelex import lazy_gettext
 
-from psi.app.views.base import ModelViewWithAccess
+from app.views.base import ModelViewWithAccess
 
 
 class PreferenceAdmin(ModelViewWithAccess):

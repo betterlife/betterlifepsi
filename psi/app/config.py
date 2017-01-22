@@ -1,9 +1,9 @@
 # coding=utf-8
 import os
-from psi.app.thirdparty.local_image_store import LocalImageStore
+from app.thirdparty.local_image_store import LocalImageStore
 from flask_babelex import lazy_gettext
 
-from psi.app.thirdparty.cloudinary_image_store import CloudinaryImageStore
+from app.thirdparty.cloudinary_image_store import CloudinaryImageStore
 
 
 class BaseConfig(object):

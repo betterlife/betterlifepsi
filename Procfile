@@ -1,1 +1,1 @@
-web: gunicorn psi.wsgi:application --log-file=- --timeout 3000
+web: gunicorn --worker-class socketio.sgunicorn.GeventSocketIOWorker --log-file=- --timeout 3000 wsgi:application

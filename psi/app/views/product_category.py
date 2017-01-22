@@ -1,9 +1,9 @@
 # coding=utf-8
-from psi.app.models import ProductCategory
-from psi.app.utils import form_util
+from app.models import ProductCategory
+from app.utils import form_util
 from flask_babelex import lazy_gettext
 
-from psi.app.views.base import ModelViewWithAccess
+from app.views.base import ModelViewWithAccess
 
 
 class ProductCategoryAdmin(ModelViewWithAccess):

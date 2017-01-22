@@ -4,15 +4,6 @@ from tests.fixture import run_as_admin
 
 
 class TestOpenDashboardPage(BaseTestCase):
-    def setUp(self):
-        self.app = fixture.init_app()
-        self.test_client = self.app.test_client()
-        self.app_context = self.app.test_request_context()
-        self.app_context.push()
-
-    def tearDown(self):
-        fixture.cleanup_database(self.app_context)
-        self.app_context.pop()
 
     def test_open_dashboard(self):
 

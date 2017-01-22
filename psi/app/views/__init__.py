@@ -18,8 +18,8 @@ from inventory_transaction import InventoryTransactionAdmin
 from product_inventory import ProductInventoryView
 from customer import CustomerAdmin
 from formatter import *
-from psi.app.models import *
-from psi.app.models.organization import Organization
+from app.models import *
+from app.models.organization import Organization
 from flask_admin import Admin
 from flask_admin.consts import ICON_TYPE_GLYPH
 from import_store_data import ImportStoreDataView
@@ -151,6 +151,13 @@ def init_admin_views(app, db):
         menu_icon_type=ICON_TYPE_GLYPH,
         menu_icon_value='glyphicon-shopping-cart',
         endpoint='import_store_data')
+    )
+    admin_views.add_view(ReportView(
+        name=lazy_gettext("Report"),
+        category=lazy_gettext('Report'),
+        menu_icon_type=ICON_TYPE_GLYPH,
+        menu_icon_value='fa fa-bar-chart',
+        endpoint='report')
     )
     admin_views.add_view(UserAdmin(
         User,

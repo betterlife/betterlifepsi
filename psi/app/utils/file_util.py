@@ -1,4 +1,4 @@
-from psi.app.service import Info
+from app.service import Info
 import uuid
 
 
@@ -11,7 +11,7 @@ def save_image(owner, image_file):
     :param image_file: File storage object of the image
     :return: The image object created
     """
-    from psi.app.models import Image
+    from app.models import Image
     service = Info.get_image_store_service()
     if owner.image is not None:
         existing_img_public_id = owner.image.path

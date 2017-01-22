@@ -1,10 +1,10 @@
 # encoding: utf-8
 from decimal import Decimal
 
-from psi.app import const
-from psi.app.models.data_security_mixin import DataSecurityMixin
-from psi.app.service import Info
-from psi.app.utils.format_util import format_decimal
+from app import const
+from app.models.data_security_mixin import DataSecurityMixin
+from app.service import Info
+from app.utils.format_util import format_decimal
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
@@ -36,7 +36,7 @@ class Shipping(db.Model, DataSecurityMixin):
 
     @staticmethod
     def status_filter():
-        from psi.app.models.enum_values import EnumValues
+        from app.models.enum_values import EnumValues
         return EnumValues.type_filter(const.SHIPPING_STATUS_KEY)
 
     @hybrid_property
@@ -60,8 +60,8 @@ class Shipping(db.Model, DataSecurityMixin):
         return str(self.id) + ' - ' + str(self.total_amount)
 
     def create_or_update_inventory_transaction(self):
-        from psi.app.models.inventory_transaction import InventoryTransactionLine, InventoryTransaction
-        from psi.app.models.enum_values import EnumValues
+        from app.models.inventory_transaction import InventoryTransactionLine, InventoryTransaction
+        from app.models.enum_values import EnumValues
         if self.type.code == const.DIRECT_SHIPPING_TYPE_KEY:
             it_type = EnumValues.find_one_by_code(const.SALES_OUT_INV_TRANS_TYPE_KEY)
         else:

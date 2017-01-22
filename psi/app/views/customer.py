@@ -1,11 +1,11 @@
 # encoding=utf-8
 from datetime import datetime
 
-from psi.app.models.customer import Customer
+from app.models.customer import Customer
 from flask_admin.contrib.sqla.filters import FloatGreaterFilter
 from flask_babelex import lazy_gettext
 
-from psi.app.views.base import ModelViewWithAccess
+from app.views.base import ModelViewWithAccess
 
 
 class CustomerAdmin(ModelViewWithAccess):
@@ -46,7 +46,7 @@ class CustomerAdmin(ModelViewWithAccess):
                       FloatGreaterFilter(Customer.total_spent, lazy_gettext('Total Spent')),
                       FloatGreaterFilter(Customer.member_age, lazy_gettext('Member Year')),)
 
-    from psi.app.views.formatter import default_date_formatter
+    from app.views.formatter import default_date_formatter
     column_formatters = {
         'join_date': default_date_formatter,
         'birthday': default_date_formatter,

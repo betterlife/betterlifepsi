@@ -2,7 +2,7 @@ from __future__ import print_function
 
 from datetime import datetime
 
-import psi.app.const as const
+import app.const as const
 
 from tests.base_test_case import BaseTestCase
 
@@ -10,9 +10,9 @@ from tests.base_test_case import BaseTestCase
 class TestReceiving(BaseTestCase):
 
     def test_get_by_po_id(self):
-        from psi.app.models.receiving import Receiving
-        from psi.app.models.enum_values import EnumValues
-        from psi.app.service import Info
+        from app.models.receiving import Receiving
+        from app.models.enum_values import EnumValues
+        from app.service import Info
         from tests.object_faker import object_faker
 
         def test_logic():
@@ -34,9 +34,9 @@ class TestReceiving(BaseTestCase):
         run_as_admin(self.test_client, test_logic)
 
     def test_create_draft_recv_from_po(self):
-        from psi.app.models.receiving import Receiving
+        from app.models.receiving import Receiving
         from tests.object_faker import object_faker
-        import psi.app.const as const
+        import app.const as const
 
         def test_logic():
             po = object_faker.purchase_order(number_of_line=2)

@@ -1,8 +1,8 @@
 # encoding: utf-8
 
-from psi.app import const
-from psi.app.models.data_security_mixin import DataSecurityMixin
-from psi.app.service import Info
+from app import const
+from app.models.data_security_mixin import DataSecurityMixin
+from app.service import Info
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Boolean, Text, DateTime
 from sqlalchemy.orm import backref, relationship
 
@@ -43,12 +43,12 @@ class Expense(db.Model, DataSecurityMixin):
 
     @staticmethod
     def status_filter():
-        from psi.app.models.enum_values import EnumValues
+        from app.models.enum_values import EnumValues
         return EnumValues.type_filter(const.EXP_STATUS_KEY)
 
     @staticmethod
     def type_filter():
-        from psi.app.models.enum_values import EnumValues
+        from app.models.enum_values import EnumValues
         return EnumValues.type_filter(const.EXP_TYPE_KEY)
 
     def __unicode__(self):

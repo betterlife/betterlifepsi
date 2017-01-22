@@ -1,9 +1,9 @@
 # coding=utf-8
 from datetime import datetime, timedelta
 
-from psi.app.const import *
+from app.const import *
 
-from psi.app.advice import InventoryAdvice
+from app.advice import InventoryAdvice
 from tests import fixture
 from tests.base_test_case import BaseTestCase
 
@@ -11,9 +11,9 @@ from tests.base_test_case import BaseTestCase
 class TestInventoryAdvice(BaseTestCase):
     def setUp(self):
         super(TestInventoryAdvice, self).setUp()
-        from psi.app.utils import get_next_code
+        from app.utils import get_next_code
         fixture.login_as_admin(self.test_client)
-        from psi.app.models import Product, User
+        from app.models import Product, User
         self.product = Product()
         self.product.organization_id = 1
         self.user = User()
@@ -34,7 +34,7 @@ class TestInventoryAdvice(BaseTestCase):
 
     @staticmethod
     def adjust_product_quantity(product, date, quantity, price, type_code):
-        from psi.app.models import InventoryTransactionLine, InventoryTransaction, EnumValues
+        from app.models import InventoryTransactionLine, InventoryTransaction, EnumValues
         it = InventoryTransaction()
         it.date = date
         it.type = EnumValues.find_one_by_code(type_code)

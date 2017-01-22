@@ -1,21 +1,21 @@
 # coding=utf-8
 from functools import partial
 
-from psi.app.utils.security_util import is_super_admin
+from app.utils.security_util import is_super_admin
 from flask_login import current_user
 from flask_babelex import lazy_gettext
 from flask_security.utils import encrypt_password
 from sqlalchemy import func
 from wtforms import PasswordField
 
-from psi.app.views.base import ModelViewWithAccess
+from app.views.base import ModelViewWithAccess
 
 
 # Customized User model for SQL-Admin
 class UserAdmin(ModelViewWithAccess):
 
-    from psi.app.views.formatter import organization_formatter
-    from psi.app.models.user import User
+    from app.views.formatter import organization_formatter
+    from app.models.user import User
 
     # Don't display the password on the list of Users
     column_exclude_list = list = ('password',)
@@ -83,14 +83,14 @@ class UserAdmin(ModelViewWithAccess):
         return form_class
 
     def create_form(self, obj=None):
-        from psi.app.models import Organization
+        from app.models import Organization
 
         form = super(UserAdmin, self).create_form(obj)
         form.organization.query_factory = partial(Organization.children_self_filter, current_user.organization)
         return form
 
     def edit_form(self, obj=None):
-        from psi.app.models import Organization
+        from app.models import Organization
 
         form = super(UserAdmin, self).edit_form(obj)
         form.organization.query_factory = partial(Organization.children_self_filter, current_user.organization)

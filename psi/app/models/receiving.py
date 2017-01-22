@@ -1,10 +1,10 @@
 # encoding: utf-8
 from decimal import Decimal
 
-from psi.app import const
-from psi.app.models.data_security_mixin import DataSecurityMixin
-from psi.app.service import Info
-from psi.app.utils.format_util import format_decimal
+from app import const
+from app.models.data_security_mixin import DataSecurityMixin
+from app.service import Info
+from app.utils.format_util import format_decimal
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
@@ -32,7 +32,7 @@ class Receiving(db.Model, DataSecurityMixin):
 
     @staticmethod
     def status_filter():
-        from psi.app.models.enum_values import EnumValues
+        from app.models.enum_values import EnumValues
         return EnumValues.type_filter(const.RECEIVING_STATUS_KEY)
 
     @hybrid_property
@@ -84,7 +84,7 @@ class Receiving(db.Model, DataSecurityMixin):
 
     @staticmethod
     def create_draft_recv_from_po(po):
-        from psi.app.models.enum_values import EnumValues
+        from app.models.enum_values import EnumValues
         recv_draft_status = EnumValues.find_one_by_code(const.RECEIVING_DRAFT_STATUS_KEY)
         purchase_in_trans_type = EnumValues.find_one_by_code(const.PURCHASE_IN_INV_TRANS_KEY)
         recv = Receiving()
@@ -93,7 +93,7 @@ class Receiving(db.Model, DataSecurityMixin):
         recv.organization = po.organization
         recv.status = recv_draft_status
         recv.supplier = po.supplier
-        from psi.app.models import InventoryTransaction
+        from app.models import InventoryTransaction
         trans = InventoryTransaction()
         trans.date = recv.date
         trans.type = purchase_in_trans_type
@@ -106,7 +106,7 @@ class Receiving(db.Model, DataSecurityMixin):
             recv_l.product = line.product
             recv_l.quantity = line.quantity
             recv_l.purchase_order_line = line
-            from psi.app.models import InventoryTransactionLine
+            from app.models import InventoryTransactionLine
             trans_l = InventoryTransactionLine()
             trans_l.price = recv_l.price
             trans_l.in_transit_quantity = recv_l.quantity
@@ -123,7 +123,7 @@ class Receiving(db.Model, DataSecurityMixin):
          If all lines are finished, set status of the purchase order to received
          Otherwise set the status to partially received.
         """
-        from psi.app.models import EnumValues
+        from app.models import EnumValues
         if self.status.code == const.RECEIVING_COMPLETE_STATUS_KEY:
             po = self.purchase_order
             not_finished,started = False, False
@@ -157,7 +157,7 @@ class Receiving(db.Model, DataSecurityMixin):
             db.session.add(inv_trans)
 
     def save_inv_trans(self, inv_trans):
-        from psi.app.models import EnumValues, InventoryTransaction, InventoryTransactionLine
+        from app.models import EnumValues, InventoryTransaction, InventoryTransactionLine
 
         inv_type = EnumValues.find_one_by_code(const.PURCHASE_IN_INV_TRANS_KEY)
         if inv_trans is None:

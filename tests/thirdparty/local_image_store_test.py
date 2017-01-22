@@ -6,7 +6,7 @@ import uuid
 import io
 from werkzeug.datastructures import FileStorage
 
-from psi.app.thirdparty.local_image_store import LocalImageStore
+from app.thirdparty.local_image_store import LocalImageStore
 from tests.base_test_case import BaseTestCase
 
 

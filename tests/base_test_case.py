@@ -37,7 +37,7 @@ class BaseTestCase(unittest.TestCase):
         if not_expect_contents is not None:
             for c in not_expect_contents:
                 self.assertNotIn(c, rv.data)
-        return
+        return rv
 
     def assertDeleteFail(self, endpoint, data=None, deleted_data=None):
         rv = self.test_client.post(endpoint, data=data, follow_redirects=True)

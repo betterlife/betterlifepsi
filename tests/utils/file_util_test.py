@@ -3,7 +3,7 @@ import io
 import os
 from werkzeug.datastructures import FileStorage
 
-from psi.app.utils.file_util import save_image
+from app.utils.file_util import save_image
 from tests.base_test_case import BaseTestCase
 
 
@@ -20,7 +20,7 @@ class TestFileUtil(BaseTestCase):
 
 
     def testSaveImage(self):
-        from psi.app.models.product import ProductImage
+        from app.models.product import ProductImage
         owner = ProductImage()
         data = self.image_file.read()
         stream = io.BytesIO(data)
