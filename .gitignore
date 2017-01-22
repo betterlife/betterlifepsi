@@ -24,3 +24,4 @@ run_test.sh
 psi/static/uploaded
 target/
 htmlcov/
+node_modules/
