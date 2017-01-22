@@ -3,5 +3,8 @@
 
 import sys
 
+import os
+
 reload(sys)
 sys.setdefaultencoding("utf-8")
+sys.path.insert(0, os.getcwd() + "/psi")

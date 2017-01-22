@@ -1,7 +1,6 @@
 # encoding=utf-8
 
 import os
-import socketio
 
 __version__ = '0.6.6'
 
@@ -192,7 +191,7 @@ def init_all(app):
     init_image_service(app)
     socket_io = init_socket_io(app)
     define_route_context(app, database, babel)
-    return socket_io
+
     # define a context processor for merging flask-admin's template context
     # into the flask-security views.
     @security.context_processor
@@ -201,3 +200,5 @@ def init_all(app):
         return dict(
             get_url=url_for
         )
+
+    return socket_io

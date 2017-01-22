@@ -39,7 +39,7 @@ def test():
     "" python manage.py test
     """
     import subprocess
-    return_code = subprocess.call("""nosetests ./tests \
+    return_code = subprocess.call("""nosetests tests \
             --with-coverage --cover-erase --cover-branches \
             --with-xunit --xunit-file=nosetests.xml""", shell=True)
     sys.exit(return_code)
