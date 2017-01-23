@@ -10,6 +10,7 @@
 {% endblock %}
 
 {% block tail %}
+  <div class='main-footer'> © 2015-2016 BETTERLIFE.IO | {{render_version() | safe}}</div>
   {{ super() }}
   <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
   <script src="{{ url_for('static', filename='lightbox2/js/lightbox.min.js') }}"></script>
@@ -25,8 +26,6 @@
       {% endif %}
     {% endif %}
   </script>
-  <div class='main-footer'> © 2015-2016 BETTERLIFE.IO | {{render_version() | safe}}
-  </div>
 {% endblock %}
 
 {% block access_control %}

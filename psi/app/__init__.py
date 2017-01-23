@@ -147,20 +147,9 @@ def init_flask_restful(app):
 
 def init_socket_io(app):
     from flask_socketio import SocketIO
+    from app.socketio import init_socket_tio_handlers
     socket_io = SocketIO(app)
-
-    @socket_io.on('message')
-    def handle_message(message):
-        print('received message: ' + message)
-
-    @socket_io.on('json')
-    def handle_json(json):
-        print('received json: ' + str(json))
-
-    @socket_io.on('my event')
-    def handle_my_custom_event(json):
-        print('received json: ' + str(json))
-
+    init_socket_tio_handlers(socket_io)
     return socket_io
 
 
