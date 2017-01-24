@@ -10,7 +10,7 @@
                 与去年同期比较
             </div>
             <div class="thumbnail-content">
-                <span id="period_on_period"></span>
+                <span id="period_on_period_month"></span>
             </div>
         </div>
         <div class="thumbnail">
@@ -18,17 +18,33 @@
                 与上个周期比较
             </div>
             <div class="thumbnail-content">
-                <span id="compare_with_last_period"></span>
+                <span id="compare_with_last_period_month"></span>
             </div>
         </div>
     </div>
     <div class="col-md-10">
-        <canvas id="month_amount_chart" width="400"></canvas>
+        <canvas id="month_amount_chart"></canvas>
     </div>
     <div class="col-md-2 report-dashboard-row">
+        <div class="thumbnail">
+            <div class="thumbnail-header">
+                与去年同期比较
+            </div>
+            <div class="thumbnail-content">
+                <span id="period_on_period_week"></span>
+            </div>
+        </div>
+        <div class="thumbnail">
+            <div class="thumbnail-header">
+                与上个周期比较
+            </div>
+            <div class="thumbnail-content">
+                <span id="compare_with_last_period_week"></span>
+            </div>
+        </div>
     </div>
     <div class="col-md-10">
-        <canvas id="week_amount_chart" width="400"></canvas>
+        <canvas id="week_amount_chart"></canvas>
     </div>
 {% endblock %}
 {% block tail %}

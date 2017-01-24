@@ -1,11 +1,10 @@
-import json
 from datetime import datetime
 
 from flask_babelex import gettext
 
 from app import const
 from app.service import Info
-from app.utils import format_util
+from app.utils import format_util, get_last_week, get_last_month
 
 
 def amount_and_profit_month(report_type, report_period):
@@ -41,23 +40,21 @@ def period_on_period_month(report_type, report_period):
     }, status='success')
 
 
-def compare_with_last_period_month(report_type, report_period):
-    def get_total(year, month):
-        sql = const.GET_AMOUNT_BY_MONTH_YEAR.format(month, year)
-        results = Info.get_db().engine.execute(sql).fetchall()
-        return results[0][0]
+def compare_with_last_period(report_type, report_period):
     now = datetime.now()
     now = now.replace(month=12, year=2016)
-    current_month = now.month
-    current_year = now.year
-    if current_month == 1:
-        last_month = 12
-        last_year = now.year - 1
+    if report_period == 'month':
+        current_period = now.month
+        current_year = now.year
+        last_period, last_year = get_last_month(current_period, current_year)
+    elif report_period == 'week':
+        current_year, current_period, current_weekday = now.isocalendar()
+        last_period, last_year = get_last_week(now)
     else:
-        last_month = current_month - 1
-        last_year = now.year
-    total_last_period = get_total(current_year, current_month)
-    total_this_period = get_total(last_year, last_month)
+        from app.reports.handlers_config import dummy_report_function
+        return dummy_report_function(report_type, report_period)
+    total_last_period = get_total(report_period.capitalize(), last_period, last_year)
+    total_this_period = get_total(report_period.capitalize(), current_period, current_year)
     change, result_str = cal_percent_and_change_type(total_this_period, total_last_period)
     return dict(data={
         "data": result_str,
@@ -83,10 +80,16 @@ def amount_and_profit_week(report_type, report_period):
         "labels": labels, "data": totals}, status='success')
 
 
-def cal_percent_and_change_type(val_1, val_2):
-    if val_1 is not None and val_2 is not None:
-        result = (val_1 - val_2) / val_2
-        result_str = "{0:.2f}%".format(result)
+def get_total(period_type, period_number, year):
+    sql = const.GET_AMOUNT_BY_PERIOD_YEAR.format(period_type, period_number, year)
+    results = Info.get_db().engine.execute(sql).fetchall()
+    return results[0][0]
+
+
+def cal_percent_and_change_type(current_val, past_val):
+    if current_val is not None and past_val is not None:
+        result = (current_val - past_val) / past_val
+        result_str = "{0:.2f}%".format(result*100)
     else:
         result = 0
         result_str = '-'

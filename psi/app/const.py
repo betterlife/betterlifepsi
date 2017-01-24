@@ -113,13 +113,13 @@ WHERE
 GROUP BY yyyy, month ORDER BY yyyy DESC;
 """
 
-GET_AMOUNT_BY_MONTH_YEAR = u"""
+GET_AMOUNT_BY_PERIOD_YEAR = u"""
 SELECT
   sum(sol.quantity * sol.unit_price) AS total_amount
 FROM sales_Order_line sol, sales_order so
 WHERE
   so.id = sol.sales_order_id
-    AND extract(MONTH FROM so.order_date) = {0} AND extract(YEAR FROM so.order_date) = {1}
+    AND extract({0} FROM so.order_date) = {1} AND extract(YEAR FROM so.order_date) = {2}
 """
 
 FILE_HANDLER_LOG_FORMAT = '%(asctime)s %(filename)s.%(funcName)s:%(lineno)d %(name)s:%(levelname)s: %(message)s '

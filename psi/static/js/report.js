@@ -55,9 +55,9 @@ var getCompareData = function (report_type, report_period) {
         type: 'GET',
         success: function(response) {
             response = $.parseJSON(response);
+            var samePeriodLastYear = $("#" + report_type + '_' + report_period);
             if (response.status === 'success') {
                 var data = response.data, icon = "";
-                var samePeriodLastYear = $("#" + report_type);
                 if (data.change == 'decrease') {
                     icon = '<span class="glyphicon glyphicon-arrow-down"></span>';
                     samePeriodLastYear.parent().parent().addClass('down-cell');
@@ -69,6 +69,10 @@ var getCompareData = function (report_type, report_period) {
                 }
                 samePeriodLastYear.html(data.data + icon);
             } else if (response.status === 'error'){
+                icon = '<span class="glyphicon glyphicon-warning-sign"></span> &nbsp;&nbsp;';
+                samePeriodLastYear.html(icon + response.data.message);
+                samePeriodLastYear.parent().addClass('small-error-text');
+                samePeriodLastYear.parent().parent().addClass('gray-cell');
             }
         },
         error: function (response) {
@@ -80,5 +84,7 @@ $(document).ready(function () {
     GetDataForLineGraph('amount_and_profit', 'month', 'month_amount_chart');
     GetDataForLineGraph('amount_and_profit', 'week', 'week_amount_chart');
     getCompareData('period_on_period', 'month');
+    getCompareData('period_on_period', 'week');
     getCompareData('compare_with_last_period', 'month');
+    getCompareData('compare_with_last_period', 'week');
 });
