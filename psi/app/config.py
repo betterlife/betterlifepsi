@@ -64,7 +64,7 @@ class TestConfig(BaseConfig):
     WTF_CSRF_ENABLED = False
 
 
-class CITestConfig(BaseConfig):
+class CITestConfig(TestConfig):
     IMAGE_STORE_SERVICE = CloudinaryImageStore
     TESTING_MODE = 'CI'
 

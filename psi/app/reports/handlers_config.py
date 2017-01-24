@@ -2,7 +2,7 @@ import json
 
 from flask_admin.babel import gettext
 
-from app.reports.sales_order_reports import amount_and_profit_month, amount_and_profit_week, period_on_period_month, \
+from app.reports.sales_order_reports import amount_month, amount_week, period_on_period, \
     compare_with_last_period
 
 
@@ -14,12 +14,12 @@ def dummy_report_function(report_type, report_period):
 
 report_config = {
     'amount_and_profit': {
-        'month': amount_and_profit_month,
-        'week': amount_and_profit_week
+        'month': amount_month,
+        'week': amount_week
     },
     'period_on_period': {
-        'month': period_on_period_month,
-        'week': dummy_report_function
+        'month': period_on_period,
+        'week': period_on_period
     },
     'compare_with_last_period': {
         'month': compare_with_last_period,

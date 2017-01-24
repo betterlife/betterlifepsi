@@ -7,7 +7,7 @@ from app.service import Info
 from app.utils import format_util, get_last_week, get_last_month
 
 
-def amount_and_profit_month(report_type, report_period):
+def amount_month(report_type, report_period):
     period = 24
     sql = const.SALES_ORDER_AMOUNT_REPORT_SQL.format('MONTH', "to_char(so.order_date,'Mon')", period)
     results = Info.get_db().engine.execute(sql).fetchall()
@@ -25,15 +25,15 @@ def amount_and_profit_month(report_type, report_period):
         "labels": labels, "data": totals}, status='success')
 
 
-def period_on_period_month(report_type, report_period):
-    sql = const.PERIOD_ON_PERIOD_AMOUNT_REPORT_SQL
+def period_on_period(report_type, report_period):
+    sql = const.PERIOD_ON_PERIOD_AMOUNT_REPORT_SQL.format(report_period.capitalize())
     results = Info.get_db().engine.execute(sql).fetchall()
-    period1, period2 = None, None
+    current, previous = None, None
     if len(results) >= 1:
-        period1 = results[0][2]
+        current = results[0][2]
     if len(results) >= 2:
-        period2 = results[1][2]
-    change, result_str = cal_percent_and_change_type(period1, period2)
+        previous = results[1][2]
+    change, result_str = cal_percent_and_change_type(current, previous)
     return dict(data={
         "data": result_str,
         "change": change
@@ -62,8 +62,8 @@ def compare_with_last_period(report_type, report_period):
     }, status='success')
 
 
-def amount_and_profit_week(report_type, report_period):
-    period = 52
+def amount_week(report_type, report_period):
+    period = 53
     sql = const.SALES_ORDER_WEEKLY_AMOUNT_REPORT_SQL.format(period)
     results = Info.get_db().engine.execute(sql).fetchall()
     labels, totals = [], []
@@ -87,16 +87,12 @@ def get_total(period_type, period_number, year):
 
 
 def cal_percent_and_change_type(current_val, past_val):
-    if current_val is not None and past_val is not None:
-        result = (current_val - past_val) / past_val
-        result_str = "{0:.2f}%".format(result*100)
-    else:
-        result = 0
-        result_str = '-'
-    if result < 0:
-        change = 'decrease'
-    elif result > 0:
+    result = (current_val - past_val) / past_val if (current_val is not None and past_val is not None) else 0
+    result_str = "{0:.2f}%".format(result*100) if (current_val is not None and past_val is not None) else '-'
+    if result > 0:
         change = 'increase'
+    elif result < 0:
+        change = 'decrease'
     else:
-        change = ''
+        change = '-'
     return change, result_str

@@ -103,14 +103,14 @@ LIMIT {0}"""
 PERIOD_ON_PERIOD_AMOUNT_REPORT_SQL = u"""
 SELECT
   extract(YEAR FROM so.order_date)   AS yyyy,
-  to_char(so.order_date,'Mon') AS month,
+  extract({0} FROM so.order_date) AS period,
   sum(sol.quantity * sol.unit_price) AS total_amount
 FROM sales_Order_line sol, sales_order so
 WHERE
   so.id = sol.sales_order_id
-  AND (extract(MONTH FROM so.order_date) = extract(MONTH FROM CURRENT_TIMESTAMP)
+  AND (extract({0} FROM so.order_date) = extract({0} FROM CURRENT_TIMESTAMP)
   AND extract(YEAR FROM so.order_date) in (extract(YEAR FROM so.order_date), extract(YEAR FROM so.order_date)-1 ))
-GROUP BY yyyy, month ORDER BY yyyy DESC;
+GROUP BY yyyy, period ORDER BY yyyy DESC;
 """
 
 GET_AMOUNT_BY_PERIOD_YEAR = u"""

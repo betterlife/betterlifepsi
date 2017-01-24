@@ -153,11 +153,11 @@ def init_admin_views(app, db):
         endpoint='import_store_data')
     )
     admin_views.add_view(ReportView(
-        name=lazy_gettext("Report"),
-        category=lazy_gettext('Report'),
+        name=lazy_gettext('Sales Amount Report'),
+        category=lazy_gettext("Report"),
         menu_icon_type=ICON_TYPE_GLYPH,
         menu_icon_value='fa fa-bar-chart',
-        endpoint='report')
+        url="report/sales_amount")
     )
     admin_views.add_view(UserAdmin(
         User,

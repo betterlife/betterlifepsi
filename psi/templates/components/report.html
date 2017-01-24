@@ -1,0 +1,14 @@
+{%- macro card(title, content_span_id) -%}
+<div class="thumbnail">
+    <div class="thumbnail-header">
+        {{ title }}
+    </div>
+    <div class="thumbnail-content">
+        <span id="{{ content_span_id }}"></span>
+    </div>
+</div>
+{% endmacro %}
+
+{%-  macro canvas(id) -%}
+    <canvas id="{{ id }}"></canvas>
+{% endmacro %}
