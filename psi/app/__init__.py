@@ -1,6 +1,9 @@
 # encoding=utf-8
 
 import os
+from flask import logging
+
+from app import const
 
 __version__ = '0.6.6'
 
@@ -31,7 +34,8 @@ def init_flask_security(flask_app, database):
         flask_app.config['SECURITY_MSG_' + key] = value
     user_datastore = SQLAlchemyUserDatastore(database, User, Role)
     from app.views.login_form import LoginForm
-    return Security(flask_app, user_datastore, login_form=LoginForm)
+    security = Security(flask_app, user_datastore, login_form=LoginForm)
+    return security
 
 
 def init_admin_views(flask_app, database):
@@ -65,8 +69,22 @@ def init_logging(flask_app):
     from raven.contrib.flask import Sentry
     import logging
     from app.service import Info
-    sentry = Sentry(flask_app, logging=True, level=logging.WARNING)
-    Info.set_logger(sentry)
+    from logging import FileHandler
+    from logging import Formatter
+    logger = logging.getLogger('psi')
+    if flask_app.config['DEBUG']:
+        log = logging.getLogger('werkzeug')
+        log.setLevel(logging.ERROR)
+        file_handler = FileHandler('betterlife-psi.log', encoding='UTF-8', mode='w')
+        file_handler.setFormatter(Formatter(const.FILE_HANDLER_LOG_FORMAT))
+        logger.addHandler(file_handler)
+        logger.setLevel(logging.DEBUG)
+    else:
+        handler = logging.StreamHandler()
+        handler.setFormatter(Formatter(const.CONSOLE_HANDLER_LOG_FORMAT))
+        logger.addHandler(handler)
+        logger.setLevel(logging.INFO)
+        Sentry(flask_app, logging=True, level=logging.INFO)
 
 
 def init_debug_toolbar(flask_app):
@@ -143,6 +161,15 @@ def init_flask_restful(app):
     from app.api import init_all_apis
     flask_restful = Api(app)
     init_all_apis(flask_restful)
+    return flask_restful
+
+
+def init_reports(app, api):
+    """
+    Init reports
+    """
+    from app.reports import init_report_endpoint
+    init_report_endpoint(app, api)
 
 
 def init_socket_io(app):
@@ -169,12 +196,13 @@ def init_all(app):
         database = init_db(app)
     else:
         database = Info.get_db()
-    init_https(app)
     init_migrate(app, database)
+    init_https(app)
     security = init_flask_security(app, database)
     init_admin_views(app, database)
     babel = init_babel(app)
-    init_flask_restful(app)
+    api = init_flask_restful(app)
+    init_reports(app, api)
     init_jinja2_functions(app)
     # init_debug_toolbar(app)
     init_image_service(app)

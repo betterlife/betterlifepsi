@@ -75,3 +75,53 @@ FRANCHISE_STORE_ORG_TYPE_KEY = u'FRANCHISE_STORE'
 
 # Related type
 FRANCHISE_PO_TO_SO_RT_KEY = u'FRANCHISE_PO_TO_SO'
+
+# Report SQLs
+SALES_ORDER_AMOUNT_REPORT_SQL = u"""
+SELECT
+  extract(year from so.order_date) as year,
+  extract({0} from so.order_date) as period,
+  {1} as period_number,
+  sum(sol.quantity * sol.unit_price) as total_amount
+FROM sales_order_line sol, sales_order so
+WHERE so.id = sol.sales_order_id
+group by year, period, period_number
+order by year desc, period desc limit {2};
+"""
+
+SALES_ORDER_WEEKLY_AMOUNT_REPORT_SQL = u"""
+SELECT
+  extract(YEAR FROM so.order_date)   AS year,
+  extract(WEEK FROM so.order_date)   AS period,
+  sum(sol.quantity * sol.unit_price) AS total_amount
+FROM sales_order_line sol, sales_order so
+WHERE so.id = sol.sales_order_id
+GROUP BY year, period
+ORDER BY year DESC, period DESC
+LIMIT {0}"""
+
+PERIOD_ON_PERIOD_AMOUNT_REPORT_SQL = u"""
+SELECT
+  extract(YEAR FROM so.order_date)   AS yyyy,
+  to_char(so.order_date,'Mon') AS month,
+  sum(sol.quantity * sol.unit_price) AS total_amount
+FROM sales_Order_line sol, sales_order so
+WHERE
+  so.id = sol.sales_order_id
+  AND (extract(MONTH FROM so.order_date) = extract(MONTH FROM CURRENT_TIMESTAMP)
+  AND extract(YEAR FROM so.order_date) in (extract(YEAR FROM so.order_date), extract(YEAR FROM so.order_date)-1 ))
+GROUP BY yyyy, month ORDER BY yyyy DESC;
+"""
+
+GET_AMOUNT_BY_MONTH_YEAR = u"""
+SELECT
+  sum(sol.quantity * sol.unit_price) AS total_amount
+FROM sales_Order_line sol, sales_order so
+WHERE
+  so.id = sol.sales_order_id
+    AND extract(MONTH FROM so.order_date) = {0} AND extract(YEAR FROM so.order_date) = {1}
+"""
+
+FILE_HANDLER_LOG_FORMAT = '%(asctime)s %(filename)s.%(funcName)s:%(lineno)d %(name)s:%(levelname)s: %(message)s '
+
+CONSOLE_HANDLER_LOG_FORMAT = '%(asctime)s %(filename)s.%(funcName)s:%(lineno)d %(name)s:%(levelname)s: %(message)s '
