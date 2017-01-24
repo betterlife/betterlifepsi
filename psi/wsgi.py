@@ -17,4 +17,4 @@ application = create_app()
 socket_io = init_all(application)
 
 if __name__ == '__main__':
-    socket_io.run(application)
+    application.run(threaded=True, debug=True)
