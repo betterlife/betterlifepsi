@@ -1,11 +1,11 @@
-var GetDataForLineGraph = function (report_type, report_period, elementId) {
+var GetDataForLineGraph = function (report_type, report_period) {
     $.ajax({
         url: '/api/reports/' + report_type + "/" + report_period,
         type: 'GET',
         success: function (response) {
             response = $.parseJSON(response);
             if (response.status === 'success') {
-                var ctx1 = $("#" + elementId);
+                var ctx1 = $("#" + report_type + "_" + report_period);
                 var data = response.data;
                 var options = {};
                 new Chart(ctx1, {
@@ -79,12 +79,3 @@ var getCompareData = function (report_type, report_period) {
         }
     });
 };
-
-$(document).ready(function () {
-    GetDataForLineGraph('amount_and_profit', 'month', 'month_amount_chart');
-    GetDataForLineGraph('amount_and_profit', 'week', 'week_amount_chart');
-    getCompareData('period_on_period', 'month');
-    getCompareData('period_on_period', 'week');
-    getCompareData('compare_with_last_period', 'month');
-    getCompareData('compare_with_last_period', 'week');
-});

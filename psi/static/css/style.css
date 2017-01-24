@@ -380,7 +380,7 @@ ul.dropdown-menu > li > a > i.glyphicon {
 }
 
 .report-dashboard-row .down-cell {
-    color: green;
+    color:red;
 }
 
 .report-dashboard-row .gray-cell {
@@ -388,13 +388,13 @@ ul.dropdown-menu > li > a > i.glyphicon {
 }
 
 .report-dashboard-row .up-cell {
-    color:red;
+    color: green;
 }
 
 .report-dashboard-row .thumbnail .thumbnail-content {
     line-height:150px;
     text-align: center;
-    font-size: 25px;
+    font-size: 24px;
     background: white;
     margin: auto 15px;
     padding-left: 20px;
