@@ -7,7 +7,6 @@ flask_psi/reports
 nosetests.xml
 .ropeproject
 coverage.xml
-reports
 *.log
 .vscode
 pip-delete-this-directory.txt

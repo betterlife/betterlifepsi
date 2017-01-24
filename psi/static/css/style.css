@@ -368,4 +368,36 @@ ul.dropdown-menu > li > a > i.glyphicon {
 }
 
 .report-dashboard-row {
+    margin-top:30px;
+}
+
+.report-dashboard-row .thumbnail {
+    height:220px;color:white;font-size:14px;
+}
+
+.report-dashboard-row .thumbnail .thumbnail-header {
+    margin:auto;text-align: center;border-bottom: 1px solid #DDD;padding-bottom: 10px;padding-top: 10px;
+}
+
+.report-dashboard-row .down-cell {
+    color: green;
+}
+
+.report-dashboard-row .gray-cell {
+    color: lightslategray;
+}
+
+.report-dashboard-row .up-cell {
+    color:red;
+}
+
+.report-dashboard-row .thumbnail .thumbnail-content {
+    line-height:150px;
+    text-align: center;
+    font-size: 25px;
+    background: white;
+    color: red;
+    margin: auto 15px;
+    padding-left: 20px;
+    padding-right: 20px;
 }

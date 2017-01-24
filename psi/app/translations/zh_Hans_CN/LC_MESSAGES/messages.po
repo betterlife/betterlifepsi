@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-06-26 07:25+0800\n"
-"PO-Revision-Date: 2017-01-10 13:51+0800\n"
+"PO-Revision-Date: 2017-01-23 14:18+0800\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -585,3 +585,48 @@ msgstr "错误的订单状态参数"
 
 msgid "Failed to change sales order status<br>{0}"
 msgstr "修改订单状态失败<br>{0}"
+
+msgid "Total Sales Amount Per Month"
+msgstr "按月销售总额"
+
+msgid "Average Sales Amount Per Month(Past {0} Months): {1}"
+msgstr "过去{0}个月平均销售额: {1}"
+
+msgid "Jan"
+msgstr "一月"
+
+msgid "Feb"
+msgstr "二月"
+
+msgid "Mar"
+msgstr "三月"
+
+msgid "Apr"
+msgstr "四月"
+
+msgid "May"
+msgstr "五月"
+
+msgid "Jun"
+msgstr "六月"
+
+msgid "Jul"
+msgstr "七月"
+
+msgid "Aug"
+msgstr "八月"
+
+msgid "Sep"
+msgstr "九月"
+
+msgid "Oct"
+msgstr "十月"
+
+msgid "Nov"
+msgstr "十一月"
+
+msgid "Dec"
+msgstr "十二月"
+
+msgid "Report of type {0} and period {1} is not defined"
+msgstr "类型为{0}，时间段为{1}的报表没有定义"

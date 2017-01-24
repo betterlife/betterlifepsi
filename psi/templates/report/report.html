@@ -4,10 +4,34 @@
     <script src="{{ url_for('static', filename='chart.js/Chart.bundle.min.js') }}"></script>
 {% endblock %}
 {% block body %}
-    <a href="#" id="send_to_back">Send a message to backend</a><br>
+    <div class="col-md-2 report-dashboard-row">
+        <div class="thumbnail">
+            <div class="thumbnail-header">
+                与去年同期比较
+            </div>
+            <div class="thumbnail-content">
+                <span id="period_on_period"></span>
+            </div>
+        </div>
+        <div class="thumbnail">
+            <div class="thumbnail-header">
+                与上个周期比较
+            </div>
+            <div class="thumbnail-content">
+                <span id="compare_with_last_period"></span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <canvas id="month_amount_chart" width="400"></canvas>
+    </div>
+    <div class="col-md-2 report-dashboard-row">
+    </div>
+    <div class="col-md-10">
+        <canvas id="week_amount_chart" width="400"></canvas>
+    </div>
 {% endblock %}
 {% block tail %}
     {{ super() }}
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
     <script src="{{ url_for('static', filename='js/report.js', v=resource_version()) }}"></script>
 {% endblock %}

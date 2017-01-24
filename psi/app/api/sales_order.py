@@ -46,6 +46,5 @@ class SalesOrderApi(Resource):
             else:
                 return dict(message=gettext('Invalid sales order status parameter'), status='error'), 201
         except Exception as e:
-            Info.get_logger().captureException()
             return dict(message=gettext('Failed to change sales order status<br>{0}').format(e.message), status='error'), 201
 
