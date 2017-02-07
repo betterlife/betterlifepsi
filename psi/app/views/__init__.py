@@ -157,7 +157,16 @@ def init_admin_views(app, db):
         category=lazy_gettext("Report"),
         menu_icon_type=ICON_TYPE_GLYPH,
         menu_icon_value='fa fa-bar-chart',
+        endpoint='sales_amount',
         url="report/sales_amount")
+    )
+    admin_views.add_view(ReportView(
+        name=lazy_gettext('Sales Profit Report'),
+        category=lazy_gettext("Report"),
+        menu_icon_type=ICON_TYPE_GLYPH,
+        menu_icon_value='fa fa-bar-chart',
+        endpoint='sales_profit',
+        url="report/sales_profit"),
     )
     admin_views.add_view(UserAdmin(
         User,
