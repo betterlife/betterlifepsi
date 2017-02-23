@@ -53,6 +53,7 @@ class DevConfig(BaseConfig):
     DEBUG = True
     SQLALCHEMY_ECHO = False
     IMAGE_STORE_SERVICE = LocalImageStore
+    SEND_FILE_MAX_AGE_DEFAULT = 1
 
 
 class TestConfig(BaseConfig):
@@ -72,5 +73,3 @@ class CITestConfig(TestConfig):
 class ProductionConfig(BaseConfig):
     DEBUG = False
     TESTING = False
-
-

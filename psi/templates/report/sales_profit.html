@@ -27,7 +27,7 @@
 {% endblock %}
 {% block tail %}
     {{ super() }}
-    <script src="{{ url_for('static', filename='js/report.js', v=resource_version()) }}"></script>
+    <script src="{{ url_for('static', filename='js/report.js') }}"></script>
     <script language="JavaScript" type="application/javascript">
         $(document).ready(function () {
             GetDataForLineGraph('amount_and_profit', 'month');
