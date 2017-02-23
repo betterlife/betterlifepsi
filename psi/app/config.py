@@ -53,6 +53,7 @@ class DevConfig(BaseConfig):
     DEBUG = True
     SQLALCHEMY_ECHO = False
     IMAGE_STORE_SERVICE = LocalImageStore
+    SEND_FILE_MAX_AGE_DEFAULT = 1
 
 
 class TestConfig(BaseConfig):
@@ -64,7 +65,7 @@ class TestConfig(BaseConfig):
     WTF_CSRF_ENABLED = False
 
 
-class CITestConfig(BaseConfig):
+class CITestConfig(TestConfig):
     IMAGE_STORE_SERVICE = CloudinaryImageStore
     TESTING_MODE = 'CI'
 
@@ -72,5 +73,3 @@ class CITestConfig(BaseConfig):
 class ProductionConfig(BaseConfig):
     DEBUG = False
     TESTING = False
-
-

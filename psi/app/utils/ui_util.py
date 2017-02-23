@@ -32,10 +32,3 @@ def render_version(swtag_file=default_swtag_file):
     except:
         result = 'Unknown Version(Local Development)'
     return result
-
-
-def resource_version():
-    if current_app.config['DEBUG']:
-        return str(int(time.time()))
-    else:
-        return str(current_app.config['VERSION'])

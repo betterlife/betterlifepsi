@@ -138,9 +138,8 @@ def init_https(app):
 
 
 def init_jinja2_functions(app):
-    from app.utils.ui_util import render_version, resource_version
+    from app.utils.ui_util import render_version
     app.add_template_global(render_version, 'render_version')
-    app.add_template_global(resource_version, 'resource_version')
 
 
 def init_image_service(app):
