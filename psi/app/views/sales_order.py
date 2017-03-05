@@ -212,5 +212,6 @@ class SalesOrderAdmin(ModelViewWithAccess):
             db.session.add(shipping)
         db.session.commit()
 
+    @property
     def role_identify(self):
         return "direct_sales_order"
