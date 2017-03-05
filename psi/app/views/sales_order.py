@@ -211,3 +211,6 @@ class SalesOrderAdmin(ModelViewWithAccess):
         if shipping is not None:
             db.session.add(shipping)
         db.session.commit()
+
+    def role_identify(self):
+        return "direct_sales_order"
