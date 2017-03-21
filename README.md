@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/betterlife/flask-erp.png?label=ready&title=Ready)](https://waffle.io/betterlife/flask-erp)
 
 # Betterlife Intelligent PSI [![CircleCI](https://img.shields.io/circleci/project/github/betterlife/psi.svg?label=Build&style=flat-square)](https://circleci.com/gh/betterlife/psi)
 
