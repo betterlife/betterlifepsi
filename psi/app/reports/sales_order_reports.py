@@ -42,7 +42,6 @@ def period_on_period(report_type, report_period):
 
 def compare_with_last_period(report_type, report_period):
     now = datetime.now()
-    now = now.replace(month=12, year=2016)
     if report_period == 'month':
         current_period = now.month
         current_year = now.year
