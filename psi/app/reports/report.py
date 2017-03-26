@@ -7,7 +7,7 @@ import warnings
 from flask import current_app
 from flask_restful import Resource, reqparse
 
-from app.reports.handlers_config import report_config
+from app.reports.handlers_config import report_config as report_configs, dummy_report_function
 from app.utils import has_role, return_error_as_json
 
 parser = reqparse.RequestParser()
@@ -19,7 +19,12 @@ class ReportApi(Resource):
 
     @staticmethod
     def get_handle_function(report_type, report_period):
-        return report_config.get(report_type).get(report_period)
+        report_config = report_configs.get(report_type)
+        if report_config is not None:
+            handle_func = report_config.get(report_period)
+        else:
+            handle_func = dummy_report_function
+        return handle_func
 
     @has_role("report_view", return_error_as_json)
     def get(self, report_type, report_period):

@@ -7,21 +7,21 @@
 {% block body %}
     <div class="col-md-12">
         <div class="col-md-2 report-dashboard-row">
-            {{ components.card('与去年同期比较','period_on_period_month') }}
-            {{ components.card('与上月比较','compare_with_last_period_month') }}
+            {{ components.card('与去年同期比较','profit_period_on_period_month') }}
+            {{ components.card('与上月比较','profit_compare_with_last_period_month') }}
         </div>
         <div class="col-md-10">
-            {{ components.canvas('amount_and_profit_month') }}
+            {{ components.canvas('profit_month') }}
         </div>
     </div>
     <div class="col-md-12">
 
         <div class="col-md-2 report-dashboard-row">
-            {{ components.card('与去年同期比较','period_on_period_week') }}
-            {{ components.card('与上星期比较','compare_with_last_period_week') }}
+            {{ components.card('与去年同期比较','profit_period_on_period_week') }}
+            {{ components.card('与上星期比较','profit_compare_with_last_period_week') }}
         </div>
         <div class="col-md-10">
-            {{ components.canvas('amount_and_profit_week') }}
+            {{ components.canvas('profit_week') }}
         </div>
     </div>
 {% endblock %}
@@ -30,12 +30,12 @@
     <script src="{{ url_for('static', filename='js/report.js') }}"></script>
     <script language="JavaScript" type="application/javascript">
         $(document).ready(function () {
-            GetDataForLineGraph('amount_and_profit', 'month');
-            GetDataForLineGraph('amount_and_profit', 'week');
-            getCompareData('period_on_period', 'month');
-            getCompareData('period_on_period', 'week');
-            getCompareData('compare_with_last_period', 'month');
-            getCompareData('compare_with_last_period', 'week');
+            GetDataForLineGraph('profit', 'month');
+            GetDataForLineGraph('profit', 'week');
+            getCompareData('profit_period_on_period', 'month');
+            getCompareData('profit_period_on_period', 'week');
+            getCompareData('profit_compare_with_last_period', 'month');
+            getCompareData('profit_compare_with_last_period', 'week');
         });
     </script>
 {% endblock %}

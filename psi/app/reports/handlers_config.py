@@ -13,18 +13,18 @@ def dummy_report_function(report_type, report_period):
 
 
 report_config = {
-    'amount_and_profit': {
+    'amount': {
         'month': amount_month,
         'week': amount_week
     },
-    'period_on_period': {
+    'amount_period_on_period': {
         'month': period_on_period,
         'week': period_on_period
     },
-    'compare_with_last_period': {
+    'amount_compare_with_last_period': {
         'month': compare_with_last_period,
         'week': compare_with_last_period,
-    },
+    }
 }
 
 

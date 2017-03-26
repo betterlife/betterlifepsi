@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-06-26 07:25+0800\n"
-"PO-Revision-Date: 2017-01-25 00:59+0800\n"
+"PO-Revision-Date: 2017-03-26 23:06+0800\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -603,6 +603,9 @@ msgstr "过去{0}周平均销售额：{1}"
 
 msgid "Total Sales Amount Per Week"
 msgstr "周销售额"
+
+msgid "Sales Profit Report"
+msgstr "销售利润统计"
 
 msgid "Jan"
 msgstr "一月"

@@ -5,10 +5,12 @@
     </div>
     <div class="thumbnail-content">
         <span id="{{ content_span_id }}"></span>
+        <span id="{{ content_span_id }}_error_info" style="display:none"></span>
     </div>
 </div>
 {% endmacro %}
 
 {%-  macro canvas(id) -%}
     <canvas id="{{ id }}"></canvas>
+    <div id="{{ id }}_error_info" style="display: none"></div>
 {% endmacro %}

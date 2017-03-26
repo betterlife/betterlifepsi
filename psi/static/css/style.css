@@ -401,9 +401,10 @@ ul.dropdown-menu > li > a > i.glyphicon {
     padding-right: 20px;
 }
 
-.report-dashboard-row .thumbnail .small-error-text {
-    font-size:11px; !important;
-    line-height:22px; !important;
+.report-dashboard-row .thumbnail .small-error-text, .small-error-text {
+    font-size:11px !important;
+    line-height:22px !important;
     color:red;
     padding-top:50px;
+    display:block !important;
 }
