@@ -17,3 +17,4 @@ from sales_order import SalesOrder, SalesOrderLine
 from user import User
 from role import Role, roles_users
 from organization import Organization
+from inventory_in_out_link import InventoryInOutLink

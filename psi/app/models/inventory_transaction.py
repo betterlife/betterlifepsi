@@ -68,6 +68,21 @@ class InventoryTransactionLine(db.Model):
     product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
     product = relationship('Product', backref=backref('inventory_transaction_lines'))
     price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
+    # 每次采购入库, 把in_transit_quantity设置为0，quantity设置为入库数量的时候，
+    # 把这个saleable_quantity 设置为和quantity相同
+    # 每次某产品A销售出库的时候，找出所有的这个A产品的，saleable_quantity不为0的入库行，按照时间排序，最早的排在最前面
+    # 使用递归，从最前面循环，从入库行的 saleable_quantity 字段中，减去本次销售的数量
+    # 如果一个入库行不够减的，则继续减第二个入库行的（注意所有查询出来的入库行按照时间排序，最早的排在最前面）
+    # 同时创建一个新的Model，其字段如下
+    # 产品，入库价格、入库时间，出库价格、出库时间，出库数量，关联出库单（销售发货单），关联入库单（采购收货单）
+    # 在销售出库的时候，写这个表，如果一个产品的一次销售要用到两次的入库库存，则创建两个如上的记录
+    # 通过这种方式记录每次销售的库存都是从哪个入库库存(采购单)来的，从而知道这次销售的库存的成本是多少
+    # 计算某个时间段的利润的时候，使用新增加的表中的记录来计算
+    # 按照在该段时间里面出库的产品，使用如下的公式：
+    # (出库价格 - 入库价格) * 出库数量
+    # 过滤条件为：对应的时间段
+    # 这样算出来的利润就是按照先进先出方法算出来的最准确的利润了。
+    saleable_quantity = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=True)
     remark = Column(Text)
     inventory_transaction_id = Column(Integer, ForeignKey('inventory_transaction.id'), nullable=False)
     inventory_transaction = relationship('InventoryTransaction',

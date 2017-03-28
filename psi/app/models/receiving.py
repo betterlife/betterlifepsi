@@ -176,8 +176,10 @@ class Receiving(db.Model, DataSecurityMixin):
             if self.status.code == const.RECEIVING_COMPLETE_STATUS_KEY:
                 inv_line.quantity = line.quantity
                 inv_line.in_transit_quantity = 0
+                inv_line.saleable_quantity = line.quantity
             elif self.status.code == const.RECEIVING_DRAFT_STATUS_KEY:
                 inv_line.quantity = 0
+                inv_line.saleable_quantity = 0
                 inv_line.in_transit_quantity = line.quantity
             line.inventory_transaction_line = inv_line
         for line in inv_trans.lines:
