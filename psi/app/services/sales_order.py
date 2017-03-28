@@ -37,8 +37,8 @@ class SalesOrderService(object):
             sl = ShippingLine()
         sl.quantity = sales_order_line.quantity
         sl.price = sales_order_line.unit_price
-        sl.product_id = sales_order_line.product_id
-        sl.sales_order_line_id = sales_order_line.id
+        sl.product = sales_order_line.product
+        sl.sales_order_line = sales_order_line
         return sl
 
     @staticmethod

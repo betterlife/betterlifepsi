@@ -196,8 +196,6 @@ class SalesOrderAdmin(ModelViewWithAccess):
             model.type = EnumValues.find_one_by_code(const.DIRECT_SO_TYPE_KEY)
             model.status = EnumValues.find_one_by_code(const.SO_DELIVERED_STATUS_KEY)
             model.organization = current_user.organization
-
-    def after_model_change(self, form, model, is_created):
         incoming = SalesOrderService.create_or_update_incoming(model)
         expense = SalesOrderService.create_or_update_expense(model)
         shipping = None
@@ -210,7 +208,9 @@ class SalesOrderAdmin(ModelViewWithAccess):
             db.session.add(incoming)
         if shipping is not None:
             db.session.add(shipping)
-        db.session.commit()
+
+    def after_model_change(self, form, model, is_created):
+        pass
 
     @property
     def role_identify(self):
