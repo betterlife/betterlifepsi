@@ -1,6 +1,8 @@
 # encoding: utf-8
 from decimal import Decimal
 
+from datetime import datetime
+
 from app import const
 from app.models.data_security_mixin import DataSecurityMixin
 from app.service import Info
@@ -78,12 +80,50 @@ class Shipping(db.Model, DataSecurityMixin):
             if itl is None:
                 itl = InventoryTransactionLine()
             itl.quantity = -line.quantity
-            itl.product_id = line.product_id
+            itl.product = line.product
             itl.price = line.price
             itl.in_transit_quantity = 0
             itl.inventory_transaction = it
             line.inventory_transaction_line = itl
+            self.update_saleable_qty_in_purchase_inv_lines(line)
         Info.get_db().session.add(it)
+
+    def update_saleable_qty_in_purchase_inv_lines(self, ship_line):
+        from app.models import InventoryTransactionLine, InventoryInOutLink
+        avail_inv_trans = Info.get_db().session.query(InventoryTransactionLine) \
+            .filter(InventoryTransactionLine.saleable_quantity > 0,
+                    InventoryTransactionLine.product_id == ship_line.product.id) \
+            .order_by(InventoryTransactionLine.id).all()
+        to_update_purchase_inventory_line, inventory_in_out_links = [],[]
+        for recv_iv_trans in avail_inv_trans:
+            remaining_qty = ship_line.quantity
+            if recv_iv_trans.saleable_quantity >= ship_line.quantity:
+                recv_iv_trans.saleable_quantity = recv_iv_trans.saleable_quantity \
+                                                     - ship_line.quantity
+                remaining_qty = 0
+            else:
+                recv_iv_trans.saleable_quantity = 0
+                remaining_qty = ship_line.quantity \
+                                - recv_iv_trans.saleable_quantity
+            link = InventoryInOutLink()
+            link.date = datetime.now()
+            link.product = ship_line.product
+            link.in_price = recv_iv_trans.price
+            link.in_date = recv_iv_trans.itl_receiving_line.receiving.date
+            link.receiving_line_id = recv_iv_trans.itl_receiving_line.id
+            link.out_price = ship_line.price
+            link.out_date = ship_line.shipping.date
+            link.out_quantity = ship_line.quantity
+            link.shipping_line = ship_line
+            link.organization = ship_line.shipping.organization
+            to_update_purchase_inventory_line.append(recv_iv_trans)
+            inventory_in_out_links.append(link)
+            if remaining_qty == 0:
+                break
+        for l in to_update_purchase_inventory_line:
+            Info.get_db().session.add(l)
+        for l in inventory_in_out_links:
+            Info.get_db().session.add(l)
 
 
 class ShippingLine(db.Model):
