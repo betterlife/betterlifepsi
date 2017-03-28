@@ -9,7 +9,7 @@ from tests.object_faker import object_faker
 
 class TestDirectPurchaseOrderPages(BaseTestCase):
     def test_direct_purchase_order_pages(self):
-        from app.models import EnumValues
+        from app.models.enum_values import EnumValues
 
         def test_logic():
             supplier = object_faker.supplier()
