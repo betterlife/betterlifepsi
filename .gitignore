@@ -20,7 +20,10 @@ run_test.sh
 .eggs
 .projectile
 .noseids
-psi/static/uploaded
+psi/static/uploaded/*.png
+psi/static/uploaded/*.jpg
+psi/static/uploaded/*.gif
+psi/static/uploaded/*.jpeg
 target/
 htmlcov/
 node_modules/

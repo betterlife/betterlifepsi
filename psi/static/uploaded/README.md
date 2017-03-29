@@ -1,0 +1,1 @@
+uploads folder should be exists for tests to pass in CI
