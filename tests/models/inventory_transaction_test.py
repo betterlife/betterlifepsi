@@ -7,7 +7,7 @@ from tests.object_faker import object_faker as of
 class TestInventoryTransaction(BaseTestCase):
     def test_saleable_qty(self):
         with self.test_client:
-            from fixture import login_as_admin
+            from tests.fixture import login_as_admin
             login_as_admin(self.test_client)
             from app.models import EnumValues
             db = Info.get_db()

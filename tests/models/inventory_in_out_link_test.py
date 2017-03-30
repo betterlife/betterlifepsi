@@ -7,7 +7,7 @@ from app import const
 class TestInventoryInOutLink(BaseTestCase):
     def test_enough_inventory(self):
         with self.test_client:
-            from fixture import login_as_admin
+            from tests.fixture import login_as_admin
             from app.services import SalesOrderService
             from app.models import EnumValues
             login_as_admin(self.test_client)
