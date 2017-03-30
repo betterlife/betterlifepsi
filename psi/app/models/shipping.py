@@ -96,14 +96,14 @@ class Shipping(db.Model, DataSecurityMixin):
             .order_by(InventoryTransactionLine.id).all()
         to_update_purchase_inventory_line, inventory_in_out_links = [],[]
         for recv_iv_trans in avail_inv_trans:
-            remaining_qty = ship_line.quantity
+            remain_qty = ship_line.quantity
             if recv_iv_trans.saleable_quantity >= ship_line.quantity:
                 recv_iv_trans.saleable_quantity = recv_iv_trans.saleable_quantity \
                                                      - ship_line.quantity
-                remaining_qty = 0
+                remain_qty = 0
             else:
                 recv_iv_trans.saleable_quantity = 0
-                remaining_qty = ship_line.quantity \
+                remain_qty = ship_line.quantity \
                                 - recv_iv_trans.saleable_quantity
             link = InventoryInOutLink()
             link.date = datetime.now()
@@ -118,7 +118,7 @@ class Shipping(db.Model, DataSecurityMixin):
             link.organization = ship_line.shipping.organization
             to_update_purchase_inventory_line.append(recv_iv_trans)
             inventory_in_out_links.append(link)
-            if remaining_qty == 0:
+            if remain_qty == 0:
                 break
         for l in to_update_purchase_inventory_line:
             Info.get_db().session.add(l)

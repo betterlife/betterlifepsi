@@ -141,6 +141,7 @@ class Receiving(db.Model, DataSecurityMixin):
             elif started is True:
                 po.status = EnumValues.find_one_by_code(const.PO_PART_RECEIVED_STATUS_KEY)
             db.session.add(po)
+            return po
 
     def operate_inv_trans_by_recv_status(self):
         inv_trans = None
@@ -155,6 +156,7 @@ class Receiving(db.Model, DataSecurityMixin):
         if inv_trans is not None:
             self.inventory_transaction = inv_trans
             db.session.add(inv_trans)
+        return inv_trans
 
     def save_inv_trans(self, inv_trans):
         from app.models import EnumValues, InventoryTransaction, InventoryTransactionLine

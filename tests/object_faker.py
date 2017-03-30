@@ -11,7 +11,7 @@ class ObjectFaker(object):
     def __init__(self):
         self.faker = Faker()
 
-    def sales_order(self, so_id=None, number_of_line=1, creator=current_user, type=None):
+    def sales_order(self, so_id=None, number_of_line=1, creator=current_user, type=None, products=None):
         from app.models import SalesOrder, EnumValues, SalesOrderLine
         from app.const import SO_CREATED_STATUS_KEY
         from app.services import SalesOrderService
@@ -34,7 +34,10 @@ class ObjectFaker(object):
             line = SalesOrderLine()
             line.remark = self.faker.text(max_nb_chars=10)
             line.id = db_util.get_next_id(SalesOrderLine)
-            line.product = self.product(creator=creator)
+            if products is None:
+                line.product = self.product(creator=creator)
+            else:
+                line.product = products[i]
             line.sales_order = so
             line.quantity = random.randint(1, 100)
             line.unit_price = self.faker.pydecimal(positive=True,

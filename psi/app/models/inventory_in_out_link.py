@@ -22,14 +22,18 @@ class InventoryInOutLink(db.Model, DataSecurityMixin):
     in_price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
     in_date = Column(DateTime, nullable=False)
     receiving_line_id = Column(Integer, ForeignKey('receiving_line.id'), nullable=False)
-    receiving_line = relationship('ReceivingLine', foreign_keys=[receiving_line_id])
+    receiving_line = relationship('ReceivingLine',
+                                  backref=backref('inventory_links', uselist=True),
+                                  foreign_keys=[receiving_line_id])
 
     out_price = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
     out_date = Column(DateTime, nullable=False)
     out_quantity = Column(Numeric(precision=8, scale=2, decimal_return_scale=2), nullable=False)
 
     shipping_line_id = Column(Integer, ForeignKey('shipping_line.id'), nullable=False)
-    shipping_line = relationship('ShippingLine', foreign_keys=[shipping_line_id])
+    shipping_line = relationship('ShippingLine',
+                                 backref=backref('inventory_links', uselist=True),
+                                 foreign_keys=[shipping_line_id])
 
     organization_id = db.Column(Integer, ForeignKey('organization.id'))
     organization = relationship('Organization', foreign_keys=[organization_id])
