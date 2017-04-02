@@ -37,6 +37,7 @@ class ReceivingLineInlineAdmin(InlineFormAdmin):
         form.transient_product = DisabledStringField(label=lazy_gettext('Product'))
         form.total_amount = DisabledStringField(label=lazy_gettext('Total Amount'))
         form.price = None
+        form.inventory_links = None
         return form
 
 
