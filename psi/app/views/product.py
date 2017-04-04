@@ -106,6 +106,8 @@ class ProductAdmin(ModelViewWithAccess):
         form.images_placeholder.set_object_type(ProductImage)
         form_util.filter_by_organization(form.category, ProductCategory)
         form_util.filter_by_organization(form.supplier, Supplier)
+        if not security_util.user_has_role('purchase_price_view'):
+            form_util.del_form_field(self, form, 'purchase_price')
         return form
 
     def get_details_columns(self):
