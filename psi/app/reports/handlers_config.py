@@ -3,9 +3,7 @@ import json
 from flask_babelex import gettext
 
 from app.reports.sales_order_reports import sales_amount_report, \
-    compare_amount_period_on_period, \
-    compare_amount_with_last_period, sales_profit_report
-
+    compare_period_on_period, compare_with_last_period, sales_profit_report
 
 def dummy_report_function(report_type, report_period):
     return dict(data={
@@ -19,16 +17,24 @@ report_config = {
         'week': sales_amount_report
     },
     'amount_period_on_period': {
-        'month': compare_amount_period_on_period,
-        'week': compare_amount_period_on_period
+        'month': compare_period_on_period,
+        'week': compare_period_on_period
     },
     'amount_compare_with_last_period': {
-        'month': compare_amount_with_last_period,
-        'week': compare_amount_with_last_period,
+        'month': compare_with_last_period,
+        'week': compare_with_last_period,
     },
     'profit': {
         'month': sales_profit_report,
         'week': sales_profit_report
+    },
+    'profit_period_on_period': {
+        'month': compare_period_on_period,
+        'week': compare_period_on_period
+    },
+    'profit_compare_with_last_period': {
+        'month': compare_with_last_period,
+        'week': compare_with_last_period,
     }
 
 }
