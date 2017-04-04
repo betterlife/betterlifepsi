@@ -7,22 +7,17 @@
 {% block body %}
     <div class="col-md-12">
         <div class="col-md-2 report-dashboard-row">
-            {{ components.card('与去年同期比较','profit_period_on_period_month') }}
+            {{ components.card('与去年同期月比较','profit_period_on_period_month') }}
             {{ components.card('与上月比较','profit_compare_with_last_period_month') }}
+            {{ components.card('与去年同期周比较','profit_period_on_period_week') }}
+            {{ components.card('与上星期比较','profit_compare_with_last_period_week') }}
         </div>
-        <div class="col-md-10">
+        <div class="col-md-10 canvas-container">
             {{ components.canvas('profit_month') }}
         </div>
     </div>
-    <div class="col-md-12">
-
-        <div class="col-md-2 report-dashboard-row">
-            {{ components.card('与去年同期比较','profit_period_on_period_week') }}
-            {{ components.card('与上星期比较','profit_compare_with_last_period_week') }}
-        </div>
-        <div class="col-md-10">
-            {{ components.canvas('profit_week') }}
-        </div>
+    <div class="col-md-12 canvas-container">
+        {{ components.canvas('profit_week') }}
     </div>
 {% endblock %}
 {% block tail %}
@@ -30,8 +25,8 @@
     <script src="{{ url_for('static', filename='js/report.js') }}"></script>
     <script language="JavaScript" type="application/javascript">
         $(document).ready(function () {
-            GetDataForLineGraph('profit', 'month');
-            GetDataForLineGraph('profit', 'week');
+            getDataForLineGraph('profit', 'month');
+            getDataForLineGraph('profit', 'week');
             getCompareData('profit_period_on_period', 'month');
             getCompareData('profit_period_on_period', 'week');
             getCompareData('profit_compare_with_last_period', 'month');

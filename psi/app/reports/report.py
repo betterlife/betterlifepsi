@@ -20,11 +20,10 @@ class ReportApi(Resource):
     @staticmethod
     def get_handle_function(report_type, report_period):
         report_config = report_configs.get(report_type)
+        handle_func = None
         if report_config is not None:
             handle_func = report_config.get(report_period)
-        else:
-            handle_func = dummy_report_function
-        return handle_func
+        return dummy_report_function if handle_func is None else handle_func
 
     @has_role("report_view", return_error_as_json)
     def get(self, report_type, report_period):
