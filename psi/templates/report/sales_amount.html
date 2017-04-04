@@ -9,20 +9,15 @@
         <div class="col-md-2 report-dashboard-row">
             {{ components.card('与去年同期比较','amount_period_on_period_month') }}
             {{ components.card('与上月比较','amount_compare_with_last_period_month') }}
+            {{ components.card('与去年同期比较','amount_period_on_period_week') }}
+            {{ components.card('与上星期比较','amount_compare_with_last_period_week') }}
         </div>
         <div class="col-md-10">
             {{ components.canvas('amount_month') }}
         </div>
     </div>
     <div class="col-md-12">
-
-        <div class="col-md-2 report-dashboard-row">
-            {{ components.card('与去年同期比较','amount_period_on_period_week') }}
-            {{ components.card('与上星期比较','amount_compare_with_last_period_week') }}
-        </div>
-        <div class="col-md-10">
-            {{ components.canvas('amount_week') }}
-        </div>
+        {{ components.canvas('amount_week') }}
     </div>
 {% endblock %}
 {% block tail %}
