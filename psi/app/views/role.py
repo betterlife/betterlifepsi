@@ -54,9 +54,9 @@ class RoleAdmin(ModelViewWithAccess):
 
     form_columns = ('parent', 'name', 'shadow_name','description', 'shadow_is_system', 'sub_roles', 'users')
 
-    form_create_rules =  ('parent', 'name', 'description', 'shadow_is_system', 'sub_roles', 'users')
+    form_create_rules = ('parent', 'name', 'description', 'shadow_is_system', 'sub_roles', 'users')
 
-    form_edit_rules =  ('parent', 'shadow_name', 'description', 'shadow_is_system', 'sub_roles', 'users')
+    form_edit_rules = ('parent', 'shadow_name', 'description', 'shadow_is_system', 'sub_roles', 'users')
 
     column_editable_list = ('description',)
 
