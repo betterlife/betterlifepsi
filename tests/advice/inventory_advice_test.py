@@ -37,7 +37,7 @@ class TestInventoryAdvice(BaseTestCase):
         from app.models import InventoryTransactionLine, InventoryTransaction, EnumValues
         it = InventoryTransaction()
         it.date = date
-        it.type = EnumValues.find_one_by_code(type_code)
+        it.type = EnumValues.get(type_code)
         itl = InventoryTransactionLine()
         itl.quantity = quantity
         itl.product_id = product.id

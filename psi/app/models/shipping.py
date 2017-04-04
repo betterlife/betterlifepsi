@@ -65,9 +65,9 @@ class Shipping(db.Model, DataSecurityMixin):
         from app.models.inventory_transaction import InventoryTransactionLine, InventoryTransaction
         from app.models.enum_values import EnumValues
         if self.type.code == const.DIRECT_SHIPPING_TYPE_KEY:
-            it_type = EnumValues.find_one_by_code(const.SALES_OUT_INV_TRANS_TYPE_KEY)
+            it_type = EnumValues.get(const.SALES_OUT_INV_TRANS_TYPE_KEY)
         else:
-            it_type = EnumValues.find_one_by_code(const.FRANCHISE_SALES_OUT_INV_TRANS_TYPE_KEY)
+            it_type = EnumValues.get(const.FRANCHISE_SALES_OUT_INV_TRANS_TYPE_KEY)
         it = self.inventory_transaction
         if it is None:
             it = InventoryTransaction()

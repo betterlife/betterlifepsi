@@ -17,8 +17,8 @@ class TestFranchisePurchaseOrderView(BaseTestCase):
         from app.models import EnumValues, PurchaseOrder, Organization
         from app.service import Info
         from datetime import datetime
-        t = EnumValues.find_one_by_code(const.FRANCHISE_STORE_ORG_TYPE_KEY)
-        draft_status = EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY)
+        t = EnumValues.get(const.FRANCHISE_STORE_ORG_TYPE_KEY)
+        draft_status = EnumValues.get(const.PO_DRAFT_STATUS_KEY)
         draft_status_id = draft_status.id
         parent = Info.get_db().session.query(Organization).get(1)
         organization = object_faker.organization(type=t, parent=parent)
@@ -57,15 +57,15 @@ class TestFranchisePurchaseOrderView(BaseTestCase):
     def test_create_so_from_po(self):
         def test_login():
             from app.models import EnumValues
-            f_type = EnumValues.find_one_by_code(const.FRANCHISE_PO_TYPE_KEY)
+            f_type = EnumValues.get(const.FRANCHISE_PO_TYPE_KEY)
             po = object_faker.purchase_order(number_of_line=random.randint(1, 10), type=f_type)
             db_util.save_objects_commit(po)
             from app.views import FranchisePurchaseOrderAdmin
             sales_order, incoming, expense = FranchisePurchaseOrderAdmin.create_so_from_fpo(po)
             self.assertEquals(len(po.lines), len(sales_order.lines))
             self.assertEqual(sales_order.order_date, po.order_date)
-            self.assertEquals(sales_order.type, EnumValues.find_one_by_code(const.FRANCHISE_SO_TYPE_KEY))
-            self.assertEquals(sales_order.status, EnumValues.find_one_by_code(const.SO_CREATED_STATUS_KEY))
+            self.assertEquals(sales_order.type, EnumValues.get(const.FRANCHISE_SO_TYPE_KEY))
+            self.assertEquals(sales_order.status, EnumValues.get(const.SO_CREATED_STATUS_KEY))
             self.assertEquals(sales_order.organization, po.to_organization)
             # There's no expense associated with the PO when creating PO for the franchise organization.
             # That's done on after_model_change in BasePurchaseOrderAdmin class
@@ -78,7 +78,7 @@ class TestFranchisePurchaseOrderView(BaseTestCase):
         from app.models import EnumValues, Organization, PurchaseOrder
         with self.test_client:
             login_as_admin(self.test_client)
-            org_type = EnumValues.find_one_by_code(const.DIRECT_SELLING_STORE_ORG_TYPE_KEY)
+            org_type = EnumValues.get(const.DIRECT_SELLING_STORE_ORG_TYPE_KEY)
             organization = object_faker.organization(parent=Organization.query.get(1), type=org_type)
             user, pwd = object_faker.user(
                 role_names=['franchise_purchase_order_create', 'franchise_purchase_order_edit',
@@ -86,7 +86,7 @@ class TestFranchisePurchaseOrderView(BaseTestCase):
                 organization=organization)
             db_util.save_objects_commit(user, organization)
             login_user(self.test_client, user.email, pwd)
-            draft_status = EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY)
+            draft_status = EnumValues.get(const.PO_DRAFT_STATUS_KEY)
             order_date = object_faker.faker.date_time_this_year()
             logistic_amount = random.randint(0, 100)
             remark = object_faker.faker.text(max_nb_chars=50)
@@ -104,7 +104,7 @@ class TestFranchisePurchaseOrderView(BaseTestCase):
         from app.models import EnumValues, Organization
         with self.test_client:
             login_as_admin(self.test_client)
-            org_type = EnumValues.find_one_by_code(const.FRANCHISE_STORE_ORG_TYPE_KEY)
+            org_type = EnumValues.get(const.FRANCHISE_STORE_ORG_TYPE_KEY)
             organization = object_faker.organization(parent=Organization.query.get(1), type=org_type)
             user, pwd = object_faker.user(
                 role_names=['franchise_purchase_order_create', 'franchise_purchase_order_edit',
@@ -115,7 +115,7 @@ class TestFranchisePurchaseOrderView(BaseTestCase):
             login_user(self.test_client, user.email, pwd)
             self.assertPageRendered(endpoint='/admin/fpo/')
             self.assertPageRendered(endpoint='/admin/fpo/new/')
-            draft_status = EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY)
+            draft_status = EnumValues.get(const.PO_DRAFT_STATUS_KEY)
             order_date = object_faker.faker.date_time_this_year()
             logistic_amount = random.randint(0, 100)
             remark = object_faker.faker.text(max_nb_chars=50)

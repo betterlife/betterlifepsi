@@ -22,13 +22,13 @@ class TestSalesOrderApi(BaseTestCase):
                 'franchise_sales_order_edit',
                 'product_view'
             ])
-            franchise_so_type = EnumValues.find_one_by_code(FRANCHISE_SO_TYPE_KEY)
+            franchise_so_type = EnumValues.get(FRANCHISE_SO_TYPE_KEY)
             sales_order = object_faker.sales_order(creator=user,
                                                    number_of_line=1,
                                                    type=franchise_so_type)
             db_util.save_objects_commit(sales_order, user)
             so_id = sales_order.id
-            delivered_status = EnumValues.find_one_by_code(SO_DELIVERED_STATUS_KEY)
+            delivered_status = EnumValues.get(SO_DELIVERED_STATUS_KEY)
             fixture.login_user(self.test_client, user.email, password)
             rv = self.test_client.put('/api/sales_order/' + str(so_id),
                                       follow_redirects=True,
@@ -52,13 +52,13 @@ class TestSalesOrderApi(BaseTestCase):
                 'franchise_sales_order_edit',
                 'product_view'
             ])
-            franchise_so_type = EnumValues.find_one_by_code(FRANCHISE_SO_TYPE_KEY)
+            franchise_so_type = EnumValues.get(FRANCHISE_SO_TYPE_KEY)
             sales_order = object_faker.sales_order(creator=user,
                                                    number_of_line=1,
                                                    type=franchise_so_type)
             db_util.save_objects_commit(sales_order, user)
             so_id = sales_order.id
-            shipped_status = EnumValues.find_one_by_code(SO_SHIPPED_STATUS_KEY)
+            shipped_status = EnumValues.get(SO_SHIPPED_STATUS_KEY)
             fixture.login_user(self.test_client, user.email, password)
             rv = self.test_client.put('/api/sales_order/' + str(so_id),
                                       follow_redirects=True,
@@ -85,7 +85,7 @@ class TestSalesOrderApi(BaseTestCase):
                                                    number_of_line=1)
             db_util.save_objects_commit(sales_order, user)
             so_id = sales_order.id
-            delivered_status = EnumValues.find_one_by_code(SO_DELIVERED_STATUS_KEY)
+            delivered_status = EnumValues.get(SO_DELIVERED_STATUS_KEY)
             fixture.logout_user(self.test_client)
             rv = self.test_client.put('/api/sales_order/' + str(so_id),
                                       follow_redirects=True,
@@ -107,7 +107,7 @@ class TestSalesOrderApi(BaseTestCase):
                                                    number_of_line=1)
             db_util.save_objects_commit(sales_order, user)
             so_id = sales_order.id
-            delivered_status = EnumValues.find_one_by_code(SO_DELIVERED_STATUS_KEY)
+            delivered_status = EnumValues.get(SO_DELIVERED_STATUS_KEY)
             fixture.login_user(self.test_client, user.email, password)
             rv = self.test_client.put('/api/sales_order/' + str(so_id),
                                       follow_redirects=True,
@@ -150,7 +150,7 @@ class TestSalesOrderApi(BaseTestCase):
             ])
             sales_order = object_faker.sales_order(creator=user,
                                                    number_of_line=1)
-            shipped_status = EnumValues.find_one_by_code(SO_SHIPPED_STATUS_KEY)
+            shipped_status = EnumValues.get(SO_SHIPPED_STATUS_KEY)
             sales_order.status = shipped_status
             db_util.save_objects_commit(sales_order, user)
             so_id = sales_order.id

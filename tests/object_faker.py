@@ -21,7 +21,7 @@ class ObjectFaker(object):
                                                 right_digits=0)
         so.customer = self.customer(creator=creator)
         so.order_date = self.faker.date()
-        created_status = EnumValues.find_one_by_code(SO_CREATED_STATUS_KEY)
+        created_status = EnumValues.get(SO_CREATED_STATUS_KEY)
         so.status_id = created_status.id
         so.organization = creator.organization
         if type is None:
@@ -53,7 +53,7 @@ class ObjectFaker(object):
         po.remark = self.faker.text(max_nb_chars=20)
         po.logistic_amount = self.faker.pyfloat(positive=True, left_digits=2, right_digits=0)
         po.order_date = self.faker.date()
-        draft_status = EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY)
+        draft_status = EnumValues.get(const.PO_DRAFT_STATUS_KEY)
         po.status_id = draft_status.id
         if type is None:
             types = EnumValues.type_filter(const.PO_TYPE_KEY).all()
@@ -167,7 +167,7 @@ class ObjectFaker(object):
         organization.rgt = result[1] + 1
         organization.id = organization_id if organization_id is not None else db_util.get_next_id(Organization)
         if type is None:
-            organization.type = EnumValues.find_one_by_code(u"DIRECT_SELLING_STORE")
+            organization.type = EnumValues.get(u"DIRECT_SELLING_STORE")
         else:
             organization.type = type
         if parent is not None:

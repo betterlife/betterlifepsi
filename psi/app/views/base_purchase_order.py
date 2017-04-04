@@ -136,14 +136,14 @@ class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
             gettext('Purchase order can not be update nor delete on received status')
         )
         if is_created:
-            model.type = EnumValues.find_one_by_code(self.type_code)
+            model.type = EnumValues.get(self.type_code)
 
     def get_query(self):
-        po_type = EnumValues.find_one_by_code(self.type_code)
+        po_type = EnumValues.get(self.type_code)
         return super(BasePurchaseOrderAdmin, self).get_query().filter(self.model.type == po_type)
 
     def get_count_query(self):
-        po_type = EnumValues.find_one_by_code(self.type_code)
+        po_type = EnumValues.get(self.type_code)
         return super(BasePurchaseOrderAdmin, self).get_count_query().filter(self.model.type == po_type)
 
     def on_model_delete(self, model):

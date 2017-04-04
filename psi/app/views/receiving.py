@@ -130,7 +130,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
     def create_form(self, obj=None):
         from app.models import EnumValues
         form = super(ReceivingAdmin, self).create_form(obj)
-        form.status.query = [EnumValues.find_one_by_code(const.RECEIVING_DRAFT_STATUS_KEY), ]
+        form.status.query = [EnumValues.get(const.RECEIVING_DRAFT_STATUS_KEY), ]
         form.create_lines.data = True
         return form
 
@@ -141,7 +141,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
         # Set query_factory for newly added line
         form.lines.form.purchase_order_line.kwargs['query_factory'] = partial(PurchaseOrderLine.header_filter, po_id)
         if obj is not None and obj.status is not None and obj.status.code == const.RECEIVING_COMPLETE_STATUS_KEY:
-            form.status.query = [EnumValues.find_one_by_code(const.RECEIVING_COMPLETE_STATUS_KEY), ]
+            form.status.query = [EnumValues.get(const.RECEIVING_COMPLETE_STATUS_KEY), ]
         # Set query option for old lines
         line_entries = form.lines.entries
         po_lines = PurchaseOrderLine.header_filter(po_id).all()

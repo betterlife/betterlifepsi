@@ -85,8 +85,8 @@ class Receiving(db.Model, DataSecurityMixin):
     @staticmethod
     def create_draft_recv_from_po(po):
         from app.models.enum_values import EnumValues
-        recv_draft_status = EnumValues.find_one_by_code(const.RECEIVING_DRAFT_STATUS_KEY)
-        purchase_in_trans_type = EnumValues.find_one_by_code(const.PURCHASE_IN_INV_TRANS_KEY)
+        recv_draft_status = EnumValues.get(const.RECEIVING_DRAFT_STATUS_KEY)
+        purchase_in_trans_type = EnumValues.get(const.PURCHASE_IN_INV_TRANS_KEY)
         recv = Receiving()
         recv.purchase_order = po
         recv.date = po.order_date
@@ -137,9 +137,9 @@ class Receiving(db.Model, DataSecurityMixin):
                 if rd_qty < line.quantity:
                     not_finished = True
             if not_finished is False:
-                po.status = EnumValues.find_one_by_code(const.PO_RECEIVED_STATUS_KEY)
+                po.status = EnumValues.get(const.PO_RECEIVED_STATUS_KEY)
             elif started is True:
-                po.status = EnumValues.find_one_by_code(const.PO_PART_RECEIVED_STATUS_KEY)
+                po.status = EnumValues.get(const.PO_PART_RECEIVED_STATUS_KEY)
             db.session.add(po)
             return po
 
@@ -161,7 +161,7 @@ class Receiving(db.Model, DataSecurityMixin):
     def save_inv_trans(self, inv_trans):
         from app.models import EnumValues, InventoryTransaction, InventoryTransactionLine
 
-        inv_type = EnumValues.find_one_by_code(const.PURCHASE_IN_INV_TRANS_KEY)
+        inv_type = EnumValues.get(const.PURCHASE_IN_INV_TRANS_KEY)
         if inv_trans is None:
             inv_trans = InventoryTransaction()
             inv_trans.type = inv_type

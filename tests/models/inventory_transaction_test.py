@@ -11,11 +11,11 @@ class TestInventoryTransaction(BaseTestCase):
             login_as_admin(self.test_client)
             from app.models import EnumValues
             db = Info.get_db()
-            po = of.purchase_order(number_of_line=1, type=EnumValues.find_one_by_code(const.DIRECT_PO_TYPE_KEY))
+            po = of.purchase_order(number_of_line=1, type=EnumValues.get(const.DIRECT_PO_TYPE_KEY))
             recv = po.create_receiving_if_not_exist()
             from app.utils import db_util
             db_util.save_objects_commit(po, recv)
-            recv.status = EnumValues.find_one_by_code(const.RECEIVING_COMPLETE_STATUS_KEY)
+            recv.status = EnumValues.get(const.RECEIVING_COMPLETE_STATUS_KEY)
             inv_trans = recv.operate_inv_trans_by_recv_status()
             new_po = recv.update_purchase_order_status()
             db_util.save_objects_commit(new_po, inv_trans)

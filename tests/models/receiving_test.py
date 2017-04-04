@@ -17,11 +17,11 @@ class TestReceiving(BaseTestCase):
 
         def test_logic():
             po = object_faker.purchase_order()
-            po.status = EnumValues.find_one_by_code(const.PO_RECEIVED_STATUS_KEY)
+            po.status = EnumValues.get(const.PO_RECEIVED_STATUS_KEY)
             receiving = Receiving()
             receiving.purchase_order = po
             receiving.date = datetime.now()
-            receiving.status = EnumValues.find_one_by_code(const.RECEIVING_DRAFT_STATUS_KEY)
+            receiving.status = EnumValues.get(const.RECEIVING_DRAFT_STATUS_KEY)
             db = Info.get_db()
 
             db.session.add(po)

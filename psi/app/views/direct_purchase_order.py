@@ -78,10 +78,10 @@ class DirectPurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
                                const.PO_PART_RECEIVED_STATUS_KEY,
                                const.PO_ISSUED_STATUS_KEY,
                                const.PO_DRAFT_STATUS_KEY]:
-            form.status.query = [EnumValues.find_one_by_code(obj.status.code), ]
+            form.status.query = [EnumValues.get(obj.status.code), ]
         if obj.status.code == const.PO_DRAFT_STATUS_KEY:
             form.status.query.append(
-                EnumValues.find_one_by_code(const.PO_ISSUED_STATUS_KEY))
+                EnumValues.get(const.PO_ISSUED_STATUS_KEY))
         # Set product query option for old lines(forbid to change product for
         #  existing line)
         line_entries = form.lines.entries
@@ -93,7 +93,7 @@ class DirectPurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
     def create_form(self, obj=None):
         from app.models import Supplier
         form = super(DirectPurchaseOrderAdmin, self).create_form(obj)
-        form.status.query = [EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY), ]
+        form.status.query = [EnumValues.get(const.PO_DRAFT_STATUS_KEY), ]
         form_util.filter_by_organization(form.supplier, Supplier)
         return form
 

@@ -15,8 +15,8 @@ class TestPurchaseOrder(BaseTestCase):
         def test_logic():
             po1, po2 = of.purchase_order(), of.purchase_order()
             from app.models import EnumValues
-            po1.status = EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY)
-            po2.status = EnumValues.find_one_by_code(const.PO_ISSUED_STATUS_KEY)
+            po1.status = EnumValues.get(const.PO_DRAFT_STATUS_KEY)
+            po2.status = EnumValues.get(const.PO_ISSUED_STATUS_KEY)
             db_util.save_objects_commit(po1, po2)
             po3 = PurchaseOrder.status_filter((const.PO_DRAFT_STATUS_KEY,)).all()[0]
             self.assertIsNotNone(po3)
@@ -32,10 +32,10 @@ class TestPurchaseOrder(BaseTestCase):
         from app.models import PurchaseOrder, EnumValues
         po_statuses = PurchaseOrder.status_option_filter().all()
         self.assertEquals(len(po_statuses), 6)
-        self.assertIn(EnumValues.find_one_by_code(const.PO_ISSUED_STATUS_KEY), po_statuses)
-        self.assertIn(EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY), po_statuses)
-        self.assertIn(EnumValues.find_one_by_code(const.PO_REJECTED_STATUS_KEY), po_statuses)
-        self.assertIn(EnumValues.find_one_by_code(const.PO_PART_RECEIVED_STATUS_KEY), po_statuses)
-        self.assertIn(EnumValues.find_one_by_code(const.PO_RECEIVED_STATUS_KEY), po_statuses)
-        self.assertIn(EnumValues.find_one_by_code(const.PO_SHIPPED_STATUS_KEY), po_statuses)
+        self.assertIn(EnumValues.get(const.PO_ISSUED_STATUS_KEY), po_statuses)
+        self.assertIn(EnumValues.get(const.PO_DRAFT_STATUS_KEY), po_statuses)
+        self.assertIn(EnumValues.get(const.PO_REJECTED_STATUS_KEY), po_statuses)
+        self.assertIn(EnumValues.get(const.PO_PART_RECEIVED_STATUS_KEY), po_statuses)
+        self.assertIn(EnumValues.get(const.PO_RECEIVED_STATUS_KEY), po_statuses)
+        self.assertIn(EnumValues.get(const.PO_SHIPPED_STATUS_KEY), po_statuses)
 

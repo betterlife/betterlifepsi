@@ -11,10 +11,10 @@ class TestInventoryInOutLink(BaseTestCase):
             from app.services import SalesOrderService
             from app.models import EnumValues
             login_as_admin(self.test_client)
-            po = of.purchase_order(number_of_line=2, type=EnumValues.find_one_by_code(const.DIRECT_PO_TYPE_KEY))
+            po = of.purchase_order(number_of_line=2, type=EnumValues.get(const.DIRECT_PO_TYPE_KEY))
             products = [l.product for l in po.lines]
             receiving = po.create_receiving_if_not_exist()
-            receiving.status = EnumValues.find_one_by_code(const.RECEIVING_COMPLETE_STATUS_KEY)
+            receiving.status = EnumValues.get(const.RECEIVING_COMPLETE_STATUS_KEY)
             in_trans_line = receiving.operate_inv_trans_by_recv_status()
             po = receiving.update_purchase_order_status()
             from app.utils import db_util

@@ -62,8 +62,8 @@ def create_or_update_sales_order(po_num, po_line_num, product, act_price, qty, s
         order.logistic_amount = 0
         order.organization_id = current_user.organization_id
     order.order_date = sale_date
-    order.type = EnumValues.find_one_by_code(const.DIRECT_SO_TYPE_KEY)
-    order.status = EnumValues.find_one_by_code(const.SO_DELIVERED_STATUS_KEY)
+    order.type = EnumValues.get(const.DIRECT_SO_TYPE_KEY)
+    order.status = EnumValues.get(const.SO_DELIVERED_STATUS_KEY)
     existing = False
     line = None
     for line in order.lines:
@@ -89,7 +89,7 @@ def create_or_update_shipping(order, order_line, status):
         shipping.date = order.order_date
         shipping.status = status
         shipping.organization_id = current_user.organization_id
-        shipping.type = EnumValues.find_one_by_code(const.DIRECT_SHIPPING_TYPE_KEY)
+        shipping.type = EnumValues.get(const.DIRECT_SHIPPING_TYPE_KEY)
     shipping_line = None
     existing = False
     for shipping_line in shipping.lines:
@@ -168,8 +168,8 @@ class ImportStoreDataView(BaseView):
                 with codecs.open(full_path, 'rb', 'UTF-8') as f:
                     reader = csv.reader(f, delimiter=',')
                     line, imported_line = 0,0
-                    shipping_status = EnumValues.find_one_by_code(const.SHIPPING_COMPLETE_STATUS_KEY)
-                    it_type = EnumValues.find_one_by_code(const.SALES_OUT_INV_TRANS_TYPE_KEY)
+                    shipping_status = EnumValues.get(const.SHIPPING_COMPLETE_STATUS_KEY)
+                    it_type = EnumValues.get(const.SALES_OUT_INV_TRANS_TYPE_KEY)
                     incoming_category = Preference.get().def_so_incoming_type
                     incoming_status = Preference.get().def_so_incoming_status
                     for row in reader:

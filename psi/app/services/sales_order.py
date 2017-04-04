@@ -8,7 +8,7 @@ class SalesOrderService(object):
 
     @staticmethod
     def create_or_update_shipping(sales_order):
-        status = EnumValues.find_one_by_code(SHIPPING_COMPLETE_STATUS_KEY)
+        status = EnumValues.get(SHIPPING_COMPLETE_STATUS_KEY)
         shipping = sales_order.so_shipping
         if shipping is None:
             shipping = Shipping()
@@ -16,9 +16,9 @@ class SalesOrderService(object):
         shipping.sales_order = sales_order
         shipping.status = status
         if sales_order.type.code == DIRECT_SO_TYPE_KEY:
-            shipping.type = EnumValues.find_one_by_code(DIRECT_SHIPPING_TYPE_KEY)
+            shipping.type = EnumValues.get(DIRECT_SHIPPING_TYPE_KEY)
         elif sales_order.type.code == FRANCHISE_SO_TYPE_KEY:
-            shipping.type = EnumValues.find_one_by_code(FRANCHISE_SHIPPING_TYPE_KEY)
+            shipping.type = EnumValues.get(FRANCHISE_SHIPPING_TYPE_KEY)
         shipping.organization = sales_order.organization
         for line in sales_order.lines:
             new_sl = None
@@ -81,7 +81,7 @@ class SalesOrderService(object):
 
     @staticmethod
     def get_related_po(sales_order):
-        rt = EnumValues.find_one_by_code(FRANCHISE_PO_TO_SO_RT_KEY)
+        rt = EnumValues.get(FRANCHISE_PO_TO_SO_RT_KEY)
         session = Info.get_db().session
         related_value, purchase_order = None, None
         if sales_order.type.code == FRANCHISE_SO_TYPE_KEY:
@@ -95,7 +95,7 @@ class SalesOrderService(object):
         purchase_order = SalesOrderService.get_related_po(sales_order)
         session = Info.get_db().session
         if purchase_order is not None:
-            status = EnumValues.find_one_by_code(status_code)
+            status = EnumValues.get(status_code)
             purchase_order.status = status
             session.add(purchase_order)
         return purchase_order

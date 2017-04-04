@@ -243,12 +243,12 @@ class PurchaseOrder(db.Model, DataSecurityMixin):
 
     def can_delete(self):
         from app.models import EnumValues
-        draft_status = EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY)
+        draft_status = EnumValues.get(const.PO_DRAFT_STATUS_KEY)
         return self.status_id == draft_status.id
 
     def can_edit(self, user=current_user):
         from app.models import EnumValues
-        draft_status = EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY)
+        draft_status = EnumValues.get(const.PO_DRAFT_STATUS_KEY)
         return self.status_id == draft_status.id
 
 

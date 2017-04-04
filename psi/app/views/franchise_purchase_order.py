@@ -65,10 +65,10 @@ class FranchisePurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
                                const.PO_PART_RECEIVED_STATUS_KEY,
                                const.PO_ISSUED_STATUS_KEY,
                                const.PO_DRAFT_STATUS_KEY]:
-            form.status.query = [EnumValues.find_one_by_code(obj.status.code), ]
+            form.status.query = [EnumValues.get(obj.status.code), ]
         if obj.status.code == const.PO_DRAFT_STATUS_KEY:
             form.status.query.append(
-                EnumValues.find_one_by_code(const.PO_ISSUED_STATUS_KEY))
+                EnumValues.get(const.PO_ISSUED_STATUS_KEY))
         # Set product query option for old lines(forbid to change product for
         #  existing line)
         line_entries = form.lines.entries
@@ -79,7 +79,7 @@ class FranchisePurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
 
     def create_form(self, obj=None):
         form = super(FranchisePurchaseOrderAdmin, self).create_form(obj)
-        form.status.query = [EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY), ]
+        form.status.query = [EnumValues.get(const.PO_DRAFT_STATUS_KEY), ]
         return form
 
     def on_model_change(self, form, model, is_created):
@@ -102,14 +102,14 @@ class FranchisePurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
 
     @staticmethod
     def create_so_from_fpo(purchase_order):
-        so_type = EnumValues.find_one_by_code(const.FRANCHISE_SO_TYPE_KEY)
+        so_type = EnumValues.get(const.FRANCHISE_SO_TYPE_KEY)
         sales_order = SalesOrder()
         sales_order.id = db_util.get_next_id(SalesOrder)
         sales_order.order_date = purchase_order.order_date
         sales_order.type = so_type
         sales_order.remark = "PO ID: [{0}]".format(purchase_order.id)
         sales_order.organization = purchase_order.to_organization
-        sales_order.status = EnumValues.find_one_by_code(const.SO_CREATED_STATUS_KEY)
+        sales_order.status = EnumValues.get(const.SO_CREATED_STATUS_KEY)
         lines = []
         for line in purchase_order.lines:
             sol = SalesOrderLine()
@@ -133,7 +133,7 @@ class FranchisePurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
         rv.to_object_id = sales_order.id
         rv.to_object_type = "SalesOrder"
         from app.const import FRANCHISE_PO_TO_SO_RT_KEY
-        related_type = EnumValues.find_one_by_code(FRANCHISE_PO_TO_SO_RT_KEY)
+        related_type = EnumValues.get(FRANCHISE_PO_TO_SO_RT_KEY)
         rv.relation_type = related_type
         return rv
 

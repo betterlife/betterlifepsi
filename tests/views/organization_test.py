@@ -31,7 +31,7 @@ class TestOrganization(BaseTestCase):
     def test_edit(self):
 
         from app.models import EnumValues
-        type_id = EnumValues.find_one_by_code(const.DIRECT_SELLING_STORE_ORG_TYPE_KEY).id
+        type_id = EnumValues.get(const.DIRECT_SELLING_STORE_ORG_TYPE_KEY).id
 
         with self.test_client:
             fixture.login_as_admin(self.test_client)
@@ -61,7 +61,7 @@ class TestOrganization(BaseTestCase):
 
     def test_create(self):
         from app.models import EnumValues
-        type_id = EnumValues.find_one_by_code(const.DIRECT_SELLING_STORE_ORG_TYPE_KEY).id
+        type_id = EnumValues.get(const.DIRECT_SELLING_STORE_ORG_TYPE_KEY).id
 
         with self.test_client:
             fixture.login_as_admin(self.test_client)
@@ -85,7 +85,7 @@ class TestOrganization(BaseTestCase):
             db_util.save_objects_commit(user)
             fixture.login_user(self.test_client, user.email, pwd)
             from app.models import EnumValues
-            org_type = EnumValues.find_one_by_code(const.DIRECT_SELLING_STORE_ORG_TYPE_KEY)
+            org_type = EnumValues.get(const.DIRECT_SELLING_STORE_ORG_TYPE_KEY)
             self.assertCreateFail(endpoint='/admin/organization/new/?url=%2Fadmin%2Forganization%2F',
                                   create_data=[org_name, org_desc],
                                   data={"type": org_type.id, "name": org_name,
@@ -93,7 +93,7 @@ class TestOrganization(BaseTestCase):
 
     def test_delete_root_not_allowed(self):
         from app.models import EnumValues
-        type_id = EnumValues.find_one_by_code(const.DIRECT_SELLING_STORE_ORG_TYPE_KEY).id
+        type_id = EnumValues.get(const.DIRECT_SELLING_STORE_ORG_TYPE_KEY).id
 
         with self.test_client:
             fixture.login_as_admin(self.test_client)
@@ -118,7 +118,7 @@ class TestOrganization(BaseTestCase):
 
     def test_delete_normal_allowed(self):
         from app.models import EnumValues
-        type_id = EnumValues.find_one_by_code(const.DIRECT_SELLING_STORE_ORG_TYPE_KEY).id
+        type_id = EnumValues.get(const.DIRECT_SELLING_STORE_ORG_TYPE_KEY).id
         with self.test_client:
             fixture.login_as_admin(self.test_client)
             name, desc = self.create_organization(type_id=type_id, parent_id=1)
@@ -128,7 +128,7 @@ class TestOrganization(BaseTestCase):
 
     def test_delete_with_child_not_allowed(self):
         from app.models import EnumValues, Organization
-        type_id = EnumValues.find_one_by_code(const.DIRECT_SELLING_STORE_ORG_TYPE_KEY).id
+        type_id = EnumValues.get(const.DIRECT_SELLING_STORE_ORG_TYPE_KEY).id
         with self.test_client:
             fixture.login_as_admin(self.test_client)
             name1, desc1 = self.create_organization(type_id=type_id, parent_id=1)

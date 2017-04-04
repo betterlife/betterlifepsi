@@ -15,7 +15,7 @@ class TestReceivingAdmin(BaseTestCase):
         from app.service import Info
         fixture.login_as_admin(self.test_client)
         receiving = Receiving()
-        complete_status = EnumValues.find_one_by_code(const.RECEIVING_COMPLETE_STATUS_KEY)
+        complete_status = EnumValues.get(const.RECEIVING_COMPLETE_STATUS_KEY)
         receiving.status = complete_status
         db_session = Info.get_db().session
         receiving_admin = ReceivingAdmin(Receiving, db_session, name=lazy_gettext("Receiving"),

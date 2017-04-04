@@ -16,7 +16,7 @@ class TestDirectPurchaseOrderPages(BaseTestCase):
             db_util.save_objects_commit(supplier)
             self.assertPageRendered(endpoint='/admin/dpo/')
             self.assertPageRendered(endpoint='/admin/dpo/new/')
-            draft_status = EnumValues.find_one_by_code(const.PO_DRAFT_STATUS_KEY)
+            draft_status = EnumValues.get(const.PO_DRAFT_STATUS_KEY)
             order_date = object_faker.faker.date_time_this_year()
             logistic_amount = random.randint(0, 100)
             remark = object_faker.faker.text(max_nb_chars=50)

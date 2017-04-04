@@ -27,7 +27,7 @@ class MarkInvalidRowAction(BaseListRowAction):
     def render(self, context, row_id, row):
         kwargs = dict(self.url_args) if self.url_args else {}
         kwargs[self.id_arg] = row_id
-        so_invalid_status = EnumValues.find_one_by_code(const.SO_INVALID_STATUS_KEY)
+        so_invalid_status = EnumValues.get(const.SO_INVALID_STATUS_KEY)
         if row.status.code == const.SO_CREATED_STATUS_KEY and row.type.code == const.FRANCHISE_SO_TYPE_KEY:
             return Markup("""<a class='icon' href='javascript:MarkInvalidRowAction({0}, {1})'>
                                <span id='mark_invalid_row_action_{0}' class='fa fa-minus-circle'></span>
@@ -47,7 +47,7 @@ class MarkShipRowAction(BaseListRowAction):
     def render(self, context, row_id, row):
         kwargs = dict(self.url_args) if self.url_args else {}
         kwargs[self.id_arg] = row_id
-        so_shipped_status = EnumValues.find_one_by_code(const.SO_SHIPPED_STATUS_KEY)
+        so_shipped_status = EnumValues.get(const.SO_SHIPPED_STATUS_KEY)
         if row.status.code == const.SO_CREATED_STATUS_KEY and row.type.code == const.FRANCHISE_SO_TYPE_KEY:
             return Markup("""<a class='icon' href='javascript:MarkShipRowAction({0}, {1})'>
                                <span id='mark_ship_row_action_{0}' class='fa fa-truck'></span>
@@ -193,8 +193,8 @@ class SalesOrderAdmin(ModelViewWithAccess):
 
     def on_model_change(self, form, model, is_created):
         if is_created:
-            model.type = EnumValues.find_one_by_code(const.DIRECT_SO_TYPE_KEY)
-            model.status = EnumValues.find_one_by_code(const.SO_DELIVERED_STATUS_KEY)
+            model.type = EnumValues.get(const.DIRECT_SO_TYPE_KEY)
+            model.status = EnumValues.get(const.SO_DELIVERED_STATUS_KEY)
             model.organization = current_user.organization
         incoming = SalesOrderService.create_or_update_incoming(model)
         expense = SalesOrderService.create_or_update_expense(model)

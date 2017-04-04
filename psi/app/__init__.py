@@ -39,7 +39,7 @@ def init_flask_security(flask_app, database):
 
 
 def init_admin_views(flask_app, database):
-    from app.views import init_admin_views
+    from psi.app.views import init_admin_views
     return init_admin_views(flask_app, database)
 
 
