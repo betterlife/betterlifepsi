@@ -52,6 +52,7 @@ def del_form_field(admin_def, form, field_name):
         if f[0] == field_name:
             form._unbound_fields.remove(f)
             break
-    for r in admin_def._form_edit_rules:
-        if r.field_name == field_name:
-            admin_def._form_edit_rules.rules.remove(r)
+    if admin_def._form_edit_rules is not None:
+        for r in admin_def._form_edit_rules:
+            if r.field_name == field_name:
+                admin_def._form_edit_rules.rules.remove(r)
