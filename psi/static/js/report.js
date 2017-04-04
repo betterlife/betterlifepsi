@@ -52,10 +52,11 @@ Chart.plugins.register({
                 if (datasetPointRadiusIsZero(dataset)) {
                     continue;
                 }
-                var model = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._model, textX, textY;
+                var model = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._model,
+                    textX, textY, noDecimalData = Math.round(dataset.data[i]);
                 textY = calculateTextYPosition(model);
                 textX = calculateTextXPosition(i, model, dataset);
-                ctx.fillText(Math.round(dataset.data[i]), textX, textY);
+                ctx.fillText(noDecimalData, textX, textY);
             }
         });
   }
