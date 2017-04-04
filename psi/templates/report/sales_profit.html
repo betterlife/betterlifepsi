@@ -5,15 +5,16 @@
     <script src="{{ url_for('static', filename='chart.js/Chart.bundle.min.js') }}"></script>
 {% endblock %}
 {% block body %}
+    <div class="col-md-12" id="report-page-title">按时间统计毛利</div>
     <div class="col-md-12">
+        <div class="col-md-10 canvas-container">
+            {{ components.canvas('profit_month') }}
+        </div>
         <div class="col-md-2 report-dashboard-row">
             {{ components.card('与去年同期月比较','profit_period_on_period_month') }}
             {{ components.card('与上月比较','profit_compare_with_last_period_month') }}
             {{ components.card('与去年同期周比较','profit_period_on_period_week') }}
             {{ components.card('与上星期比较','profit_compare_with_last_period_week') }}
-        </div>
-        <div class="col-md-10 canvas-container">
-            {{ components.canvas('profit_month') }}
         </div>
     </div>
     <div class="col-md-12 canvas-container">

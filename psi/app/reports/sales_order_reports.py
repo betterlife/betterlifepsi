@@ -3,7 +3,6 @@ from datetime import datetime
 
 from flask_babelex import gettext
 
-from app import const
 from app.reports import sqls
 from app.service import Info
 from app.utils import format_util, get_last_week, get_last_month
@@ -86,6 +85,10 @@ def compare_with_last_period(r_type, r_period):
     }, status='success')
 
 
+def get_limit(r_period):
+    limit = 24 if r_period == 'month' else 53
+    return limit
+
 def get_total(report_type, period_type, period_number, year):
     if report_type == 'amount_compare_with_last_period':
         sql = sqls.GET_AMOUNT_BY_YEAR_SQL.format(period_type, period_number, year)
@@ -165,7 +168,3 @@ def sales_profit_report(r_type, r_period):
         status='success'
     )
 
-
-def get_limit(r_period):
-    limit = 24 if r_period == 'month' else 53
-    return limit
