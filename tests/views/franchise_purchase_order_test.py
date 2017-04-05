@@ -1,6 +1,8 @@
 # coding=utf-8
 import random
 
+from flask import url_for
+
 from app import const
 from app.utils import db_util
 
@@ -29,13 +31,14 @@ class TestFranchisePurchaseOrderView(BaseTestCase):
         )
         db_util.save_objects_commit(user)
         fixture.login_user(self.test_client, user.email, password)
-        rv = self.test_client.get('/admin/fpo/new/', follow_redirects=True)
+        rv = self.test_client.get(url_for('fpo.create_view'), follow_redirects=True)
+
         self.assertEqual(rv.status_code, 200)
         self.assertNotIn('to_organization', rv.data)
 
         remark = u'-备注信息-'
         order_date = '2016-08-25 23:18:55'
-        rv = self.test_client.post('/admin/fpo/new/',
+        rv = self.test_client.post(url_for('fpo.create_view'),
                                    follow_redirects=True,
                                    data=dict(status=draft_status_id,
                                              logistic_amount=20,
@@ -90,7 +93,7 @@ class TestFranchisePurchaseOrderView(BaseTestCase):
             order_date = object_faker.faker.date_time_this_year()
             logistic_amount = random.randint(0, 100)
             remark = object_faker.faker.text(max_nb_chars=50)
-            rv = self.test_client.post('/admin/fpo/new/?url=%2Fadmin%2Ffpo%2F',
+            rv = self.test_client.post(url_for('fpo.create_view', url=url_for('fpo.index_view')),
                                        data=dict(status=draft_status.id, order_date=order_date,
                                                  logistic_amount=logistic_amount, remark=remark),
                                        follow_redirects=True)
@@ -113,8 +116,8 @@ class TestFranchisePurchaseOrderView(BaseTestCase):
             self.test_client.post('/login', data=dict(email_or_login=user.email,  password=pwd), follow_redirects=True)
             db_util.save_objects_commit(user, organization)
             login_user(self.test_client, user.email, pwd)
-            self.assertPageRendered(endpoint='/admin/fpo/')
-            self.assertPageRendered(endpoint='/admin/fpo/new/')
+            self.assertPageRendered(url_for('fpo.index_view'))
+            self.assertPageRendered(url_for('fpo.create_view'))
             draft_status = EnumValues.get(const.PO_DRAFT_STATUS_KEY)
             order_date = object_faker.faker.date_time_this_year()
             logistic_amount = random.randint(0, 100)
@@ -124,10 +127,11 @@ class TestFranchisePurchaseOrderView(BaseTestCase):
             self.assertPageRendered(method=self.test_client.post,
                                     data=dict(status=draft_status.id, order_date=order_date,
                                               logistic_amount=logistic_amount, remark=remark),
-                                    endpoint='/admin/fpo/new/?url=%2Fadmin%2Ffpo%2F',
+                                    endpoint=url_for('fpo.create_view', url=url_for('fpo.index_view')),
                                     expect_contents=expect_contents)
 
-            self.assertPageRendered(expect_contents=expect_contents, endpoint='/admin/fpo/edit/?url=%2Fadmin%2Ffpo%2F&id=1')
+            self.assertPageRendered(expect_contents=expect_contents,
+                                    endpoint=url_for('fpo.edit_view', url=url_for('fpo.details_view', id=1)))
 
             new_remark = object_faker.faker.text(max_nb_chars=50)
             new_logistic_amount = random.randint(0, 100)
@@ -135,13 +139,13 @@ class TestFranchisePurchaseOrderView(BaseTestCase):
             new_expect_contents = [draft_status.display, str(new_logistic_amount),
                                    new_order_date.strftime("%Y-%m-%d"), new_remark]
             self.assertPageRendered(method=self.test_client.post,
-                                    endpoint='/admin/fpo/edit/?url=%2Fadmin%2Ffpo%2F&id=1',
+                                    endpoint=url_for('fpo.edit_view', url=url_for('fpo.index_view'), id=1),
                                     data=dict(status=draft_status.id,
                                               order_date=new_order_date, logistic_amount=new_logistic_amount,
                                               remark=new_remark),
                                     expect_contents=new_expect_contents)
 
-            rv = self.assertDeleteSuccessful(endpoint='/admin/fpo/delete/',
+            rv = self.assertDeleteSuccessful(endpoint=url_for('fpo.delete_view'),
                                              deleted_data=[draft_status.display, new_remark,
                                                            new_order_date.strftime("%Y-%m-%d")],
-                                             data=dict(url='/admin/fpo/', id='1'))
+                                             data=dict(url=url_for('fpo.index_view'), id='1'))
