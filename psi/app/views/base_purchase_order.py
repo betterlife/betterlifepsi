@@ -138,8 +138,7 @@ class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
         )
         if is_created:
             model.type = EnumValues.get(self.type_code)
-        logistic_exp, goods_exp, receiving = PurchaseOrderService.create_expense_receiving(model)
-
+        PurchaseOrderService.create_expense_receiving(model)
 
     def get_query(self):
         po_type = EnumValues.get(self.type_code)
@@ -158,5 +157,8 @@ class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
             gettext('Purchase order can not be update nor delete on issued status'))
 
     inline_models = (PurchaseOrderLineInlineAdmin(PurchaseOrderLine),)
+
+    def after_model_change(self, form, model, is_created):
+        pass
 
 

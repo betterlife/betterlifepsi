@@ -131,7 +131,7 @@ class TestFranchisePurchaseOrderView(BaseTestCase):
                                     expect_contents=expect_contents)
 
             self.assertPageRendered(expect_contents=expect_contents,
-                                    endpoint=url_for('fpo.edit_view', url=url_for('fpo.details_view', id=1)))
+                                    endpoint=url_for('fpo.edit_view', url=url_for('fpo.details_view', id=1), id=1))
 
             new_remark = object_faker.faker.text(max_nb_chars=50)
             new_logistic_amount = random.randint(0, 100)

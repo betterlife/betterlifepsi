@@ -1,19 +1,19 @@
 from app import const
 from app.service import Info
-from app.services.purchase_order import PurchaseOrderService
 from tests.base_test_case import BaseTestCase
 from tests.object_faker import object_faker as of
 
 
 class TestInventoryTransaction(BaseTestCase):
     def test_saleable_qty(self):
+        from app.services.purchase_order import PurchaseOrderService
         with self.test_client:
             from tests.fixture import login_as_admin
             login_as_admin(self.test_client)
             from app.models import EnumValues
             db = Info.get_db()
             po = of.purchase_order(number_of_line=1, type=EnumValues.get(const.DIRECT_PO_TYPE_KEY))
-            recv = PurchaseOrderService.create_receiving_if_not_exist()
+            recv = PurchaseOrderService.create_receiving_if_not_exist(po)
             from app.utils import db_util
             db_util.save_objects_commit(po, recv)
             recv.status = EnumValues.get(const.RECEIVING_COMPLETE_STATUS_KEY)
