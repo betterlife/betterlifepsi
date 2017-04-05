@@ -1,4 +1,5 @@
 from app.service import Info
+from app.services.purchase_order import PurchaseOrderService
 from tests.base_test_case import BaseTestCase
 from tests.object_faker import object_faker as of
 from app import const
@@ -13,7 +14,7 @@ class TestInventoryInOutLink(BaseTestCase):
             login_as_admin(self.test_client)
             po = of.purchase_order(number_of_line=2, type=EnumValues.get(const.DIRECT_PO_TYPE_KEY))
             products = [l.product for l in po.lines]
-            receiving = po.create_receiving_if_not_exist()
+            receiving = PurchaseOrderService.create_receiving_if_not_exist()
             receiving.status = EnumValues.get(const.RECEIVING_COMPLETE_STATUS_KEY)
             in_trans_line = receiving.operate_inv_trans_by_recv_status()
             po = receiving.update_purchase_order_status()

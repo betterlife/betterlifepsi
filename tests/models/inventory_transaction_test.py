@@ -1,5 +1,6 @@
 from app import const
 from app.service import Info
+from app.services.purchase_order import PurchaseOrderService
 from tests.base_test_case import BaseTestCase
 from tests.object_faker import object_faker as of
 
@@ -12,7 +13,7 @@ class TestInventoryTransaction(BaseTestCase):
             from app.models import EnumValues
             db = Info.get_db()
             po = of.purchase_order(number_of_line=1, type=EnumValues.get(const.DIRECT_PO_TYPE_KEY))
-            recv = po.create_receiving_if_not_exist()
+            recv = PurchaseOrderService.create_receiving_if_not_exist()
             from app.utils import db_util
             db_util.save_objects_commit(po, recv)
             recv.status = EnumValues.get(const.RECEIVING_COMPLETE_STATUS_KEY)

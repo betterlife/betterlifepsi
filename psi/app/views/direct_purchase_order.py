@@ -2,8 +2,7 @@
 from functools import partial
 
 from app import const
-from app.models import Product, \
-    EnumValues
+from app.models import Product, EnumValues
 from app.utils import form_util, security_util
 from app.views.base_purchase_order import BasePurchaseOrderAdmin
 from app.views.components import DisabledStringField

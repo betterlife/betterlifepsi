@@ -3,6 +3,7 @@ from datetime import datetime
 
 from app import service, const
 from app.models import PurchaseOrder, EnumValues
+from app.services.purchase_order import PurchaseOrderService
 from app.utils import security_util
 from app.views import ModelViewWithAccess
 from app.views.base import DeleteValidator
@@ -137,6 +138,8 @@ class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
         )
         if is_created:
             model.type = EnumValues.get(self.type_code)
+        logistic_exp, goods_exp, receiving = PurchaseOrderService.create_expense_receiving(model)
+
 
     def get_query(self):
         po_type = EnumValues.get(self.type_code)
@@ -155,18 +158,5 @@ class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
             gettext('Purchase order can not be update nor delete on issued status'))
 
     inline_models = (PurchaseOrderLineInlineAdmin(PurchaseOrderLine),)
-
-    def after_model_change(self, form, model, is_created):
-        if model.status.code == const.PO_ISSUED_STATUS_KEY:
-            logistic_exp, goods_exp = model.create_expenses()
-            db = service.Info.get_db()
-            if logistic_exp is not None:
-                db.session.add(logistic_exp)
-            if goods_exp is not None:
-                db.session.add(goods_exp)
-            receiving = model.create_receiving_if_not_exist()
-            if receiving is not None:
-                db.session.add(receiving)
-            db.session.commit()
 
 
