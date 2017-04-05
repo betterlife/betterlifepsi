@@ -54,7 +54,7 @@ class ObjectFaker(object):
         po.logistic_amount = self.faker.pyfloat(positive=True, left_digits=2, right_digits=0)
         po.order_date = self.faker.date()
         draft_status = EnumValues.get(const.PO_DRAFT_STATUS_KEY)
-        po.status_id = draft_status.id
+        po.status = draft_status
         if type is None:
             types = EnumValues.type_filter(const.PO_TYPE_KEY).all()
             type = random.choice(types)
