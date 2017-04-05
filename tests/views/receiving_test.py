@@ -8,7 +8,7 @@ from tests.base_test_case import BaseTestCase
 
 class TestReceivingAdmin(BaseTestCase):
 
-    def test_on_model_delete(self):
+    def test_delete_complete_receiving_not_allowed(self):
         from app.models import Receiving, EnumValues
         from app.views import ReceivingAdmin
         from app import const
