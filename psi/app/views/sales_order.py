@@ -209,9 +209,6 @@ class SalesOrderAdmin(ModelViewWithAccess):
         if shipping is not None:
             db.session.add(shipping)
 
-    def after_model_change(self, form, model, is_created):
-        pass
-
     @property
     def role_identify(self):
         return "direct_sales_order"
