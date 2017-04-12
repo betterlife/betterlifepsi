@@ -3,7 +3,7 @@ import random
 from flask import url_for
 from six import iteritems
 
-import fixture
+from tests import fixture
 from app import const
 from app.utils import db_util, calc_inline_field_name
 from tests.base_test_case import BaseTestCase
@@ -32,8 +32,7 @@ class TestSalesOrderPages(BaseTestCase):
 
     def test_update_sales_order(self):
         data, expect = self.create_sales_order(status_key=const.SO_CREATED_STATUS_KEY)
-        customer, delivered, logistic_amount, total = \
-            expect[0], expect[1], float(expect[2]), float(expect[5])
+        customer, delivered, total = expect[0], expect[1], float(expect[4])
         self.assertPageRendered(expect_contents=expect,
                                 endpoint=url_for('salesorder.edit_view',
                                                  url=url_for(
@@ -99,7 +98,7 @@ class TestSalesOrderPages(BaseTestCase):
                     order_date=order_date, logistic_amount=logistic_amount,
                     remark=remark)
         total, data = self.prepare_so_lines_data_from_po(po, data)
-        expect = [customer.name, order_status.display, str(logistic_amount),
+        expect = [customer.name, order_status.display,
                   order_date.strftime("%Y-%m-%d"), remark, str(total)]
         self.assertPageRendered(method=self.test_client.post, data=data,
                                 endpoint=url_for('salesorder.create_view',
