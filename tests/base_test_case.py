@@ -21,8 +21,9 @@ class BaseTestCase(unittest.TestCase):
         rv = method(endpoint, data=data, follow_redirects=True)
         self.assertEqual(200, rv.status_code)
         if expect_contents is not None:
+            rv_data = rv.data
             for c in expect_contents:
-                self.assertIn(c, rv.data)
+                self.assertIn(c, rv_data)
         return rv
 
     def assertCreateFail(self, endpoint, data=None, create_data=None):
@@ -35,16 +36,18 @@ class BaseTestCase(unittest.TestCase):
         rv = self.test_client.post(endpoint, data=data, follow_redirects=True)
         self.assertEqual(200, rv.status_code)
         if not_expect_contents is not None:
+            rv_data = rv.data
             for c in not_expect_contents:
-                self.assertNotIn(c, rv.data)
+                self.assertNotIn(c, rv_data)
         return rv
 
     def assertDeleteFail(self, endpoint, data=None, deleted_data=None):
         rv = self.test_client.post(endpoint, data=data, follow_redirects=True)
         self.assertEqual(200, rv.status_code)
         if deleted_data is not None:
+            rv_data = rv.data
             for c in deleted_data:
-                self.assertIn(c, rv.data)
+                self.assertIn(c, rv_data)
         return rv
 
 

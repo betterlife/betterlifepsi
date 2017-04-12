@@ -102,11 +102,11 @@ class SalesOrderAdmin(ModelViewWithAccess):
                               'status.display', 'status.code', 'customer.mobile_phone', 'customer.email',
                               'customer.address', 'customer.level.display', 'customer.join_channel.display')
 
-    form_columns = ('id', 'customer', 'logistic_amount', 'order_date', 'remark', 'actual_amount',
+    form_columns = ('id', 'customer', 'logistic_amount', 'status', 'order_date', 'remark', 'actual_amount',
                     'original_amount', 'discount_amount', 'lines')
-    form_edit_rules = ('customer', 'logistic_amount', 'order_date', 'remark', 'actual_amount',
+    form_edit_rules = ('customer', 'logistic_amount', 'order_date', 'status', 'remark', 'actual_amount',
                        'original_amount', 'discount_amount', 'lines')
-    form_create_rules = ('customer', 'logistic_amount', 'order_date', 'remark', 'lines',)
+    form_create_rules = ('customer', 'logistic_amount',  'order_date', 'status', 'remark', 'lines',)
 
     column_details_list = ('id', 'type', 'status', 'customer', 'external_id', 'logistic_amount', 'order_date', 'remark',
                            'actual_amount', 'original_amount', 'discount_amount', 'incoming', 'expense',
@@ -125,8 +125,10 @@ class SalesOrderAdmin(ModelViewWithAccess):
 
     form_args = dict(
         logistic_amount=dict(default=0),
-        order_date=dict(default=datetime.now())
+        order_date=dict(default=datetime.now()),
+        status=dict(query_factory=SalesOrder.status_option_filter)
     )
+
     form_excluded_columns = ('incoming', 'expense', 'so_shipping')
     column_sortable_list = ('id', 'logistic_amount', 'actual_amount', 'original_amount', 'discount_amount',
                             'order_date',('status', 'status.display'), ('type', 'type.display'))
@@ -169,7 +171,7 @@ class SalesOrderAdmin(ModelViewWithAccess):
         form.lines.form.price_discount = None
         form.lines.form.retail_price = None
         form_util.filter_by_organization(form.customer, Customer)
-        self.filter_product(form)
+        self.filter_product_by_organization(form)
         return form
 
     def edit_form(self, obj=None):
@@ -177,11 +179,11 @@ class SalesOrderAdmin(ModelViewWithAccess):
 
         form = super(SalesOrderAdmin, self).edit_form(obj)
         form_util.filter_by_organization(form.customer, Customer)
-        self.filter_product(form)
+        self.filter_product_by_organization(form)
         return form
 
     @staticmethod
-    def filter_product(form):
+    def filter_product_by_organization(form):
         # Set query factory for new created line
         from app.models import Product
 
@@ -192,22 +194,25 @@ class SalesOrderAdmin(ModelViewWithAccess):
             form_util.filter_by_organization(sub_line.form.product, Product)
 
     def on_model_change(self, form, model, is_created):
+        super(SalesOrderAdmin, self).on_model_change(form, model, is_created)
         if is_created:
             model.type = EnumValues.get(const.DIRECT_SO_TYPE_KEY)
-            model.status = EnumValues.get(const.SO_DELIVERED_STATUS_KEY)
+            if model.status is None:
+                model.status = EnumValues.get(const.SO_DELIVERED_STATUS_KEY)
             model.organization = current_user.organization
-        incoming = SalesOrderService.create_or_update_incoming(model)
-        expense = SalesOrderService.create_or_update_expense(model)
-        shipping = None
-        if model.type.code == const.DIRECT_SO_TYPE_KEY:
-            shipping = SalesOrderService.create_or_update_shipping(model)
-        db = service.Info.get_db()
-        if expense is not None:
-            db.session.add(expense)
-        if incoming is not None:
-            db.session.add(incoming)
-        if shipping is not None:
-            db.session.add(shipping)
+        if model.status.code == const.SO_DELIVERED_STATUS_KEY:
+            incoming = SalesOrderService.create_or_update_incoming(model)
+            expense = SalesOrderService.create_or_update_expense(model)
+            shipping = None
+            if model.type.code == const.DIRECT_SO_TYPE_KEY:
+                shipping = SalesOrderService.create_or_update_shipping(model)
+            db = service.Info.get_db()
+            if expense is not None:
+                db.session.add(expense)
+            if incoming is not None:
+                db.session.add(incoming)
+            if shipping is not None:
+                db.session.add(shipping)
 
     @property
     def role_identify(self):

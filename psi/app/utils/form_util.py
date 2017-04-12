@@ -56,3 +56,13 @@ def del_form_field(admin_def, form, field_name):
         for r in admin_def._form_edit_rules:
             if r.field_name == field_name:
                 admin_def._form_edit_rules.rules.remove(r)
+
+
+def calc_inline_field_name(line_num, model_field):
+    """
+    Generate inline field name
+    :param line_num:  Line number
+    :param model_field: Model field name 
+    :return: the inline field name in the UI form. 
+    """
+    return 'lines-{0}-{1}'.format(str(line_num), model_field)
