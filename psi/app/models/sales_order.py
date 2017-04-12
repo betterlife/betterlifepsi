@@ -75,11 +75,17 @@ class SalesOrder(db.Model, DataSecurityMixin):
 
     def can_delete(self):
         can = super(SalesOrder, self).can_delete()
-        return can and self.status.code == const.SO_CREATED_STATUS_KEY and self.type.code != const.FRANCHISE_SO_TYPE_KEY
+        return (can and self.status.code == const.SO_CREATED_STATUS_KEY
+                and self.type.code != const.FRANCHISE_SO_TYPE_KEY)
 
     def can_edit(self, user=current_user):
         can = super(SalesOrder, self).can_edit()
         return can and self.status.code != const.SO_DELIVERED_STATUS_KEY
+
+    @staticmethod
+    def status_option_filter():
+        from app.models.enum_values import EnumValues
+        return EnumValues.type_filter(const.SO_STATUS_KEY)
 
 
 class SalesOrderLine(db.Model):
