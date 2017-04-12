@@ -5,13 +5,13 @@ class PurchaseOrderService(object):
     @staticmethod
     def create_expense_receiving(po):
         if po.status.code == const.PO_ISSUED_STATUS_KEY:
-            logistic_exp, goods_exp = PurchaseOrderService.create_expenses()
+            logistic_exp, goods_exp = PurchaseOrderService.create_expenses(po)
             db = service.Info.get_db()
             if logistic_exp is not None:
                 db.session.add(logistic_exp)
             if goods_exp is not None:
                 db.session.add(goods_exp)
-            receiving = PurchaseOrderService.create_receiving_if_not_exist()
+            receiving = PurchaseOrderService.create_receiving_if_not_exist(po)
             if receiving is not None:
                 db.session.add(receiving)
             return logistic_exp, goods_exp, receiving
