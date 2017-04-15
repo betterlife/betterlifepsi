@@ -117,39 +117,90 @@
 {# ---------------------- Forms -------------------------- #}
 {% macro render_field(form, field, kwargs={}, caller=None) %}
   {% set direct_error = h.is_field_error(field.errors) %}
-  <div class="form-group{{ ' has-error' if direct_error else '' }}">
-    <label for="{{ field.id }}" class="col-md-2 control-label">{{ field.label.text }}
-        {% if h.is_required_form_field(field) %}
-          <strong style="color: red">&#42;</strong>
-        {%- else -%}
-          &nbsp;
-        {%- endif %}
-    </label>
-    <div class="{{ kwargs.get('column_class', 'col-md-10') }}">
-      {% set _dummy = kwargs.setdefault('class', 'form-control') %}
-      {{ field(**kwargs)|safe }}
-      {% if field.description %}
-      <p class="help-block">{{ field.description|safe }}</p>
-      {% endif %}
-      {% if direct_error %}
-        <ul class="help-block input-errors">
-        {% for e in field.errors if e is string %}
-          <li>{{ e }}</li>
-        {% endfor %}
-        </ul>
-      {% endif %}
-    </div>
-    {% if caller %}
-      {{ caller(form, field, direct_error, kwargs) }}
+  {% set has_inline_field = has_inline_field(form) %}
+    {% if has_inline_field %}
+        {% set label_class = "col-md-3" %}
+        {% set input_class = "col-md-9" %}
+    {% else %}
+        {% set label_class = "col-md-2" %}
+        {% set input_class = "col-md-10" %}
     {% endif %}
-  </div>
+    {% if is_inline_field(field) == False %}
+      <div class="form-group{{ ' has-error' if direct_error else '' }}">
+        <label for="{{ field.id }}" class="{{ label_class }} control-label">{{ field.label.text }}
+            {% if h.is_required_form_field(field) %}
+              <strong style="color: red">&#42;</strong>
+            {%- else -%}
+              &nbsp;
+            {%- endif %}
+        </label>
+        <div class="{{ kwargs.get('column_class', input_class) }}">
+          {% set _dummy = kwargs.setdefault('class', 'form-control') %}
+          {{ field(**kwargs)|safe }}
+          {% if field.description %}
+          <p class="help-block">{{ field.description|safe }}</p>
+          {% endif %}
+          {% if direct_error %}
+            <ul class="help-block input-errors">
+            {% for e in field.errors if e is string %}
+              <li>{{ e }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+        {% if caller %}
+          {{ caller(form, field, direct_error, kwargs) }}
+        {% endif %}
+      </div>
+    {% endif %}
 {% endmacro %}
 
 {% macro render_header(form, text) %}
     <h3>{{ text }}</h3>
 {% endmacro %}
 
-{% macro render_form_fields(form, form_opts=None) %}
+{% macro render_header_fields_panel(head_class, form, form_opts) %}
+    <div class="{{ head_class }}" id="header-field-panel">
+        <div class="panel panel-default">
+            <div class="panel-heading align-right">
+                {{ _gettext('Header') }}
+            </div>
+            <div class="panel-body">
+                {% for r in form_opts.form_rules %}
+                    {{ r(form, form_opts=form_opts) }}
+                {% endfor %}
+                <div class="sidebar-collapse-button"
+                     id="header-field-panel-collapse-icon"></div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro render_inline_fields_panel(detail_class, form, field, direct_error, kwargs) %}
+    <div class="{{ detail_class }}" id="inline-field-panel">
+        {% for field in form if is_inline_field(field) %}
+            <div class="{{ kwargs.get('column_class', '') }}">
+                {% set _dummy = kwargs.setdefault('class', 'form-control') %}
+                {{ field(**kwargs)|safe }}
+                {% if field.description %}
+                    <p class="help-block">{{ field.description|safe }}</p>
+                {% endif %}
+                {% if direct_error %}
+                    <ul class="help-block input-errors">
+                        {% for e in field.errors if e is string %}
+                            <li>{{ e }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            {% if caller %}
+                {{ caller(form, field, direct_error, kwargs) }}
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endmacro %}
+
+{% macro render_form_fields(form, form_opts=None, has_inline_field=False) %}
     {% if form.hidden_tag is defined %}
         {{ form.hidden_tag() }}
     {% else %}
@@ -162,9 +213,22 @@
     {% endif %}
 
     {% if form_opts and form_opts.form_rules %}
-        {% for r in form_opts.form_rules %}
-            {{ r(form, form_opts=form_opts) }}
-        {% endfor %}
+        {% if has_inline_field %}
+            {% set head_class="col-md-4" %}
+            {% set detail_class="col-md-8" %}
+        {% else %}
+            {% set head_class="col-md-12" %}
+            {% set head_class="col-md-0" %}
+        {% endif %}
+        {% if has_inline_field %}
+            {{ render_header_fields_panel(head_class, form, form_opts)  }}
+            <div class="sidebar-expand-button" id="header-field-panel-expand-icon"></div>
+            {{ render_inline_fields_panel(detail_class, form, field, direct_error, kwargs) }}
+        {% else %}
+            {% for r in form_opts.form_rules %}
+                {{ r(form, form_opts=form_opts) }}
+            {% endfor %}
+        {% endif %}
     {% else %}
         {% for f in form if f.widget.input_type != 'hidden' %}
           {% if form_opts %}
@@ -232,10 +296,15 @@
     </form>
 {% endmacro %}
 
-{% macro render_form_buttons(cancel_url, extra=None, is_modal=False) %}
+{% macro render_form_buttons(cancel_url, extra=None, is_modal=False, has_inline_field=False) %}
     <hr>
     <div class="form-group">
-      <div class="col-md-offset-2 col-md-10 submit-row">
+    {% if has_inline_field %}
+        {% set classes = "col-md-offset-6 col-md-6" %}
+    {% else %}
+        {% set classes = "col-md-offset-4 col-md-8" %}
+    {% endif %}
+      <div class="{{ classes }} submit-row">
         <input type="submit" class="btn btn-primary" value="{{ _gettext('Save') }}" />
         {% if extra %}
         {{ extra }}
@@ -249,8 +318,9 @@
 
 {% macro render_form(form, cancel_url, extra=None, form_opts=None, action=None, is_modal=False) -%}
     {% call form_tag(action=action) %}
-        {{ render_form_fields(form, form_opts=form_opts) }}
-        {{ render_form_buttons(cancel_url, extra, is_modal) }}
+        {% set has_inline_field = has_inline_field(form) %}
+        {{ render_form_fields(form, form_opts=form_opts, has_inline_field=has_inline_field) }}
+        {{ render_form_buttons(cancel_url, extra, is_modal, has_inline_field=has_inline_field) }}
     {% endcall %}
 {% endmacro %}
 
@@ -283,6 +353,8 @@
   <script src="{{ admin_static.url(filename='vendor/x-editable/js/bootstrap3-editable.min.js', v='1.5.1') }}"></script>
   {% endif %}
   <script src="{{ admin_static.url(filename='admin/js/form.js', v='1.0.1') }}"></script>
+  <script src="{{ url_for('static', filename='js/edit_create.js') }}"></script>
+
 {% endmacro %}
 
 {% macro extra() %}

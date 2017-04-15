@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block tail %}
-  <div class='main-footer'> © 2015-2016 BETTERLIFE.IO | {{render_version() | safe}}</div>
+  <div id="system-info"> © 2015-2016 BETTERLIFE.IO | {{render_version() | safe}}</div>
   {{ super() }}
   <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
   <script src="{{ url_for('static', filename='lightbox2/js/lightbox.min.js') }}"></script>
@@ -31,16 +31,21 @@
 {% block access_control %}
   {% if current_user.is_authenticated %}
     <ul class="nav navbar-nav pull-right">
-      <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)">
-          <i class="glyphicon glyphicon-user"></i> {{ current_user.display }} <b class="caret"></b>
-        </a>
-        <ul class="dropdown-menu">
-          <li>
-            <a href="{{ url_for_security('logout') }}"><i class='glyphicon glyphicon-log-out'></i> Log out</a>
-          </li>
-        </ul>
-      </li>
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)">
+                <i class="glyphicon glyphicon-user"></i> {{ current_user.display }} <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="{{ url_for_security('logout') }}"><i class='glyphicon glyphicon-log-out'></i> Log out</a>
+                </li>
+                <li>
+                    <a style='cursor:help' id="system-info-link">
+                        <i class="glyphicon glyphicon-info-sign"></i>系统信息
+                    </a>
+                </li>
+            </ul>
+        </li>
     </ul>
   {% endif %}
 {% endblock %}

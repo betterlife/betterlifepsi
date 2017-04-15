@@ -138,8 +138,11 @@ def init_https(app):
 
 
 def init_jinja2_functions(app):
-    from app.utils.ui_util import render_version
+    from app.utils.ui_util import render_version, has_inline_field, \
+        is_inline_field
     app.add_template_global(render_version, 'render_version')
+    app.add_template_global(has_inline_field, 'has_inline_field')
+    app.add_template_global(is_inline_field, 'is_inline_field')
 
 
 def init_image_service(app):

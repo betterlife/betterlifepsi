@@ -6,6 +6,18 @@ import os
 default_swtag_file = os.path.dirname(os.path.realpath(__file__)) + '/../../swtag'
 
 
+def has_inline_field(form):
+    for f in form:
+        if is_inline_field(f):
+            return True
+    return False
+
+
+def is_inline_field(field):
+    from flask_admin.contrib.sqla.form import InlineModelFormList
+    r = isinstance(field, InlineModelFormList)
+    return r
+
 def render_version(swtag_file=default_swtag_file):
     try:
         builder_url = current_app.config['BUILDER_URL_PREFIX']

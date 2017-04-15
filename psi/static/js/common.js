@@ -36,7 +36,7 @@ $(document).ready(function () {
     $('[data-toggle="popover"]').popover({
         html: true, placement: "auto",
         viewport: {selector: 'body', padding: 5}
-    })
+    });
 });
 $('body').on('click', function (e) {
     $('[data-toggle="popover"]').each(function () {
@@ -49,22 +49,42 @@ $('body').on('click', function (e) {
     });
 });
 
+$(document).ready(function () {
+    function enable_system_info_display() {
+        var toggle_system_info_display = function () {
+            $('#system-info').toggle();
+        };
+
+        $("#system-info-link").click(function () {
+            toggle_system_info_display();
+        });
+        $("#system-info").click(function () {
+            toggle_system_info_display();
+        })
+    }
+    enable_system_info_display();
+});
+
 /* Hide a column of a table if all cells of the column is empty*/
 $('table').each(function (a, tbl) {
-    var currentTableRows = $(tbl).find('tbody tr').length;
-    $(tbl).find('th').each(function (i) {
-        var remove = 0;
-        var currentTable = $(this).parents('table');
+    function hide_empty_table_columns() {
+        var currentTableRows = $(tbl).find('tbody tr').length;
+        $(tbl).find('th').each(function (i) {
+            var remove = 0;
+            var currentTable = $(this).parents('table');
 
-        var tds = currentTable.find('tr td:nth-child(' + (i + 1) + ')');
-        tds.each(function () {
-            if ($(this).html().trim() === '') remove++;
+            var tds = currentTable.find('tr td:nth-child(' + (i + 1) + ')');
+            tds.each(function () {
+                if ($(this).html().trim() === '') remove++;
+            });
+            if (remove === currentTableRows) {
+                $(this).hide();
+                tds.hide();
+            }
         });
-        if (remove === currentTableRows) {
-            $(this).hide();
-            tds.hide();
-        }
-    });
+    }
+
+    hide_empty_table_columns();
 });
 
 $("input[name^='del-']").change(function(target){
@@ -73,44 +93,7 @@ $("input[name^='del-']").change(function(target){
     } else {
         $(this).parent().parent().removeClass('delete-indicate') ;
     }
-})
-
-function addInlineField(parent_id) {
-    parent = $("#" + parent_id);
-    $trs = parent.find(".inline-field");
-    var prefix = parent_id + '-' + $trs.length;
-
-    // Get template
-    var $template = $($('.inline-field-template-' + parent_id).text());
-
-    // Set form ID
-    $template.attr('id', prefix);
-
-    // Mark form that we just created
-    $template.addClass('fresh');
-    $template.removeClass('hide');
-    // Fix form IDs
-    $('[name]', $template).each(function (e) {
-        var me = $(this);
-
-        var id = me.attr('id');
-        var name = me.attr('name');
-
-        id = prefix + (id !== '' ? '-' + id : '');
-        name = prefix + (name !== '' ? '-' + name : '');
-
-        me.attr('id', id);
-        me.attr('name', name);
-    });
-
-    $template.appendTo(parent);
-
-    // Select first field
-    $('input:first', $template).focus();
-
-    // Apply styles
-    faForm.applyGlobalStyles($template);
-}
+});
 
 function MarkInvalidRowAction(id, status_id) {
     markRowAction(id, status_id, "mark_invalid_row_action_" + id, 'invalid');
