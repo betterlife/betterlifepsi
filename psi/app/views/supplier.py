@@ -7,7 +7,6 @@ from app.views.base import ModelViewWithAccess
 
 
 class PaymentMethodLineInlineAdmin(InlineFormAdmin):
-    # column_editable_list = ['account_name', 'account_number', 'bank_name', 'bank_branch', 'remark']
     form_args = dict(
         account_name=dict(label=lazy_gettext('Account Name')),
         account_number=dict(label=lazy_gettext('Account Number')),
@@ -30,8 +29,10 @@ class SupplierAdmin(ModelViewWithAccess):
     column_editable_list = ['name', 'qq', 'phone', 'contact', 'email', 'website',
                             'whole_sale_req', 'can_mixed_whole_sale', 'remark']
 
-    column_details_list = ['id', 'external_id', 'name', 'qq', 'phone', 'contact', 'email', 'website',
-                           'whole_sale_req', 'can_mixed_whole_sale', 'remark', 'paymentMethods']
+    column_details_list = ['id', 'external_id', 'name', 'qq', 'phone', 'contact',
+                           'email', 'website', 'whole_sale_req',
+                           'can_mixed_whole_sale', 'remark',
+                           'paymentMethods']
 
     column_searchable_list = ('name', 'external_id', 'name', 'qq', 'phone',
                               'contact', 'email', 'website', 'whole_sale_req', 'remark')
@@ -39,6 +40,13 @@ class SupplierAdmin(ModelViewWithAccess):
     column_filters = ('can_mixed_whole_sale',)
 
     form_overrides = dict(external_id=ReadonlyStringField)
+
+    form_columns = ('id', 'name', 'external_id', 'qq', 'phone', 'contact', 'email',
+                    'website', 'whole_sale_req', 'can_mixed_whole_sale', 'remark',
+                    'paymentMethods')
+
+    form_create_rules = form_columns
+    form_edit_rules = form_columns
 
     # column_filters = column_searchable_list
     column_labels = {
