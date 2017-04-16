@@ -534,3 +534,11 @@ ul.dropdown-menu > li > a > i.glyphicon {
     height: 100%;
     overflow: hidden;
 }
+
+.fresh>td.line-number:after{
+    content: "*";
+    color:red;
+    padding-left: 2px;
+    vertical-align: inherit;
+    font-size: 18px;
+}
