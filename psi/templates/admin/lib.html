@@ -171,6 +171,8 @@
                 {% endfor %}
                 <div class="sidebar-collapse-button"
                      id="header-field-panel-collapse-icon"></div>
+                <div class="inline-collapse-button"
+                     id="inline-field-panel-collapse-icon"></div>
             </div>
         </div>
     </div>
@@ -222,8 +224,9 @@
         {% endif %}
         {% if has_inline_field %}
             {{ render_header_fields_panel(head_class, form, form_opts)  }}
-            <div class="sidebar-expand-button" id="header-field-panel-expand-icon"></div>
+            <div class="header-expand-button" id="header-field-panel-expand-icon"></div>
             {{ render_inline_fields_panel(detail_class, form, field, direct_error, kwargs) }}
+            <div class="inline-expand-button" id="inline-field-panel-expand-icon"></div>
         {% else %}
             {% for r in form_opts.form_rules %}
                 {{ r(form, form_opts=form_opts) }}

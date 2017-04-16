@@ -450,59 +450,77 @@ ul.dropdown-menu > li > a > i.glyphicon {
  width:98%;
 }
 
-.sidebar-collapse-button {
+.sidebar-collapse-button,
+.inline-collapse-button,
+.header-expand-button,
+.inline-expand-button {
     width: 40px;
     height: 40px;
     position: absolute;
     bottom: 0;
+}
+
+.sidebar-collapse-button:after,
+.inline-collapse-button:after,
+.header-expand-button:after,
+.inline-expand-button:after {
+    font-size: 20px;
+    display: block;
+    position: fixed;
+    bottom: 0;
+    width: 40px;
+    height: 40px;
+    background: #FFFFFF;
+    cursor: pointer;
+    text-align: center;
+    line-height: 43px;
+    opacity: 0.85;
+    -webkit-box-shadow: -1px -1px 4px rgba(0, 0, 0, 0.25);
+    box-shadow: -1px -1px 4px rgba(0, 0, 0, 0.25);
+    z-index: 1000;
+}
+
+.sidebar-collapse-button {
     right: 15px;
 }
 
 .sidebar-collapse-button:after {
     content: "«";
-    font-size: 20px;
-    display: block;
-    position: fixed;
-    bottom: 0;
-    width: 40px;
-    height: 40px;
-    background: #FFFFFF;
-    cursor: pointer;
-    text-align: center;
-    line-height: 43px;
-    opacity: 0.85;
     padding-left: 7px;
     border-top-left-radius: 100%;
-    -webkit-box-shadow: -1px -1px 4px rgba(0, 0, 0, 0.25);
-    box-shadow: -1px -1px 4px rgba(0, 0, 0, 0.25);
 }
 
-.sidebar-expand-button {
-    width: 40px;
-    height: 40px;
-    position: absolute;
-    bottom: 0;
+.inline-collapse-button {
+    right: -25px;
+    width:40px;
+}
+
+.inline-collapse-button:after {
+    content: "»";
+    padding-right: 7px;
+    border-top-right-radius: 100%;
+}
+
+.header-expand-button {
     left: 0;
     display:none;
 }
 
-.sidebar-expand-button:after {
+.header-expand-button:after {
     content: "»";
-    font-size: 20px;
-    display: block;
-    position: fixed;
-    bottom: 0;
-    width: 40px;
-    height: 40px;
-    background: #FFFFFF;
-    cursor: pointer;
-    text-align: center;
-    line-height: 43px;
-    opacity: 0.85;
     padding-right: 7px;
     border-top-right-radius: 100%;
-    -webkit-box-shadow: -1px -1px 4px rgba(0, 0, 0, 0.25);
-    box-shadow: -1px -1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.inline-expand-button {
+    right: 30px;
+    display:none;
+}
+
+.inline-expand-button:after {
+    content: "«";
+    padding-left: 7px;
+    border-top-left-radius: 100%;
 }
 
 #header-field-panel .control-label {
