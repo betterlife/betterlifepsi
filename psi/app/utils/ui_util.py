@@ -5,8 +5,26 @@ import os
 
 default_swtag_file = os.path.dirname(os.path.realpath(__file__)) + '/../../swtag'
 
+def is_list_field(model, field):
+    """
+    Whether a field is a list field
+    :param model:  Model of the field
+    :param field: name of the field to check 
+    :return: True if attribute with the name is a list field, False otherwise. 
+    """
+    import sqlalchemy
+    field_type = type(getattr(model, field))
+    same_type = (field_type == sqlalchemy.orm.collections.InstrumentedList)
+    return same_type
+
 
 def has_inline_field(form):
+    """
+    Whether a form has a inline field
+    This is used in template to decide how to display the form 
+    :param form: the admin form to check
+    :return: True if has inline field, otherwise false 
+    """
     for f in form:
         if is_inline_field(f):
             return True
@@ -14,11 +32,30 @@ def has_inline_field(form):
 
 
 def is_inline_field(field):
+    """
+    Whether a field in create or edit form is an inline field
+    :param field: THe field to check 
+    :return: True if field is of instance InlineModelFormList, otherwise false 
+    """
     from flask_admin.contrib.sqla.form import InlineModelFormList
     r = isinstance(field, InlineModelFormList)
     return r
 
 def render_version(swtag_file=default_swtag_file):
+    """
+    Render version information in UI
+    :param swtag_file:  swtag file which contains VCS and build information
+    Of the follow format
+    8ab8044c115edf5f14bccd4057a9b8e096c28f85 254 144799860 master V0.6.5 2016.7.14
+    Where each part of the file is 
+    * GIT commit hash
+    * Build number in the build system
+    * Internal build in the build system
+    * Branch where the build been generated
+    * Code tag number when the build been generated
+    * Build date
+    :return: 
+    """
     try:
         builder_url = current_app.config['BUILDER_URL_PREFIX']
         git_url = current_app.config['GIT_URL_PREFIX']

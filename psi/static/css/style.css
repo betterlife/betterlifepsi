@@ -542,3 +542,28 @@ ul.dropdown-menu > li > a > i.glyphicon {
     vertical-align: inherit;
     font-size: 18px;
 }
+
+.fa_filter_container {
+    width: 98%;
+    margin: auto;
+    padding: 10px;
+    margin-left: 15px;
+}
+
+table.searchable {
+    width:98%;
+    margin:auto;
+}
+
+.object-ref-header-table tr:last-child  {
+    background-color: #f9f9f9 !important;
+    border-bottom:1px solid #ddd !important;
+}
+
+.object-ref-header-table th, .object-ref-line-table th {
+    text-align: center;
+}
+
+.object-ref-link {
+    float:right;
+}
