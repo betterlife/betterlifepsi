@@ -45,6 +45,8 @@ class ExpenseAdmin(ModelViewWithAccess):
 
     form_excluded_columns = ('sales_order', 'purchase_order', 'organization')
 
+    column_details_exclude_list = ('organization',)
+
     column_formatters = {
         'sales_order': sales_order_formatter,
         'purchase_order': purchase_order_formatter,
