@@ -118,14 +118,13 @@ def _objs_formatter(view, context, model, values, model_name, title_field='id', 
 
 def supplier_formatter(view, context, model, name):
     s = model.supplier
-    args = (id_field,
-            {'label': '名称', 'field': 'name'},
-            {'label': 'QQ', 'field': 'qq'},
-            {'label': '电话', 'field': 'phone'},
-            {'label': '联系人', 'field': 'contact'},
-            {'label': '邮件', 'field': 'email'},
-            {'label': '起批要求', 'field': 'whole_sale_req'},
-            {'label': '可混批?', 'field': 'can_mixed_whole_sale'},
+    args = (id_field, name_field,
+            {'label': lazy_gettext('QQ'), 'field': 'qq'},
+            {'label': lazy_gettext('Phone'), 'field': 'phone'},
+            {'label': lazy_gettext('Contact'), 'field': 'contact'},
+            {'label': lazy_gettext('Email'), 'field': 'email'},
+            {'label': lazy_gettext('Whole Sale Req'), 'field': 'whole_sale_req'},
+            {'label': lazy_gettext('Can Mixed Whole Sale'), 'field': 'can_mixed_whole_sale'},
             remark_field,)
     detail_args = (
         id_field,
@@ -275,3 +274,7 @@ def rich_text_formatter(view, context, model, name):
     from wtforms.widgets import HTMLString
     value = getattr(model, name)
     return HTMLString(value)
+
+
+def line_formatter(view, context, model, name):
+    return "ABC"
