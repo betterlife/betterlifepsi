@@ -73,12 +73,15 @@ def init_logging(flask_app):
     from logging import Formatter
     logger = logging.getLogger('psi')
     if flask_app.config['DEBUG']:
-        log = logging.getLogger('werkzeug')
-        log.setLevel(logging.ERROR)
-        file_handler = FileHandler('betterlife-psi.log', encoding='UTF-8', mode='w')
-        file_handler.setFormatter(Formatter(const.FILE_HANDLER_LOG_FORMAT))
-        logger.addHandler(file_handler)
-        logger.setLevel(logging.DEBUG)
+        # set environment variable WERKZEUG_DEBUG_PIN to off to
+        # disable debug PIN for werkzeug.
+        # log = logging.getLogger('werkzeug')
+        # log.setLevel(logging.INFO)
+        # file_handler = FileHandler('betterlife-psi.log', encoding='UTF-8', mode='w')
+        # file_handler.setFormatter(Formatter(const.FILE_HANDLER_LOG_FORMAT))
+        # logger.addHandler(file_handler)
+        #logger.setLevel(logging.DEBUG)
+        pass
     else:
         handler = logging.StreamHandler()
         handler.setFormatter(Formatter(const.CONSOLE_HANDLER_LOG_FORMAT))
@@ -139,10 +142,11 @@ def init_https(app):
 
 def init_jinja2_functions(app):
     from app.utils.ui_util import render_version, has_inline_field, \
-        is_inline_field
+        is_inline_field, is_list_field
     app.add_template_global(render_version, 'render_version')
     app.add_template_global(has_inline_field, 'has_inline_field')
     app.add_template_global(is_inline_field, 'is_inline_field')
+    app.add_template_global(is_list_field, 'is_list_field')
 
 
 def init_image_service(app):

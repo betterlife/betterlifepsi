@@ -162,8 +162,8 @@
 {% macro render_header_fields_panel(head_class, form, form_opts) %}
     <div class="{{ head_class }}" id="header-field-panel">
         <div class="panel panel-default">
-            <div class="panel-heading align-right">
-                {{ _gettext('Header') }}
+            <div class="panel-heading text-center">
+                <b>{{ _gettext('基本信息') }}</b>
             </div>
             <div class="panel-body">
                 {% for r in form_opts.form_rules %}

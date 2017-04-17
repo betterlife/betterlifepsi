@@ -39,15 +39,19 @@ supplier_field = {'label': lazy_gettext('Supplier'), 'field': 'supplier'}
 name_field = {'label': lazy_gettext('Name'), 'field': 'name'}
 
 
+def boolean_formatter(val_to_format):
+    if val_to_format is None:
+        return ''
+    if isinstance(val_to_format, bool):
+        if val_to_format is True:
+            val_to_format = '<span class="fa fa-check-circle glyphicon glyphicon-ok-circle icon-ok-circle"></span>'
+        else:
+            val_to_format = '<span class="fa fa-minus-circle glyphicon glyphicon-minus-sign icon-minus-sign"></span>'
+    return val_to_format
+
+
 def _obj_formatter_str(view, context, model, value=None, model_name=None, title=None, fields=None,
                        detail_fields=None, detail_field=None):
-    def boolean_formatter(val_to_format):
-        if isinstance(val_to_format, bool):
-            if val_to_format is True:
-                val_to_format = '<span class="fa fa-check-circle glyphicon glyphicon-ok-circle icon-ok-circle"></span>'
-            else:
-                val_to_format = '<span class="fa fa-minus-circle glyphicon glyphicon-minus-sign icon-minus-sign"></span>'
-        return val_to_format
 
     endpoint = get_endpoint_by_type_attr(value, model_name)
 
@@ -67,7 +71,6 @@ def _obj_formatter_str(view, context, model, value=None, model_name=None, title=
             line_vals = []
             for detail_key in detail_fields:
                 val = str(boolean_formatter(getattr(detail_line_val, detail_key['field'])))
-                val = '' if (val == 'None' or val is None) else val
                 line_vals.append(val)
             detail_lines.append(line_vals)
     return render_template('components/object_ref.html',
@@ -260,5 +263,19 @@ def rich_text_formatter(view, context, model, name):
 
 def line_formatter(view, context, model, name):
     value = getattr(model, name)
-
-    return "ABC"
+    fields = [product_field, quantity_field, retail_price_field,
+              actual_amount_field, original_amount_field,
+              discount_amount_field, remark_field]
+    labels, values = [],[]
+    for field in fields:
+        labels.append(field['label'])
+    for line in value:
+        line_val = []
+        for f in fields:
+            val = getattr(line, f['field'])
+            line_val.append(str(boolean_formatter(val)))
+        values.append(line_val)
+    result = render_template('components/detail_lines.html',
+                           detail_labels=labels,
+                           detail_lines = values)
+    return result

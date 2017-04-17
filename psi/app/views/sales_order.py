@@ -2,8 +2,10 @@
 from datetime import datetime
 from functools import partial
 
+from flask_admin.contrib.sqla.ajax import QueryAjaxModelLoader
+
 from app import service, const
-from app.models import EnumValues
+from app.models import EnumValues, Customer, Product
 from app.services.sales_order import SalesOrderService
 from app.utils import current_user, form_util
 from app.views.components import ReadonlyStringField, DisabledStringField
@@ -58,13 +60,18 @@ class MarkShipRowAction(BaseListRowAction):
 
 class SalesOrderLineInlineAdmin(InlineFormAdmin):
     form_args = dict(
-        product=dict(label=lazy_gettext('Product')),
         unit_price=dict(label=lazy_gettext('Unit Price')),
         quantity=dict(label=lazy_gettext('Quantity')),
         remark=dict(label=lazy_gettext('Remark')),
     )
 
     def postprocess_form(self, form):
+        from flask_admin.model.fields import AjaxSelectField
+        ajaxLoader = QueryAjaxModelLoader(name='product',
+                                          session=service.Info.get_db().session,
+                                          model=Product,
+                                          fields=['name'])
+        form.product = AjaxSelectField(ajaxLoader, label=lazy_gettext('Product'))
         form.retail_price = DisabledStringField(label=lazy_gettext('Retail Price'))
         form.price_discount = DisabledStringField(label=lazy_gettext('Price Discount'))
         form.original_amount = DisabledStringField(label=lazy_gettext('Original Amount'))
@@ -75,10 +82,13 @@ class SalesOrderLineInlineAdmin(InlineFormAdmin):
         form.external_id = None
         return form
 
+    form_columns = ('id', 'product', 'unit_price', 'quantity',)
+
 
 class SalesOrderAdmin(ModelViewWithAccess):
     from app.models import SalesOrderLine, SalesOrder
-    from formatter import expenses_formatter, incoming_formatter, shipping_formatter, default_date_formatter
+    from formatter import expenses_formatter, incoming_formatter, \
+        shipping_formatter, default_date_formatter, line_formatter
 
     column_extra_row_actions = [
         MarkShipRowAction('fa fa-camera-retro'),
@@ -133,6 +143,19 @@ class SalesOrderAdmin(ModelViewWithAccess):
     column_sortable_list = ('id', 'logistic_amount', 'actual_amount', 'original_amount', 'discount_amount',
                             'order_date',('status', 'status.display'), ('type', 'type.display'))
 
+    form_ajax_refs = {
+        'customer': QueryAjaxModelLoader('customer',
+                                         service.Info.get_db().session, Customer,
+                                         filters=[],
+                                         fields=['first_name', 'last_name', 'mobile_phone', 'email']),
+        'product': QueryAjaxModelLoader(name='product',
+                                        session=service.Info.get_db().session,
+                                        model=Product,
+                                        # --> Still need to filter the products by organization.
+                                        # --> Line 209 is commented out, need to bring it back.
+                                        fields=['name']),
+    }
+
     inline_models = (SalesOrderLineInlineAdmin(SalesOrderLine),)
 
     column_formatters = {
@@ -140,6 +163,7 @@ class SalesOrderAdmin(ModelViewWithAccess):
         'incoming': incoming_formatter,
         'so_shipping': shipping_formatter,
         'order_date': default_date_formatter,
+        'lines': line_formatter,
     }
 
     column_labels = {
@@ -165,14 +189,17 @@ class SalesOrderAdmin(ModelViewWithAccess):
         from app.models import Customer
 
         form = super(SalesOrderAdmin, self).create_form(obj)
+        self.hide_line_derive_fields_on_create_form(form)
+        form_util.filter_by_organization(form.customer, Customer)
+        self.filter_product_by_organization(form)
+        return form
+
+    def hide_line_derive_fields_on_create_form(self, form):
         form.lines.form.actual_amount = None
         form.lines.form.discount_amount = None
         form.lines.form.original_amount = None
         form.lines.form.price_discount = None
         form.lines.form.retail_price = None
-        form_util.filter_by_organization(form.customer, Customer)
-        self.filter_product_by_organization(form)
-        return form
 
     def edit_form(self, obj=None):
         from app.models import Customer
@@ -187,7 +214,10 @@ class SalesOrderAdmin(ModelViewWithAccess):
         # Set query factory for new created line
         from app.models import Product
 
-        form.lines.form.product.kwargs['query_factory'] = partial(Product.organization_filter, current_user.organization_id)
+        # TODO.xqliu Fix this for AJAX lookup
+        # If we uncomment follow line to limit the query to current organization
+        # The AJAX look up fails.
+        # form.lines.form.product.kwargs['query_factory'] = partial(Product.organization_filter, current_user.organization_id)
         # Set query object filter for existing lines
         line_entries = form.lines.entries
         for sub_line in line_entries:
