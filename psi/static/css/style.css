@@ -536,13 +536,10 @@ ul.dropdown-menu > li > a > i.glyphicon {
     overflow: hidden;
 }
 
-#header-field-panel .header-field-table-container {
-    border-right:1px solid #dddddd;
+.detail-header-field-panel .panel-body {
+    padding: 0;
+    border:0;
 }
-#header-field-panel .header-field-table-container table {
-    margin-right:0;
-}
-
 
 .fresh>td.line-number:after{
     content: "*";

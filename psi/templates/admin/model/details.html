@@ -51,25 +51,27 @@
             </table>
         {% else %}
             <div>
-                <div class="col-md-4 searchable" id="header-field-panel">
-                    <div class="header-field-table-container">
-                        <table class="object-ref-header-table table table-hover table-bordered searchable table-striped">
-                            <tr>
-                                <th colspan="2"><b>{{ _gettext('基本信息') }}</b></th>
-                            </tr>
-                            {% for c, name in admin_view.get_details_columns() %}
-                                {% if not is_list_field(model, c) %}
-                                    <tr id="detail-{{ c }}">
-                                        <td><b>{{ name }}</b></td>
-                                        <td>{{ get_value(model, c) }}</td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                        </table>
-                        <div class="sidebar-collapse-button"
-                             id="header-field-panel-collapse-icon"></div>
-                        <div class="inline-collapse-button"
-                             id="inline-field-panel-collapse-icon"></div>
+                <div class="col-md-4 searchable detail-header-field-panel" id="header-field-panel">
+                    <div class="panel panel-default">
+                        <div class="panel-heading text-center">
+                            <b>{{ _gettext('基本信息') }}</b>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-hover searchable table-striped">
+                                {% for c, name in admin_view.get_details_columns() %}
+                                    {% if not is_list_field(model, c) %}
+                                        <tr id="detail-{{ c }}">
+                                            <td><b>{{ name }}</b></td>
+                                            <td>{{ get_value(model, c) }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </table>
+                            <div class="sidebar-collapse-button"
+                                 id="header-field-panel-collapse-icon"></div>
+                            <div class="inline-collapse-button"
+                                 id="inline-field-panel-collapse-icon"></div>
+                        </div>
                     </div>
                 </div>
                 <div class="header-expand-button" id="header-field-panel-expand-icon"></div>
