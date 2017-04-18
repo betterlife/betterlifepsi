@@ -222,7 +222,7 @@ def product_formatter(view, context, model, name):
 
 
 def organization_formatter(view, context, model, name):
-    fields = (name_field)
+    fields = (name_field,)
     obj = getattr(model, name)
     if obj is not None:
         if type(obj) is list:
