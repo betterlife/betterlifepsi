@@ -8,7 +8,7 @@ from tests.base_test_case import BaseTestCase
 class TestUIUtil(BaseTestCase):
 
     def test_render_version(self):
-        from app.utils.ui_util import render_version
+        from psi.app.utils.ui_util import render_version
         import os
         fixture.login_as_admin(self.test_client)
         my_dir = os.path.dirname(os.path.realpath(__file__))

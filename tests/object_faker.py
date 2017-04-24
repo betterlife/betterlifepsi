@@ -1,8 +1,8 @@
 # coding=utf-8
 import random
 
-import app.const as const
-from app.utils import db_util
+import psi.app.const as const
+from psi.app.utils import db_util
 from faker import Faker
 from flask_login import current_user
 
@@ -12,9 +12,9 @@ class ObjectFaker(object):
         self.faker = Faker()
 
     def sales_order(self, so_id=None, number_of_line=1, creator=current_user, type=None, products=None):
-        from app.models import SalesOrder, EnumValues, SalesOrderLine
-        from app.const import SO_CREATED_STATUS_KEY
-        from app.services import SalesOrderService
+        from psi.app.models import SalesOrder, EnumValues, SalesOrderLine
+        from psi.app.const import SO_CREATED_STATUS_KEY
+        from psi.app.services import SalesOrderService
         so = SalesOrder()
         so.remark = self.faker.text(max_nb_chars=20)
         so.logistic_amount = self.faker.pyfloat(positive=True, left_digits=2,
@@ -48,7 +48,7 @@ class ObjectFaker(object):
         return so
 
     def purchase_order(self, po_id=None, number_of_line=1, creator=current_user, type=None):
-        from app.models import PurchaseOrder, PurchaseOrderLine, EnumValues
+        from psi.app.models import PurchaseOrder, PurchaseOrderLine, EnumValues
         po = PurchaseOrder()
         po.remark = self.faker.text(max_nb_chars=20)
         po.logistic_amount = self.faker.pyfloat(positive=True, left_digits=2, right_digits=0)
@@ -79,7 +79,7 @@ class ObjectFaker(object):
         return po
 
     def supplier(self, supplier_id=None, creator=current_user):
-        from app.models import Supplier
+        from psi.app.models import Supplier
         supplier = Supplier()
         supplier.id = supplier_id if supplier_id is not None else db_util.get_next_id(Supplier)
         supplier.name = self.faker.name()
@@ -94,7 +94,7 @@ class ObjectFaker(object):
         return supplier
 
     def customer(self, customer_id=None, creator=current_user):
-        from app.models import Customer
+        from psi.app.models import Customer
         customer = Customer()
         customer.id = customer_id if customer_id is not None else db_util.get_next_id(Customer)
         customer.address = self.faker.address()
@@ -110,7 +110,7 @@ class ObjectFaker(object):
         return customer
 
     def product(self, product_id=None, supplier=None, creator=current_user):
-        from app.models import Product
+        from psi.app.models import Product
         product = Product()
         product.id = product_id if product_id is not None else db_util.get_next_id(Product)
         product.category = self.category(creator=creator)
@@ -126,7 +126,7 @@ class ObjectFaker(object):
         return product
 
     def category(self, category_id=None, creator=current_user):
-        from app.models import ProductCategory
+        from psi.app.models import ProductCategory
         category = ProductCategory()
         category.id = category_id if category_id is not None else db_util.get_next_id(ProductCategory)
         category.code = self.faker.pystr(max_chars=8)
@@ -137,7 +137,7 @@ class ObjectFaker(object):
     def user(self, role_names=None, organization=None):
         if role_names is None:
             role_names = []
-        from app.models import User, Role
+        from psi.app.models import User, Role
         from flask_security.utils import encrypt_password
         user = User()
         user.active = True
@@ -156,8 +156,8 @@ class ObjectFaker(object):
         return user, password
 
     def organization(self, organization_id = None, type=None, parent=None):
-        from app.models import Organization
-        from app.models import EnumValues
+        from psi.app.models import Organization
+        from psi.app.models import EnumValues
         organization = Organization()
         organization.description = self.faker.text(max_nb_chars=10)
         organization.name = self.faker.name()

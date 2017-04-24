@@ -4,8 +4,8 @@ from flask import url_for
 from six import iteritems
 
 from tests import fixture
-from app import const
-from app.utils import db_util, calc_inline_field_name
+from psi.app import const
+from psi.app.utils import db_util, calc_inline_field_name
 from tests.base_test_case import BaseTestCase
 from tests.object_faker import object_faker as of
 
@@ -69,8 +69,8 @@ class TestSalesOrderPages(BaseTestCase):
         self.create_sales_order(status_key=const.SO_DELIVERED_STATUS_KEY)
 
     def create_sales_order(self, status_key):
-        from app.models import EnumValues
-        from app.services.purchase_order import PurchaseOrderService
+        from psi.app.models import EnumValues
+        from psi.app.services.purchase_order import PurchaseOrderService
         user, password = of.user(
             role_names=['direct_sales_order_create',
                         'direct_sales_order_view',

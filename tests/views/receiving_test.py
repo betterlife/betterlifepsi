@@ -9,10 +9,10 @@ from tests.base_test_case import BaseTestCase
 class TestReceivingAdmin(BaseTestCase):
 
     def test_delete_complete_receiving_not_allowed(self):
-        from app.models import Receiving, EnumValues
-        from app.views import ReceivingAdmin
-        from app import const
-        from app.service import Info
+        from psi.app.models import Receiving, EnumValues
+        from psi.app.views import ReceivingAdmin
+        from psi.app import const
+        from psi.app.service import Info
         fixture.login_as_admin(self.test_client)
         receiving = Receiving()
         complete_status = EnumValues.get(const.RECEIVING_COMPLETE_STATUS_KEY)

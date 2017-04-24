@@ -1,8 +1,8 @@
 # coding=utf-8
 from flask import url_for
 
-from app import const
-from app.utils import db_util
+from psi.app import const
+from psi.app.utils import db_util
 from tests import fixture
 from tests.base_test_case import BaseTestCase
 from tests.object_faker import object_faker
@@ -32,7 +32,7 @@ class TestOrganization(BaseTestCase):
 
     def test_edit(self):
 
-        from app.models import EnumValues
+        from psi.app.models import EnumValues
         type_id = EnumValues.get(const.DIRECT_SELLING_STORE_ORG_TYPE_KEY).id
 
         with self.test_client:
@@ -60,7 +60,7 @@ class TestOrganization(BaseTestCase):
                                           "parent": 1})
 
     def test_create(self):
-        from app.models import EnumValues
+        from psi.app.models import EnumValues
         type_id = EnumValues.get(const.DIRECT_SELLING_STORE_ORG_TYPE_KEY).id
 
         with self.test_client:
@@ -79,13 +79,13 @@ class TestOrganization(BaseTestCase):
             self.assertDeleteSuccessful(endpoint=url_for('organization.delete_view', id=2, url=url_for('organization.index_view')),
                                         deleted_data=[org_name, org_desc])
 
-            from app.models import Organization
+            from psi.app.models import Organization
             user, pwd = object_faker.user(role_names=['organization_create', 'organization_view',
                                                       'organization_delete', 'organization_edit'],
                                           organization=Organization.query.get(1))
             db_util.save_objects_commit(user)
             fixture.login_user(self.test_client, user.email, pwd)
-            from app.models import EnumValues
+            from psi.app.models import EnumValues
             org_type = EnumValues.get(const.DIRECT_SELLING_STORE_ORG_TYPE_KEY)
             self.assertCreateFail(endpoint=create_url,
                                   create_data=[org_name, org_desc],
@@ -93,7 +93,7 @@ class TestOrganization(BaseTestCase):
                                         "description": org_desc, "parent": 1})
 
     def test_delete_root_not_allowed(self):
-        from app.models import EnumValues
+        from psi.app.models import EnumValues
         type_id = EnumValues.get(const.DIRECT_SELLING_STORE_ORG_TYPE_KEY).id
 
         with self.test_client:
@@ -116,7 +116,7 @@ class TestOrganization(BaseTestCase):
                                           "parent": u'__None'})
 
     def test_delete_normal_allowed(self):
-        from app.models import EnumValues
+        from psi.app.models import EnumValues
         type_id = EnumValues.get(const.DIRECT_SELLING_STORE_ORG_TYPE_KEY).id
         with self.test_client:
             fixture.login_as_admin(self.test_client)
@@ -125,7 +125,7 @@ class TestOrganization(BaseTestCase):
                                         deleted_data=[name, desc])
 
     def test_delete_with_child_not_allowed(self):
-        from app.models import EnumValues, Organization
+        from psi.app.models import EnumValues, Organization
         type_id = EnumValues.get(const.DIRECT_SELLING_STORE_ORG_TYPE_KEY).id
         with self.test_client:
             fixture.login_as_admin(self.test_client)

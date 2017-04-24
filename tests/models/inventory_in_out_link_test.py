@@ -1,15 +1,15 @@
 from tests.base_test_case import BaseTestCase
 from tests.object_faker import object_faker as of
-from app import const
+from psi.app import const
 
 
 class TestInventoryInOutLink(BaseTestCase):
     def test_enough_inventory(self):
-        from app.services.purchase_order import PurchaseOrderService
+        from psi.app.services.purchase_order import PurchaseOrderService
         with self.test_client:
             from tests.fixture import login_as_admin
-            from app.services import SalesOrderService
-            from app.models import EnumValues
+            from psi.app.services import SalesOrderService
+            from psi.app.models import EnumValues
             login_as_admin(self.test_client)
             po = of.purchase_order(number_of_line=2, type=EnumValues.get(const.DIRECT_PO_TYPE_KEY))
             products = [l.product for l in po.lines]
@@ -17,7 +17,7 @@ class TestInventoryInOutLink(BaseTestCase):
             receiving.status = EnumValues.get(const.RECEIVING_COMPLETE_STATUS_KEY)
             in_trans_line = receiving.operate_inv_trans_by_recv_status()
             po = receiving.update_purchase_order_status()
-            from app.utils import db_util
+            from psi.app.utils import db_util
             db_util.save_objects_commit(po, receiving, in_trans_line)
             so = of.sales_order(products=products, number_of_line=2)
             shipping = SalesOrderService.create_or_update_shipping(so)

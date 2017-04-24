@@ -2,13 +2,13 @@ from __future__ import print_function
 
 import os
 
-from app import create_app, init_all
-from app.config import CITestConfig
-from app.service import Info
+from psi.app import create_app, init_all
+from psi.app.config import CITestConfig
+from psi.app.service import Info
 
 
 def init_app():
-    from app.config import TestConfig
+    from psi.app.config import TestConfig
     # warnings.warn("Recreating DB")
     # recreate_database(TestConfig)
     if os.environ.get('CI_MODE') == 'True':
