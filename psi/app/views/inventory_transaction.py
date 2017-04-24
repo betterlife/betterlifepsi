@@ -1,13 +1,13 @@
 from datetime import datetime
 
-from app.models import InventoryTransactionLine, InventoryTransaction
-from app.utils import security_util
+from psi.app.models import InventoryTransactionLine, InventoryTransaction
+from psi.app.utils import security_util
 from flask_admin.contrib.sqla.filters import FloatGreaterFilter, FloatSmallerFilter
 from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext
 
 from formatter import receivings_formatter, shipping_formatter, default_date_formatter
-from app.views.base import ModelViewWithAccess
+from psi.app.views.base import ModelViewWithAccess
 
 
 class InventoryTransactionLineInlineAdmin(InlineFormAdmin):
@@ -27,7 +27,7 @@ class InventoryTransactionLineInlineAdmin(InlineFormAdmin):
     )
 
     def postprocess_form(self, form):
-        from app.views.components import DisabledStringField
+        from psi.app.views.components import DisabledStringField
         form.total_amount = DisabledStringField(label=lazy_gettext('Total Amount'))
         form.itl_receiving_line = None
         form.remark = None
@@ -69,7 +69,7 @@ class InventoryTransactionAdmin(ModelViewWithAccess):
         date=dict(default=datetime.now()),
     )
 
-    from app.views.components import DisabledStringField
+    from psi.app.views.components import DisabledStringField
 
     form_extra_fields = {
         'total_amount': DisabledStringField(label=lazy_gettext('Total Amount')),
@@ -92,7 +92,7 @@ class InventoryTransactionAdmin(ModelViewWithAccess):
         columns = super(InventoryTransactionAdmin, self).get_list_columns()
         cols = ['total_amount']
         columns = security_util.filter_columns_by_role(
-            columns, cols,'purchase_price_view'
+            columns, cols, 'purchase_price_view'
         )
         return columns
 
@@ -100,6 +100,6 @@ class InventoryTransactionAdmin(ModelViewWithAccess):
         cols = ['total_amount']
         columns = super(InventoryTransactionAdmin, self).get_details_columns()
         columns = security_util.filter_columns_by_role(
-            columns, cols,'purchase_price_view'
+            columns, cols, 'purchase_price_view'
         )
         return columns

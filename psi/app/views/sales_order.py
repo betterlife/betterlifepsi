@@ -4,18 +4,18 @@ from functools import partial
 
 from flask_admin.contrib.sqla.ajax import QueryAjaxModelLoader
 
-from app import service, const
-from app.models import EnumValues, Customer, Product
-from app.services.sales_order import SalesOrderService
-from app.utils import current_user, form_util
-from app.views.components import ReadonlyStringField, DisabledStringField
+from psi.app import service, const
+from psi.app.models import EnumValues, Customer, Product
+from psi.app.services.sales_order import SalesOrderService
+from psi.app.utils import current_user, form_util
+from psi.app.views.components import ReadonlyStringField, DisabledStringField
 from flask_admin.model.template import BaseListRowAction
 from flask_admin.contrib.sqla.filters import FloatGreaterFilter, FloatSmallerFilter, FloatEqualFilter
 from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext
 from markupsafe import Markup
 
-from app.views.base import ModelViewWithAccess
+from psi.app.views.base import ModelViewWithAccess
 
 
 class MarkInvalidRowAction(BaseListRowAction):
@@ -86,7 +86,7 @@ class SalesOrderLineInlineAdmin(InlineFormAdmin):
 
 
 class SalesOrderAdmin(ModelViewWithAccess):
-    from app.models import SalesOrderLine, SalesOrder
+    from psi.app.models import SalesOrderLine, SalesOrder
     from formatter import expenses_formatter, incoming_formatter, \
         shipping_formatter, default_date_formatter, line_formatter
 
@@ -186,7 +186,7 @@ class SalesOrderAdmin(ModelViewWithAccess):
     }
 
     def create_form(self, obj=None):
-        from app.models import Customer
+        from psi.app.models import Customer
 
         form = super(SalesOrderAdmin, self).create_form(obj)
         self.hide_line_derive_fields_on_create_form(form)
@@ -202,7 +202,7 @@ class SalesOrderAdmin(ModelViewWithAccess):
         form.lines.form.retail_price = None
 
     def edit_form(self, obj=None):
-        from app.models import Customer
+        from psi.app.models import Customer
 
         form = super(SalesOrderAdmin, self).edit_form(obj)
         form_util.filter_by_organization(form.customer, Customer)
@@ -212,7 +212,7 @@ class SalesOrderAdmin(ModelViewWithAccess):
     @staticmethod
     def filter_product_by_organization(form):
         # Set query factory for new created line
-        from app.models import Product
+        from psi.app.models import Product
 
         # TODO.xqliu Fix this for AJAX lookup
         # If we uncomment follow line to limit the query to current organization

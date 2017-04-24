@@ -1,14 +1,14 @@
 # encoding=utf-8
 from __future__ import print_function
 
-from app.const import *
-from app.models import EnumValues, SalesOrder
-from app.service import Info
-from app.utils import has_role, return_error_as_json
+from psi.app.const import *
+from psi.app.models import EnumValues, SalesOrder
+from psi.app.service import Info
+from psi.app.utils import has_role, return_error_as_json
 from flask_babelex import gettext
 from flask_restful import Resource, reqparse
 
-from app.services import SalesOrderService
+from psi.app.services import SalesOrderService
 
 parser = reqparse.RequestParser()
 parser.add_argument('status_id', type=int, help='ID of new status')

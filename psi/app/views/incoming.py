@@ -1,11 +1,11 @@
 # coding=utf-8
 from datetime import datetime
 
-from app.models import Incoming
+from psi.app.models import Incoming
 from flask_babelex import lazy_gettext
 
 from formatter import sales_order_formatter, default_date_formatter
-from app.views import ModelViewWithAccess
+from psi.app.views import ModelViewWithAccess
 
 
 class IncomingAdmin(ModelViewWithAccess):

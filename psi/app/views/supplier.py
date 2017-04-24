@@ -1,9 +1,9 @@
 # coding=utf-8
-from app.views.components import ReadonlyStringField
+from psi.app.views.components import ReadonlyStringField
 from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext
 
-from app.views.base import ModelViewWithAccess
+from psi.app.views.base import ModelViewWithAccess
 
 
 class PaymentMethodLineInlineAdmin(InlineFormAdmin):
@@ -17,7 +17,7 @@ class PaymentMethodLineInlineAdmin(InlineFormAdmin):
 
 
 class SupplierAdmin(ModelViewWithAccess):
-    from app.models import PaymentMethod
+    from psi.app.models import PaymentMethod
 
     form_excluded_columns = ('purchaseOrders', 'products', 'organization')
     inline_models = (PaymentMethodLineInlineAdmin(PaymentMethod),)

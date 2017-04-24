@@ -1,15 +1,15 @@
 # encoding: utf-8
 from decimal import Decimal
 
-from app import const
-from app.service import Info
-from app.utils.format_util import format_decimal
+from psi.app import const
+from psi.app.service import Info
+from psi.app.utils.format_util import format_decimal
 from flask_login import current_user
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func, String
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
-from app.models.data_security_mixin import DataSecurityMixin
+from psi.app.models.data_security_mixin import DataSecurityMixin
 
 db = Info.get_db()
 
@@ -84,7 +84,7 @@ class SalesOrder(db.Model, DataSecurityMixin):
 
     @staticmethod
     def status_option_filter():
-        from app.models.enum_values import EnumValues
+        from psi.app.models.enum_values import EnumValues
         return EnumValues.type_filter(const.SO_STATUS_KEY)
 
 
@@ -129,7 +129,7 @@ class SalesOrderLine(db.Model):
 
     @original_amount.expression
     def original_amount(self):
-        from app.models.product import Product
+        from psi.app.models.product import Product
         return (select([SalesOrderLine.quantity * Product.retail_price])
                 .where(self.product_id == Product.id).label('line_original_amount'))
 

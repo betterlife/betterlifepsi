@@ -1,13 +1,13 @@
 # coding=utf-8
 from datetime import datetime
 
-from app import service, const
-from app.models import PurchaseOrder, EnumValues
-from app.services.purchase_order import PurchaseOrderService
-from app.utils import security_util
-from app.views import ModelViewWithAccess
-from app.views.base import DeleteValidator
-from app.views.components import DisabledStringField
+from psi.app import service, const
+from psi.app.models import PurchaseOrder, EnumValues
+from psi.app.services.purchase_order import PurchaseOrderService
+from psi.app.utils import security_util
+from psi.app.views import ModelViewWithAccess
+from psi.app.views.base import DeleteValidator
+from psi.app.views.components import DisabledStringField
 from flask_login import current_user
 from flask_admin.contrib.sqla.filters import FloatSmallerFilter, \
     FloatGreaterFilter, FloatEqualFilter
@@ -32,8 +32,8 @@ class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
 
 
 class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
-    from app.models import PurchaseOrderLine
-    from app.views.formatter import supplier_formatter, expenses_formatter, \
+    from psi.app.models import PurchaseOrderLine
+    from psi.app.views.formatter import supplier_formatter, expenses_formatter, \
         receivings_formatter, default_date_formatter
 
     column_labels = {

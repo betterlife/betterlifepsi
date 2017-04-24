@@ -1,8 +1,8 @@
 # encoding=utf-8
 from functools import partial
 
-from app.models import Organization
-from app.utils.security_util import is_super_admin, is_root_organization
+from psi.app.models import Organization
+from psi.app.utils.security_util import is_super_admin, is_root_organization
 from flask_admin.contrib.sqla.fields import QuerySelectField
 from flask_admin.form import Select2Widget
 from flask_babelex import lazy_gettext, gettext
@@ -10,13 +10,13 @@ from flask_login import current_user
 from sqlalchemy import func
 from wtforms import ValidationError
 
-from app.views.base import CycleReferenceValidator
-from app.views.base import ModelViewWithAccess
+from psi.app.views.base import CycleReferenceValidator
+from psi.app.views.base import ModelViewWithAccess
 
 
 class OrganizationAdmin(ModelViewWithAccess):
 
-    from app.views.formatter import organization_formatter
+    from psi.app.views.formatter import organization_formatter
 
     uos = 'UPDATE ' + Organization.__tablename__ + ' SET'
 
@@ -106,7 +106,7 @@ class OrganizationAdmin(ModelViewWithAccess):
         of the newly added organization to it's parent's current right and current right + 1
         """
         from sqlalchemy import text
-        from app.service import Info
+        from psi.app.service import Info
         db = Info.get_db()
         str_id = getattr(form, "parent").raw_data[0]
         int_id = int(str_id) if str_id is not None and str_id != u"__None" and len(str_id) > 0 else None
@@ -162,7 +162,7 @@ class OrganizationAdmin(ModelViewWithAccess):
         :return: None
         """
         from sqlalchemy import text
-        from app.service import Info
+        from psi.app.service import Info
         db = Info.get_db()
         width = model.rgt - model.lft + 1
         sql = text("{u} rgt = rgt-{w} WHERE rgt > {rgt};{u} lft = lft-{w} WHERE lft > {lft}".format(rgt=model.rgt, lft=model.lft, w=width, u=self.uos))

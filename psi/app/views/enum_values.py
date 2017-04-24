@@ -1,8 +1,8 @@
 # coding=utf-8
-from app.utils import security_util
+from psi.app.utils import security_util
 from flask_babelex import lazy_gettext
 
-from app.views.base import ModelViewWithAccess, CycleReferenceValidator
+from psi.app.views.base import ModelViewWithAccess, CycleReferenceValidator
 
 
 class EnumValuesAdmin(ModelViewWithAccess):

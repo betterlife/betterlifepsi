@@ -65,5 +65,5 @@ setup(
         'Natural Language :: Chinese (Simplified)',
         'Natural Language :: English',
         'Framework :: Flask',
-     ],
+    ],
 )

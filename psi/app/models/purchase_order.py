@@ -1,11 +1,11 @@
 # encoding: utf-8
 from decimal import Decimal
 
-from app import const
-from app.models.data_security_mixin import DataSecurityMixin
-from app.service import Info
-from app.utils import user_has_role
-from app.utils.format_util import format_decimal
+from psi.app import const
+from psi.app.models.data_security_mixin import DataSecurityMixin
+from psi.app.service import Info
+from psi.app.utils import user_has_role
+from psi.app.utils.format_util import format_decimal
 from flask_login import current_user
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -36,13 +36,13 @@ class PurchaseOrder(db.Model, DataSecurityMixin):
 
     @staticmethod
     def status_filter(status_codes):
-        from app.models.enum_values import EnumValues
+        from psi.app.models.enum_values import EnumValues
         return db.session.query(PurchaseOrder) \
             .join(PurchaseOrder.status).filter(EnumValues.code.in_(status_codes))
 
     @staticmethod
     def status_option_filter():
-        from app.models.enum_values import EnumValues
+        from psi.app.models.enum_values import EnumValues
         return EnumValues.type_filter(const.PO_STATUS_KEY)
 
     remark = Column(Text)
@@ -133,7 +133,7 @@ class PurchaseOrder(db.Model, DataSecurityMixin):
 
     def get_available_lines_info(self):
         # 1. Find all existing receiving bind with this PO.
-        from app.models import Receiving
+        from psi.app.models import Receiving
         existing_res = Receiving.filter_by_po_id(self.id)
         available_info = {}
         if existing_res is not None:
@@ -163,7 +163,7 @@ class PurchaseOrder(db.Model, DataSecurityMixin):
 
     @staticmethod
     def create_receiving_lines(available_info):
-        from app.models import ReceivingLine
+        from psi.app.models import ReceivingLine
         lines = []
         for line_id, info in available_info.iteritems():
             if info['quantity'] > 0:
@@ -192,12 +192,12 @@ class PurchaseOrder(db.Model, DataSecurityMixin):
         return received_qtys
 
     def can_delete(self):
-        from app.models import EnumValues
+        from psi.app.models import EnumValues
         draft_status = EnumValues.get(const.PO_DRAFT_STATUS_KEY)
         return self.status_id == draft_status.id
 
     def can_edit(self, user=current_user):
-        from app.models import EnumValues
+        from psi.app.models import EnumValues
         draft_status = EnumValues.get(const.PO_DRAFT_STATUS_KEY)
         return self.status_id == draft_status.id
 

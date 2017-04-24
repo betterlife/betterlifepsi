@@ -1,17 +1,17 @@
 # encoding: utf-8
-from app import const
-from app.models.inventory_transaction import InventoryTransactionLine, \
+from psi.app import const
+from psi.app.models.inventory_transaction import InventoryTransactionLine, \
     InventoryTransaction
-from app.service import Info
-from app.utils.date_util import get_weeks_between
-from app.utils.format_util import format_decimal
+from psi.app.service import Info
+from psi.app.utils.date_util import get_weeks_between
+from psi.app.utils.format_util import format_decimal
 from flask_login import current_user
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text, \
     select, func, Boolean, or_
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
-from app.models.data_security_mixin import DataSecurityMixin
+from psi.app.models.data_security_mixin import DataSecurityMixin
 
 db = Info.get_db()
 
@@ -106,7 +106,7 @@ class Product(db.Model, DataSecurityMixin):
 
     @average_purchase_price.expression
     def average_purchase_price(self):
-        from app.models import EnumValues
+        from psi.app.models import EnumValues
         return (select([func.sum(InventoryTransactionLine.quantity * InventoryTransactionLine.price) /
                         func.sum(InventoryTransactionLine.quantity)])
                 .where(self.id == InventoryTransactionLine.product_id
@@ -125,7 +125,7 @@ class Product(db.Model, DataSecurityMixin):
 
     @average_retail_price.expression
     def average_retail_price(self):
-        from app.models import EnumValues
+        from psi.app.models import EnumValues
         return (select([func.sum(InventoryTransactionLine.quantity * InventoryTransactionLine.price) /
                         func.greatest(func.sum(InventoryTransactionLine.quantity), 1)])
                 .where(self.id == InventoryTransactionLine.product_id
@@ -179,7 +179,7 @@ class Product(db.Model, DataSecurityMixin):
 
     @hybrid_property
     def inventory_advice(self):
-        from app.advice import InventoryAdvice
+        from psi.app.advice import InventoryAdvice
         return InventoryAdvice.advice(self)
 
     @inventory_advice.setter
@@ -233,7 +233,7 @@ class Product(db.Model, DataSecurityMixin):
 
     @weekly_sold_qty.expression
     def weekly_sold_qty(self):
-        from app.models.sales_order import SalesOrderLine, SalesOrder
+        from psi.app.models.sales_order import SalesOrderLine, SalesOrder
         return ((select([func.sum(SalesOrderLine.quantity)])
                  .where(self.id == SalesOrderLine.product_id)
                  .where(SalesOrderLine.sales_order_id == SalesOrder.id)
@@ -278,7 +278,7 @@ class Product(db.Model, DataSecurityMixin):
         return self.average_unit_profit * self.weekly_sold_qty * days_without_prd / 7
 
     def __unicode__(self):
-        from app.utils import user_has_role
+        from psi.app.utils import user_has_role
         result = self.name
         if user_has_role('supplier_view'):
             result += "/供应商:{0}".format(self.supplier.name[:6])

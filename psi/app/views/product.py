@@ -1,15 +1,15 @@
 # coding=utf-8
-from app.models.product import ProductImage
-from app.utils import form_util, security_util
-from app.views.components import ImageField, images_formatter
+from psi.app.models.product import ProductImage
+from psi.app.utils import form_util, security_util
+from psi.app.views.components import ImageField, images_formatter
 from flask_babelex import lazy_gettext
 
-from app.views.base import ModelViewWithAccess
+from psi.app.views.base import ModelViewWithAccess
 
 
 class ProductAdmin(ModelViewWithAccess):
-    from app.views.formatter import supplier_formatter, rich_text_formatter
-    from app.views.components.string_fields import DisabledStringField, CKTextAreaField, \
+    from psi.app.views.formatter import supplier_formatter, rich_text_formatter
+    from psi.app.views.components.string_fields import DisabledStringField, CKTextAreaField, \
         ReadonlyStringField
 
     # inline_models = (ProductImagesAdmin(ProductImage),)
@@ -93,7 +93,7 @@ class ProductAdmin(ModelViewWithAccess):
                            'distinguishing_feature',)
 
     def create_form(self, obj=None):
-        from app.models import ProductCategory, Supplier
+        from psi.app.models import ProductCategory, Supplier
         form = super(ProductAdmin, self).create_form(obj)
         form.images_placeholder.set_object_type(ProductImage)
         form_util.filter_by_organization(form.category, ProductCategory)
@@ -101,7 +101,7 @@ class ProductAdmin(ModelViewWithAccess):
         return form
 
     def edit_form(self, obj=None):
-        from app.models import ProductCategory, Supplier
+        from psi.app.models import ProductCategory, Supplier
         form = super(ProductAdmin, self).edit_form(obj)
         form.images_placeholder.set_object_type(ProductImage)
         form_util.filter_by_organization(form.category, ProductCategory)

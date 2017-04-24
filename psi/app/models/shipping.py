@@ -3,10 +3,10 @@ from decimal import Decimal
 
 from datetime import datetime
 
-from app import const
-from app.models.data_security_mixin import DataSecurityMixin
-from app.service import Info
-from app.utils.format_util import format_decimal
+from psi.app import const
+from psi.app.models.data_security_mixin import DataSecurityMixin
+from psi.app.service import Info
+from psi.app.utils.format_util import format_decimal
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime, select, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
@@ -38,7 +38,7 @@ class Shipping(db.Model, DataSecurityMixin):
 
     @staticmethod
     def status_filter():
-        from app.models.enum_values import EnumValues
+        from psi.app.models.enum_values import EnumValues
         return EnumValues.type_filter(const.SHIPPING_STATUS_KEY)
 
     @hybrid_property
@@ -62,8 +62,8 @@ class Shipping(db.Model, DataSecurityMixin):
         return str(self.id) + ' - ' + str(self.total_amount)
 
     def create_or_update_inventory_transaction(self):
-        from app.models.inventory_transaction import InventoryTransactionLine, InventoryTransaction
-        from app.models.enum_values import EnumValues
+        from psi.app.models.inventory_transaction import InventoryTransactionLine, InventoryTransaction
+        from psi.app.models.enum_values import EnumValues
         if self.type.code == const.DIRECT_SHIPPING_TYPE_KEY:
             it_type = EnumValues.get(const.SALES_OUT_INV_TRANS_TYPE_KEY)
         else:
@@ -89,7 +89,7 @@ class Shipping(db.Model, DataSecurityMixin):
         Info.get_db().session.add(it)
 
     def update_saleable_qty_in_purchase_inv_lines(self, ship_line):
-        from app.models import InventoryTransactionLine, InventoryInOutLink
+        from psi.app.models import InventoryTransactionLine, InventoryInOutLink
         avail_inv_trans = Info.get_db().session.query(InventoryTransactionLine) \
             .filter(InventoryTransactionLine.saleable_quantity > 0,
                     InventoryTransactionLine.product_id == ship_line.product.id) \

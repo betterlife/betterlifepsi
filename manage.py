@@ -4,8 +4,8 @@
 from __future__ import print_function
 import sys
 
-from app.service import Info
-from app import create_app, init_all
+from psi.app.service import Info
+from psi.app import create_app, init_all
 
 reload(sys)
 sys.setdefaultencoding("utf-8")

@@ -1,15 +1,15 @@
 # encoding=utf-8
 from functools import partial
 
-from app import const
-from app.models import Product, EnumValues, SalesOrder, SalesOrderLine
-from app.utils import form_util, security_util, db_util
-from app.views.base_purchase_order import BasePurchaseOrderAdmin
-from app.views.components import DisabledStringField
+from psi.app import const
+from psi.app.models import Product, EnumValues, SalesOrder, SalesOrderLine
+from psi.app.utils import form_util, security_util, db_util
+from psi.app.views.base_purchase_order import BasePurchaseOrderAdmin
+from psi.app.views.components import DisabledStringField
 from flask_login import current_user
 from flask_babelex import lazy_gettext, gettext
 
-from app.views.base import DeleteValidator
+from psi.app.views.base import DeleteValidator
 
 
 class FranchisePurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
@@ -119,20 +119,20 @@ class FranchisePurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
             sol.product = line.product
             sol.remark = "PO Line ID:[{0}]".format(line.id)
             lines.append(sol)
-        from app.services import SalesOrderService
+        from psi.app.services import SalesOrderService
         incoming = SalesOrderService.create_or_update_incoming(sales_order)
         expense = SalesOrderService.create_or_update_expense(sales_order)
         return sales_order, incoming, expense
 
     @staticmethod
     def create_related_value(sales_order, purchase_order):
-        from app.models import RelatedValues
+        from psi.app.models import RelatedValues
         rv = RelatedValues()
         rv.from_object_id = purchase_order.id
         rv.from_object_type = "PurchaseOrder"
         rv.to_object_id = sales_order.id
         rv.to_object_type = "SalesOrder"
-        from app.const import FRANCHISE_PO_TO_SO_RT_KEY
+        from psi.app.const import FRANCHISE_PO_TO_SO_RT_KEY
         related_type = EnumValues.get(FRANCHISE_PO_TO_SO_RT_KEY)
         rv.relation_type = related_type
         return rv

@@ -3,7 +3,7 @@
 import os
 from flask import logging
 
-from app import const
+from psi.app import const
 
 __version__ = '0.6.6'
 
@@ -15,7 +15,7 @@ def create_app(custom_config=None):
     if custom_config is not None:
         active_config = custom_config
     else:
-        import app.config as default_config
+        import psi.app.config as default_config
         if os.environ.get('DEBUG') == 'True':
             active_config = default_config.DevConfig
         else:
@@ -27,24 +27,24 @@ def create_app(custom_config=None):
 
 def init_flask_security(flask_app, database):
     from flask_security import SQLAlchemyUserDatastore, Security
-    from app.models.user import User
-    from app.models.role import Role
-    import app.config as config
+    from psi.app.models.user import User
+    from psi.app.models.role import Role
+    import psi.app.config as config
     for key, value in config.BaseConfig.security_messages.items():
         flask_app.config['SECURITY_MSG_' + key] = value
     user_datastore = SQLAlchemyUserDatastore(database, User, Role)
-    from app.views.login_form import LoginForm
+    from psi.app.views.login_form import LoginForm
     security = Security(flask_app, user_datastore, login_form=LoginForm)
     return security
 
 
 def init_admin_views(flask_app, database):
-    from app.views import init_admin_views
+    from psi.app.views import init_admin_views
     return init_admin_views(flask_app, database)
 
 
 def init_db(flask_app):
-    from app.service import Info
+    from psi.app.service import Info
     from flask_sqlalchemy import SQLAlchemy
     sqlalchemy = SQLAlchemy(flask_app, session_options={'autoflush': False})
     Info.set_db(sqlalchemy)
@@ -68,7 +68,7 @@ def init_babel(flask_app):
 def init_logging(flask_app):
     from raven.contrib.flask import Sentry
     import logging
-    from app.service import Info
+    from psi.app.service import Info
     from logging import FileHandler
     from logging import Formatter
     logger = logging.getLogger('psi')
@@ -141,7 +141,7 @@ def init_https(app):
 
 
 def init_jinja2_functions(app):
-    from app.utils.ui_util import render_version, has_inline_field, \
+    from psi.app.utils.ui_util import render_version, has_inline_field, \
         is_inline_field, is_list_field
     app.add_template_global(render_version, 'render_version')
     app.add_template_global(has_inline_field, 'has_inline_field')
@@ -154,7 +154,7 @@ def init_image_service(app):
     Initialize image store service
     """
     image_store = app.config['IMAGE_STORE_SERVICE']
-    from app.service import Info
+    from psi.app.service import Info
     if image_store is not None:
         Info.set_image_store_service(image_store(app))
 
@@ -164,7 +164,7 @@ def init_flask_restful(app):
     Initialize flask restful api
     """
     from flask_restful import Api
-    from app.api import init_all_apis
+    from psi.app.api import init_all_apis
     flask_restful = Api(app)
     init_all_apis(flask_restful)
     return flask_restful
@@ -174,13 +174,13 @@ def init_reports(app, api):
     """
     Init reports
     """
-    from app.reports import init_report_endpoint
+    from psi.app.reports import init_report_endpoint
     init_report_endpoint(app, api)
 
 
 def init_socket_io(app):
     from flask_socketio import SocketIO
-    from app.socketio import init_socket_tio_handlers
+    from psi.app.socketio import init_socket_tio_handlers
     socket_io = SocketIO(app)
     init_socket_tio_handlers(socket_io)
     return socket_io
@@ -188,7 +188,7 @@ def init_socket_io(app):
 
 def init_all(app):
     init_logging(app)
-    from app.service import Info
+    from psi.app.service import Info
     # === Important notice to the maintainer ===
     # This line was use to database = init_db(app)
     # But we found session can not be cleaned among different

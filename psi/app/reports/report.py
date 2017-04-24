@@ -7,8 +7,8 @@ import warnings
 from flask import current_app
 from flask_restful import Resource, reqparse
 
-from app.reports.handlers_config import report_config as report_configs, dummy_report_function
-from app.utils import has_role, return_error_as_json
+from psi.app.reports.handlers_config import report_config as report_configs, dummy_report_function
+from psi.app.utils import has_role, return_error_as_json
 
 parser = reqparse.RequestParser()
 parser.add_argument('report_type', type=int, help='Report type')

@@ -1,7 +1,7 @@
 # encoding=utf-8
-from app.models.data_security_mixin import DataSecurityMixin
-from app.service import Info
-from app.utils.db_util import id_query_to_obj
+from psi.app.models.data_security_mixin import DataSecurityMixin
+from psi.app.service import Info
+from psi.app.utils.db_util import id_query_to_obj
 from flask_login import current_user
 from sqlalchemy import Integer, select, desc, func, between
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -29,8 +29,8 @@ class Organization(db.Model, DataSecurityMixin):
 
     @staticmethod
     def type_filter():
-        from app.models.enum_values import EnumValues
-        from app.const import ORGANIZATION_TYPE_KEY
+        from psi.app.models.enum_values import EnumValues
+        from psi.app.const import ORGANIZATION_TYPE_KEY
         return EnumValues.type_filter(ORGANIZATION_TYPE_KEY)
 
 
@@ -43,7 +43,7 @@ class Organization(db.Model, DataSecurityMixin):
     @parent.setter
     def parent(self, value):
         from sqlalchemy import text
-        from app.utils import db_util
+        from psi.app.utils import db_util
         if value is not None:
             max_lft = value.rgt - 1
             sql = text(

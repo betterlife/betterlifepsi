@@ -2,7 +2,7 @@
 from flask_babelex import gettext
 from werkzeug.exceptions import abort
 
-from app.const import SUPER_ADMIN_ROLE_NAME
+from psi.app.const import SUPER_ADMIN_ROLE_NAME
 from flask_login import current_user
 
 def exclude_super_admin_roles(name, query):

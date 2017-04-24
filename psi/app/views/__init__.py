@@ -18,8 +18,8 @@ from inventory_transaction import InventoryTransactionAdmin
 from product_inventory import ProductInventoryView
 from customer import CustomerAdmin
 from formatter import *
-from app.models import *
-from app.models.organization import Organization
+from psi.app.models import *
+from psi.app.models.organization import Organization
 from flask_admin import Admin
 from flask_admin.consts import ICON_TYPE_GLYPH
 from import_store_data import ImportStoreDataView

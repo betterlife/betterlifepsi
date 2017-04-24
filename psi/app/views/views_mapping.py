@@ -1,6 +1,6 @@
 # encoding=utf-8
-from app.models import PurchaseOrder
-from app import const
+from psi.app.models import PurchaseOrder
+from psi.app import const
 
 views_mapping = {
     # The key should be

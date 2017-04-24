@@ -1,7 +1,7 @@
 # encoding: utf-8
-from app import const
-from app.models.data_security_mixin import DataSecurityMixin
-from app.service import Info
+from psi.app import const
+from psi.app.models.data_security_mixin import DataSecurityMixin
+from psi.app.service import Info
 from sqlalchemy import Column, Integer, ForeignKey, Numeric, Text, DateTime
 from sqlalchemy.orm import backref, relationship
 
@@ -30,12 +30,12 @@ class Incoming(db.Model, DataSecurityMixin):
 
     @staticmethod
     def status_filter():
-        from app.models.enum_values import EnumValues
+        from psi.app.models.enum_values import EnumValues
         return EnumValues.type_filter(const.INCOMING_STATUS_KEY)
 
     @staticmethod
     def type_filter():
-        from app.models.enum_values import EnumValues
+        from psi.app.models.enum_values import EnumValues
         return EnumValues.type_filter(const.INCOMING_TYPE_KEY)
 
     def __unicode__(self):

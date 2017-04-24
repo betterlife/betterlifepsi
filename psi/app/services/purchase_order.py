@@ -1,4 +1,4 @@
-from app import const, service
+from psi.app import const, service
 
 
 class PurchaseOrderService(object):
@@ -23,7 +23,7 @@ class PurchaseOrderService(object):
         Create one record for the goods amount, one record for logistic amount
         :return: The logistic expense and goods expense
         """
-        from app.models import Expense, Preference
+        from psi.app.models import Expense, Preference
         expenses = po.expenses
         logistic_exp = None
         preference = Preference.get()
@@ -61,7 +61,7 @@ class PurchaseOrderService(object):
         :param model: the Purchase order model
         :return: Receiving document if a new one created, or None
         """
-        from app.models import Receiving
+        from psi.app.models import Receiving
         receivings = po.po_receivings
         if receivings is None or len(receivings) == 0:
             recv = Receiving.create_draft_recv_from_po(po)

@@ -27,3 +27,4 @@ psi/static/uploaded/*.jpeg
 target/
 htmlcov/
 node_modules/
+*.swp

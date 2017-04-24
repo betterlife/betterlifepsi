@@ -1,4 +1,4 @@
-from app.reports.report import ReportApi
+from psi.app.reports.report import ReportApi
 
 
 def init_report_endpoint(app, api):

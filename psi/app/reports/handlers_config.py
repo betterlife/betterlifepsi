@@ -2,7 +2,7 @@ import json
 
 from flask_babelex import gettext
 
-from app.reports.sales_order_reports import sales_amount_report, \
+from psi.app.reports.sales_order_reports import sales_amount_report, \
     compare_period_on_period, compare_with_last_period, sales_profit_report
 
 def dummy_report_function(report_type, report_period):

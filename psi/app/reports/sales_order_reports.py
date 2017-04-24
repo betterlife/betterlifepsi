@@ -3,9 +3,9 @@ from datetime import datetime
 
 from flask_babelex import gettext
 
-from app.reports import sqls
-from app.service import Info
-from app.utils import format_util, get_last_week, get_last_month
+from psi.app.reports import sqls
+from psi.app.service import Info
+from psi.app.utils import format_util, get_last_week, get_last_month
 
 
 def sales_amount_report(r_type, r_period):
@@ -73,7 +73,7 @@ def compare_with_last_period(r_type, r_period):
         current_year, current_period, current_weekday = now.isocalendar()
         last_period, last_year = get_last_week(now)
     else:
-        from app.reports.handlers_config import dummy_report_function
+        from psi.app.reports.handlers_config import dummy_report_function
         return dummy_report_function(r_type, r_period)
     cap_period = r_period.capitalize()
     last_total = get_total(r_type, cap_period, last_period,last_year)

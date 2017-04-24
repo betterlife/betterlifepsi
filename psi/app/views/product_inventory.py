@@ -1,10 +1,10 @@
 import time
 
-from app.models import Product
+from psi.app.models import Product
 from flask_admin.contrib.sqla.filters import FloatSmallerFilter, FloatGreaterFilter
 from flask_babelex import lazy_gettext
 
-from app.views.base import ModelViewWithAccess
+from psi.app.views.base import ModelViewWithAccess
 
 
 class ProductInventoryView(ModelViewWithAccess):
@@ -63,7 +63,7 @@ class ProductInventoryView(ModelViewWithAccess):
     def update_need_advice_flag(self):
         def get_time_in_second(key):
             return int(time.time())
-        from app.service import Info
+        from psi.app.service import Info
         from flask import current_app
         last_update = Info.get('need_advice_last_update_timestamp', get_time_in_second)
         if int((time.time() - last_update)) > current_app.config['NEED_ADVICE_UPDATE_SECONDS']:

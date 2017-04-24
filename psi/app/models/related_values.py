@@ -1,10 +1,10 @@
 # encoding: utf-8
-from app.service import Info
+from psi.app.service import Info
 from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy import Text
 from sqlalchemy.orm import backref, relationship
 
-from app.models.data_security_mixin import DataSecurityMixin
+from psi.app.models.data_security_mixin import DataSecurityMixin
 
 db = Info.get_db()
 

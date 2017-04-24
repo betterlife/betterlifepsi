@@ -1,5 +1,5 @@
 # coding=utf-8
-from app.utils import format_decimal
+from psi.app.utils import format_decimal
 
 
 class InventoryAdvice(object):
