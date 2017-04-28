@@ -6,8 +6,8 @@ from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext, gettext
 from wtforms import ValidationError
 
-from app.utils import security_util
-from app.views.base import ModelWithLineFormatter
+from psi.app.utils import security_util
+from psi.app.views.base import ModelWithLineFormatter
 from psi.app.views.components import DisabledStringField
 from psi.app.views import ModelViewWithAccess
 from psi.app.views.formatter import quantity_field, price_field, \
