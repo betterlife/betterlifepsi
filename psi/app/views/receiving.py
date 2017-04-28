@@ -6,6 +6,8 @@ from psi.app import const
 from psi.app.service import Info
 from psi.app.utils import security_util, form_util
 from psi.app.views import ModelViewWithAccess
+from psi.app.views.formatter import  line_formatter, product_field, \
+    quantity_field, remark_field, total_amount_field, price_field
 from psi.app.views.components import DisabledStringField
 from flask_admin.contrib.sqla.filters import FloatEqualFilter, FloatSmallerFilter
 from flask_admin.contrib.sqla.filters import FloatGreaterFilter
@@ -14,7 +16,7 @@ from flask_babelex import lazy_gettext, gettext
 from wtforms import BooleanField
 from wtforms.validators import ValidationError
 
-from psi.app.views.base import DeleteValidator
+from psi.app.views.base import DeleteValidator, ModelWithLineFormatter
 
 db = Info.get_db()
 
@@ -41,8 +43,9 @@ class ReceivingLineInlineAdmin(InlineFormAdmin):
         return form
 
 
-class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
-    from formatter import supplier_formatter, purchase_order_formatter, inventory_transaction_formatter, default_date_formatter
+class ReceivingAdmin(ModelViewWithAccess, DeleteValidator, ModelWithLineFormatter):
+    from formatter import supplier_formatter, purchase_order_formatter, \
+        inventory_transaction_formatter, default_date_formatter
     from psi.app.models import ReceivingLine, Receiving, PurchaseOrder
 
     inline_models = (ReceivingLineInlineAdmin(ReceivingLine),)
@@ -51,7 +54,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
     form_excluded_columns = ('inventory_transaction',)
     form_columns = ('purchase_order', 'transient_po', 'status', 'date',
                     'total_amount', 'remark', 'lines', 'create_lines')
-    form_edit_rules = ('transient_po', 'status', 'date', 'total_amount', 'remark', 'lines',)
+
     column_editable_list = ('remark',)
     form_create_rules = ('purchase_order', 'status', 'date', 'remark', 'create_lines',)
     form_extra_fields = {
@@ -100,11 +103,19 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator):
         date=dict(default=datetime.now()),
     )
 
+    @property
+    def line_fields(self):
+        if not security_util.user_has_role('purchase_price_view'):
+            return [product_field, quantity_field]
+        else:
+            return [product_field, quantity_field, price_field, total_amount_field]
+
     column_formatters = {
         'supplier': supplier_formatter,
         'purchase_order': purchase_order_formatter,
         'inventory_transaction': inventory_transaction_formatter,
         'date': default_date_formatter,
+        'lines': line_formatter
     }
 
     def on_model_delete(self, model):

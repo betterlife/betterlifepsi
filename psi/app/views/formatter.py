@@ -37,6 +37,7 @@ order_type_field = {'label': lazy_gettext('Order Type'), 'field': 'type'}
 id_field = {'label': lazy_gettext('Id'), 'field': 'id'}
 supplier_field = {'label': lazy_gettext('Supplier'), 'field': 'supplier'}
 name_field = {'label': lazy_gettext('Name'), 'field': 'name'}
+saleable_quantity_field = {'label': lazy_gettext('Saleable Quantity'), 'field': 'saleable_quantity'}
 
 
 def boolean_formatter(val_to_format):

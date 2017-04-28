@@ -6,8 +6,11 @@ from flask_admin.contrib.sqla.filters import FloatGreaterFilter, FloatSmallerFil
 from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext
 
-from formatter import receivings_formatter, shipping_formatter, default_date_formatter
-from psi.app.views.base import ModelViewWithAccess
+from formatter import receivings_formatter, shipping_formatter, \
+    default_date_formatter, type_field, date_field, product_field, price_field, \
+    quantity_field, total_amount_field, remark_field, saleable_quantity_field, \
+    line_formatter
+from psi.app.views.base import ModelViewWithAccess, ModelWithLineFormatter
 
 
 class InventoryTransactionLineInlineAdmin(InlineFormAdmin):
@@ -35,7 +38,7 @@ class InventoryTransactionLineInlineAdmin(InlineFormAdmin):
         return form
 
 
-class InventoryTransactionAdmin(ModelViewWithAccess):
+class InventoryTransactionAdmin(ModelViewWithAccess, ModelWithLineFormatter):
     can_delete = False
 
     column_list = ('id', 'type', 'date', 'total_amount', 'it_receiving', 'it_shipping', 'remark')
@@ -79,6 +82,7 @@ class InventoryTransactionAdmin(ModelViewWithAccess):
         'it_receiving': receivings_formatter,
         'it_shipping': shipping_formatter,
         'date': default_date_formatter,
+        'lines': line_formatter,
     }
 
     inline_models = (InventoryTransactionLineInlineAdmin(InventoryTransactionLine),)
@@ -103,3 +107,13 @@ class InventoryTransactionAdmin(ModelViewWithAccess):
             columns, cols, 'purchase_price_view'
         )
         return columns
+
+    @property
+    def line_fields(self):
+        if not security_util.user_has_role('purchase_price_view'):
+            return [type_field, date_field, product_field, quantity_field,
+                    saleable_quantity_field, remark_field]
+        return [type_field, date_field, product_field, price_field,
+                quantity_field, total_amount_field, saleable_quantity_field,
+                remark_field]
+

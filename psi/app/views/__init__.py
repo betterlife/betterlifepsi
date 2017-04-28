@@ -26,6 +26,7 @@ from import_store_data import ImportStoreDataView
 from report import ReportView
 from direct_purchase_order import DirectPurchaseOrderAdmin
 from franchise_purchase_order import FranchisePurchaseOrderAdmin
+from formatter import line_formatter
 
 
 def init_admin_views(app, db):

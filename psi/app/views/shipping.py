@@ -6,8 +6,12 @@ from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext, gettext
 from wtforms import ValidationError
 
+from app.utils import security_util
+from app.views.base import ModelWithLineFormatter
 from psi.app.views.components import DisabledStringField
 from psi.app.views import ModelViewWithAccess
+from psi.app.views.formatter import quantity_field, price_field, \
+    total_amount_field, line_formatter, product_field
 
 
 class ShippingLineInlineAdmin(InlineFormAdmin):
@@ -26,7 +30,7 @@ class ShippingLineInlineAdmin(InlineFormAdmin):
         return form
 
 
-class ShippingAdmin(ModelViewWithAccess):
+class ShippingAdmin(ModelViewWithAccess, ModelWithLineFormatter):
 
     from formatter import inventory_transaction_formatter, sales_order_formatter, default_date_formatter
     from psi.app.models import ShippingLine, Shipping
@@ -49,6 +53,19 @@ class ShippingAdmin(ModelViewWithAccess):
                       FloatEqualFilter(Shipping.total_amount, lazy_gettext('Total Amount')),)
     column_searchable_list = ('status.display', 'remark')
 
+    @property
+    def column_details_list(self):
+        if not security_util.user_has_role('purchase_price_view'):
+            return ('id', 'sales_order', 'status', 'date', 'remark', 'lines', 'inventory_transaction')
+        return ('id', 'sales_order', 'status', 'date', 'total_amount', 'remark', 'lines', 'inventory_transaction')
+
+    @property
+    def line_fields(self):
+        # TODO.xqliu Move the judgetment stragegy to a separate method to avoid repeat myself!!!
+        if not security_util.user_has_role('purchase_price_view'):
+            return [product_field, quantity_field]
+        return [product_field, price_field, quantity_field, price_field, total_amount_field]
+
     column_sortable_list = ('id', ('sales_order', 'id'), ('status', 'status.display'), 'date', 'total_amount')
     column_labels = {
         'id': lazy_gettext('id'),
@@ -62,8 +79,6 @@ class ShippingAdmin(ModelViewWithAccess):
         'status.display': lazy_gettext('Status'),
     }
 
-    column_details_list = ('id', 'sales_order', 'status', 'date', 'total_amount', 'remark', 'lines', 'inventory_transaction')
-
     form_args = dict(
         status=dict(query_factory=Shipping.status_filter, ),
         date=dict(default=datetime.now()),
@@ -76,6 +91,7 @@ class ShippingAdmin(ModelViewWithAccess):
         'inventory_transaction': inventory_transaction_formatter,
         'sales_order': sales_order_formatter,
         'date': default_date_formatter,
+        'lines': line_formatter
     }
 
     def on_model_change(self, form, model, is_created):
