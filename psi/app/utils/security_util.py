@@ -103,7 +103,7 @@ def filter_columns_by_role(columns, to_filter_cols, role):
     """
     new_col_list = []
     local_user = current_user._get_current_object()
-    if (not is_super_admin(local_user) and not user_has_role(role, local_user)):
+    if (not user_has_role(role, local_user)):
         for l in columns:
             if l[0] not in to_filter_cols:
                 new_col_list.append(l)
