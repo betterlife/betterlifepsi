@@ -281,6 +281,7 @@ ul.dropdown-menu > li > a > i.glyphicon {
 
 .popover-content {
     min-width: 230px;
+    word-break: break-word;
 }
 
 .inline-field td input[id$=discount],
