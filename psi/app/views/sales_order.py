@@ -4,6 +4,10 @@ from functools import partial
 
 from flask_admin.contrib.sqla.ajax import QueryAjaxModelLoader
 
+from psi.app.views.formatter import product_field, quantity_field, \
+    retail_price_field, \
+    original_amount_field, remark_field, discount_amount_field, \
+    actual_amount_field, line_formatter
 from psi.app import service, const
 from psi.app.models import EnumValues, Customer, Product
 from psi.app.services.sales_order import SalesOrderService
@@ -15,7 +19,7 @@ from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext
 from markupsafe import Markup
 
-from psi.app.views.base import ModelViewWithAccess
+from psi.app.views.base import ModelViewWithAccess, ModelWithLineFormatter
 
 
 class MarkInvalidRowAction(BaseListRowAction):
@@ -85,10 +89,14 @@ class SalesOrderLineInlineAdmin(InlineFormAdmin):
     form_columns = ('id', 'product', 'unit_price', 'quantity',)
 
 
-class SalesOrderAdmin(ModelViewWithAccess):
+class SalesOrderAdmin(ModelViewWithAccess, ModelWithLineFormatter):
     from psi.app.models import SalesOrderLine, SalesOrder
     from formatter import expenses_formatter, incoming_formatter, \
         shipping_formatter, default_date_formatter, line_formatter
+
+    line_fields = [product_field, quantity_field, retail_price_field,
+                   actual_amount_field, original_amount_field,
+                   discount_amount_field, remark_field]
 
     column_extra_row_actions = [
         MarkShipRowAction('fa fa-camera-retro'),

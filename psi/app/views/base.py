@@ -179,6 +179,8 @@ class DeleteValidator(object):
         if model.status.code == status_code:
             raise ValidationError(error_msg)
 
+class ModelWithLineFormatter(object):
+    line_fields = []
 
 class CycleReferenceValidator(object):
     @staticmethod

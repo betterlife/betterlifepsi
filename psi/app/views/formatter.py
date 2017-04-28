@@ -263,9 +263,7 @@ def rich_text_formatter(view, context, model, name):
 
 def line_formatter(view, context, model, name):
     value = getattr(model, name)
-    fields = [product_field, quantity_field, retail_price_field,
-              actual_amount_field, original_amount_field,
-              discount_amount_field, remark_field]
+    fields = view.line_fields
     labels, values = [],[]
     for field in fields:
         labels.append(field['label'])
