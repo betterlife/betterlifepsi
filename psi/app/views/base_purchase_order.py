@@ -1,18 +1,21 @@
 # coding=utf-8
 from datetime import datetime
 
-from psi.app import service, const
-from psi.app.models import PurchaseOrder, EnumValues
-from psi.app.services.purchase_order import PurchaseOrderService
-from psi.app.utils import security_util
-from psi.app.views import ModelViewWithAccess
-from psi.app.views.base import DeleteValidator
-from psi.app.views.components import DisabledStringField
-from flask_login import current_user
 from flask_admin.contrib.sqla.filters import FloatSmallerFilter, \
     FloatGreaterFilter, FloatEqualFilter
 from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext, gettext
+from flask_login import current_user
+
+from psi.app import const
+from psi.app.models import PurchaseOrder, EnumValues
+from psi.app.services.purchase_order import PurchaseOrderService
+from psi.app.utils import security_util
+from psi.app.views import ModelViewWithAccess
+from psi.app.views.base import DeleteValidator, ModelWithLineFormatter
+from psi.app.views.components import DisabledStringField
+from psi.app.views.formatter import product_field, quantity_field, remark_field, \
+    unit_price_field, total_amount_field
 
 
 class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
@@ -31,10 +34,10 @@ class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
         return form
 
 
-class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
+class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator, ModelWithLineFormatter):
     from psi.app.models import PurchaseOrderLine
     from psi.app.views.formatter import supplier_formatter, expenses_formatter, \
-        receivings_formatter, default_date_formatter
+        receivings_formatter, default_date_formatter, line_formatter
 
     column_labels = {
         'id': lazy_gettext('id'),
@@ -53,11 +56,19 @@ class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator):
         'status.display': lazy_gettext('Status')
     }
 
+    @property
+    def line_fields(self):
+        if not security_util.user_has_role('purchase_price_view'):
+            return [product_field, quantity_field, remark_field]
+        else:
+            return [product_field, quantity_field, unit_price_field, total_amount_field]
+
     column_formatters = {
         'supplier': supplier_formatter,
         'all_expenses': expenses_formatter,
         'all_receivings': receivings_formatter,
         'order_date': default_date_formatter,
+        "lines": line_formatter
     }
 
     form_args = dict(
