@@ -61,7 +61,8 @@ class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator, ModelWithLine
         if not security_util.user_has_role('purchase_price_view'):
             return [product_field, quantity_field, remark_field]
         else:
-            return [product_field, quantity_field, unit_price_field, total_amount_field]
+            return [product_field, quantity_field, unit_price_field,
+                    total_amount_field, remark_field]
 
     column_formatters = {
         'supplier': supplier_formatter,
