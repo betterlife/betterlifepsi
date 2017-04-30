@@ -1,3 +1,4 @@
+from psi.app.models import EnumValues
 from psi.app import const, service
 
 
@@ -23,28 +24,31 @@ class PurchaseOrderService(object):
         Create one record for the goods amount, one record for logistic amount
         :return: The logistic expense and goods expense
         """
-        from psi.app.models import Expense, Preference
+        from psi.app.models import Expense
         expenses = po.expenses
         logistic_exp = None
-        preference = Preference.get()
+        default_logistic_exp_type = EnumValues.get(const.DEFAULT_LOGISTIC_EXPENSE_TYPE_KEY)
+        default_goods_exp_type = EnumValues.get(const.DEFAULT_GOODS_EXPENSE_TYPE_KEY)
+        default_logistic_exp_status = EnumValues.get(const.DEFAULT_LOGISTIC_EXPENSE_STATUS_KEY)
+        default_goods_exp_status = EnumValues.get(const.DEFAULT_GOODS_EXPENSE_STATUS_KEY)
         goods_exp = None
         if expenses is None:
             expenses = dict()
         for expense in expenses:
-            if (expense.category_id == preference.def_po_logistic_exp_type_id) and (po.logistic_amount != 0):
+            if (expense.category_id == default_logistic_exp_type.id) and (po.logistic_amount != 0):
                 logistic_exp = expense
                 logistic_exp.amount = po.logistic_amount
-            elif (expense.category_id == preference.def_po_goods_exp_type_id) and (po.goods_amount != 0):
+            elif (expense.category_id == default_goods_exp_type.id) and (po.goods_amount != 0):
                 goods_exp = expense
                 goods_exp.amount = po.goods_amount
         if (logistic_exp is None) and (po.logistic_amount is not None and po.logistic_amount != 0):
             logistic_exp = Expense(po.logistic_amount, po.order_date,
-                                   preference.def_po_logistic_exp_status_id,
-                                   preference.def_po_logistic_exp_type_id)
+                                   default_logistic_exp_status.id,
+                                   default_logistic_exp_type.id)
         if (goods_exp is None) and (po.goods_amount is not None and po.goods_amount != 0):
             goods_exp = Expense(po.goods_amount, po.order_date,
-                                preference.def_po_goods_exp_status_id,
-                                preference.def_po_goods_exp_type_id)
+                                default_goods_exp_status.id,
+                                default_goods_exp_type.id)
         if logistic_exp is not None:
             logistic_exp.purchase_order = po
             logistic_exp.organization = po.organization

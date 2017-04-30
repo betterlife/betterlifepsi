@@ -100,9 +100,6 @@ msgstr "分类"
 msgid "Product Images"
 msgstr "产品图片"
 
-msgid "Preference"
-msgstr "业务设置"
-
 msgid "Parent category"
 msgstr "上级分类"
 

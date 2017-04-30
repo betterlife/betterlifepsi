@@ -201,12 +201,4 @@ def init_admin_views(app, db):
         menu_icon_type=ICON_TYPE_GLYPH,
         menu_icon_value='glyphicon-tasks')
     )
-    admin_views.add_view(PreferenceAdmin(
-        Preference,
-        db_session,
-        name=lazy_gettext("Preference"),
-        category=lazy_gettext('Settings'),
-        menu_icon_type=ICON_TYPE_GLYPH,
-        menu_icon_value='glyphicon-cog')
-    )
     return admin_views

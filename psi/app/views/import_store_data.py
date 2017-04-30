@@ -11,7 +11,7 @@ import codecs
 import os
 from psi.app import const
 from psi.app.models import Supplier, Product, SalesOrder, SalesOrderLine, Shipping, ShippingLine, InventoryTransaction, \
-    InventoryTransactionLine, EnumValues, Incoming, Preference
+    InventoryTransactionLine, EnumValues, Incoming
 from psi.app.utils import get_by_external_id, save_objects_commit, get_by_name
 from psi.app.utils.security_util import user_has_role
 from flask import request, current_app
@@ -170,8 +170,8 @@ class ImportStoreDataView(BaseView):
                     line, imported_line = 0,0
                     shipping_status = EnumValues.get(const.SHIPPING_COMPLETE_STATUS_KEY)
                     it_type = EnumValues.get(const.SALES_OUT_INV_TRANS_TYPE_KEY)
-                    incoming_category = Preference.get().def_so_incoming_type
-                    incoming_status = Preference.get().def_so_incoming_status
+                    incoming_category = EnumValues.get(const.DEFUALT_SALES_ORDER_INCOMING_TYPE_KEY)
+                    incoming_status = EnumValues.get(const.DEFUALT_SALES_ORDER_INCOMING_STATUS_KEY)
                     for row in reader:
                         if line != 0:  # Skip header line
                             # 订单编号(0), 订单行编号(1),商品编号(2),商品名称(3),供应商编号(4),供应商名称(5),进价(6),定价(7),卖价(8),价格折扣(9),数量(10),
