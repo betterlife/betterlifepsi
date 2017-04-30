@@ -33,8 +33,8 @@
     {% endblock %}
 
     {% block details_table %}
-        {% set has_inline_model = (admin_view.inline_models != None) and (admin_view.inline_models | length) > 0 %}
-        {% if not has_inline_model %}
+        {% set has_detail_field = has_detail_field(admin_view) %}
+        {% if not has_detail_field %}
             <table class="table table-hover table-bordered searchable">
                 {% for c, name in admin_view.get_details_columns() %}
                     {% if not is_list_field(model, c) %}

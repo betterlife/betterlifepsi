@@ -3,6 +3,7 @@ import time
 from flask import current_app
 import os
 
+
 default_swtag_file = os.path.dirname(os.path.realpath(__file__)) + '/../../swtag'
 
 def is_list_field(model, field):
@@ -18,17 +19,24 @@ def is_list_field(model, field):
     return same_type
 
 
-def has_inline_field(form):
+def has_detail_field(form_or_view):
     """
-    Whether a form has a inline field
+    Whether a form or view has a inline field
     This is used in template to decide how to display the form 
-    :param form: the admin form to check
-    :return: True if has inline field, otherwise false 
+    :param form_or_view: the admin form or admin view to check
+    :return: True if has detail field, otherwise false 
     """
-    for f in form:
-        if is_inline_field(f):
-            return True
-    return False
+    if hasattr(form_or_view, 'line_fields'):
+            line_fields = getattr(form_or_view, 'line_fields', None)
+            if line_fields is not None:
+                return len(line_fields) > 0
+    else:
+        try:
+            for f in form_or_view:
+                if is_inline_field(f):
+                    return True
+        except TypeError :
+            return False
 
 
 def is_inline_field(field):

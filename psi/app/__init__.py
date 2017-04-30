@@ -141,10 +141,10 @@ def init_https(app):
 
 
 def init_jinja2_functions(app):
-    from psi.app.utils.ui_util import render_version, has_inline_field, \
+    from psi.app.utils.ui_util import render_version, has_detail_field, \
         is_inline_field, is_list_field
     app.add_template_global(render_version, 'render_version')
-    app.add_template_global(has_inline_field, 'has_inline_field')
+    app.add_template_global(has_detail_field, 'has_detail_field')
     app.add_template_global(is_inline_field, 'is_inline_field')
     app.add_template_global(is_list_field, 'is_list_field')
 
