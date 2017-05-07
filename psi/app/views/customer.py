@@ -10,7 +10,8 @@ from psi.app.views.base import ModelViewWithAccess
 
 class CustomerAdmin(ModelViewWithAccess):
     column_list = ('id', 'name', 'mobile_phone', 'email', 'address', 'birthday',
-                   'join_date', 'member_age', 'join_channel', 'level', 'total_spent', 'points')
+                   'join_date', 'member_age', 'join_channel', 'level',
+                   'total_spent', 'points', )
 
     column_labels = {
         'id': lazy_gettext('id'),
@@ -39,7 +40,7 @@ class CustomerAdmin(ModelViewWithAccess):
     form_excluded_columns = ('sales_orders',)
 
     column_searchable_list = ['first_name', 'last_name', 'mobile_phone', 'address',
-                              'email', 'join_channel.display', 'level.display']
+                              'email', 'join_channel.display', 'level.display', 'mnemonic']
 
     # TODO Refer to https://github.com/flask-admin/flask-admin/pull/1209 for the current issue.
     column_filters = ("points",

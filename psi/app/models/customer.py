@@ -1,22 +1,22 @@
 # encoding: utf-8
-
+from psi.app.utils import get_name
 from psi.app import const
 from psi.app.models.data_security_mixin import DataSecurityMixin
 from psi.app.service import Info
 from psi.app.utils import date_util
-from sqlalchemy import Column, Integer, ForeignKey, String, Date, select, func
+from sqlalchemy import Column, Integer, ForeignKey, String, Date, select, func, \
+    event
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
 db = Info.get_db()
-
 
 class Customer(db.Model, DataSecurityMixin):
     __tablename__ = 'customer'
     id = Column(Integer, primary_key=True)
     first_name = Column(String(32), unique=False, nullable=True)
     last_name = Column(String(32), unique=False, nullable=True)
-    mobile_phone = Column(String(32), unique=False, nullable=True)
+    mobile_phone = Column(String(32), unique=True, nullable=True)
     email = Column(String(64))
     address = Column(String(64), unique=False, nullable=True)
     birthday = Column(Date, nullable=True)
@@ -31,6 +31,8 @@ class Customer(db.Model, DataSecurityMixin):
 
     organization_id = db.Column(Integer, ForeignKey('organization.id'))
     organization = relationship('Organization', foreign_keys=[organization_id])
+
+    mnemonic = Column(String(64), unique=False, nullable=True)
 
     @hybrid_property
     def member_age(self):
@@ -50,10 +52,7 @@ class Customer(db.Model, DataSecurityMixin):
 
     @hybrid_property
     def name(self):
-        connect = ''
-        if str(self.last_name).isalpha() and str(self.first_name).isalpha():
-            connect = ' '
-        return self.last_name + connect + self.first_name
+        return get_name(self.last_name, self.first_name)
 
     @name.setter
     def name(self, value):
@@ -91,3 +90,6 @@ class Customer(db.Model, DataSecurityMixin):
 
     def __repr__(self):
         return self.name + ' - ' + self.level.display
+
+    def get_value_for_mnemonic(self):
+        return get_name(self.last_name, self.first_name)

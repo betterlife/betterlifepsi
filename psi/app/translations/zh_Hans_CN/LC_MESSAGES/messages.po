@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-06-26 07:25+0800\n"
-"PO-Revision-Date: 2017-04-16 01:11+0800\n"
+"PO-Revision-Date: 2017-05-07 13:06+0800\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -436,6 +436,9 @@ msgstr "加入渠道"
 msgid "Customer"
 msgstr "会员"
 
+msgid "Customer can be searched by name, mobile phone, email or first letter of his/her name"
+msgstr "客户信息可以使用姓名、手机号码、Email或者姓名拼音首字母进行搜索"
+
 msgid "Customer Level"
 msgstr "会员级别"
 
@@ -645,3 +648,6 @@ msgstr "月"
 
 msgid "Week"
 msgstr "周"
+
+msgid "Product(Can be searched by first letter)"
+msgstr "商品(支持名称首字母搜索)"

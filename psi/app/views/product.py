@@ -16,7 +16,7 @@ class ProductAdmin(ModelViewWithAccess):
 
     column_editable_list = ['name', 'deliver_day', 'lead_day', 'spec_link',
                             'purchase_price', 'retail_price']
-    column_searchable_list = ['name', 'supplier.name', 'category.name']
+    column_searchable_list = ['name', 'supplier.name', 'category.name', 'mnemonic']
 
     column_sortable_list = ('id', 'name', ('supplier', 'supplier.id'),
                             ('category','category.id'), 'deliver_day', 'lead_day',

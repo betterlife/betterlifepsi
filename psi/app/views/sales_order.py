@@ -75,7 +75,7 @@ class SalesOrderLineInlineAdmin(InlineFormAdmin):
                                           session=service.Info.get_db().session,
                                           model=Product,
                                           fields=['name'])
-        form.product = AjaxSelectField(ajaxLoader, label=lazy_gettext('Product'))
+        form.product = AjaxSelectField(ajaxLoader, label=lazy_gettext('Product(Can be searched by first letter)'))
         form.retail_price = DisabledStringField(label=lazy_gettext('Retail Price'))
         form.price_discount = DisabledStringField(label=lazy_gettext('Price Discount'))
         form.original_amount = DisabledStringField(label=lazy_gettext('Original Amount'))
@@ -144,7 +144,8 @@ class SalesOrderAdmin(ModelViewWithAccess, ModelWithLineFormatter):
     form_args = dict(
         logistic_amount=dict(default=0),
         order_date=dict(default=datetime.now()),
-        status=dict(query_factory=SalesOrder.status_option_filter)
+        status=dict(query_factory=SalesOrder.status_option_filter),
+        customer=dict(description=lazy_gettext('Customer can be searched by name, mobile phone, email or first letter of his/her name'))
     )
 
     form_excluded_columns = ('incoming', 'expense', 'so_shipping')
@@ -155,13 +156,13 @@ class SalesOrderAdmin(ModelViewWithAccess, ModelWithLineFormatter):
         'customer': QueryAjaxModelLoader('customer',
                                          service.Info.get_db().session, Customer,
                                          filters=[],
-                                         fields=['first_name', 'last_name', 'mobile_phone', 'email']),
+                                         fields=['first_name', 'last_name', 'mobile_phone', 'email', 'mnemonic']),
         'product': QueryAjaxModelLoader(name='product',
                                         session=service.Info.get_db().session,
                                         model=Product,
                                         # --> Still need to filter the products by organization.
                                         # --> Line 209 is commented out, need to bring it back.
-                                        fields=['name']),
+                                        fields=['name', 'mnemonic'])
     }
 
     inline_models = (SalesOrderLineInlineAdmin(SalesOrderLine),)

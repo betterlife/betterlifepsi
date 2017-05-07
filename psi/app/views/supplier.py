@@ -22,9 +22,9 @@ class SupplierAdmin(ModelViewWithAccess):
     form_excluded_columns = ('purchaseOrders', 'products', 'organization')
     inline_models = (PaymentMethodLineInlineAdmin(PaymentMethod),)
 
-    column_details_exclude_list = ('organization',)
+    column_details_exclude_list = ('organization','mnemonic')
 
-    column_exclude_list = ('organization',)
+    column_exclude_list = ('organization', 'mnemonic')
 
     column_editable_list = ['name', 'qq', 'phone', 'contact', 'email', 'website',
                             'whole_sale_req', 'can_mixed_whole_sale', 'remark']
@@ -34,7 +34,7 @@ class SupplierAdmin(ModelViewWithAccess):
                            'can_mixed_whole_sale', 'remark',
                            'paymentMethods']
 
-    column_searchable_list = ('name', 'external_id', 'name', 'qq', 'phone',
+    column_searchable_list = ('name', 'external_id', 'name', 'qq', 'phone', 'mnemonic',
                               'contact', 'email', 'website', 'whole_sale_req', 'remark')
 
     column_filters = ('can_mixed_whole_sale',)

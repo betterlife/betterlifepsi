@@ -1,6 +1,6 @@
 # encoding: utf-8
 from psi.app.service import Info
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Text
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Text, event
 from sqlalchemy.orm import backref, relationship
 
 from psi.app.models.data_security_mixin import DataSecurityMixin
@@ -21,6 +21,7 @@ class Supplier(db.Model, DataSecurityMixin):
     whole_sale_req = Column(String(128))
     can_mixed_whole_sale = Column(Boolean)
     remark = Column(Text)
+    mnemonic = Column(String(128), unique=False, nullable=True)
 
     organization_id = db.Column(Integer, ForeignKey('organization.id'))
     organization = relationship('Organization', foreign_keys=[organization_id])
@@ -30,7 +31,6 @@ class Supplier(db.Model, DataSecurityMixin):
 
     def __str__(self):
         return self.__unicode__()
-
 
 class PaymentMethod(db.Model):
     __tablename__ = 'payment_method'

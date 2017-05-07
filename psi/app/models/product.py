@@ -7,7 +7,7 @@ from psi.app.utils.date_util import get_weeks_between
 from psi.app.utils.format_util import format_decimal
 from flask_login import current_user
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text, \
-    select, func, Boolean, or_
+    select, func, Boolean, or_, event
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
@@ -47,6 +47,8 @@ class Product(db.Model, DataSecurityMixin):
     need_advice = Column(Boolean)
     organization_id = db.Column(Integer, ForeignKey('organization.id'))
     organization = relationship('Organization', foreign_keys=[organization_id])
+
+    mnemonic = Column(String(128), unique=False, nullable=True)
 
     @hybrid_property
     def images_placeholder(self):
