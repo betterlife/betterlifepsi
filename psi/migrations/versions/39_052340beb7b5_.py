@@ -19,7 +19,9 @@ from sqlalchemy import text
 def upgrade():
     from psi.app.models import Supplier, Product, Customer
     from psi.app.service import Info
-
+    # Follow line is needed to persist all existing migration to DB and avoid
+    # tests to complain supplier, product and customer tables does not exist
+    op.get_bind().execute(text("COMMIT;"))
     db = Info.get_db()
     set_mnemonic_for_all(db, obj_type=Supplier)
     set_mnemonic_for_all(db, obj_type=Product)
@@ -35,13 +37,6 @@ def set_mnemonic_for_all(db, obj_type):
         v = s.get_value_for_mnemonic() if hasattr(s, 'get_value_for_mnemonic') else s.name
         m = get_pinyin_first_letters(v)
         s.mnemonic = m
-        db.session.add(s)
-
-
-def reset_mnemonic(db, obj_type):
-    objs = db.session.query(obj_type).all()
-    for s in objs:
-        s.mnemonic = ''
         db.session.add(s)
 
 

@@ -17,15 +17,15 @@ class TestFormatUtil(unittest.TestCase):
 
     def test_pinyin_first_letter_multiple(self):
         input = u'朝小宇'
-        self.assertEquals('cxyzxy', format_util.get_pinyin_first_letters(input))
+        self.assertEquals('cxy|zxy', format_util.get_pinyin_first_letters(input))
 
     def test_pinyin_last_letter_multiple(self):
         input = u'毛小调'
-        self.assertEquals('mxdmxt', format_util.get_pinyin_first_letters(input))
+        self.assertEquals('mxd|mxt', format_util.get_pinyin_first_letters(input))
 
     def test_pinyin_middle_last_letter_multiple(self):
         input = u'毛朝调'
-        self.assertEquals('mcdmzdmctmzt', format_util.get_pinyin_first_letters(input))
+        self.assertEquals('mcd|mzd|mct|mzt', format_util.get_pinyin_first_letters(input))
 
     def get_pinyin_for_english(self):
         input = u'David Allen'
