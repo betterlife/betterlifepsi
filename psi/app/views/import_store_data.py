@@ -3,15 +3,18 @@ from __future__ import print_function
 
 import csv
 import time
+import traceback
 import uuid
 from datetime import datetime
 from decimal import Decimal
 
 import codecs
 import os
+import sys
+
 from psi.app import const
 from psi.app.models import Supplier, Product, SalesOrder, SalesOrderLine, Shipping, ShippingLine, InventoryTransaction, \
-    InventoryTransactionLine, EnumValues, Incoming
+    InventoryTransactionLine, EnumValues, Incoming, PaymentMethod
 from psi.app.utils import get_by_external_id, save_objects_commit, get_by_name
 from psi.app.utils.security_util import user_has_role
 from flask import request, current_app
@@ -24,7 +27,10 @@ from werkzeug.utils import secure_filename
 from psi.app.utils.decorations import has_role
 
 
-def create_or_update_supplier(sup_num, sup_name):
+def create_or_update_supplier(sup_num, sup_name, mem, contact, address,
+                              email, phone, mobile,
+                              remark, mobile2,
+                              acct_name, acct_no):
     supplier = get_by_external_id(Supplier, sup_num)
     if supplier is None:
         supplier = get_by_name(Supplier, sup_name)
@@ -33,10 +39,21 @@ def create_or_update_supplier(sup_num, sup_name):
             supplier.organization_id = current_user.organization_id
         supplier.external_id = sup_num
     supplier.name = sup_name
+    supplier.remark = "Mobile: {0},{1}, Address: {2}, Remark: {3}".format(mobile, mobile2, address, remark)
+    supplier.contact = contact
+    supplier.email = email
+    supplier.phone = phone
+    supplier.mnemonic = mem
+    if acct_name is not None and acct_no is not None:
+        pm = PaymentMethod()
+        pm.account_name = acct_name
+        pm.account_number = acct_no
+        pm.bank_name = '-'
+        pm.supplier = supplier
     return supplier
 
 
-def create_or_update_product(prd_num, prd_name, pur_price, ret_price, supplier):
+def create_or_update_product(prd_num, prd_name, prd_mem, pur_price, ret_price, supplier):
     prd = get_by_external_id(Product, prd_num)
     if prd is None:
         prd = get_by_name(Product, prd_name)
@@ -48,6 +65,7 @@ def create_or_update_product(prd_num, prd_name, pur_price, ret_price, supplier):
         prd.category_id = current_app.config.get('DEFAULT_CATEGORY_ID')
         prd.organization_id = current_user.organization_id
     prd.name = prd_name
+    prd.mnemonic = prd_mem
     prd.purchase_price = pur_price
     prd.retail_price = ret_price
     prd.supplier = supplier
@@ -146,6 +164,18 @@ def create_or_update_incoming(order, order_line, incoming_category, incoming_sta
     return incoming
 
 
+def strip_null(val):
+    try:
+        return Decimal(val)
+    except Exception as e:
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        traceback.print_exception(exc_type, exc_value, exc_traceback, file=sys.stdout)
+        if val == 'NULL' or val == '':
+            return Decimal(0)
+        else:
+            raise e
+
+
 class ImportStoreDataView(BaseView):
     def is_accessible(self):
         return user_has_role('import_store_data')
@@ -172,37 +202,72 @@ class ImportStoreDataView(BaseView):
                     it_type = EnumValues.get(const.SALES_OUT_INV_TRANS_TYPE_KEY)
                     incoming_category = EnumValues.get(const.DEFUALT_SALES_ORDER_INCOMING_TYPE_KEY)
                     incoming_status = EnumValues.get(const.DEFUALT_SALES_ORDER_INCOMING_STATUS_KEY)
-                    for row in reader:
-                        if line != 0:  # Skip header line
-                            # 订单编号(0), 订单行编号(1),商品编号(2),商品名称(3),供应商编号(4),供应商名称(5),进价(6),定价(7),卖价(8),价格折扣(9),数量(10),
-                            # 金额(11),成本(12),毛利(13),折扣(%)(14),折扣额(15),毛利率(16),操作员(17),营业员(18),时间(19)
-                            if line % 100 == 0:
-                                print("Processing line: [{0}]\nContent: [{1}]".format(str(line), ",".join(row).decode('utf-8')))
-                            po_num, po_line_num, prd_num, prd_name, sup_num, sup_name, pur_price, ret_price, act_price, qty, s_date = \
-                                row[0].strip(), row[1].strip(), row[2].strip(), row[3].strip(), row[4].strip(), row[5].strip(), \
-                                Decimal(row[6].strip()), Decimal(row[7].strip()), Decimal(row[8].strip()), \
-                                Decimal(row[10].strip()), datetime.strptime(row[19].strip(), '%Y-%m-%d %H:%M:%S.%f')
-                            line_exists = self.is_po_line_exists(po_num, po_line_num)
-                            if  not line_exists:
-                                imported_line += 1
-                                # 1. Create or update supplier --> return supplier
-                                supplier = create_or_update_supplier(sup_num, sup_name)
-                                # 2. Create or update product --> return product
-                                product = create_or_update_product(prd_num, prd_name, pur_price, ret_price, supplier)
-                                # 3. Create or update sales order / sales order line --> return PO.
-                                order, order_line = create_or_update_sales_order(po_num, po_line_num, product, act_price, qty, s_date)
-                                # 4. Create shipping record --> return shipping id
-                                shipping, shipping_line = create_or_update_shipping(order, order_line, shipping_status)
-                                # 5. Create inventory transaction record --> return inventory transaction record
-                                itr, itl = create_or_update_inventory_transaction(shipping, shipping_line, it_type)
-                                # 6. Create related incoming and return it.
-                                incoming = create_or_update_incoming(order, order_line, incoming_category, incoming_status)
-                                save_objects_commit(supplier, product, order, shipping, itr, incoming)
-                        line += 1
-                    end_time = int(time.time())
-                    time_spent = end_time - start_time
-                    print ("Import of CSV data finished, imported line: {0}, time spent: {1} seconds"
-                           .format(str(imported_line), time_spent))
+                    try:
+                        for row in reader:
+                            if line != 0:  # Skip header line
+                                # 销售编号(0), 销售行编号(1), 商品编号(2), 商品名称(3), 商品简码(4),
+                                # 供应商编号(5), 供应商名称(6), 供应商简码(7), 供应商联系人(8),
+                                # 供应商地址(9), 供应商Email地址(10), 供应商电话(11), 供应商手机号码(12),
+                                # 供应商账号名(13), 供应商账号编号(14), 供应商备注信息(15), 供应商手机号码2(16),
+                                # 进价(17), 定价(18), 卖价(19), 价格折扣(20), 数量(21), 金额(22), 成本(23),
+                                # 毛利(24), 折扣(%)(25), 折扣额(26), 毛利率(27), 操作员(28), 营业员(29), 时间(30)
+
+                                if line % 100 == 0:
+                                    print("Processing line: [{0}]\nContent: [{1}]".format(str(line), ",".join(row).decode('utf-8')))
+                                s_row = map(lambda x: x if x != 'NULL' else '', row)
+                                po_num, po_line_num = s_row[0].strip(), s_row[1].strip()
+                                prd_num, prd_name, prd_mem = s_row[2].strip(), s_row[3].strip(), s_row[4].strip()
+                                sup_num, sup_name, sup_mem = s_row[5].strip(), s_row[6].strip(), s_row[7].strip()
+                                sup_contact, sup_addr, sup_email, sup_tele, sup_mobile = s_row[8].strip(), \
+                                                                                         s_row[9].strip(), \
+                                                                                         s_row[10].strip(), \
+                                                                                         s_row[11].strip(), \
+                                                                                         s_row[12].strip()
+                                acct_name, acct_no, sup_remark, sup_mobile2 = s_row[13].strip(), \
+                                                                              s_row[14].strip(), \
+                                                                              s_row[15].strip(), \
+                                                                              s_row[16].strip()
+                                pur_price, ret_price, act_price = strip_null(s_row[17].strip()), \
+                                                                  strip_null(s_row[18].strip()), \
+                                                                  strip_null(s_row[19].strip()),
+                                qty, s_date = strip_null(s_row[21].strip()), \
+                                              datetime.strptime(s_row[30].strip(), '%Y-%m-%d %H:%M:%S.%f')
+
+                                line_exists = self.is_po_line_exists(po_num, po_line_num)
+                                if  not line_exists:
+                                    imported_line += 1
+                                    # 1. Create or update supplier --> return supplier
+                                    supplier = create_or_update_supplier(sup_num, sup_name,
+                                                                         mem=sup_mem, contact=sup_contact, address=sup_addr,
+                                                                         email=sup_email, phone=sup_tele,
+                                                                         mobile=sup_mobile,
+                                                                         remark=sup_remark, mobile2=sup_mobile2,
+                                                                         acct_name=acct_name, acct_no = acct_no)
+                                    # 2. Create or update product --> return product
+                                    product = create_or_update_product(prd_num, prd_name, prd_mem, pur_price, ret_price, supplier)
+                                    # 3. Create or update sales order / sales order line --> return PO.
+                                    order, order_line = create_or_update_sales_order(po_num, po_line_num, product, act_price, qty, s_date)
+                                    # 4. Create shipping record --> return shipping id
+                                    shipping, shipping_line = create_or_update_shipping(order, order_line, shipping_status)
+                                    # 5. Create inventory transaction record --> return inventory transaction record
+                                    itr, itl = create_or_update_inventory_transaction(shipping, shipping_line, it_type)
+                                    # 6. Create related incoming and return it.
+                                    incoming = create_or_update_incoming(order, order_line, incoming_category, incoming_status)
+                                    save_objects_commit(supplier, product, order, shipping, itr, incoming)
+                            line += 1
+                        end_time = int(time.time())
+                        time_spent = end_time - start_time
+                        print ("Import of CSV data finished, imported line: {0}, time spent: {1} seconds"
+                               .format(str(imported_line), time_spent))
+                    except Exception as e:
+                        try:
+                            exc_type, exc_value, exc_traceback = sys.exc_info()
+                            print("Error to process line {0} in CSV file".format(line+1))
+                            print ("Content of the line: \n\t" + ",".join(row).decode('utf-8'))
+                            traceback.print_exception(exc_type, exc_value, exc_traceback, file=sys.stdout)
+                        except Exception:
+                            pass
+                        return 'Upload and import failed in line [{0}] with error:{1} '.format(line, e.message)
                     return gettext('Upload and import into system successfully')
 
     def is_po_line_exists(self, po_num, po_line_num):
