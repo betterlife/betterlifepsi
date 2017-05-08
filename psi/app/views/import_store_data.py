@@ -31,25 +31,39 @@ def create_or_update_supplier(sup_num, sup_name, mem, contact, address,
                               email, phone, mobile,
                               remark, mobile2,
                               acct_name, acct_no):
+
+    def concat(current_val, format_str, new_val):
+        if new_val != '':
+            val = format_str.format(new_val)
+            if current_val == '':
+                current_val += val
+            else:
+                current_val += ", " + val
+        return current_val
+
     supplier = get_by_external_id(Supplier, sup_num)
     if supplier is None:
         supplier = get_by_name(Supplier, sup_name)
         if supplier is None:
             supplier = Supplier()
             supplier.organization_id = current_user.organization_id
-        supplier.external_id = sup_num
-    supplier.name = sup_name
-    supplier.remark = "Mobile: {0},{1}, Address: {2}, Remark: {3}".format(mobile, mobile2, address, remark)
-    supplier.contact = contact
-    supplier.email = email
-    supplier.phone = phone
-    supplier.mnemonic = mem
-    if acct_name is not None and acct_no is not None:
-        pm = PaymentMethod()
-        pm.account_name = acct_name
-        pm.account_number = acct_no
-        pm.bank_name = '-'
-        pm.supplier = supplier
+            supplier.external_id = sup_num
+            supplier.name = sup_name
+            # TODO.xqliu Change this remark calculate to a reduce
+            supplier.remark = concat('', "手机: {0}", mobile)
+            supplier.remark = concat(supplier.remark, "手机2: {0}", mobile2)
+            supplier.remark = concat(supplier.remark, "地址: {0}", address)
+            supplier.remark = concat(supplier.remark, "备注: {0}", remark)
+            supplier.contact = contact
+            supplier.email = email
+            supplier.phone = phone
+            supplier.mnemonic = mem
+            if acct_name is not None and acct_no is not None:
+                pm = PaymentMethod()
+                pm.account_name = acct_name
+                pm.account_number = acct_no
+                pm.bank_name = '-'
+                pm.supplier = supplier
     return supplier
 
 
@@ -59,16 +73,16 @@ def create_or_update_product(prd_num, prd_name, prd_mem, pur_price, ret_price, s
         prd = get_by_name(Product, prd_name)
         if prd is None:
             prd = Product()
-        prd.external_id = prd_num
-        prd.deliver_day = current_app.config.get('DEFAULT_DELIVER_DAY')
-        prd.lead_day = current_app.config.get('DEFAULT_LEAD_DAY')
-        prd.category_id = current_app.config.get('DEFAULT_CATEGORY_ID')
-        prd.organization_id = current_user.organization_id
-    prd.name = prd_name
-    prd.mnemonic = prd_mem
-    prd.purchase_price = pur_price
-    prd.retail_price = ret_price
-    prd.supplier = supplier
+            prd.external_id = prd_num
+            prd.deliver_day = current_app.config.get('DEFAULT_DELIVER_DAY')
+            prd.lead_day = current_app.config.get('DEFAULT_LEAD_DAY')
+            prd.category_id = current_app.config.get('DEFAULT_CATEGORY_ID')
+            prd.organization_id = current_user.organization_id
+            prd.name = prd_name
+            prd.mnemonic = prd_mem
+            prd.purchase_price = pur_price
+            prd.retail_price = ret_price
+            prd.supplier = supplier
     return prd
 
 
@@ -202,6 +216,7 @@ class ImportStoreDataView(BaseView):
                     it_type = EnumValues.get(const.SALES_OUT_INV_TRANS_TYPE_KEY)
                     incoming_category = EnumValues.get(const.DEFUALT_SALES_ORDER_INCOMING_TYPE_KEY)
                     incoming_status = EnumValues.get(const.DEFUALT_SALES_ORDER_INCOMING_STATUS_KEY)
+                    row = []
                     try:
                         for row in reader:
                             if line != 0:  # Skip header line
@@ -267,7 +282,7 @@ class ImportStoreDataView(BaseView):
                             traceback.print_exception(exc_type, exc_value, exc_traceback, file=sys.stdout)
                         except Exception:
                             pass
-                        return 'Upload and import failed in line [{0}] with error:{1} '.format(line, e.message)
+                        return 'Upload and import failed in line [{0}] with error: {1} '.format(line, e.message)
                     return gettext('Upload and import into system successfully')
 
     def is_po_line_exists(self, po_num, po_line_num):
