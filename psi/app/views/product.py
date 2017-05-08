@@ -69,7 +69,7 @@ class ProductAdmin(ModelViewWithAccess):
         need_advice=dict(description=lazy_gettext('Need running advice for this product?')),
     )
 
-    column_list = ('id', 'supplier', 'category', 'name', 'lead_day',
+    column_list = ('id', 'name', 'supplier', 'category', 'lead_day',
                    'deliver_day', 'purchase_price', 'retail_price',
                    'available_quantity', 'in_transit_quantity',)
 
