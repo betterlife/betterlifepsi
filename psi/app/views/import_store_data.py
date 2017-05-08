@@ -229,24 +229,14 @@ class ImportStoreDataView(BaseView):
 
                                 if line % 100 == 0:
                                     print("Processing line: [{0}]\nContent: [{1}]".format(str(line), ",".join(row).decode('utf-8')))
-                                s_row = map(lambda x: x if x != 'NULL' else '', row)
-                                po_num, po_line_num = s_row[0].strip(), s_row[1].strip()
-                                prd_num, prd_name, prd_mem = s_row[2].strip(), s_row[3].strip(), s_row[4].strip()
-                                sup_num, sup_name, sup_mem = s_row[5].strip(), s_row[6].strip(), s_row[7].strip()
-                                sup_contact, sup_addr, sup_email, sup_tele, sup_mobile = s_row[8].strip(), \
-                                                                                         s_row[9].strip(), \
-                                                                                         s_row[10].strip(), \
-                                                                                         s_row[11].strip(), \
-                                                                                         s_row[12].strip()
-                                acct_name, acct_no, sup_remark, sup_mobile2 = s_row[13].strip(), \
-                                                                              s_row[14].strip(), \
-                                                                              s_row[15].strip(), \
-                                                                              s_row[16].strip()
-                                pur_price, ret_price, act_price = strip_null(s_row[17].strip()), \
-                                                                  strip_null(s_row[18].strip()), \
-                                                                  strip_null(s_row[19].strip()),
-                                qty, s_date = strip_null(s_row[21].strip()), \
-                                              datetime.strptime(s_row[30].strip(), '%Y-%m-%d %H:%M:%S.%f')
+                                s_row = map(lambda x: x.strip() if x != 'NULL' else '', row)
+                                po_num, po_line_num = s_row[0], s_row[1]
+                                prd_num, prd_name, prd_mem = s_row[2], s_row[3], s_row[4]
+                                sup_num, sup_name, sup_mem = s_row[5], s_row[6], s_row[7]
+                                sup_contact, sup_addr, sup_email, sup_tele, sup_mobile = s_row[8], s_row[9], s_row[10], s_row[11], s_row[12]
+                                acct_name, acct_no, sup_remark, sup_mobile2 = s_row[13], s_row[14], s_row[15], s_row[16]
+                                pur_price, ret_price, act_price = strip_null(s_row[17]), strip_null(s_row[18]), strip_null(s_row[19]),
+                                qty, s_date = strip_null(s_row[21]), datetime.strptime(s_row[30], '%Y-%m-%d %H:%M:%S.%f')
 
                                 line_exists = self.is_po_line_exists(po_num, po_line_num)
                                 if  not line_exists:
@@ -255,9 +245,8 @@ class ImportStoreDataView(BaseView):
                                     supplier = create_or_update_supplier(sup_num, sup_name,
                                                                          mem=sup_mem, contact=sup_contact, address=sup_addr,
                                                                          email=sup_email, phone=sup_tele,
-                                                                         mobile=sup_mobile,
-                                                                         remark=sup_remark, mobile2=sup_mobile2,
-                                                                         acct_name=acct_name, acct_no = acct_no)
+                                                                         mobile=sup_mobile, remark=sup_remark,
+                                                                         mobile2=sup_mobile2, acct_name=acct_name, acct_no=acct_no)
                                     # 2. Create or update product --> return product
                                     product = create_or_update_product(prd_num, prd_name, prd_mem, pur_price, ret_price, supplier)
                                     # 3. Create or update sales order / sales order line --> return PO.
