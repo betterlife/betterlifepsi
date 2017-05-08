@@ -30,7 +30,7 @@ def get_pinyin_first_letters(chinese_characters):
     """
     Get fist letters of pin yin of chinese characters, if there's any 多音字
     All combinations will be returned, for example for "调向"
-    Result of dxtx will be returned.
+    Result of dx|tx will be returned.
     :param chinese_characters: Chinese characters to get pinyin. 
     :return: first letters of pin yin of the letters
     """
