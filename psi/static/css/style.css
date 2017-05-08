@@ -383,7 +383,7 @@ ul.dropdown-menu > li > a > i.glyphicon {
 }
 
 .report-dashboard-row .thumbnail {
-    height:176px;
+    height:126px;
     color:#666666;
     font-size:14px;
 }
@@ -409,9 +409,9 @@ ul.dropdown-menu > li > a > i.glyphicon {
 }
 
 .report-dashboard-row .thumbnail .thumbnail-content {
-    line-height:125px;
+    line-height: 75px;
     text-align: center;
-    font-size: 23px;
+    font-size: 18px;
     background: white;
     margin: auto 15px;
     padding-left: 20px;
