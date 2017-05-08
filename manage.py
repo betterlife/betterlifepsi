@@ -71,6 +71,7 @@ def clean_transaction_data():
     """
     database.engine.execute("""
         DELETE FROM related_values;
+        DELETE FROM inventory_in_out_link;        
         DELETE FROM incoming;
         DELETE FROM shipping_line;
         DELETE FROM shipping;
@@ -94,15 +95,6 @@ def clean_database():
     """
     database.engine.execute("""
         DROP VIEW sales_order_detail RESTRICT;
-        ALTER TABLE preference DROP CONSTRAINT preference_def_so_incoming_type_id_fkey;
-        ALTER TABLE preference DROP CONSTRAINT preference_def_so_incoming_status_id_fkey;
-        ALTER TABLE preference DROP CONSTRAINT preference_def_so_exp_type_id_fkey;
-        ALTER TABLE preference DROP CONSTRAINT preference_def_so_exp_status_id_fkey;
-        ALTER TABLE preference DROP CONSTRAINT preference_def_po_logistic_exp_status_id_fkey;
-        ALTER TABLE preference DROP CONSTRAINT preference_def_po_logistic_exp_type_id_fkey;
-        ALTER TABLE preference DROP CONSTRAINT preference_def_po_goods_exp_status_id_fkey;
-        ALTER TABLE preference DROP CONSTRAINT preference_def_po_goods_exp_type_id_fkey;
-        ALTER TABLE preference DROP CONSTRAINT preference_organization_id_fkey;
         ALTER TABLE related_values DROP CONSTRAINT related_values_relation_type_id_fkey;
         ALTER TABLE incoming DROP CONSTRAINT incoming_category_id_fkey;
         ALTER TABLE incoming DROP CONSTRAINT incoming_status_id_fkey;
@@ -167,8 +159,8 @@ def clean_database():
         ALTER TABLE enum_values DROP CONSTRAINT enum_values_type_id_fkey;
         ALTER TABLE organization DROP CONSTRAINT organization_type_id_fkey;
         ALTER TABLE role DROP CONSTRAINT role_parent_id_fkey;
-        DROP TABLE preference;
         DROP TABLE related_values;
+        DROP TABLE inventory_in_out_link;
         DROP TABLE incoming;
         DROP TABLE shipping_line;
         DROP TABLE payment_method;
