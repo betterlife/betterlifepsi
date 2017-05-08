@@ -41,7 +41,7 @@ class SupplierAdmin(ModelViewWithAccess):
 
     form_overrides = dict(external_id=ReadonlyStringField)
 
-    form_columns = ('id', 'name', 'external_id', 'qq', 'phone', 'contact', 'email',
+    form_columns = ('name', 'external_id', 'qq', 'phone', 'contact', 'email',
                     'website', 'whole_sale_req', 'can_mixed_whole_sale', 'remark',
                     'paymentMethods')
 
