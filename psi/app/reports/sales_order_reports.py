@@ -18,7 +18,7 @@ def sales_amount_report(r_type, r_period):
     for r in results:
         labels.append("{0}, {1}".format(int(r[0]), gettext(r[2])))
         totals.append(float(r[3]))
-    avg = str(format_util.format_decimal(sum(totals) / float(len(totals))))
+    avg = str(format_util.format_decimal(sum(totals) / float(len(totals)))) if len(totals) > 0 else 0
     labels.reverse()
     totals.reverse()
     ct = gettext(r_type.capitalize())
@@ -101,7 +101,7 @@ def get_total(report_type, period_type, period_number, year):
 def cal_percent_and_change_type(current_val, past_val):
     result_str = None
     result = (current_val - past_val) / past_val \
-        if (current_val is not None and past_val is not None) \
+        if (current_val is not None and past_val is not None and past_val != 0) \
         else 0
     if current_val is None:
         result_str = u'本周期没有数据'
@@ -132,8 +132,8 @@ def sales_profit_report(r_type, r_period):
         totals.append(float(r[2]))
         profits.append(float(r[3]))
     length = len(profits)
-    total_avg = str(format_util.format_decimal(sum(totals) / length))
-    profit_avg = str(format_util.format_decimal(sum(profits) / length))
+    total_avg = str(format_util.format_decimal(sum(totals) / length)) if length > 0 else 0
+    profit_avg = str(format_util.format_decimal(sum(profits) / length)) if length > 0 else 0
     label_avg = gettext('Average Sales {0}(Past {1} {2}(s)): {3}')
     label_tot = gettext('Total Sales {0} Per {1}')
     ct = gettext(r_type.capitalize())
