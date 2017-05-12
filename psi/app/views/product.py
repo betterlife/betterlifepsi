@@ -49,6 +49,7 @@ class ProductAdmin(ModelViewWithAccess):
         'available_quantity': DisabledStringField(label=lazy_gettext('Available Quantity')),
         'in_transit_quantity': DisabledStringField(label=lazy_gettext('In Transit Quantity')),
         'images_placeholder': ImageField(label=lazy_gettext('Product Images')),
+        'gross_profit_rate': DisabledStringField(label=lazy_gettext('Gross Profit Rate')),
     }
 
     column_formatters = {
@@ -70,11 +71,11 @@ class ProductAdmin(ModelViewWithAccess):
     )
 
     column_list = ('id', 'name', 'supplier', 'category', 'lead_day',
-                   'deliver_day', 'purchase_price', 'retail_price',
+                   'deliver_day', 'purchase_price', 'retail_price', 'gross_profit_rate',
                    'available_quantity', 'in_transit_quantity',)
 
     form_columns = ('name', 'category', 'supplier', 'lead_day',
-                    'deliver_day', 'purchase_price', 'retail_price',
+                    'deliver_day', 'purchase_price', 'retail_price', 'gross_profit_rate',
                     'available_quantity', 'in_transit_quantity',
                     'spec_link', 'need_advice', 'images_placeholder',
                     'distinguishing_feature',)
@@ -87,7 +88,7 @@ class ProductAdmin(ModelViewWithAccess):
 
     column_details_list = ('id', 'external_id', 'name', 'category',
                            'supplier', 'lead_day', 'deliver_day',
-                           'purchase_price', 'retail_price',
+                           'purchase_price', 'retail_price', 'gross_profit_rate',
                            'available_quantity', 'in_transit_quantity',
                            'spec_link', 'need_advice', 'images_placeholder',
                            'distinguishing_feature',)

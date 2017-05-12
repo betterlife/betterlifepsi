@@ -180,6 +180,22 @@ class Product(db.Model, DataSecurityMixin):
         pass
 
     @hybrid_property
+    def gross_profit_rate(self):
+        if self.average_retail_price != 0 and self.average_purchase_price != 0:
+            val = (self.average_retail_price - self.average_purchase_price)/self.average_purchase_price
+            try:
+                fval = float(val)
+                percent = "{:.2%}".format(fval)
+                return percent
+            except Exception as e:
+                return '-'
+        return '-'
+
+    @gross_profit_rate.setter
+    def gross_profit_rate(self, value):
+        pass
+
+    @hybrid_property
     def inventory_advice(self):
         from psi.app.advice import InventoryAdvice
         return InventoryAdvice.advice(self)
