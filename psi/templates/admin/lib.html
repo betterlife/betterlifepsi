@@ -117,8 +117,8 @@
 {# ---------------------- Forms -------------------------- #}
 {% macro render_field(form, field, kwargs={}, caller=None) %}
   {% set direct_error = h.is_field_error(field.errors) %}
-  {% set has_detail_field = has_detail_field(form) %}
-    {% if has_detail_field %}
+  {% set has_detail = has_detail_field(form) %}
+    {% if has_detail %}
         {% set label_class = "col-md-3" %}
         {% set input_class = "col-md-9" %}
     {% else %}
@@ -202,7 +202,7 @@
     </div>
 {% endmacro %}
 
-{% macro render_form_fields(form, form_opts=None, has_detail_field=False) %}
+{% macro render_form_fields(form, form_opts=None, has_detail=False) %}
     {% if form.hidden_tag is defined %}
         {{ form.hidden_tag() }}
     {% else %}
@@ -215,14 +215,14 @@
     {% endif %}
 
     {% if form_opts and form_opts.form_rules %}
-        {% if has_detail_field %}
+        {% if has_detail %}
             {% set head_class="col-md-4" %}
             {% set detail_class="col-md-8" %}
         {% else %}
             {% set head_class="col-md-12" %}
             {% set head_class="col-md-0" %}
         {% endif %}
-        {% if has_detail_field %}
+        {% if has_detail %}
             {{ render_header_fields_panel(head_class, form, form_opts)  }}
             <div class="header-expand-button" id="header-field-panel-expand-icon"></div>
             {{ render_inline_fields_panel(detail_class, form, field, direct_error, kwargs) }}
@@ -299,10 +299,10 @@
     </form>
 {% endmacro %}
 
-{% macro render_form_buttons(cancel_url, extra=None, is_modal=False, has_detail_field=False) %}
+{% macro render_form_buttons(cancel_url, extra=None, is_modal=False, has_detail=False) %}
     <hr>
     <div class="form-group">
-    {% if has_detail_field %}
+    {% if has_detail %}
         {% set classes = "col-md-offset-6 col-md-6" %}
     {% else %}
         {% set classes = "col-md-offset-4 col-md-8" %}
@@ -321,9 +321,9 @@
 
 {% macro render_form(form, cancel_url, extra=None, form_opts=None, action=None, is_modal=False) -%}
     {% call form_tag(action=action) %}
-        {% set has_detail_field = has_detail_field(form) %}
-        {{ render_form_fields(form, form_opts=form_opts, has_detail_field=has_detail_field) }}
-        {{ render_form_buttons(cancel_url, extra, is_modal, has_detail_field=has_detail_field) }}
+        {% set has_detail = has_detail_field(form) %}
+        {{ render_form_fields(form, form_opts=form_opts, has_detail=has_detail) }}
+        {{ render_form_buttons(cancel_url, extra, is_modal, has_detail=has_detail) }}
     {% endcall %}
 {% endmacro %}
 
