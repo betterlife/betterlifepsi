@@ -1,6 +1,8 @@
 # encoding: utf-8
 from decimal import Decimal
 
+from flask_login import current_user
+
 from psi.app import const
 from psi.app.models.data_security_mixin import DataSecurityMixin
 from psi.app.service import Info
@@ -188,6 +190,17 @@ class Receiving(db.Model, DataSecurityMixin):
             if line.itl_receiving_line is None:
                 db.session.delete(line)
         return inv_trans
+
+    def can_delete(self):
+        return self.receiving_in_draft()
+
+    def can_edit(self, user=current_user):
+        return self.receiving_in_draft()
+
+    def receiving_in_draft(self):
+        from psi.app.models import EnumValues
+        draft_status = EnumValues.get(const.RECEIVING_DRAFT_STATUS_KEY)
+        return self.status_id == draft_status.id
 
 
 class ReceivingLine(db.Model):
