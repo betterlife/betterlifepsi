@@ -45,6 +45,8 @@ class InventoryTransactionAdmin(ModelViewWithAccess, ModelWithLineFormatter):
     column_sortable_list = ('id', ('type', 'type.display'), 'total_amount', 'date',)
     form_columns = ('type', 'date', 'total_amount', 'remark', 'lines')
     form_create_rules = ('type', 'date', 'remark', 'lines',)
+    form_edit_rules = ('type', 'date', 'remark', 'lines',)
+
     column_editable_list = ('remark',)
 
     column_filters = ('date',

@@ -49,7 +49,8 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator, ModelWithLineFormatte
     from psi.app.models import ReceivingLine, Receiving, PurchaseOrder
 
     inline_models = (ReceivingLineInlineAdmin(ReceivingLine),)
-    column_list = ('id', 'purchase_order', 'supplier', 'date', 'status', 'total_amount', 'inventory_transaction',
+    column_list = ('id', 'purchase_order', 'supplier', 'date',
+                   'status', 'total_amount', 'inventory_transaction',
                    'remark')
     form_excluded_columns = ('inventory_transaction',)
     form_columns = ('purchase_order', 'transient_po', 'status', 'date',
@@ -57,6 +58,8 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator, ModelWithLineFormatte
 
     column_editable_list = ('remark',)
     form_create_rules = ('purchase_order', 'status', 'date', 'remark', 'create_lines',)
+    form_edit_rules = ('transient_po', 'status', 'date', 'remark', 'lines',)
+
     form_extra_fields = {
         'create_lines': BooleanField(label=lazy_gettext('Create Lines for unreceived products'),
                                      description=lazy_gettext('Create receiving lines based on '
