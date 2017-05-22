@@ -15,7 +15,7 @@ import sys
 from psi.app import const
 from psi.app.models import Supplier, Product, SalesOrder, SalesOrderLine, Shipping, ShippingLine, InventoryTransaction, \
     InventoryTransactionLine, EnumValues, Incoming, PaymentMethod
-from psi.app.utils import get_by_external_id, save_objects_commit, get_by_name
+from psi.app.utils import get_by_external_id, get_by_name, save_objects
 from psi.app.utils.security_util import user_has_role
 from flask import request, current_app
 from flask_admin import BaseView
@@ -25,7 +25,9 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 
 from psi.app.utils.decorations import has_role
+from psi.app.service import Info
 
+db = Info.get_db()
 
 def create_or_update_supplier(sup_num, sup_name, mem, contact, address,
                               email, phone, mobile,
@@ -64,6 +66,7 @@ def create_or_update_supplier(sup_num, sup_name, mem, contact, address,
                 pm.account_number = acct_no
                 pm.bank_name = '-'
                 pm.supplier = supplier
+            db.session.add(supplier)
     return supplier
 
 
@@ -83,6 +86,7 @@ def create_or_update_product(prd_num, prd_name, prd_mem, pur_price, ret_price, s
             prd.purchase_price = pur_price
             prd.retail_price = ret_price
             prd.supplier = supplier
+            db.session.add(prd)
     return prd
 
 
@@ -201,6 +205,7 @@ class ImportStoreDataView(BaseView):
         if request.method == 'GET':
             return self.render('data_loading/legacy.html')
         elif request.method == 'POST':
+
             start_time = int(time.time())
             csv_file = request.files['file']
             if csv_file:
@@ -228,7 +233,9 @@ class ImportStoreDataView(BaseView):
                                 # 毛利(24), 折扣(%)(25), 折扣额(26), 毛利率(27), 操作员(28), 营业员(29), 时间(30)
 
                                 if line % 100 == 0:
-                                    print("Processing line: [{0}]\nContent: [{1}]".format(str(line), ",".join(row).decode('utf-8')))
+                                    current_time = int(time.time())
+                                    time_spent = current_time - start_time
+                                    print("Processed [{0}] lines within [{1}] seconds: \nContent: [{2}]".format(str(line), str(time_spent),",".join(row).decode('utf-8')))
                                 s_row = map(lambda x: x.strip() if x != 'NULL' else '', row)
                                 po_num, po_line_num = s_row[0], s_row[1]
                                 prd_num, prd_name, prd_mem = s_row[2], s_row[3], s_row[4]
@@ -257,8 +264,10 @@ class ImportStoreDataView(BaseView):
                                     itr, itl = create_or_update_inventory_transaction(shipping, shipping_line, it_type)
                                     # 6. Create related incoming and return it.
                                     incoming = create_or_update_incoming(order, order_line, incoming_category, incoming_status)
-                                    save_objects_commit(supplier, product, order, shipping, itr, incoming)
+                                    save_objects(order, shipping, itr, incoming)
+                                    db.session.commit()
                             line += 1
+                        db.session.commit()
                         end_time = int(time.time())
                         time_spent = end_time - start_time
                         print ("Import of CSV data finished, imported line: {0}, time spent: {1} seconds"

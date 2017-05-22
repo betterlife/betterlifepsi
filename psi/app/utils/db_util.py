@@ -50,14 +50,22 @@ def get_by_name(object_type, val, user=current_user):
 
 def save_objects_commit(*objects):
     """
-    Save object and commit to database
+    Save objects and commit to database
     :param objects: Objects to save
+    """
+    db = Info.get_db()
+    save_objects(objects)
+    db.session.commit()
+
+def save_objects(*objects):
+    """
+    Save objects without commit them to database
+    :param objects: objects to save 
     """
     db = Info.get_db()
     for obj in objects:
         if obj is not None:
             db.session.add(obj)
-    db.session.commit()
 
 
 def delete_by_id(obj_type, id_to_del, commit=True):
