@@ -264,7 +264,7 @@ class ImportStoreDataView(BaseView):
                                     itr, itl = create_or_update_inventory_transaction(shipping, shipping_line, it_type)
                                     # 6. Create related incoming and return it.
                                     incoming = create_or_update_incoming(order, order_line, incoming_category, incoming_status)
-                                    save_objects(order, shipping, itr, incoming)
+                                    save_objects((order, shipping, itr, incoming))
                                     db.session.commit()
                             line += 1
                         db.session.commit()

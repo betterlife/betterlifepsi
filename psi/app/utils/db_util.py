@@ -57,7 +57,8 @@ def save_objects_commit(*objects):
     save_objects(objects)
     db.session.commit()
 
-def save_objects(*objects):
+
+def save_objects(objects):
     """
     Save objects without commit them to database
     :param objects: objects to save 
