@@ -126,9 +126,9 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator, ModelWithLineFormatte
                                                    gettext('Receiving document can not be update '
                                                            'nor delete on complete status'))
 
-    def after_model_change(self, form, model, is_created):
+    def on_model_change(self, form, model, is_created):
         from psi.app.models import PurchaseOrder
-        super(ReceivingAdmin, self).after_model_change(form, model, is_created)
+        super(ReceivingAdmin, self).on_model_change(form, model, is_created)
         if is_created:
             available_info = model.purchase_order.get_available_lines_info()
             # 4. Check any qty available for receiving?
@@ -139,7 +139,6 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator, ModelWithLineFormatte
                 model.lines = PurchaseOrder.create_receiving_lines(available_info)
         model.operate_inv_trans_by_recv_status()
         model.update_purchase_order_status()
-        db.session.commit()
 
     def create_form(self, obj=None):
         from psi.app.models import EnumValues

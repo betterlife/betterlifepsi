@@ -153,6 +153,7 @@ class Receiving(db.Model, DataSecurityMixin):
             for line in self.lines:
                 line.price = line.purchase_order_line.unit_price
                 line.product_id = line.purchase_order_line.product_id
+                line.product = line.purchase_order_line.product
             inv_trans = self.save_inv_trans(inv_trans=self.inventory_transaction)
 
         if inv_trans is not None:

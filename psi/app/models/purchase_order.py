@@ -146,7 +146,8 @@ class PurchaseOrder(db.Model, DataSecurityMixin):
                     quantity -= received_qtys[line.id]
                 available_info[line.id] = {
                     'line': line, 'quantity': quantity,
-                    'price': line.unit_price, 'product_id': line.product_id
+                    'price': line.unit_price,
+                    'product': line.product,
                 }
         else:
             # 3. Calculate un-received line info(qty, price) if there's no existing receiving
@@ -167,11 +168,11 @@ class PurchaseOrder(db.Model, DataSecurityMixin):
         lines = []
         for line_id, info in available_info.iteritems():
             if info['quantity'] > 0:
-                r_line = ReceivingLine()
-                r_line.purchase_order_line_id = line_id
-                r_line.purchase_order_line, r_line.quantity, r_line.price, r_line.product_id = \
-                    info['line'], info['quantity'], info['price'], info['product_id']
-                lines.append(r_line)
+                rl = ReceivingLine()
+                rl.purchase_order_line_id = line_id
+                rl.purchase_order_line, rl.quantity, rl.price, rl.product = \
+                    info['line'], info['quantity'], info['price'], info['product']
+                lines.append(rl)
         return lines
 
     @staticmethod
