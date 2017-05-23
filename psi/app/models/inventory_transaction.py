@@ -1,6 +1,8 @@
 # encoding: utf-8
 from decimal import Decimal
 
+from flask_login import current_user
+
 from psi.app import const
 from psi.app.models.data_security_mixin import DataSecurityMixin
 from psi.app.service import Info
@@ -37,9 +39,6 @@ class InventoryTransaction(db.Model, DataSecurityMixin):
                                                     EnumValues.code == const.INVENTORY_DAMAGED_TYPE_KEY))
         return q
 
-
-
-
     @hybrid_property
     def total_amount(self):
         return format_decimal(Decimal(abs(sum(line.total_amount for line in self.lines))))
@@ -58,6 +57,10 @@ class InventoryTransaction(db.Model, DataSecurityMixin):
 
     def __unicode__(self):
         return str(self.id)
+
+    def can_edit(self, user=current_user):
+        return (self.type.code == const.INVENTORY_LOST_TYPE_KEY
+               or self.type.code == const.INVENTORY_DAMAGED_TYPE_KEY)
 
 
 class InventoryTransactionLine(db.Model):
