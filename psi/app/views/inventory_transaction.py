@@ -1,5 +1,10 @@
 from datetime import datetime
 
+from flask_admin.contrib.sqla.ajax import QueryAjaxModelLoader
+from flask_admin.model.fields import AjaxSelectField
+
+from psi.app.models import Product
+from psi.app import service
 from psi.app.models import InventoryTransactionLine, InventoryTransaction
 from psi.app.utils import security_util
 from flask_admin.contrib.sqla.filters import FloatGreaterFilter, FloatSmallerFilter
@@ -32,6 +37,12 @@ class InventoryTransactionLineInlineAdmin(InlineFormAdmin):
     def postprocess_form(self, form):
         from psi.app.views.components import DisabledStringField
         form.total_amount = DisabledStringField(label=lazy_gettext('Total Amount'))
+        form.saleable_quantity = DisabledStringField(label=lazy_gettext('Saleable Quantity')),
+        ajaxLoader = QueryAjaxModelLoader(name='product',
+                                          session=service.Info.get_db().session,
+                                          model=Product,
+                                          fields=['name'])
+        form.product = AjaxSelectField(ajaxLoader, label=lazy_gettext('Product(Can be searched by first letter)'))
         form.itl_receiving_line = None
         form.remark = None
         form.itl_shipping_line = None
@@ -78,6 +89,15 @@ class InventoryTransactionAdmin(ModelViewWithAccess, ModelWithLineFormatter):
 
     form_extra_fields = {
         'total_amount': DisabledStringField(label=lazy_gettext('Total Amount')),
+    }
+
+    form_ajax_refs = {
+        'product': QueryAjaxModelLoader(name='product',
+                                        session=service.Info.get_db().session,
+                                        model=Product,
+                                        # --> Still need to filter the products by organization.
+                                        # --> Line 209 is commented out, need to bring it back.
+                                        fields=['name', 'mnemonic'])
     }
 
     column_formatters = {

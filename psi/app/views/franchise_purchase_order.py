@@ -1,10 +1,16 @@
 # encoding=utf-8
 from functools import partial
 
+from flask_admin.contrib.sqla.ajax import QueryAjaxModelLoader
+from flask_admin.model.fields import AjaxSelectField
+
+from psi.app.models import PurchaseOrderLine
+from psi.app import service
 from psi.app import const
 from psi.app.models import Product, EnumValues, SalesOrder, SalesOrderLine
 from psi.app.utils import form_util, security_util, db_util
-from psi.app.views.base_purchase_order import BasePurchaseOrderAdmin
+from psi.app.views.base_purchase_order import BasePurchaseOrderAdmin, \
+    PurchaseOrderLineInlineAdmin
 from psi.app.views.components import DisabledStringField
 from flask_login import current_user
 from flask_babelex import lazy_gettext, gettext
@@ -12,9 +18,25 @@ from flask_babelex import lazy_gettext, gettext
 from psi.app.views.base import DeleteValidator
 
 
+class FranchisePurchaseOrderLineInlineAdmin(PurchaseOrderLineInlineAdmin):
+
+    def postprocess_form(self, form):
+        form.total_amount = DisabledStringField(label=lazy_gettext('Total Amount'))
+        form.remark = None
+        form.pol_receiving_lines = None
+        ajaxLoader = QueryAjaxModelLoader(name='product',
+                                          session=service.Info.get_db().session,
+                                          model=Product,
+                                          fields=['name'])
+        form.product = AjaxSelectField(ajaxLoader, label=lazy_gettext('Product(Can be searched by first letter)'))
+        return form
+
+
 class FranchisePurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
 
     type_code = const.FRANCHISE_PO_TYPE_KEY
+
+    inline_models = (FranchisePurchaseOrderLineInlineAdmin(PurchaseOrderLine),)
 
     @property
     def role_identify(self):
@@ -38,6 +60,15 @@ class FranchisePurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
         "total_amount": DisabledStringField(label=lazy_gettext('Total Amount')),
     }
 
+    form_ajax_refs = {
+        'product': QueryAjaxModelLoader(name='product',
+                                        session=service.Info.get_db().session,
+                                        model=Product,
+                                        # --> Still need to filter the products by organization.
+                                        # --> Line 209 is commented out, need to bring it back.
+                                        fields=['name', 'mnemonic'])
+    }
+
     column_sortable_list = ('id', 'logistic_amount', 'total_amount',
                             ('status', 'status.display'),
                             'goods_amount', 'order_date',)
@@ -52,8 +83,10 @@ class FranchisePurchaseOrderAdmin(BasePurchaseOrderAdmin, DeleteValidator):
         form = super(FranchisePurchaseOrderAdmin, self).edit_form(obj)
         # Set query_factory for newly added line
         parent_org_id = obj.to_organization.id
-        form.lines.form.product.kwargs['query_factory'] = partial(
-            Product.organization_filter, parent_org_id)
+        # If we uncomment follow line to limit the query to current organization
+        # The AJAX look up fails.
+        # form.lines.form.product.kwargs['query_factory'] = partial(
+        #    Product.organization_filter, parent_org_id)
         if not security_util.user_has_role('purchase_price_view'):
             form_util.del_form_field(self, form, 'goods_amount')
             form_util.del_form_field(self, form, 'total_amount')
