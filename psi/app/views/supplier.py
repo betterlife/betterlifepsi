@@ -24,7 +24,7 @@ class SupplierAdmin(ModelViewWithAccess):
 
     column_details_exclude_list = ('organization','mnemonic')
 
-    column_exclude_list = ('organization', 'mnemonic')
+    column_exclude_list = ('organization', 'mnemonic', 'create_date')
 
     column_editable_list = ['name', 'qq', 'phone', 'contact', 'email', 'website',
                             'whole_sale_req', 'can_mixed_whole_sale', 'remark']

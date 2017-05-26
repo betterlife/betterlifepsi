@@ -1,6 +1,6 @@
 # encoding: utf-8
 from psi.app.service import Info
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Text, event
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Text, event, DateTime
 from sqlalchemy.orm import backref, relationship
 
 from psi.app.models.data_security_mixin import DataSecurityMixin
@@ -25,6 +25,23 @@ class Supplier(db.Model, DataSecurityMixin):
 
     organization_id = db.Column(Integer, ForeignKey('organization.id'))
     organization = relationship('Organization', foreign_keys=[organization_id])
+
+    create_date = Column(DateTime, nullable=False)
+    # 1. We need to add a create_date to supplier to support the daily average profit
+    #   1. Add the field to supplier model
+    #   2. Add the database migration script
+    #   3. Calculate create date of existing supplier and fill to DB.
+    # 2. Calculate the total profit
+    # 3. Calculate how many days this supplier exists in the system.
+    # 4. Calculate average daily profit using the formula total profit/days supplier exists.
+    # 5. Need to take care if the days calculated is 0 --> Avoid Zero Divide Exception
+    # Question:
+    #   1. What will the logic looks like if the create date is null?
+    #     -> If the create date is null, use oldest date of current supplier's purchase order
+    #   2. What value should create_date of existing supplier be set to?
+    #     -> Set the create date to oldest date of current supplier's purchase order works?
+    #   3. How to calculate number of days between supplier's create date and now?
+    #     -> select date_part('day', now() - order_date) as age from purchase_order;
 
     def __unicode__(self):
         return self.name

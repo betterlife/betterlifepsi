@@ -3,6 +3,7 @@ Logics applies to multiple models can be put here
 """
 
 from sqlalchemy import event
+from datetime import datetime
 import re
 
 from psi.app.models import Customer, Supplier, Product
@@ -30,3 +31,9 @@ def update_menemonic(mapper, conn, target):
             except:
                 length = 64
             setattr(target, 'mnemonic', mnemonic[:length])
+
+
+@event.listens_for(Supplier, 'before_insert')
+def update_create_date(mapper, conn, target):
+    if hasattr(target, 'create_date'):
+        setattr(target, 'create_date', datetime.now())

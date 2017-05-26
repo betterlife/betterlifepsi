@@ -7,6 +7,9 @@ from index import AdminIndexView
 from preference import PreferenceAdmin
 from product import ProductAdmin
 from product_category import ProductCategoryAdmin
+from psi.app.models.product_inventory import ProductInventory
+from psi.app.models.supplier_sales import SupplierSales
+from psi.app.views.supplier_sales_report import SupplierSalesReportAdmin
 from sales_order import SalesOrderAdmin
 from user import UserAdmin
 from role import RoleAdmin
@@ -97,7 +100,7 @@ def init_admin_views(app, db):
         menu_icon_value='glyphicon-user')
     )
     admin_views.add_view(ProductInventoryView(
-        Product,
+        ProductInventory,
         db_session,
         name=lazy_gettext("Operation Suggestion"),
         category=lazy_gettext('Sales'),
@@ -168,6 +171,15 @@ def init_admin_views(app, db):
         menu_icon_value='fa fa-bar-chart',
         endpoint='sales_profit',
         url="report/sales_profit"),
+    )
+    admin_views.add_view(SupplierSalesReportAdmin(
+        SupplierSales,
+        db_session,
+        name=lazy_gettext("Supplier Sales Report"),
+        category=lazy_gettext('Report'),
+        menu_icon_type=ICON_TYPE_GLYPH,
+        menu_icon_value='fa fa-bar-chart',
+        endpoint='supplier_sales_report')
     )
     admin_views.add_view(UserAdmin(
         User,
