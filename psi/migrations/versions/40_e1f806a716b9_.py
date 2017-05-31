@@ -24,6 +24,7 @@ def upgrade():
                nullable=False, existing_server_default=sa.text(u'true'))
     op.alter_column('shipping', 'type_id', existing_type=sa.INTEGER(), nullable=False)
     op.add_column('supplier', sa.Column('create_date', sa.DateTime(), nullable=True))
+    op.get_bind().execute(text("COMMIT;"))
 
     results = op.get_bind().execute(text("""
     select sup.id, min(so.order_date) from sales_order so, supplier sup,

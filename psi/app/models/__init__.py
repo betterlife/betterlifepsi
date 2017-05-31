@@ -18,3 +18,4 @@ from role import Role, roles_users
 from organization import Organization
 from inventory_in_out_link import InventoryInOutLink
 from aspects import update_menemonic
+from product_inventory import ProductInventory

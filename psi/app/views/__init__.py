@@ -8,7 +8,7 @@ from preference import PreferenceAdmin
 from product import ProductAdmin
 from product_category import ProductCategoryAdmin
 from psi.app.models.product_inventory import ProductInventory
-from psi.app.models.supplier_sales import SupplierSales
+from psi.app.models.supplier_sales import OverallSupplierSales
 from psi.app.views.supplier_sales_report import SupplierSalesReportAdmin
 from sales_order import SalesOrderAdmin
 from user import UserAdmin
@@ -173,7 +173,7 @@ def init_admin_views(app, db):
         url="report/sales_profit"),
     )
     admin_views.add_view(SupplierSalesReportAdmin(
-        SupplierSales,
+        OverallSupplierSales,
         db_session,
         name=lazy_gettext("Supplier Sales Report"),
         category=lazy_gettext('Report'),

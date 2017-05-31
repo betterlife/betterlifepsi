@@ -69,6 +69,7 @@ def clean_transaction_data():
     """
     Clean all the transaction data, and keep all master data
     """
+    # TODO.xqliu Disable clean of database for production
     database.engine.execute("""
         DELETE FROM related_values;
         DELETE FROM inventory_in_out_link;        
@@ -93,6 +94,7 @@ def clean_database():
     Clean the database and drop all the tables
     This only tested for postgresql at this moment
     """
+    # TODO.xqliu Disable clean of database for production
     database.engine.execute("""
         DROP VIEW sales_order_detail RESTRICT;
         ALTER TABLE related_values DROP CONSTRAINT related_values_relation_type_id_fkey;

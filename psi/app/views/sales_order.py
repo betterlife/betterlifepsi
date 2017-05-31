@@ -7,7 +7,7 @@ from flask_admin.contrib.sqla.ajax import QueryAjaxModelLoader
 from psi.app.views.formatter import product_field, quantity_field, \
     retail_price_field, \
     original_amount_field, remark_field, discount_amount_field, \
-    actual_amount_field, line_formatter
+    actual_amount_field
 from psi.app import service, const
 from psi.app.models import EnumValues, Customer, Product
 from psi.app.services.sales_order import SalesOrderService

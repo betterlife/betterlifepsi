@@ -13,8 +13,8 @@ class TestInventoryAdvice(BaseTestCase):
         super(TestInventoryAdvice, self).setUp()
         from psi.app.utils import get_next_code
         fixture.login_as_admin(self.test_client)
-        from psi.app.models import Product, User
-        self.product = Product()
+        from psi.app.models import Product, User, ProductInventory
+        self.product = ProductInventory()
         self.product.organization_id = 1
         self.user = User()
         self.user.organization_id = 1

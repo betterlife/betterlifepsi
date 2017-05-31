@@ -100,7 +100,7 @@ class SalesOrderLine(db.Model):
     external_id = Column(String(), nullable=True)
 
     product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
-    product = relationship('Product')
+    product = relationship('Product', backref=backref('sales_order_lines'))
     remark = Column(Text)
 
     @hybrid_property

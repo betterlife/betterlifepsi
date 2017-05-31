@@ -74,20 +74,3 @@ GROUP BY yyyy, period
 ORDER BY yyyy ASC, period ASC 
 LIMIT {1};
 """
-
-SUPPLIER_AMOUNT_SQL = u"""
-select sum(sol.unit_price*sol.quantity)
-    from sales_order_line sol, 
-         product prd
-where sol.product_id = prd.id AND 
-      prd.supplier_id = {supplier_id};      
-"""
-
-SUPPLIER_PROFIT_SQL = u"""
-    select sum((sol.unit_price - prd.purchase_price)*sol.quantity) 
-    from sales_order_line sol, 
-         product prd 
-    where sol.product_id = prd.id AND 
-          prd.supplier_id = {supplier_id};      
-"""
-

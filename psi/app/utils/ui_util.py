@@ -14,10 +14,8 @@ def is_list_field(model, field):
     :return: True if attribute with the name is a list field, False otherwise. 
     """
     import sqlalchemy
-    field_type = type(getattr(model, field))
-    same_type = (field_type == sqlalchemy.orm.collections.InstrumentedList)
-    return same_type
-
+    return (type(getattr(model, field)) == sqlalchemy.orm.collections.InstrumentedList)\
+        if hasattr(model, field) else False
 
 def has_detail_field(form_or_view):
     """
