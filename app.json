@@ -2,12 +2,19 @@
   "name": "flask-psi",
   "scripts": {
   },
-  "env": {
-    "DOWNSTREAM_APP": {
-      "required": true
-    },
-    "SENTRY_DSN": {
-      "required": true
+   "environments": {
+    "test": {
+      "scripts": {
+        "test-setup": "pip install -r requirements/test.txt",
+        "test": "python manage.py test"
+      },
+      "env": {
+         "DOWNSTREAM_APP": "psi-dev",
+         "SENTRY_DSN": "https://9f6d2c7e33f24b77baba8a3e17a6dcfa:0afc65c1b9124c61adae430fad653718@app.getsentry.com/50555",
+         "SECURITY_PASSWORD_SALT": "123QWEasDzXcqazw",
+         "SECRET_KEY": "123QWEasDzXcqazw",
+         "CLOUDINARY_URL": "cloudinary://598638259886132:wgW3EznQ5zemCUWaUvoTq55cBv0@betterlife"        
+      }
     }
   },
   "addons": [
@@ -16,7 +23,7 @@
   ],
   "buildpacks": [
     {
-      "url": "urn:buildpack:heroku/python"
+      "url": "heroku/python"
     }
   ]
 }
