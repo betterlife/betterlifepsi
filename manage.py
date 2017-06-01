@@ -4,6 +4,12 @@
 from __future__ import print_function
 import sys
 
+try:
+    from psycopg2cffi import compat
+    compat.register()
+except:
+    pass
+
 from psi.app.service import Info
 from psi.app import create_app, init_all
 
