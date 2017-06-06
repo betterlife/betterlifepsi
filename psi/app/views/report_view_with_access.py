@@ -7,9 +7,24 @@ class ReportViewWithAccess(ModelViewWithAccess):
     can_create = False
     can_view_details = False
     page_size = 100
+
     report_type = None
+    """
+    Report type, this field is used to retrive report display name in UI and
+    the backend model definition of the report.
+    """
+
     sub_reports = []
+    """
+    Sub report lists, this is assume to be a list of tuple which points from 
+    sub report type to the display of the sub report in UI.
+    """
+
     report_models = dict()
+    """
+    Report models list which is assume to be a list of tuple which points from 
+    sub report type to the backend model descripe the report fields
+    """
 
     list_template = 'admin/report/list.html'
 

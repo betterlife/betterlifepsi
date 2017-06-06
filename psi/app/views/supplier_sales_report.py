@@ -1,7 +1,10 @@
 from flask_babelex import lazy_gettext
 
 from psi.app.models.supplier_sales import OverallSupplierSales, \
-    LastMonthSupplierSales, YesterdaySupplierSales, LastWeekSupplierSales
+    LastMonthSupplierSales, YesterdaySupplierSales, LastWeekSupplierSales, \
+    LastYearSupplierSales, LastQuarterSupplierSales, TodaySupplierSales, \
+    ThisWeekSupplierSales, ThisMonthSupplierSales, ThisYearSupplierSales, \
+    ThisQuarterSupplierSales
 from psi.app.views.report_view_with_access import ReportViewWithAccess
 
 
@@ -22,15 +25,26 @@ class SupplierSalesReportAdmin(ReportViewWithAccess):
 
     @property
     def sub_reports(self):
-        reps = ['yesterday', 'last_week', 'last_month', 'last_quarter',
-                'last_year', 'overall']
+        reps = ['overall',
+                'today', 'yesterday',
+                'this_week', 'last_week',
+                'this_month', 'last_month',
+                'this_quarter', 'last_quarter',
+                'this_year', 'last_year',]
         return [(x, lazy_gettext(x.replace('_',' ').title())) for x in reps]
 
     report_models = dict(
         overall=OverallSupplierSales,
-        last_month=LastMonthSupplierSales,
+        today=TodaySupplierSales,
         yesterday=YesterdaySupplierSales,
+        this_week=ThisWeekSupplierSales,
         last_week=LastWeekSupplierSales,
+        this_month=ThisMonthSupplierSales,
+        last_month=LastMonthSupplierSales,
+        this_year=ThisYearSupplierSales,
+        last_year=LastYearSupplierSales,
+        last_quarter=LastQuarterSupplierSales,
+        this_quarter=ThisQuarterSupplierSales,
     )
 
     report_type = 'yesterday'

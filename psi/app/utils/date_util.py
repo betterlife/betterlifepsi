@@ -69,3 +69,19 @@ def get_last_month(month, year):
         last_month = month - 1
         last_year = year
     return last_month, last_year
+
+
+def get_last_quarter(month, year):
+    """
+    Get last quarter of given month and year
+    :param month: given month
+    :param year: given year
+    :return: last quarter and it's year
+    """
+    last_quarter = (month-1)//3 
+    if last_quarter == 0:
+        last_quarter = 4 
+        last_year = year - 1
+    else:
+        last_year = year
+    return last_quarter, last_year
