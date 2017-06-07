@@ -2,18 +2,35 @@
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Dockerhub as your build environment.
-image: valtechcanada/python-postgres
+image: python:2.7.13
+
+clone:
+  depth: full
 
 pipelines:
   default:
     - step:
+        caches:
+          - pip
         script: # Modify the commands below to build your repository.
-          - /etc/init.d/postgresql start # starting the service
-          - sudo -u postgres psql -c "UPDATE pg_database SET datistemplate = FALSE WHERE datname = 'template1';"
-          - sudo -u postgres psql -c "DROP DATABASE template1;"
-          - sudo -u postgres psql -c "CREATE DATABASE template1 WITH TEMPLATE = template0 ENCODING = 'UTF8';"
-          - sudo -u postgres psql -c "UPDATE pg_database SET datistemplate = TRUE WHERE datname = 'template1';"
-          - sudo -u postgres psql -c "CREATE USER flask_sit WITH ENCRYPTED PASSWORD 'flask_sit' SUPERUSER;" # create superuser
-          - sudo -u postgres psql -c "CREATE DATABASE flask_sit OWNER flask_sit ENCODING='UTF8' template=template1;" # create database
+          # - /etc/init.d/postgresql start # starting the service
+          # - sudo -u postgres psql -c "UPDATE pg_database SET datistemplate = FALSE WHERE datname = 'template1';"
+          # - sudo -u postgres psql -c "DROP DATABASE template1;"
+          # - sudo -u postgres psql -c "CREATE DATABASE template1 WITH TEMPLATE = template0 ENCODING = 'UTF8';"
+          # - sudo -u postgres psql -c "UPDATE pg_database SET datistemplate = TRUE WHERE datname = 'template1';"
+          # - sudo -u postgres psql -c "CREATE USER flask_sit WITH ENCRYPTED PASSWORD 'flask_sit' SUPERUSER;" # create superuser
+          # - sudo -u postgres psql -c "CREATE DATABASE flask_sit OWNER flask_sit ENCODING='UTF8' template=template1;" # create database
           - pip install -r requirements/test.txt
           - python manage.py test
+          - git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git HEAD
+        services: 
+          - postgres 
+          
+definitions: 
+  services: 
+    postgres: 
+      image: postgres 
+      environment: 
+        POSTGRES_DB: 'flask_sit' 
+        POSTGRES_USER: 'flask_sit'
+        POSTGRES_PASSWORD: 'flask_sit'
