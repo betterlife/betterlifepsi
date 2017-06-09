@@ -16,4 +16,4 @@ pipelines:
           - sudo -u postgres psql -c "CREATE USER flask_sit WITH ENCRYPTED PASSWORD 'flask_sit' SUPERUSER;" # create superuser
           - sudo -u postgres psql -c "CREATE DATABASE flask_sit OWNER flask_sit ENCODING='UTF8' template=template1;" # create database
           - pip install -r requirements/test.txt
-          - python psi/manage.py test
+          - python manage.py test

@@ -8,8 +8,6 @@ from psi.app.models.supplier_sales import OverallSupplierSales, \
 from psi.app.views.report_view_with_access import ReportViewWithAccess
 
 
-# TODO.1 Sorting is not working
-# TODO.2 Need to display translated report in UI
 class SupplierSalesReportAdmin(ReportViewWithAccess):
 
     column_default_sort = ('sales_profit', True)
