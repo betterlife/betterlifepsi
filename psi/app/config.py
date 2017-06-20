@@ -31,8 +31,8 @@ class BaseConfig(object):
     DEFAULT_CATEGORY_ID = 1
     DASHBOARD_BI_URL = ""
     UPLOAD_TMP_FOLDER = '/tmp'
-    BUILDER_URL_PREFIX = 'https://travis-ci.org/betterlife/psi/builds'
-    GIT_URL_PREFIX = 'https://github.com/betterlife/psi/commit'
+    BUILDER_URL_PREFIX = 'https://bitbucket.org/xqliu/psi/commits'
+    GIT_URL_PREFIX = 'https://bitbucket.org/xqliu/psi/commits'
     IMAGE_ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
     abs_path = os.path.dirname(os.path.abspath(__file__))
     UPLOAD_FOLDER = os.path.join(abs_path, ".." ,"static", "uploaded")
