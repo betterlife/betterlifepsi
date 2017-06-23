@@ -1,6 +1,3 @@
-# This is a sample build configuration for Javascript.
-# Only use spaces to indent your .yml configuration.
-# -----
 # You can specify a custom docker image from Dockerhub as your build environment.
 image: python:2.7.13
 
@@ -23,7 +20,7 @@ pipelines:
           - pip install -r requirements/test.txt
           - python manage.py test
           - export BUILD_DATE=`date "+%Y/%m/%d@%H:%M:%S"`
-          - echo "$BITBUCKET_COMMIT $BITBUCKET_COMMIT $BITBUCKET_COMMIT $BITBUCKET_BRANCH $BITBUCKET_TAG $BUILD_DATE" > psi/swtag          
+          - echo "$BITBUCKET_COMMIT - - $BITBUCKET_BRANCH $BITBUCKET_TAG $BUILD_DATE" > psi/swtag          
           - cat psi/swtag
           - git config --global user.email "lawrence@betterlife.io"
           - git config --global user.name "Lawrence"                    
