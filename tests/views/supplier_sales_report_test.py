@@ -14,7 +14,7 @@ class TestSupplierSalesReportPage(BaseTestCase):
 
     def test_all_page_rendered(self):
         user, password = of.user(
-            role_names=['supplier_sales_report_view', ]
+            role_names=['sales_report_view', ]
         )
         db_util.save_objects_commit(user)
         fixture.login_user(self.test_client, user.email, password)
