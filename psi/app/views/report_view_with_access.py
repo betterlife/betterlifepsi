@@ -2,6 +2,11 @@ from psi.app.views import ModelViewWithAccess
 
 
 class ReportViewWithAccess(ModelViewWithAccess):
+
+    @property
+    def role_identify(self):
+        return "sales_report"
+
     can_edit = False
     can_delete = False
     can_create = False

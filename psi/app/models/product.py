@@ -7,7 +7,7 @@ from psi.app.utils.date_util import get_weeks_between
 from psi.app.utils.format_util import format_decimal
 from flask_login import current_user
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text, \
-    select, func, Boolean, or_, event
+    select, func, Boolean, or_, event, DateTime
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import backref, relationship
 
@@ -49,6 +49,23 @@ class Product(db.Model, DataSecurityMixin):
     organization = relationship('Organization', foreign_keys=[organization_id])
 
     mnemonic = Column(String(128), unique=False, nullable=True)
+
+    create_date = Column(DateTime, nullable=False)
+    # 1. We need to add a create_date to product to support the daily average profit
+    #   1. Add the field to product model
+    #   2. Add the database migration script
+    #   3. Calculate create date of existing product and fill to DB.
+    # 2. Calculate the total profit
+    # 3. Calculate how many days this supplier exists in the system.
+    # 4. Calculate average daily profit using the formula total profit/days supplier exists.
+    # 5. Need to take care if the days calculated is 0 --> Avoid Zero Divide Exception
+    # Question:
+    #   1. What will the logic looks like if the create date is null?
+    #     -> If the create date is null, use oldest date of current product's purchase order
+    #   2. What value should create_date of existing product be set to?
+    #     -> Set the create date to oldest date of current product's purchase order works?
+    #   3. How to calculate number of days between product's create date and now?
+    #     -> select date_part('day', now() - order_date) as age from purchase_order;
 
     @hybrid_property
     def images_placeholder(self):

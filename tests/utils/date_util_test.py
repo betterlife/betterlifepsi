@@ -9,9 +9,11 @@ class TestDateUtil(unittest.TestCase):
     def test_num_years(self):
         begin = datetime.combine(date(2014, 6, 24), time(12, 30))
         years = date_util.num_years(begin)
-        self.assertEqual(2, years)
+        year_num = datetime.now().year - 2014
+        self.assertEqual(year_num, years)
         begin = datetime.combine(date(2000, 6, 24), time(12, 30))
-        self.assertEqual(16, date_util.num_years(begin))
+        year_num = datetime.now().year - 2000
+        self.assertEqual(year_num, date_util.num_years(begin))
         end = datetime.combine(date(2016, 6, 24), time(12, 30))
         self.assertEqual(16, date_util.num_years(begin, end), years)
 

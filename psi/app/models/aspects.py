@@ -34,6 +34,7 @@ def update_menemonic(mapper, conn, target):
 
 
 @event.listens_for(Supplier, 'before_insert')
+@event.listens_for(Product, 'before_insert')
 def update_create_date(mapper, conn, target):
     if hasattr(target, 'create_date'):
         setattr(target, 'create_date', datetime.now())

@@ -9,7 +9,9 @@ from product import ProductAdmin
 from product_category import ProductCategoryAdmin
 from psi.app.models.product_inventory import ProductInventory
 from psi.app.models.supplier_sales import OverallSupplierSales
+from psi.app.models.product_sales import OverallProductSales
 from psi.app.views.supplier_sales_report import SupplierSalesReportAdmin
+from psi.app.views.product_sales_report import ProductSalesReportAdmin 
 from sales_order import SalesOrderAdmin
 from user import UserAdmin
 from role import RoleAdmin
@@ -180,6 +182,15 @@ def init_admin_views(app, db):
         menu_icon_type=ICON_TYPE_GLYPH,
         menu_icon_value='fa fa-bar-chart',
         endpoint='supplier_sales_report')
+    )
+    admin_views.add_view(ProductSalesReportAdmin(
+        OverallProductSales,
+        db_session,
+        name=lazy_gettext("Product Sales Report"),
+        category=lazy_gettext('Report'),
+        menu_icon_type=ICON_TYPE_GLYPH,
+        menu_icon_value='fa fa-bar-chart',
+        endpoint='product_sales_report')
     )
     admin_views.add_view(UserAdmin(
         User,

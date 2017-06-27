@@ -14,7 +14,7 @@ class SupplierSalesReportAdmin(ReportViewWithAccess):
 
     @property
     def role_identify(self):
-        return "supplier_sales_report"
+        return "sales_report"
 
     column_searchable_list = ('name', 'mnemonic')
 
