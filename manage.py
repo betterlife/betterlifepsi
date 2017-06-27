@@ -33,7 +33,7 @@ def init_migrate_command(m):
 # 'python manage.py db upgrade'
 #   - migrate DB.
 application = create_app()
-init_all(application)
+init_all(application, migrate=False)
 database = Info.get_db()
 manager = init_manager(application)
 init_migrate_command(manager)
