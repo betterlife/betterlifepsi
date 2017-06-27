@@ -186,7 +186,7 @@ def init_socket_io(app):
     return socket_io
 
 
-def init_all(app):
+def init_all(app, migrate=True):
     init_logging(app)
     from psi.app.service import Info
     # === Important notice to the maintainer ===
@@ -202,7 +202,8 @@ def init_all(app):
         database = init_db(app)
     else:
         database = Info.get_db()
-    init_migrate(app, database)
+    if migrate:
+        init_migrate(app, database)
     init_https(app)
     security = init_flask_security(app, database)
     init_admin_views(app, database)
