@@ -19,7 +19,8 @@ install:
   - mv setup.cfg.template setup.cfg
   - mkdir -p app/static/uploaded
 script:
-  - python manage.py test
+  # - python manage.py test
+  - nosetests tests --with-coverage --cover-erase --cover-branches --with-xunit --xunit-file=nosetests.xml
 after_success:
   - export CODECLIMATE_REPO_TOKEN=b66ce794c42bc566d01713825caa2dfd117ba2b8e67e17dcb64ebb85dd2655ba
   - codeclimate-test-reporter

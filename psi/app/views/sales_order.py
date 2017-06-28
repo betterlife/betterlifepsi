@@ -195,8 +195,6 @@ class SalesOrderAdmin(ModelViewWithAccess, ModelWithLineFormatter):
     }
 
     def create_form(self, obj=None):
-        from psi.app.models import Customer
-
         form = super(SalesOrderAdmin, self).create_form(obj)
         self.hide_line_derive_fields_on_create_form(form)
         form_util.filter_by_organization(form.customer, Customer)
@@ -211,8 +209,6 @@ class SalesOrderAdmin(ModelViewWithAccess, ModelWithLineFormatter):
         form.lines.form.retail_price = None
 
     def edit_form(self, obj=None):
-        from psi.app.models import Customer
-
         form = super(SalesOrderAdmin, self).edit_form(obj)
         form_util.filter_by_organization(form.customer, Customer)
         self.filter_product_by_organization(form)
@@ -221,8 +217,6 @@ class SalesOrderAdmin(ModelViewWithAccess, ModelWithLineFormatter):
     @staticmethod
     def filter_product_by_organization(form):
         # Set query factory for new created line
-        from psi.app.models import Product
-
         # TODO.xqliu Fix this for AJAX lookup
         # If we uncomment follow line to limit the query to current organization
         # The AJAX look up fails.
