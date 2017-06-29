@@ -24,9 +24,9 @@ ratings:
 
 exclude_paths:
 - "psi/migrations/"
-- "psi/app/static/ckeditor/"
-- "psi/app/static/chart.js/"
-- "psi/app/static/Font-Awesome-4.6.3/"
-- "psi/app/static/bootbox/"
-- "psi/app/static/lightbox2/"
+- "psi/static/ckeditor/"
+- "psi/static/chart.js/"
+- "psi/static/Font-Awesome-4.6.3/"
+- "psi/static/bootbox/"
+- "psi/static/lightbox2/"
 - "tests/"
