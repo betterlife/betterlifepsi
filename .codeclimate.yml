@@ -22,10 +22,10 @@ ratings:
   - "**.py"
 
 exclude_paths:
-- psi/migrations
-- psi/app/static/ckeditor
-- psi/app/static/chart.js
-- psi/app/static/Font-Awesome-4.6.3
-- psi/app/static/bootbox
-- psi/app/static/lightbox2
-- tests
+- "psi/migrations/"
+- "psi/app/static/ckeditor/"
+- "psi/app/static/chart.js/"
+- "psi/app/static/Font-Awesome-4.6.3/"
+- "psi/app/static/bootbox/"
+- "psi/app/static/lightbox2/"
+- "tests/"
