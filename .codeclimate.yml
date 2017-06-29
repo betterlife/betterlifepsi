@@ -20,6 +20,7 @@ engines:
 ratings:
   paths:
   - "**.py"
+  - "psi/app/static/js/*.js"
 
 exclude_paths:
 - "psi/migrations/"
