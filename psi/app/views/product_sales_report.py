@@ -6,6 +6,7 @@ from psi.app.models.product_sales import OverallProductSales, \
     ThisWeekProductSales, ThisMonthProductSales, ThisYearProductSales, \
     ThisQuarterProductSales
 from psi.app.views.report_view_with_access import ReportViewWithAccess
+from psi.app.utils import security_util
 
 
 class ProductSalesReportAdmin(ReportViewWithAccess):
@@ -40,6 +41,19 @@ class ProductSalesReportAdmin(ReportViewWithAccess):
         last_quarter=LastQuarterProductSales,
         this_quarter=ThisQuarterProductSales,
     )
+
+    def get_list_columns(self):
+        """
+        This method is called instantly in list.html
+        List of columns is decided runtime during render of the table
+        Not decided during flask-admin blueprint startup.
+        """
+        columns = super(ProductSalesReportAdmin, self).get_list_columns()
+        cols = ['sales_profit', 'daily_profit']
+        columns = security_util.filter_columns_by_role(
+            columns, cols,'purchase_price_view'
+        )
+        return columns
 
     report_type = 'today'
 
