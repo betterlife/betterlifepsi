@@ -104,7 +104,11 @@ def _objs_formatter(view, context, model, values, model_name, title_field='id', 
 
 
 def supplier_formatter(view, context, model, name):
-    s = model.supplier
+    try:
+        s = model.supplier
+    except Exception:
+        s = model
+
     fields = (name_field,
             {'label': lazy_gettext('QQ'), 'field': 'qq'},
             {'label': lazy_gettext('Phone'), 'field': 'phone'},

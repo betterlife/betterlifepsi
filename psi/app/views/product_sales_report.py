@@ -5,6 +5,7 @@ from psi.app.models.product_sales import OverallProductSales, \
     LastYearProductSales, LastQuarterProductSales, TodayProductSales, \
     ThisWeekProductSales, ThisMonthProductSales, ThisYearProductSales, \
     ThisQuarterProductSales
+from psi.app.views.formatter import supplier_formatter
 from psi.app.views.report_view_with_access import ReportViewWithAccess
 from psi.app.utils import security_util
 
@@ -13,10 +14,11 @@ class ProductSalesReportAdmin(ReportViewWithAccess):
 
     column_default_sort = ('sales_profit', True)
 
-    column_searchable_list = ('name', 'mnemonic')
+    column_searchable_list = ('name', 'mnemonic', 'supplier.name',
+                              'supplier.mnemonic')
 
-    column_list = ('name', 'sales_amount', 'sales_profit', 'sales_quantity',
-                   'daily_profit', 'daily_amount')
+    column_list = ('name', 'supplier', 'sales_amount', 'sales_profit',
+                   'sales_quantity', 'daily_profit', 'daily_amount')
 
     @property
     def sub_reports(self):
@@ -58,15 +60,16 @@ class ProductSalesReportAdmin(ReportViewWithAccess):
     report_type = 'today'
 
     column_formatters = {
+        'supplier': supplier_formatter,
     }
 
-    column_filters = [
-        'sales_profit',
-        'sales_amount',
-    ]
+    column_filters = ['sales_profit', 'sales_amount',]
 
     column_labels = {
         'name': lazy_gettext('Name'),
+        'mnemonic': lazy_gettext('Product Mnemonic'),
+        'supplier.name': lazy_gettext('Supplier'),
+        'supplier.mnemonic': lazy_gettext('Supplier Mnemonic'),
         'sales_profit': lazy_gettext('Sales Profit'),
         'sales_amount': lazy_gettext('Sales Amount'),
         'sales_quantity': lazy_gettext('Sales Quantity'),
@@ -82,4 +85,5 @@ class ProductSalesReportAdmin(ReportViewWithAccess):
         return super(ProductSalesReportAdmin, self).get_count_query()\
             .filter(self.model.sales_amount > 0)
 
-    column_sortable_list = ('sales_profit', 'sales_amount', 'sales_quantity')
+    column_sortable_list = ('supplier.name', 'sales_profit', 'sales_amount',
+                            'sales_quantity')

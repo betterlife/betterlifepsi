@@ -5,6 +5,7 @@ from psi.app.models.supplier_sales import OverallSupplierSales, \
     LastYearSupplierSales, LastQuarterSupplierSales, TodaySupplierSales, \
     ThisWeekSupplierSales, ThisMonthSupplierSales, ThisYearSupplierSales, \
     ThisQuarterSupplierSales
+from psi.app.views.formatter import supplier_formatter
 from psi.app.views.report_view_with_access import ReportViewWithAccess
 from psi.app.utils import security_util
 
@@ -59,20 +60,15 @@ class SupplierSalesReportAdmin(ReportViewWithAccess):
         this_quarter=ThisQuarterSupplierSales,
     )
 
-    report_type = 'yesterday'
+    report_type = 'today'
 
     column_formatters = {
+        'name': supplier_formatter,
     }
 
-    column_filters = [
-        'sales_profit',
-        'sales_amount',
-        'daily_profit',
-        'daily_amount',
-    ]
+    column_filters = ['sales_amount', 'daily_amount',]
 
     column_labels = {
-        'name': lazy_gettext('Name'),
         'sales_profit': lazy_gettext('Sales Profit'),
         'sales_amount': lazy_gettext('Sales Amount'),
         'daily_profit': lazy_gettext('Daily Profit'),
