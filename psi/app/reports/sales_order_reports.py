@@ -104,12 +104,12 @@ def cal_percent_and_change_type(current_val, past_val):
         if (current_val is not None and past_val is not None and past_val != 0) \
         else 0
     if current_val is None:
-        result_str = u'本周期没有数据'
+        result_str = gettext(u'No Data for this Period')
     elif past_val is None:
         if result_str is not None:
-            result_str += u", 上一周期没有数据"
+            result_str += gettext(u",") + gettext(u"No Data for previous Period")
         else:
-            result_str = u"上一周期没有数据"
+            result_str = gettext(u"No Data for previous Period")
     else:
         result_str = "{0:.2f}%".format(result * 100)
     if result > 0:

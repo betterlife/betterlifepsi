@@ -2,6 +2,7 @@
 
 import os
 from flask import logging
+from flask_babelex import gettext
 
 from psi.app import const
 
@@ -147,6 +148,7 @@ def init_jinja2_functions(app):
     app.add_template_global(has_detail_field, 'has_detail_field')
     app.add_template_global(is_inline_field, 'is_inline_field')
     app.add_template_global(is_list_field, 'is_list_field')
+    app.add_template_global(gettext, 'mytext')
 
 
 def init_image_service(app):
