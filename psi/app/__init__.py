@@ -6,7 +6,7 @@ from flask_babelex import gettext
 
 from psi.app import const
 
-__version__ = '0.6.6'
+__version__ = '0.6.7'
 
 
 def create_app(custom_config=None):
