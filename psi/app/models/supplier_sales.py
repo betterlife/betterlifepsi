@@ -1,23 +1,16 @@
-from datetime import datetime, timedelta
+from datetime import datetime
+
+from sqlalchemy import func, select, Integer, text
 from sqlalchemy.ext.hybrid import hybrid_property
 
+from psi.app.const import SO_DELIVERED_STATUS_KEY
 from psi.app.models import Supplier, SalesOrderLine, \
     Product, SalesOrder, EnumValues
-from psi.app.utils import format_decimal, date_util
-from psi.app.const import SO_DELIVERED_STATUS_KEY 
-from decimal import Decimal
-from sqlalchemy import func, select, Integer, text
+from psi.app.models.report_base_model import ReportBaseModel
+from psi.app.utils import date_util
 
 
-class SupplierSales(Supplier):
-
-    @staticmethod
-    def sales_profit_select():
-        return select([func.sum((SalesOrderLine.unit_price - Product.purchase_price) * SalesOrderLine.quantity)])
-
-    @staticmethod
-    def sales_amount_select():
-        return select([func.sum(SalesOrderLine.unit_price * SalesOrderLine.quantity)]) 
+class SupplierSales(Supplier, ReportBaseModel):
 
     @staticmethod
     def daily_profit_select():
@@ -34,28 +27,6 @@ class SupplierSales(Supplier):
         return sel.where(SalesOrderLine.product_id == Product.id).where(Product.supplier_id == sup_id)\
                   .where(SalesOrder.id == SalesOrderLine.sales_order_id).where(SalesOrder.status_id == EnumValues.id)\
                   .where(EnumValues.code == SO_DELIVERED_STATUS_KEY).where(Product.supplier_id == Supplier.id)
-
-    def _get_result(self, select_statement):
-        if isinstance(self.id, int):
-            result = self.query.session.execute(select_statement).first()
-            val = format_decimal(result[0]) if (result is not None and result[0] is not None) else Decimal("0.00")
-        else:
-            val = Decimal("0.00")
-        return val
-
-    @staticmethod
-    def strip_actual_class(clazz_name):
-        """
-        The field str(self._sa_class_manager.class_) will return a string like
-         <class 'psi.app.models.supplier_sales.ThisYearSupplierSales'>
-         So we can get the part ThisYearSupplierSales via substring and
-         Then get back the class definition using eval
-        :return:
-        """
-        idx_last_dot = clazz_name.rfind(".") + 1
-        right_bound = -2
-        clazz = eval(clazz_name[idx_last_dot:right_bound])
-        return clazz
 
     @hybrid_property
     def sales_profit(self):
