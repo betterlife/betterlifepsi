@@ -46,6 +46,7 @@ class InventoryTransactionLineInlineAdmin(InlineFormAdmin):
         form.itl_receiving_line = None
         form.remark = None
         form.itl_shipping_line = None
+        form.in_transit_quantity = None
         return form
 
 
