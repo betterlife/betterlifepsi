@@ -74,3 +74,16 @@ GROUP BY yyyy, period
 ORDER BY yyyy ASC, period ASC 
 LIMIT {1};
 """
+
+ALL_SALES_PROFIT_SQL = u"""
+SELECT 
+    sum((sales_order_line.unit_price - product.purchase_price) * sales_order_line.quantity) as total
+FROM 
+    sales_order_line, product, supplier, sales_order, enum_values
+WHERE 
+    sales_order_line.product_id = product.id 
+    AND product.supplier_id = supplier.id 
+    AND sales_order.id = sales_order_line.sales_order_id 
+    AND sales_order.status_id = enum_values.id 
+    AND enum_values.code = 'SALES_ORDER_DELIVERED'
+"""

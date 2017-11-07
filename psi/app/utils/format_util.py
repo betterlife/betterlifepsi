@@ -12,6 +12,17 @@ def format_decimal(value):
         Decimal(value).quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
 
 
+def decimal_to_percent(value, decimal_place=2):
+    """
+    Format a decimal to percentage with two decimal
+    :param value: the value to be formatted
+    :param decimal_place default decimal place, default to 2
+    :return: a string in percentage format, 20.50% etc
+    """
+    format_str = '{:.' + str(2) + '%}'
+    return format_str.format(value)
+
+
 def get_name(last_name, first_name):
     """
     Get name from last name and first name, if the name is in alpha, 

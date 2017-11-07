@@ -5,6 +5,12 @@ from psi.app.utils import format_util
 
 
 class TestFormatUtil(unittest.TestCase):
+
+    def test_decimal_to_percent(self):
+        self.assertEqual("33.33%", format_util.decimal_to_percent(0.3333))
+        self.assertEqual("200.00%", format_util.decimal_to_percent(2))
+        self.assertEqual("0.01%", format_util.decimal_to_percent(0.0001))
+
     def test_format_decimal(self):
         self.assertEqual('20.00', str(format_util.format_decimal(20.0005)))
         self.assertEqual('0.01', str(format_util.format_decimal(0.009)))

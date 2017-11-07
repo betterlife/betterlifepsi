@@ -5,7 +5,7 @@ from psi.app.models.product_sales import OverallProductSales, \
     LastYearProductSales, LastQuarterProductSales, TodayProductSales, \
     ThisWeekProductSales, ThisMonthProductSales, ThisYearProductSales, \
     ThisQuarterProductSales
-from psi.app.views.formatter import supplier_formatter
+from psi.app.views.formatter import supplier_formatter, percent_formatter
 from psi.app.views.report_view_with_access import ReportViewWithAccess
 from psi.app.utils import security_util
 
@@ -18,7 +18,8 @@ class ProductSalesReportAdmin(ReportViewWithAccess):
                               'supplier.mnemonic')
 
     column_list = ('name', 'supplier', 'sales_amount', 'sales_profit',
-                   'sales_quantity', 'daily_profit', 'daily_amount')
+                   'sales_quantity', 'daily_profit', 'daily_amount',
+                   'sales_profit_percentage')
 
     @property
     def sub_reports(self):
@@ -61,6 +62,7 @@ class ProductSalesReportAdmin(ReportViewWithAccess):
 
     column_formatters = {
         'supplier': supplier_formatter,
+        'sales_profit_percentage': percent_formatter,
     }
 
     column_filters = ['sales_profit', 'sales_amount',]
@@ -75,15 +77,17 @@ class ProductSalesReportAdmin(ReportViewWithAccess):
         'sales_quantity': lazy_gettext('Sales Quantity'),
         'daily_profit': lazy_gettext('Daily Profit'),
         'daily_amount': lazy_gettext('Daily Amount'),
+        'sales_profit_percentage': lazy_gettext('Sales Profit Percentage'),
     }
 
     def get_query(self):
+        # Only displays product with profit larger than 0.1%
         return super(ProductSalesReportAdmin, self).get_query()\
-            .filter(self.model.sales_amount > 0)
+            .filter(self.model.sales_profit_percentage > 0.001)
 
     def get_count_query(self):
         return super(ProductSalesReportAdmin, self).get_count_query()\
-            .filter(self.model.sales_amount > 0)
+            .filter(self.model.sales_profit_percentage > 0.001)
 
     column_sortable_list = ('supplier.name', 'sales_profit', 'sales_amount',
-                            'sales_quantity')
+                            'sales_quantity',)

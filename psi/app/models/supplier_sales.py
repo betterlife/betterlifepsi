@@ -29,6 +29,18 @@ class SupplierSales(Supplier, ReportBaseModel):
                   .where(EnumValues.code == SO_DELIVERED_STATUS_KEY).where(Product.supplier_id == Supplier.id)
 
     @hybrid_property
+    def sales_profit_percentage(self):
+        percentage = self.sales_profit/self.get_all_profit()
+        return percentage
+
+    @sales_profit_percentage.expression
+    def sales_profit_percentage(self):
+        total = SupplierSales.get_all_profit()
+        clazz = SupplierSales.strip_actual_class(str(self._sa_class_manager.class_))
+        sales_profit_select = select([func.sum((SalesOrderLine.unit_price - Product.purchase_price) * SalesOrderLine.quantity).op("/")(total)])
+        return clazz.get_where(SupplierSales.common_where(sales_profit_select, self.id)).label('sales_profit_percentage')
+
+    @hybrid_property
     def sales_profit(self):
         clazz = SupplierSales.strip_actual_class(str(self._sa_class_manager.class_))
         return self._get_result(clazz.get_where(SupplierSales.common_where(SupplierSales.sales_profit_select(), self.id)))

@@ -15,6 +15,13 @@ class ReportBaseModel(object):
         return val
 
     @staticmethod
+    def get_all_profit():
+        from psi.app.reports.sqls import ALL_SALES_PROFIT_SQL
+        from psi.app.utils import db_util
+        total = db_util.get_result_raw_sql(ALL_SALES_PROFIT_SQL)
+        return total[0]
+
+    @staticmethod
     def sales_profit_select():
         return select([func.sum((SalesOrderLine.unit_price - Product.purchase_price) * SalesOrderLine.quantity)])
 

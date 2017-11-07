@@ -1,5 +1,5 @@
 # coding=utf-8
-from psi.app.utils import user_has_role
+from psi.app.utils import user_has_role, format_util
 from flask import url_for, render_template
 from flask_babelex import lazy_gettext
 from markupsafe import Markup
@@ -281,4 +281,10 @@ def line_formatter(view, context, model, name):
     result = render_template('components/detail_lines.html',
                            detail_labels=labels,
                            detail_lines = values)
+    return result
+
+
+def percent_formatter(view, context, model, name):
+    value = getattr(model, name)
+    result = format_util.decimal_to_percent(value)
     return result

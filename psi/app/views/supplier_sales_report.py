@@ -5,7 +5,7 @@ from psi.app.models.supplier_sales import OverallSupplierSales, \
     LastYearSupplierSales, LastQuarterSupplierSales, TodaySupplierSales, \
     ThisWeekSupplierSales, ThisMonthSupplierSales, ThisYearSupplierSales, \
     ThisQuarterSupplierSales
-from psi.app.views.formatter import supplier_formatter
+from psi.app.views.formatter import supplier_formatter, percent_formatter
 from psi.app.views.report_view_with_access import ReportViewWithAccess
 from psi.app.utils import security_util
 
@@ -21,7 +21,7 @@ class SupplierSalesReportAdmin(ReportViewWithAccess):
     column_searchable_list = ('name', 'mnemonic')
 
     column_list = ('name', 'sales_amount', 'sales_profit',
-                   'daily_profit', 'daily_amount')
+                   'daily_profit', 'daily_amount', 'sales_profit_percentage')
 
     def get_list_columns(self):
         """
@@ -64,6 +64,7 @@ class SupplierSalesReportAdmin(ReportViewWithAccess):
 
     column_formatters = {
         'name': supplier_formatter,
+        'sales_profit_percentage': percent_formatter,
     }
 
     column_filters = ['sales_amount', 'daily_amount',]
@@ -73,15 +74,17 @@ class SupplierSalesReportAdmin(ReportViewWithAccess):
         'sales_amount': lazy_gettext('Sales Amount'),
         'daily_profit': lazy_gettext('Daily Profit'),
         'daily_amount': lazy_gettext('Daily Amount'),
+        'sales_profit_percentage': lazy_gettext('Sales Profit Percentage'),
     }
 
     def get_query(self):
+        # Only displays supplier with profit larger than 1%
         return super(SupplierSalesReportAdmin, self).get_query()\
-            .filter(self.model.sales_amount > 0)
+            .filter(self.model.sales_profit_percentage > 0.01)
 
     def get_count_query(self):
         return super(SupplierSalesReportAdmin, self).get_count_query()\
-            .filter(self.model.sales_amount > 0)
+            .filter(self.model.sales_profit_percentage > 0.01)
 
     column_sortable_list = ('sales_profit', 'sales_amount', 'daily_profit',
                             'daily_amount',)
