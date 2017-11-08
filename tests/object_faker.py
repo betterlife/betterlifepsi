@@ -47,14 +47,19 @@ class ObjectFaker(object):
         SalesOrderService.create_or_update_expense(so)
         return so
 
-    def purchase_order(self, po_id=None, number_of_line=1, creator=current_user, type=None):
+    def purchase_order(self, po_id=None, number_of_line=1, creator=current_user,
+                       type=None, status=None):
         from psi.app.models import PurchaseOrder, PurchaseOrderLine, EnumValues
         po = PurchaseOrder()
         po.remark = self.faker.text(max_nb_chars=20)
         po.logistic_amount = self.faker.pyfloat(positive=True, left_digits=2, right_digits=0)
         po.order_date = self.faker.date()
-        draft_status = EnumValues.get(const.PO_DRAFT_STATUS_KEY)
-        po.status = draft_status
+        if status is None:
+            draft_status = EnumValues.get(const.PO_DRAFT_STATUS_KEY)
+            po.status = draft_status
+        else:
+            po.status = status
+            po.status_id = status.id
         if type is None:
             types = EnumValues.type_filter(const.PO_TYPE_KEY).all()
             type = random.choice(types)

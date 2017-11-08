@@ -1,5 +1,7 @@
 import unittest
 
+from flask import url_for
+
 from tests import fixture
 from tests.object_faker import object_faker
 
@@ -49,5 +51,17 @@ class BaseTestCase(unittest.TestCase):
             for c in deleted_data:
                 self.assertIn(c, rv_data)
         return rv
+
+    def edit_endpoint(self, view, id=1):
+        return url_for('%s.edit_view' % view,
+                       url=url_for('%s.index_view' % view),
+                       id=id)
+
+    def create_endpoint(self, view):
+        return url_for('%s.create_view' % view,
+                       url=url_for('%s.index_view' % view))
+
+    def details_endpoint(self, view, id=1):
+        return url_for('%s.details_view' %view, id=id)
 
 

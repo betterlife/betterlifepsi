@@ -93,7 +93,7 @@ class TestFranchisePurchaseOrderView(BaseTestCase):
             order_date = object_faker.faker.date_time_this_year()
             logistic_amount = random.randint(0, 100)
             remark = object_faker.faker.text(max_nb_chars=50)
-            rv = self.test_client.post(url_for('fpo.create_view', url=url_for('fpo.index_view')),
+            rv = self.test_client.post(self.create_endpoint(view='fpo'),
                                        data=dict(status=draft_status.id, order_date=order_date,
                                                  logistic_amount=logistic_amount, remark=remark),
                                        follow_redirects=True)
@@ -127,7 +127,7 @@ class TestFranchisePurchaseOrderView(BaseTestCase):
             self.assertPageRendered(method=self.test_client.post,
                                     data=dict(status=draft_status.id, order_date=order_date,
                                               logistic_amount=logistic_amount, remark=remark),
-                                    endpoint=url_for('fpo.create_view', url=url_for('fpo.index_view')),
+                                    endpoint=self.create_endpoint(view='fpo'),
                                     expect_contents=expect_contents)
 
             self.assertPageRendered(expect_contents=expect_contents,
@@ -139,7 +139,7 @@ class TestFranchisePurchaseOrderView(BaseTestCase):
             new_expect_contents = [draft_status.display, str(new_logistic_amount),
                                    new_order_date.strftime("%Y-%m-%d"), new_remark]
             self.assertPageRendered(method=self.test_client.post,
-                                    endpoint=url_for('fpo.edit_view', url=url_for('fpo.index_view'), id=1),
+                                    endpoint=self.edit_endpoint(view='fpo'),
                                     data=dict(status=draft_status.id,
                                               order_date=new_order_date, logistic_amount=new_logistic_amount,
                                               remark=new_remark),

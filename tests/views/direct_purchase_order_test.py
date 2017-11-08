@@ -27,11 +27,12 @@ class TestDirectPurchaseOrderPages(BaseTestCase):
             self.assertPageRendered(method=self.test_client.post,
                                     data=dict(supplier=supplier.id, status=draft_status.id, order_date=order_date,
                                                    logistic_amount=logistic_amount, remark=remark),
-                                    endpoint=url_for('dpo.create_view', url=url_for('dpo.index_view')),
+                                    endpoint=self.create_endpoint(view='dpo'),
                                     expect_contents=expect_content)
 
             self.assertPageRendered(expect_contents=expect_content,
-                                    endpoint=url_for('dpo.edit_view', url=url_for('dpo.index_view'), id=1))
+                                    endpoint=self.edit_endpoint(
+                                        view='dpo'))
 
 
             new_remark = object_faker.faker.text(max_nb_chars=50)
@@ -40,7 +41,7 @@ class TestDirectPurchaseOrderPages(BaseTestCase):
             new_expect_content = [supplier.name, draft_status.display, str(new_logistic_amount),
                                   new_order_date.strftime("%Y-%m-%d"), new_remark]
             self.assertPageRendered(method=self.test_client.post,
-                                    endpoint=url_for('dpo.edit_view', url=url_for('dpo.index_view'), id=1),
+                                    endpoint=self.edit_endpoint(view='dpo'),
                                     data=dict(supplier=supplier.id,
                                               status=draft_status.id,
                                               order_date=new_order_date,

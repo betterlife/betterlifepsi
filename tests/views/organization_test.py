@@ -39,7 +39,7 @@ class TestOrganization(BaseTestCase):
             fixture.login_as_admin(self.test_client)
             desc = object_faker.faker.text(max_nb_chars=20)
             name = object_faker.faker.name()
-            self.assertPageRendered(endpoint=url_for('organization.edit_view', id=1, url=url_for('organization.index_view')),
+            self.assertPageRendered(endpoint=self.edit_endpoint(view='organization'),
                                     method=self.test_client.post,
                                     expect_contents=[name, desc],
                                     data={"type": type_id, "name": name,
@@ -67,8 +67,7 @@ class TestOrganization(BaseTestCase):
             fixture.login_as_admin(self.test_client)
             org_name = object_faker.faker.name()
             org_desc = object_faker.faker.text(max_nb_chars=20)
-            create_url = url_for('organization.create_view',
-                                 url=url_for('organization.index_view'))
+            create_url = self.create_endpoint(view='organization')
             self.assertPageRendered(endpoint=create_url,
                                     method=self.test_client.get,
                                     expect_contents=['betterlife', '直营店'])

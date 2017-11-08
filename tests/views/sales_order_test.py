@@ -34,10 +34,7 @@ class TestSalesOrderPages(BaseTestCase):
         data, expect = self.create_sales_order(status_key=const.SO_CREATED_STATUS_KEY)
         customer, delivered, total = expect[0], expect[1], float(expect[4])
         self.assertPageRendered(expect_contents=expect,
-                                endpoint=url_for('salesorder.edit_view',
-                                                 url=url_for(
-                                                     'salesorder.index_view'),
-                                                 id=1))
+                                endpoint=self.edit_endpoint(view='salesorder'))
 
         new_remark = of.faker.text(max_nb_chars=50)
         new_logistic_amount = random.randint(0, 100)
@@ -101,9 +98,7 @@ class TestSalesOrderPages(BaseTestCase):
         expect = [customer.name, order_status.display,
                   order_date.strftime("%Y-%m-%d"), remark, str(total)]
         self.assertPageRendered(method=self.test_client.post, data=data,
-                                endpoint=url_for('salesorder.create_view',
-                                                 url=url_for(
-                                                     'salesorder.index_view')),
+                                endpoint=self.create_endpoint(view='salesorder'),
                                 expect_contents=expect)
         return data, expect
 
