@@ -1,5 +1,7 @@
 from decimal import Decimal
 
+from sqlalchemy.exc import ProgrammingError
+
 from psi.app.models import SalesOrderLine, Product
 from psi.app.utils import format_decimal
 from sqlalchemy import func, select
@@ -18,7 +20,10 @@ class ReportBaseModel(object):
     def get_all_profit():
         from psi.app.reports.sqls import ALL_SALES_PROFIT_SQL
         from psi.app.utils import db_util
-        total = db_util.get_result_raw_sql(ALL_SALES_PROFIT_SQL)
+        try:
+            total = db_util.get_result_raw_sql(ALL_SALES_PROFIT_SQL)
+        except ProgrammingError:
+            return 0
         return total[0]
 
     @staticmethod
