@@ -19,8 +19,9 @@ pipelines:
           # - sudo -u postgres psql -c "CREATE DATABASE flask_sit OWNER flask_sit ENCODING='UTF8' template=template1;" # create database
           - pip install -r requirements/test.txt
           - python manage.py test
+          - if [ $? -eq 0 ]; then bash <(curl -s https://codecov.io/bash); fi
           - export BUILD_DATE=`date "+%Y/%m/%d@%H:%M:%S"`
-          - echo "$BITBUCKET_COMMIT - - $BITBUCKET_BRANCH $BITBUCKET_TAG $BUILD_DATE" > psi/swtag          
+          - echo "$BITBUCKET_COMMIT - $BITBUCKET_BUILD_NUMBER - $BITBUCKET_BRANCH $BITBUCKET_TAG $BUILD_DATE" > psi/swtag
           - cat psi/swtag
           - git config --global user.email "lawrence@betterlife.io"
           - git config --global user.name "Lawrence"                    
