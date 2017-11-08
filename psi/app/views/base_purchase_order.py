@@ -161,6 +161,7 @@ class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator, ModelWithLine
         return super(BasePurchaseOrderAdmin, self).get_count_query().filter(self.model.type == po_type)
 
     def on_model_delete(self, model):
+        super(BasePurchaseOrderAdmin, self).on_model_delete(model)
         DeleteValidator.validate_status_for_change(
             model,const.PO_RECEIVED_STATUS_KEY,
             gettext('Purchase order can not be update nor delete on received status'))

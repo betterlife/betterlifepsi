@@ -122,6 +122,7 @@ class ReceivingAdmin(ModelViewWithAccess, DeleteValidator, ModelWithLineFormatte
     }
 
     def on_model_delete(self, model):
+        super(ReceivingAdmin, self).on_model_delete(model)
         DeleteValidator.validate_status_for_change(model, const.RECEIVING_COMPLETE_STATUS_KEY,
                                                    gettext('Receiving document can not be update '
                                                            'nor delete on complete status'))
