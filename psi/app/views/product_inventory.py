@@ -64,6 +64,7 @@ class ProductInventoryView(ModelViewWithAccess):
         def get_time_in_second(key):
             return int(time.time())
         from psi.app.service import Info
+        from psi.app.models import ProductInventory
         from flask import current_app
         last_update = Info.get('need_advice_last_update_timestamp', get_time_in_second)
         if int((time.time() - last_update)) > current_app.config['NEED_ADVICE_UPDATE_SECONDS']:
@@ -72,7 +73,7 @@ class ProductInventoryView(ModelViewWithAccess):
             for p in all_products:
                 p.need_advice = False
                 session.add(p)
-            products = Product.query.order_by(Product.weekly_average_profit).limit(50).all()
+            products = ProductInventory.query.order_by(ProductInventory.weekly_average_profit).limit(50).all()
             for p in products:
                 p.need_advice = True
                 session.add(p)

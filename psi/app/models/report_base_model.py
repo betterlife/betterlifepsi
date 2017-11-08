@@ -22,9 +22,9 @@ class ReportBaseModel(object):
         from psi.app.utils import db_util
         try:
             total = db_util.get_result_raw_sql(ALL_SALES_PROFIT_SQL)
+            return total[0]
         except ProgrammingError:
             return 0
-        return total[0]
 
     @staticmethod
     def sales_profit_select():
