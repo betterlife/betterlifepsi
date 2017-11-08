@@ -1,6 +1,8 @@
 # encoding: utf-8
 from decimal import Decimal
 
+from flask import flash
+from flask_babelex import gettext
 from flask_login import current_user
 
 from psi.app import const
@@ -193,10 +195,18 @@ class Receiving(db.Model, DataSecurityMixin):
         return inv_trans
 
     def can_delete(self):
-        return self.receiving_in_draft()
+        if not self.receiving_in_draft():
+            flash(gettext('Receiving document can not be update '
+                          'nor delete on complete status'))
+            return False
+        return True
 
     def can_edit(self, user=current_user):
-        return self.receiving_in_draft()
+        if not self.receiving_in_draft():
+            flash(gettext('Receiving document can not be update '
+                          'nor delete on complete status'))
+            return False
+        return True
 
     def receiving_in_draft(self):
         from psi.app.models import EnumValues
