@@ -7,9 +7,11 @@ clone:
 pipelines:
   default:
     - step:
+        name: Run all Unit Tests
         caches:
           - pip
-        script: # Modify the commands below to build your repository.
+        script: 
+          # Modify the commands below to build your repository.
           # - /etc/init.d/postgresql start # starting the service
           # - sudo -u postgres psql -c "UPDATE pg_database SET datistemplate = FALSE WHERE datname = 'template1';"
           # - sudo -u postgres psql -c "DROP DATABASE template1;"
@@ -19,7 +21,15 @@ pipelines:
           # - sudo -u postgres psql -c "CREATE DATABASE flask_sit OWNER flask_sit ENCODING='UTF8' template=template1;" # create database
           - pip install -r requirements/test.txt
           - python manage.py test
-          - if [ $? -eq 0 ]; then bash <(curl -s https://codecov.io/bash); fi
+          - pip install codecov
+          - codecov --token=$CODECOV_KEY
+        services: 
+          - postgres 
+    - step:
+        name: Deploy to Testing Environment
+        deployment: test
+        script:
+          - echo "Deploy to Remote Testing Environment"
           - export BUILD_DATE=`date "+%Y/%m/%d@%H:%M:%S"`
           - echo "$BITBUCKET_COMMIT - $BITBUCKET_BUILD_NUMBER - $BITBUCKET_BRANCH $BITBUCKET_TAG $BUILD_DATE" > psi/swtag
           - cat psi/swtag
@@ -29,8 +39,6 @@ pipelines:
           - git commit -m "Add swtag"
           # Always push to heroku master branch as it will ignore all non master branch push
           - git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git HEAD:master --force
-        services: 
-          - postgres 
           
 definitions: 
   services: 
