@@ -13,10 +13,6 @@ except:
 from psi.app.service import Info
 from psi.app import create_app, init_all
 
-reload(sys)
-sys.setdefaultencoding("utf-8")
-
-
 def init_manager(app):
     from flask_script import Manager
     return Manager(app)
