@@ -91,7 +91,7 @@ class SalesOrderLineInlineAdmin(InlineFormAdmin):
 
 class SalesOrderAdmin(ModelViewWithAccess, ModelWithLineFormatter):
     from psi.app.models import SalesOrderLine, SalesOrder
-    from formatter import expenses_formatter, incoming_formatter, \
+    from .formatter import expenses_formatter, incoming_formatter, \
         shipping_formatter, default_date_formatter, line_formatter
 
     line_fields = [product_field, quantity_field, retail_price_field,
