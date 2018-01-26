@@ -13,11 +13,6 @@ except:
 from psi.app.service import Info
 from psi.app import create_app, init_all
 
-def init_manager(app):
-    from flask_script import Manager
-    return Manager(app)
-
-
 def init_migrate_command(m):
     from flask_migrate import Migrate, MigrateCommand
     migrate = Migrate(application, database, directory="psi/migrations")
@@ -31,11 +26,10 @@ def init_migrate_command(m):
 application = create_app()
 init_all(application, migrate=False)
 database = Info.get_db()
-manager = init_manager(application)
 init_migrate_command(manager)
 
 
-@manager.command
+@application.cli.command()
 def test():
     """Run the unit tests.
     "" python manage.py test
@@ -47,7 +41,7 @@ def test():
     sys.exit(return_code)
 
 
-@manager.command
+@application.cli.command()
 def generate_fake_order():
     """
     Load a set of fake data to the system
@@ -66,7 +60,7 @@ def generate_fake_order():
     database.session.commit()
 
 
-@manager.command
+@application.cli.command()
 def clean_transaction_data():
     """
     Clean all the transaction data, and keep all master data
@@ -90,7 +84,7 @@ def clean_transaction_data():
         commit;
     """)
 
-@manager.command
+@application.cli.command()
 def clean_database():
     """
     Clean the database and drop all the tables
