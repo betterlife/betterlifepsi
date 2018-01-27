@@ -13,10 +13,10 @@ except:
 from psi.app.service import Info
 from psi.app import create_app, init_all
 
-def init_migrate_command(m):
+def init_migrate_command(application):
     from flask_migrate import Migrate, MigrateCommand
     migrate = Migrate(application, database, directory="psi/migrations")
-    m.add_command('db', MigrateCommand)
+    application.cli.add_command('db', MigrateCommand)
 
 
 # 'python manage.py db migrate'
@@ -26,7 +26,7 @@ def init_migrate_command(m):
 application = create_app()
 init_all(application, migrate=False)
 database = Info.get_db()
-init_migrate_command(manager)
+init_migrate_command(application)
 
 
 @application.cli.command()
@@ -193,4 +193,4 @@ def shutdown_session(exception=None):
     database.session.remove()
 
 if __name__ == '__main__':
-    manager.run()
+    application.cli.run()
