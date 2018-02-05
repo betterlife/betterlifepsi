@@ -195,10 +195,10 @@ class Receiving(db.Model, DataSecurityMixin):
         return inv_trans
 
     def can_delete(self):
-        return self.receiving_in_draft():
+        return self.receiving_in_draft()
 
     def can_edit(self, user=current_user):
-        return self.receiving_in_draft():
+        return self.receiving_in_draft()
 
     def receiving_in_draft(self):
         from psi.app.models import EnumValues
