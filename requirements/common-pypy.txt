@@ -1,6 +1,6 @@
 Flask==0.12
 Jinja2==2.8
-sqlalchemy==1.0.14
+sqlalchemy==1.2.6
 Flask-Admin==1.5.0
 Flask-SQLAlchemy==2.1
 Flask-SSLify==0.1.5
