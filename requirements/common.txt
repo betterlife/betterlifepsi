@@ -6,7 +6,7 @@ Flask-SQLAlchemy==2.1
 Flask-SSLify==0.1.5
 MarkupSafe==0.23
 Werkzeug==0.11.13
-gunicorn==19.6.0
+gunicorn==19.7.1
 psycopg2==2.6.2
 wsgiref==0.1.2
 Flask_BabelEx==0.9.3
