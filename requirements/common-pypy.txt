@@ -14,7 +14,7 @@ Flask-Migrate==2.0.2
 raven==5.32.0
 Flask-Security==1.7.5
 Flask-DebugToolbar==0.10.0
-cloudinary==1.5.0
+cloudinary==1.11.0
 Flask-RESTful==0.3.5
 flask-socketio==2.8.2
 eventlet==0.20.1
