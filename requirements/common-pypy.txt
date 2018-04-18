@@ -15,7 +15,7 @@ raven==5.32.0
 Flask-Security==1.7.5
 Flask-DebugToolbar==0.10.0
 cloudinary==1.5.0
-Flask-RESTful==0.3.5
+Flask-RESTful==0.3.6
 flask-socketio==2.8.2
 eventlet==0.20.1
 pypinyin==0.18.2
