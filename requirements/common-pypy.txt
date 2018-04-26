@@ -1,4 +1,4 @@
-Flask==0.12
+Flask==1.0
 Jinja2==2.8
 sqlalchemy==1.0.14
 Flask-Admin==1.5.0
