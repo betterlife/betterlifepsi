@@ -1,6 +1,7 @@
 # coding=utf-8
 from flask_admin import expose
 from flask_babelex import gettext
+from flask_babelex import lazy_gettext
 
 from flask import url_for, request, flash, has_request_context
 from flask_admin._compat import as_unicode
@@ -26,6 +27,12 @@ class ModelViewWithAccess(ModelView):
     """
     By default records in all list view is sorted by id descending
     """
+
+
+    """
+    Default placeholder for the search box
+    """
+    search_placeholder = lazy_gettext('Search(Support first letter of Pinyin)')
 
 
     def is_accessible(self):
@@ -141,6 +148,7 @@ class ModelViewWithAccess(ModelView):
         """
         model, return_url = self.get_model_return_url()
         if not model.can_edit():
+            flash(gettext('You are not allowed to edit this object'))
             return redirect(return_url)
         return super(ModelViewWithAccess, self).edit_view()
 
@@ -152,6 +160,7 @@ class ModelViewWithAccess(ModelView):
         """
         model, return_url = self.get_model_return_url()
         if not model.can_view_details():
+            flash(gettext('You are not allowed to view detail of this object'))
             return redirect(return_url)
         return super(ModelViewWithAccess, self).details_view()
 
@@ -169,6 +178,7 @@ class ModelViewWithAccess(ModelView):
             model_id = form.id.data
             model = self.get_one(model_id)
             if not model.can_delete():
+                flash(gettext('You are not allowed to delete this object'))
                 return redirect(return_url)
         return super(ModelViewWithAccess, self).delete_view()
 

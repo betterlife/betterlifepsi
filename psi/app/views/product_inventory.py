@@ -8,7 +8,7 @@ from psi.app.views.base import ModelViewWithAccess
 
 
 class ProductInventoryView(ModelViewWithAccess):
-    from formatter import supplier_formatter, product_formatter, available_quantity_formatter, default_decimal_formatter
+    from .formatter import supplier_formatter, product_formatter, available_quantity_formatter, default_decimal_formatter
     can_edit = False
     can_delete = False
     can_create = False

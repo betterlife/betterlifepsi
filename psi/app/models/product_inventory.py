@@ -74,7 +74,7 @@ class ProductInventory(Product):
 
     @average_unit_profit.expression
     def average_unit_profit(self):
-        from enum_values import EnumValues
+        from .enum_values import EnumValues
         return ((select([-func.sum(InventoryTransactionLine.quantity * InventoryTransactionLine.price) /
                          func.greatest(func.sum(InventoryTransactionLine.quantity), 1)])
                  .where(self.id == InventoryTransactionLine.product_id)
@@ -91,7 +91,7 @@ class ProductInventory(Product):
 
     @weekly_average_profit.expression
     def weekly_average_profit(self):
-        from enum_values import EnumValues
+        from .enum_values import EnumValues
         return ((select([-func.sum(InventoryTransactionLine.quantity * InventoryTransactionLine.price) /
                          func.greatest(func.sum(InventoryTransactionLine.quantity), 1)])
                  .where(self.id == InventoryTransactionLine.product_id
