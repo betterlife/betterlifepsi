@@ -11,7 +11,7 @@ from flask_admin.contrib.sqla.filters import FloatGreaterFilter, FloatSmallerFil
 from flask_admin.model import InlineFormAdmin
 from flask_babelex import lazy_gettext
 
-from formatter import receivings_formatter, shipping_formatter, \
+from .formatter import receivings_formatter, shipping_formatter, \
     default_date_formatter, type_field, date_field, product_field, price_field, \
     quantity_field, total_amount_field, remark_field, saleable_quantity_field, \
     line_formatter

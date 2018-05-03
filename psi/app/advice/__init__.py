@@ -1,1 +1,1 @@
-from inventory_advice import *
+from .inventory_advice import *

@@ -1,11 +1,6 @@
 # coding=utf-8
 
-import sys
-
-import os
-
-reload(sys)
-sys.setdefaultencoding("utf-8")
+import sys, os
 
 sys.path.insert(0, os.getcwd() + "/psi")
 

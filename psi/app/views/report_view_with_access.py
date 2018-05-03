@@ -1,4 +1,4 @@
-from psi.app.views import ModelViewWithAccess
+from .base import ModelViewWithAccess
 
 
 class ReportViewWithAccess(ModelViewWithAccess):

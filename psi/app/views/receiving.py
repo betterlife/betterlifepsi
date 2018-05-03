@@ -44,7 +44,7 @@ class ReceivingLineInlineAdmin(InlineFormAdmin):
 
 
 class ReceivingAdmin(ModelViewWithAccess, DeleteValidator, ModelWithLineFormatter):
-    from formatter import supplier_formatter, purchase_order_formatter, \
+    from .formatter import supplier_formatter, purchase_order_formatter, \
         inventory_transaction_formatter, default_date_formatter
     from psi.app.models import ReceivingLine, Receiving, PurchaseOrder
 
