@@ -1,6 +1,7 @@
 # coding=utf-8
 from flask_admin import expose
 from flask_babelex import gettext
+from flask_babelex import lazy_gettext
 
 from flask import url_for, request, flash, has_request_context
 from flask_admin._compat import as_unicode
@@ -26,6 +27,12 @@ class ModelViewWithAccess(ModelView):
     """
     By default records in all list view is sorted by id descending
     """
+
+
+    """
+    Default placeholder for the search box
+    """
+    search_placeholder = lazy_gettext('Search(Support first letter of Pinyin)')
 
 
     def is_accessible(self):
