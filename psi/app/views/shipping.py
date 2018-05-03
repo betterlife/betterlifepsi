@@ -32,7 +32,7 @@ class ShippingLineInlineAdmin(InlineFormAdmin):
 
 class ShippingAdmin(ModelViewWithAccess, ModelWithLineFormatter):
 
-    from formatter import inventory_transaction_formatter, sales_order_formatter, default_date_formatter
+    from .formatter import inventory_transaction_formatter, sales_order_formatter, default_date_formatter
     from psi.app.models import ShippingLine, Shipping
 
     inline_models = (ShippingLineInlineAdmin(ShippingLine),)

@@ -195,18 +195,10 @@ class Receiving(db.Model, DataSecurityMixin):
         return inv_trans
 
     def can_delete(self):
-        if not self.receiving_in_draft():
-            flash(gettext('Receiving document can not be update '
-                          'nor delete on complete status'))
-            return False
-        return True
+        return self.receiving_in_draft()
 
     def can_edit(self, user=current_user):
-        if not self.receiving_in_draft():
-            flash(gettext('Receiving document can not be update '
-                          'nor delete on complete status'))
-            return False
-        return True
+        return self.receiving_in_draft()
 
     def receiving_in_draft(self):
         from psi.app.models import EnumValues

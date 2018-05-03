@@ -1,5 +1,5 @@
 # encoding=utf-8
-from sales_order import SalesOrderApi
+from .sales_order import SalesOrderApi
 
 
 def init_all_apis(api):

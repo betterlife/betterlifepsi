@@ -1,1 +1,1 @@
-from sales_order import SalesOrderService
+from .sales_order import SalesOrderService

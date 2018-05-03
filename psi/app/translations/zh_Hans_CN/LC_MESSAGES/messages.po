@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: lawrence@betterlife.io\n"
 "POT-Creation-Date: 2015-06-26 07:25+0800\n"
-"PO-Revision-Date: 2017-11-06 11:20+0800\n"
+"PO-Revision-Date: 2018-02-05 09:37+0800\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -747,3 +747,12 @@ msgstr "与上周比较"
 
 msgid "Sales Profit Percentage"
 msgstr "销售利润占比"
+
+msgid "You are not allowed to edit this object"
+msgstr "不允许编辑本对象"
+
+msgid "You are not allowed to view detail of this object"
+msgstr "不允许查看本对象的详细信息"
+
+msgid "You are not allowed to delete this object"
+msgstr "不允许删除本对象"
