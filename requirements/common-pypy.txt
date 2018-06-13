@@ -10,7 +10,7 @@ gunicorn==19.8.1
 psycopg2cffi==2.7.7
 wsgiref==0.1.2
 Flask_BabelEx==0.9.3
-Flask-Migrate==2.1.1
+Flask-Migrate==2.2.0
 raven==6.7.0
 Flask-Security==3.0.0
 Flask-DebugToolbar==0.10.1
