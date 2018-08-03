@@ -17,5 +17,6 @@ Flask-DebugToolbar==0.10.1
 cloudinary==1.12.0
 Flask-RESTful==0.3.6
 flask-socketio==3.0.0
+eventlet==0.22.1
 eventlet==0.24.0
-pypinyin==0.30.1
+pypinyin==0.32.0
