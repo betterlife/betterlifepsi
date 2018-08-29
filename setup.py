@@ -32,7 +32,7 @@ setup(
     keywords="Betterlife, Intelligent, Purchase Order, Sales Order, Inventory Management, Retail",
     url="https://github.com/betterlife/psi",
     install_requires=[
-        "Flask==1.02",
+        "Flask==1.0.2",
         "sqlalchemy==1.1.4",
         "Flask-SQLAlchemy==2.1",
         "Flask-SSLify==0.1.5",
