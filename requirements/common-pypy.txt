@@ -18,4 +18,4 @@ cloudinary==1.12.0
 Flask-RESTful==0.3.6
 flask-socketio==3.0.1
 eventlet==0.24.1
-pypinyin==0.32.0
+pypinyin==0.33.0
