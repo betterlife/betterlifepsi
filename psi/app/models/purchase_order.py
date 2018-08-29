@@ -157,7 +157,7 @@ class PurchaseOrder(db.Model, DataSecurityMixin):
 
     @staticmethod
     def all_lines_received(available_info):
-        for line_id, line_info in available_info.iteritems():
+        for line_id, line_info in available_info.items():
             if line_info['quantity'] > 0:
                 return False
         return True
@@ -166,7 +166,7 @@ class PurchaseOrder(db.Model, DataSecurityMixin):
     def create_receiving_lines(available_info):
         from psi.app.models import ReceivingLine
         lines = []
-        for line_id, info in available_info.iteritems():
+        for line_id, info in available_info.items():
             if info['quantity'] > 0:
                 rl = ReceivingLine()
                 rl.purchase_order_line_id = line_id

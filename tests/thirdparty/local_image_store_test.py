@@ -14,7 +14,7 @@ class TestLocalImageStore(BaseTestCase):
     def setUp(self):
         super(TestLocalImageStore, self).setUp()
         test_image_file_path = os.path.join(os.path.dirname(__file__), '../resources/image.png')
-        self.image_file = open(test_image_file_path)
+        self.image_file = open(test_image_file_path, 'rb')
 
     def tearDown(self):
         super(TestLocalImageStore, self).tearDown()
@@ -33,7 +33,7 @@ class TestLocalImageStore(BaseTestCase):
         self.assertEqual(result['url'], "/static/uploaded/" + filename)
         self.assertEqual(result['filename'], filename)
         file_absolute_path = os.path.join(self.app.config['UPLOAD_FOLDER'], result['filename'])
-        uploaded_file = open(file_absolute_path)
+        uploaded_file = open(file_absolute_path, 'rb')
         uploaded_data = uploaded_file.read()
         self.assertEqual(data, uploaded_data)
         uploaded_file.close()

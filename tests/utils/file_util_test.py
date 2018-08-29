@@ -12,7 +12,7 @@ class TestFileUtil(BaseTestCase):
     def setUp(self):
         super(TestFileUtil, self).setUp()
         test_image_file_path = os.path.join(os.path.dirname(__file__), '../resources/image.png')
-        self.image_file = open(test_image_file_path)
+        self.image_file = open(test_image_file_path, 'rb')
 
     def tearDown(self):
         super(TestFileUtil, self).tearDown()

@@ -236,7 +236,7 @@ class ImportStoreDataView(BaseView):
                                     current_time = int(time.time())
                                     time_spent = current_time - start_time
                                     print("Processed [{0}] lines within [{1}] seconds: \nContent: [{2}]".format(str(line), str(time_spent),",".join(row).decode('utf-8')))
-                                s_row = map(lambda x: x.strip() if x != 'NULL' else '', row)
+                                s_row = list(map(lambda x: x.strip() if x != 'NULL' else '', row))
                                 po_num, po_line_num = s_row[0], s_row[1]
                                 prd_num, prd_name, prd_mem = s_row[2], s_row[3], s_row[4]
                                 sup_num, sup_name, sup_mem = s_row[5], s_row[6], s_row[7]
@@ -246,7 +246,7 @@ class ImportStoreDataView(BaseView):
                                 qty, s_date = strip_null(s_row[21]), datetime.strptime(s_row[30], '%Y-%m-%d %H:%M:%S.%f')
 
                                 line_exists = self.is_po_line_exists(po_num, po_line_num)
-                                if  not line_exists:
+                                if not line_exists:
                                     imported_line += 1
                                     # 1. Create or update supplier --> return supplier
                                     supplier = create_or_update_supplier(sup_num, sup_name,

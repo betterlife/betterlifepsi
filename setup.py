@@ -39,7 +39,6 @@ setup(
         "MarkupSafe==0.23",
         "gunicorn==19.6.0",
         "psycopg2==2.6",
-        "wsgiref==0.1.2",
         "Flask_BabelEx==0.9.2",
         "Flask-Migrate==2.0.2",
         "raven==5.32.0",

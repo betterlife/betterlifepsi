@@ -175,6 +175,12 @@ class Organization(db.Model, DataSecurityMixin):
     def __unicode__(self):
         return self.name
 
+    def __repr__(self):
+        return self.name
+
+    def __str__(self):
+        return self.name
+
     def can_edit(self, user=current_user):
         return self in Organization.children_self_filter(user.organization)
 

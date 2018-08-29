@@ -58,10 +58,10 @@ def logout_user(test_client):
 
 def cleanup_database(app_context):
     with app_context:
-        Info.get_db().session.remove()
-        Info.get_db().engine.execute('DROP TABLE alembic_version')
-        Info.get_db().engine.execute('DROP VIEW sales_order_detail')
-        Info.get_db().session.commit()
-        Info.get_db().reflect()
-        Info.get_db().drop_all()
-
+        db = Info.get_db()
+        db.session.remove()
+        db.engine.execute('DROP TABLE alembic_version')
+        db.engine.execute('DROP VIEW sales_order_detail')
+        db.session.commit()
+        db.reflect()
+        db.drop_all()

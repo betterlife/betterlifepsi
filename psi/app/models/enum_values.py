@@ -32,7 +32,7 @@ class EnumValues(db.Model, DataSecurityMixin):
             filter_by(code=type_code)
 
     def __repr__(self):
-        return self.display.encode('utf-8')
+        return self.display
 
     def __unicode__(self):
-        return self.display.encode('utf-8')
+        return self.display

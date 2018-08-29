@@ -1,4 +1,4 @@
-import unittest
+import unittest, time
 
 from flask import url_for
 
@@ -14,7 +14,9 @@ class BaseTestCase(unittest.TestCase):
         self.app_context.push()
 
     def tearDown(self):
+        from psi.app.service import Info
         fixture.cleanup_database(self.app_context)
+        Info.get_db().get_engine(self.app).dispose()
         self.app_context.pop()
 
     def assertPageRendered(self, endpoint, method=None, data=None, expect_contents=None):
@@ -25,7 +27,7 @@ class BaseTestCase(unittest.TestCase):
         if expect_contents is not None:
             rv_data = rv.data
             for c in expect_contents:
-                self.assertIn(c, rv_data)
+                self.assertIn(c.encode('utf-8'), rv_data)
         return rv
 
     def assertCreateFail(self, endpoint, data=None, create_data=None):
@@ -40,7 +42,7 @@ class BaseTestCase(unittest.TestCase):
         if not_expect_contents is not None:
             rv_data = rv.data
             for c in not_expect_contents:
-                self.assertNotIn(c, rv_data)
+                self.assertNotIn(c.encode('utf-8'), rv_data)
         return rv
 
     def assertDeleteFail(self, endpoint, data=None, deleted_data=None):
@@ -49,7 +51,7 @@ class BaseTestCase(unittest.TestCase):
         if deleted_data is not None:
             rv_data = rv.data
             for c in deleted_data:
-                self.assertIn(c, rv_data)
+                self.assertIn(c.encode('utf-8'), rv_data)
         return rv
 
     def edit_endpoint(self, view, id=1):

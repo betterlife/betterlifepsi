@@ -33,8 +33,8 @@ class TestSalesOrderApi(BaseTestCase):
             rv = self.test_client.put('/api/sales_order/' + str(so_id),
                                       follow_redirects=True,
                                       data=dict(status_id=delivered_status.id))
-            self.assertIn('message', rv.data)
-            self.assertIn('Status update successfully', rv.data)
+            self.assertIn(b'message', rv.data)
+            self.assertIn(b'Status update successfully', rv.data)
             self.assertEqual(rv.status_code, 200)
             so_from_db = Info.get_db().session.query(SalesOrder).get(so_id)
             self.assertIsNotNone(so_from_db)
@@ -63,8 +63,8 @@ class TestSalesOrderApi(BaseTestCase):
             rv = self.test_client.put('/api/sales_order/' + str(so_id),
                                       follow_redirects=True,
                                       data=dict(status_id=shipped_status.id))
-            self.assertIn('message', rv.data)
-            self.assertIn('Status update successfully', rv.data)
+            self.assertIn(b'message', rv.data)
+            self.assertIn(b'Status update successfully', rv.data)
             self.assertEqual(rv.status_code, 200)
             so_from_db = Info.get_db().session.query(SalesOrder).get(so_id)
             self.assertIsNotNone(so_from_db)
@@ -133,8 +133,8 @@ class TestSalesOrderApi(BaseTestCase):
                                       follow_redirects=True,
                                       data=dict(status_id=5000))
             self.assertEqual(rv.status_code, 201)
-            self.assertIn('message', rv.data)
-            self.assertIn('Invalid sales order status parameter', rv.data)
+            self.assertIn(b'message', rv.data)
+            self.assertIn(b'Invalid sales order status parameter', rv.data)
         run_as_admin(self.test_client, test_logic)
 
     def test_update_sales_order_status_not_allowed(self):
@@ -159,6 +159,6 @@ class TestSalesOrderApi(BaseTestCase):
                                       follow_redirects=True,
                                       data=dict(status_id=shipped_status.id))
             self.assertEqual(rv.status_code, 201)
-            self.assertIn('message', rv.data)
-            self.assertIn('Status update not allowed', rv.data)
+            self.assertIn(b'message', rv.data)
+            self.assertIn(b'Status update not allowed', rv.data)
         run_as_admin(self.test_client, test_logic)

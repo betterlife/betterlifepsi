@@ -16,12 +16,12 @@ from alembic import op
 
 def upgrade():
     from sqlalchemy.sql import text
-    op.get_bind().execute(text("INSERT INTO enum_values (type_id, code, display) VALUES (1, 'LANGUAGES', u'语言');"))
-    op.get_bind().execute(text("INSERT INTO enum_values (type_id, code, display) VALUES ((SELECT id FROM enum_values WHERE code='LANGUAGES'), 'zh_CN', u'简体中文');"))
+    op.get_bind().execute(text("INSERT INTO enum_values (type_id, code, display) VALUES (1, 'LANGUAGES', '语言');"))
+    op.get_bind().execute(text("INSERT INTO enum_values (type_id, code, display) VALUES ((SELECT id FROM enum_values WHERE code='LANGUAGES'), 'zh_CN', '简体中文');"))
     op.get_bind().execute(text("INSERT INTO enum_values (type_id, code, display) VALUES ((SELECT id FROM enum_values WHERE code='LANGUAGES'), 'en_US', 'English');"))
-    op.get_bind().execute(text("INSERT INTO enum_values (type_id, code, display) VALUES (1, 'TIMEZONES', u'时区');"))
+    op.get_bind().execute(text("INSERT INTO enum_values (type_id, code, display) VALUES (1, 'TIMEZONES', '时区');"))
     op.get_bind().execute(text("INSERT INTO enum_values (type_id, code, display) VALUES ((SELECT id FROM enum_values WHERE code='TIMEZONES'), 'UTC/GMT', 'Greenwich Mean Time');"))
-    op.get_bind().execute(text("INSERT INTO enum_values (type_id, code, display) VALUES ((SELECT id FROM enum_values WHERE code='TIMEZONES'), 'CST', u'北京时间');"))
+    op.get_bind().execute(text("INSERT INTO enum_values (type_id, code, display) VALUES ((SELECT id FROM enum_values WHERE code='TIMEZONES'), 'CST', '北京时间');"))
 
 
 def downgrade():

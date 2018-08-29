@@ -34,7 +34,8 @@ class PurchaseOrderLineInlineAdmin(InlineFormAdmin):
         return form
 
 
-class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator, ModelWithLineFormatter):
+class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator,
+                             ModelWithLineFormatter):
     from psi.app.models import PurchaseOrderLine
     from psi.app.views.formatter import supplier_formatter, expenses_formatter, \
         receivings_formatter, default_date_formatter, line_formatter
@@ -61,8 +62,10 @@ class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator, ModelWithLine
         if not security_util.user_has_role('purchase_price_view'):
             return [product_field, quantity_field, remark_field]
         else:
-            return [product_field, quantity_field, unit_price_field,
-                    total_amount_field, remark_field]
+            return [
+                product_field, quantity_field, unit_price_field,
+                total_amount_field, remark_field
+            ]
 
     column_formatters = {
         'supplier': supplier_formatter,
@@ -73,15 +76,17 @@ class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator, ModelWithLine
     }
 
     form_args = dict(
-        status=dict(query_factory=PurchaseOrder.status_option_filter,
-                    description=lazy_gettext(
-                        'Purchase order can only be created in draft status, '
-                        'and partially '
-                        'received & received status are driven by associated '
-                        'receiving document')),
-        supplier=dict(description=lazy_gettext(
-            'Please select a supplier and save the form, '
-            'then add purchase order lines accordingly')),
+        status=dict(
+            query_factory=PurchaseOrder.status_option_filter,
+            description=lazy_gettext(
+                'Purchase order can only be created in draft status, '
+                'and partially '
+                'received & received status are driven by associated '
+                'receiving document')),
+        supplier=dict(
+            description=lazy_gettext(
+                'Please select a supplier and save the form, '
+                'then add purchase order lines accordingly')),
         logistic_amount=dict(default=0),
         order_date=dict(default=datetime.now()),
     )
@@ -95,8 +100,7 @@ class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator, ModelWithLine
                                        lazy_gettext('Goods Amount')))
 
     form_excluded_columns = ('expenses', 'receivings')
-    column_editable_list = ('remark',)
-
+    column_editable_list = ('remark', )
     """Type code of the purchase orders should be displayed in the subview."""
     type_code = None
 
@@ -108,16 +112,15 @@ class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator, ModelWithLine
         """
         columns = super(BasePurchaseOrderAdmin, self).get_list_columns()
         cols = ['goods_amount', 'total_amount', 'all_expenses']
-        columns = security_util.filter_columns_by_role(
-            columns, cols,'purchase_price_view'
-        )
+        columns = security_util.filter_columns_by_role(columns, cols,
+                                                       'purchase_price_view')
         columns = self.filter_columns_by_organization_type(columns)
         return columns
 
     def filter_columns_by_organization_type(self, columns):
         new_col_list = []
         local_user = current_user._get_current_object()
-        if local_user is not None:
+        if local_user is not None and local_user.is_anonymous is False:
             if local_user.organization.type.code == "FRANCHISE_STORE":
                 for col in columns:
                     if col[0] != 'supplier':
@@ -133,45 +136,62 @@ class BasePurchaseOrderAdmin(ModelViewWithAccess, DeleteValidator, ModelWithLine
     def get_details_columns(self):
         cols = ['goods_amount', 'total_amount', 'all_expenses']
         columns = super(BasePurchaseOrderAdmin, self).get_details_columns()
-        columns = security_util.filter_columns_by_role(
-            columns, cols,'purchase_price_view'
-        )
+        columns = security_util.filter_columns_by_role(columns, cols,
+                                                       'purchase_price_view')
         columns = self.filter_columns_by_organization_type(columns)
         return columns
 
     def on_model_change(self, form, model, is_created):
-        super(BasePurchaseOrderAdmin, self).on_model_change(form, model, is_created)
+        super(BasePurchaseOrderAdmin, self).on_model_change(
+            form, model, is_created)
         if not security_util.user_has_role('purchase_price_view'):
             for l in model.lines:
                 l.unit_price = l.product.purchase_price
         DeleteValidator.validate_status_for_change(
             model, const.PO_RECEIVED_STATUS_KEY,
-            gettext('Purchase order can not be update nor delete on received status')
-        )
+            gettext(
+                'Purchase order can not be update nor delete on received status'
+            ))
         if is_created:
             model.type = EnumValues.get(self.type_code)
         PurchaseOrderService.create_expense_receiving(model)
 
     def get_query(self):
         po_type = EnumValues.get(self.type_code)
-        return super(BasePurchaseOrderAdmin, self).get_query().filter(self.model.type == po_type)
+        return super(BasePurchaseOrderAdmin,
+                     self).get_query().filter(self.model.type == po_type)
 
     def get_count_query(self):
         po_type = EnumValues.get(self.type_code)
-        return super(BasePurchaseOrderAdmin, self).get_count_query().filter(self.model.type == po_type)
+        return super(BasePurchaseOrderAdmin,
+                     self).get_count_query().filter(self.model.type == po_type)
 
     def on_model_delete(self, model):
         super(BasePurchaseOrderAdmin, self).on_model_delete(model)
         DeleteValidator.validate_status_for_change(
-            model,const.PO_RECEIVED_STATUS_KEY,
-            gettext('Purchase order can not be update nor delete on received status'))
+            model, const.PO_RECEIVED_STATUS_KEY,
+            gettext(
+                'Purchase order can not be update nor delete on received status'
+            ))
         DeleteValidator.validate_status_for_change(
-            model,const.PO_ISSUED_STATUS_KEY,
-            gettext('Purchase order can not be update nor delete on issued status'))
+            model, const.PO_ISSUED_STATUS_KEY,
+            gettext(
+                'Purchase order can not be update nor delete on issued status')
+        )
 
-    inline_models = (PurchaseOrderLineInlineAdmin(PurchaseOrderLine),)
+    inline_models = (PurchaseOrderLineInlineAdmin(PurchaseOrderLine), )
 
     def after_model_change(self, form, model, is_created):
         pass
 
-
+    def get_list(self,
+                 page,
+                 sort_field,
+                 sort_desc,
+                 search,
+                 filters,
+                 page_size=None):
+        count, query = super(BasePurchaseOrderAdmin, self).get_list(
+            page, sort_field, sort_desc, search, filters, page_size)
+        self.session.commit()
+        return count, query

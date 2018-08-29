@@ -45,7 +45,6 @@ def get_pinyin_first_letters(chinese_characters):
     :param chinese_characters: Chinese characters to get pinyin. 
     :return: first letters of pin yin of the letters
     """
-    chinese_characters = chinese_characters.decode('utf-8')
     pys = _get_pinyin_all([], chinese_characters)
     result = ''
     for py in pys:

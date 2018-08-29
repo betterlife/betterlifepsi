@@ -28,7 +28,7 @@ class TestImportStoreDataView(BaseTestCase):
         Info.get_db().session.commit()
         rv = self.test_client.get('/admin/import_store_data/', follow_redirects=True)
         self.assertEqual(200, rv.status_code)
-        self.assertIn(u'导入店铺运营数据', rv.data)
+        self.assertIn('导入店铺运营数据'.encode('utf-8'), rv.data)
         self.test_client.post('/admin/import_store_data/', data={
             'file': (file_name, content),
         }, follow_redirects=True)

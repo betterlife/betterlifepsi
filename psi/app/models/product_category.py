@@ -21,7 +21,7 @@ class ProductCategory(db.Model, DataSecurityMixin):
     organization = relationship('Organization', foreign_keys=[organization_id])
 
     def __unicode__(self):
-        return self.code.encode('utf-8') + " - " + self.name.encode('utf-8')
+        return self.code + " - " + self.name
 
     def __repr__(self):
-        return self.code.encode('utf-8') + " - " + self.name.encode('utf-8')
+        return self.code + " - " + self.name

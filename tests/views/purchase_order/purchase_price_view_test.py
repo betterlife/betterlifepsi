@@ -23,20 +23,20 @@ class TestPurchasePriceView(BaseTestCase):
         rv = self.test_client.get(url_for('dpo.index_view'),
                                   follow_redirects=True)
         self.assertEqual(rv.status_code, 200)
-        self.assertNotIn('<th class="column-header col-goods_amount">', rv.data,
-                         "goods amount should not exits in purchase order "
-                         "list page")
-        self.assertNotIn('<th class="column-header col-total_amount">', rv.data,
-                         "total amount should not exits in purchase order "
-                         "list page")
-        self.assertNotIn('<th class="column-header col-all_expenses">', rv.data,
-                         "all expenses should not exits in purchase order "
-                         "list page")
+        self.assertNotIn(b'<th class="column-header col-goods_amount">', rv.data,
+                         b"goods amount should not exits in purchase order "
+                         b"list page")
+        self.assertNotIn(b'<th class="column-header col-total_amount">', rv.data,
+                         b"total amount should not exits in purchase order "
+                         b"list page")
+        self.assertNotIn(b'<th class="column-header col-all_expenses">', rv.data,
+                         b"all expenses should not exits in purchase order "
+                         b"list page")
         rv = self.test_client.get(url_for('product.index_view'), follow_redirects=True)
-        self.assertNotIn('<th class="column-header col-purchase_price">',
+        self.assertNotIn(b'<th class="column-header col-purchase_price">',
                          rv.data,
-                         "purchase price field should not exit in product "
-                         "list page")
+                         b"purchase price field should not exit in product "
+                         b"list page")
 
         user.roles.append(role)
         save_objects_commit(user, role)
@@ -44,15 +44,15 @@ class TestPurchasePriceView(BaseTestCase):
         rv = self.test_client.get(url_for('dpo.index_view'),
                                   follow_redirects=True)
         self.assertEqual(rv.status_code, 200)
-        self.assertIn('<th class="column-header col-goods_amount">', rv.data,
-                      "goods amount should exist in purchase order list page")
-        self.assertIn('<th class="column-header col-total_amount">', rv.data,
-                      "total amount should exist in purchase order list page")
-        self.assertIn('<th class="column-header col-all_expenses">', rv.data,
-                      "all expenses should exist in purchase order list page")
+        self.assertIn(b'<th class="column-header col-goods_amount">', rv.data,
+                      b"goods amount should exist in purchase order list page")
+        self.assertIn(b'<th class="column-header col-total_amount">', rv.data,
+                      b"total amount should exist in purchase order list page")
+        self.assertIn(b'<th class="column-header col-all_expenses">', rv.data,
+                      b"all expenses should exist in purchase order list page")
         rv = self.test_client.get(url_for('product.index_view'), follow_redirects=True)
-        self.assertIn('<th class="column-header col-purchase_price">', rv.data,
-                      "purchase price field should exits in product list page")
+        self.assertIn(b'<th class="column-header col-purchase_price">', rv.data,
+                      b"purchase price field should exits in product list page")
         fixture.logout_user(self.test_client)
 
     def test_purchase_price_show_then_hidden_list_page(self):
@@ -69,15 +69,15 @@ class TestPurchasePriceView(BaseTestCase):
         rv = self.test_client.get(url_for('dpo.index_view'),
                                   follow_redirects=True)
         self.assertEqual(rv.status_code, 200)
-        self.assertIn('<th class="column-header col-goods_amount">', rv.data,
-                      "goods amount not exits in purchase order list page")
-        self.assertIn('<th class="column-header col-total_amount">', rv.data,
-                      "total amount not exits in purchase order list page")
-        self.assertIn('<th class="column-header col-all_expenses">', rv.data,
-                      "all expenses not exits in purchase order list page")
+        self.assertIn(b'<th class="column-header col-goods_amount">', rv.data,
+                      b"goods amount not exits in purchase order list page")
+        self.assertIn(b'<th class="column-header col-total_amount">', rv.data,
+                      b"total amount not exits in purchase order list page")
+        self.assertIn(b'<th class="column-header col-all_expenses">', rv.data,
+                      b"all expenses not exits in purchase order list page")
         rv = self.test_client.get(url_for('product.index_view'), follow_redirects=True)
-        self.assertIn('<th class="column-header col-purchase_price">', rv.data,
-                      "purchase price field should exits in product list page")
+        self.assertIn(b'<th class="column-header col-purchase_price">', rv.data,
+                      b"purchase price field should exits in product list page")
 
         user.roles.remove(role)
         save_objects_commit(user, role)
@@ -85,20 +85,20 @@ class TestPurchasePriceView(BaseTestCase):
         rv = self.test_client.get(url_for('dpo.index_view'),
                                   follow_redirects=True)
         self.assertEqual(rv.status_code, 200)
-        self.assertNotIn('<th class="column-header col-goods_amount">', rv.data,
-                         "goods amount should not exits in purchase order "
-                         "list page")
-        self.assertNotIn('<th class="column-header col-total_amount">', rv.data,
-                         "total amount should not exits in purchase order "
-                         "list page")
-        self.assertNotIn('<th class="column-header col-all_expenses">', rv.data,
-                         "all expenses should not exits in purchase order "
-                         "list page")
+        self.assertNotIn(b'<th class="column-header col-goods_amount">', rv.data,
+                         b"goods amount should not exits in purchase order "
+                         b"list page")
+        self.assertNotIn(b'<th class="column-header col-total_amount">', rv.data,
+                         b"total amount should not exits in purchase order "
+                         b"list page")
+        self.assertNotIn(b'<th class="column-header col-all_expenses">', rv.data,
+                         b"all expenses should not exits in purchase order "
+                         b"list page")
         rv = self.test_client.get(url_for('product.index_view'), follow_redirects=True)
-        self.assertNotIn('<th class="column-header col-purchase_price">',
+        self.assertNotIn(b'<th class="column-header col-purchase_price">',
                          rv.data,
-                         "purchase price field should not exit in product "
-                         "list page")
+                         b"purchase price field should not exit in product "
+                         b"list page")
         fixture.logout_user(self.test_client)
 
     def logic_for_detail_edit_page(self, user, password, po, po_url, product_url):
@@ -112,14 +112,14 @@ class TestPurchasePriceView(BaseTestCase):
         rv = self.test_client.get(po_url, follow_redirects=True)
         self.assertEqual(rv.status_code, 200)
         goods_amount_label = gettext('Goods Amount')
-        self.assertIn(goods_amount_label, rv.data)
+        self.assertIn(goods_amount_label.encode('utf-8'), rv.data)
         total_amount_label = gettext('Total Amount')
-        self.assertIn(total_amount_label, rv.data)
+        self.assertIn(total_amount_label.encode('utf-8'), rv.data)
 
         rv = self.test_client.get(product_url, follow_redirects=True)
         self.assertEqual(rv.status_code, 200)
         purchase_price_label = gettext('Purchase Price')
-        self.assertIn(purchase_price_label, rv.data)
+        self.assertIn(purchase_price_label.encode('utf-8'), rv.data)
         fixture.logout_user(self.test_client)
         role = Info.get_db().session.query(Role).filter_by(
             name='purchase_price_view'
@@ -131,13 +131,13 @@ class TestPurchasePriceView(BaseTestCase):
         rv = self.test_client.get(po_url, follow_redirects=True)
         self.assertEqual(rv.status_code, 200)
         goods_amount_label = gettext('Goods Amount')
-        self.assertNotIn(goods_amount_label, rv.data)
+        self.assertNotIn(goods_amount_label.encode('utf-8'), rv.data)
         total_amount_label = gettext('Total Amount')
-        self.assertNotIn(total_amount_label, rv.data)
+        self.assertNotIn(total_amount_label.encode('utf-8'), rv.data)
         rv = self.test_client.get(product_url, follow_redirects=True)
         self.assertEqual(rv.status_code, 200)
         purchase_price_label = gettext('Purchase Price')
-        self.assertNotIn(purchase_price_label, rv.data)
+        self.assertNotIn(purchase_price_label.encode('utf-8'), rv.data)
         fixture.logout_user(self.test_client)
 
     def test_purchase_price_show_and_hidden_detail_page(self):

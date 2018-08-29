@@ -116,13 +116,12 @@ class TestReceivingAdmin(BaseTestCase):
             data = dict(url=url_for('receiving.index_view'), id='1')
             rv = self.assertPageRendered(method=self.test_client.post,
                                          endpoint=endpoint, data=data)
-            self.assertIn(complete_status.display, rv.data)
-            self.assertIn(new_receive_date.strftime("%Y-%m-%d"), rv.data)
-            self.assertIn(new_remark, rv.data)
-            self.assertIn(po.supplier.name, rv.data)
-            self.assertIn(po.order_date.strftime("%Y-%m-%d"),rv.data)
-            self.assertIn(po.remark, rv.data)
-            self.assertIn('Receiving document can not be update nor delete on complete status', rv.data)
+            self.assertIn(complete_status.display.encode('utf-8'), rv.data)
+            self.assertIn(new_receive_date.strftime("%Y-%m-%d").encode('utf-8'), rv.data)
+            self.assertIn(new_remark.encode('utf-8'), rv.data)
+            self.assertIn(po.supplier.name.encode('utf-8'), rv.data)
+            self.assertIn(po.order_date.strftime("%Y-%m-%d").encode('utf-8'),rv.data)
+            self.assertIn(po.remark.encode('utf-8'), rv.data)
+            self.assertIn(b'You are not allowed to delete this object', rv.data)
 
         run_as_admin(self.test_client, test_logic)
-

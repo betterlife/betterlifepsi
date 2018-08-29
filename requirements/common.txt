@@ -8,7 +8,6 @@ MarkupSafe==1.0
 Werkzeug==0.14.1
 gunicorn==19.8.1
 psycopg2==2.7.5
-wsgiref==0.1.2
 Flask_BabelEx==0.9.3
 raven==6.9.0
 Flask-Migrate==2.2.1
@@ -19,3 +18,4 @@ Flask-RESTful==0.3.6
 flask-socketio==3.0.1
 eventlet==0.24.1
 pypinyin==0.33.0
+python-dotenv==0.9.1
