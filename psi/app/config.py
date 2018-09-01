@@ -1,5 +1,6 @@
 # coding=utf-8
 import os
+import warnings
 from psi.app.thirdparty.local_image_store import LocalImageStore
 from flask_babelex import lazy_gettext
 
@@ -68,6 +69,8 @@ class TestConfig(BaseConfig):
 class CITestConfig(TestConfig):
     IMAGE_STORE_SERVICE = CloudinaryImageStore
     TESTING_MODE = 'CI'
+    warnings.filterwarnings("ignore")
+    warnings.warn("deprecated", DeprecationWarning)
 
 
 class ProductionConfig(BaseConfig):

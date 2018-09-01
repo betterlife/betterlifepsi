@@ -24,7 +24,8 @@ install:
   - pip install -r requirements/test.txt
   - pip install codeclimate-test-reporter
   - mv setup.cfg.template setup.cfg
-  - mkdir -p app/static/uploaded
+  - mv psi/migrations/alembic.ini.template psi/migrations/alembic.ini
+  - mkdir -p psi/app/static/uploaded
 script:
   # - python manage.py test
   - nosetests tests --with-coverage --cover-erase --cover-branches --with-xunit --xunit-file=nosetests.xml
