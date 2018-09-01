@@ -28,3 +28,6 @@ target/
 htmlcov/
 node_modules/
 *.swp
+.pytest_cache/
+__pycache__
+.dumbjump
