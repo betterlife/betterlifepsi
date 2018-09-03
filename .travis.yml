@@ -26,35 +26,40 @@ install:
   - mv setup.cfg.template setup.cfg
   - mv psi/migrations/alembic.ini.template psi/migrations/alembic.ini
   - mkdir -p psi/app/static/uploaded
-script:
-  # - python manage.py test
-  - nosetests tests --with-coverage --cover-erase --cover-branches --with-xunit --xunit-file=nosetests.xml
-after_success:
-  - export CODECLIMATE_REPO_TOKEN=b66ce794c42bc566d01713825caa2dfd117ba2b8e67e17dcb64ebb85dd2655ba
-  - codeclimate-test-reporter
-  - export BUILD_DATE_FORMAT="+%Y-%m-%d"
-  - export BUILD_DATE=`date $BUILD_DATE_FORMAT`
-  - echo "$TRAVIS_COMMIT $TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_ID $TRAVIS_BRANCH $TRAVIS_TAG $BUILD_DATE"
-  - echo "$TRAVIS_COMMIT $TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_ID $TRAVIS_BRANCH $TRAVIS_TAG $BUILD_DATE" > swtag
-  - codecov
 
-deploy:
-  - provider: heroku
-    skip_cleanup: true
-    api_key: $HEROKU_AUTH_TOKEN
-    app: psi-dev
-    on:
-      repo: betterlife/psi
-      all_branches: true
-    run:
-    - restart
-  - provider: heroku
-    skip_cleanup: true
-    api_key: $HEROKU_AUTH_TOKEN
-    on:
-      repo: betterlife/psi
-      tags: true
-    app:
-      master: psi-qa
-    run:
-    - restart
+jobs:
+  include:
+    - stage: test
+      script:
+        # - python manage.py test
+        - nosetests tests --with-coverage --cover-erase --cover-branches --with-xunit --xunit-file=nosetests.xml
+      after_success:
+        - export CODECLIMATE_REPO_TOKEN=b66ce794c42bc566d01713825caa2dfd117ba2b8e67e17dcb64ebb85dd2655ba
+        - codeclimate-test-reporter
+        - export BUILD_DATE_FORMAT="+%Y-%m-%d"
+        - export BUILD_DATE=`date $BUILD_DATE_FORMAT`
+        - echo "$TRAVIS_COMMIT $TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_ID $TRAVIS_BRANCH $TRAVIS_TAG $BUILD_DATE"
+        - echo "$TRAVIS_COMMIT $TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_ID $TRAVIS_BRANCH $TRAVIS_TAG $BUILD_DATE" > swtag
+        - codecov
+    - stage: deploy
+      - provider: heroku
+        skip_cleanup: true
+        python: 3.6
+        api_key: $HEROKU_AUTH_TOKEN
+        app: psi-dev
+        on:
+          repo: betterlife/psi
+          all_branches: true
+        run:
+        - restart
+      - provider: heroku
+        skip_cleanup: true
+        python: 3.6
+        api_key: $HEROKU_AUTH_TOKEN
+        on:
+          repo: betterlife/psi
+          tags: true
+        app:
+          master: psi-qa
+        run:
+        - restart
