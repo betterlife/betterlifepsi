@@ -1,6 +1,5 @@
 
-# Betterlife Intelligent PSI 
-[![Travis (.org)](https://img.shields.io/travis/betterlife/psi.svg?logo=travis&style=flat-square)](https://travis-ci.com/betterlife/psi)
+# Betterlife Intelligent PSI  [![Travis (.org)](https://img.shields.io/travis/betterlife/psi.svg?logo=travis&style=flat-square)](https://travis-ci.com/betterlife/psi)
 
 Intelligent PSI(Purchase, Sales and Inventory) management system
 
