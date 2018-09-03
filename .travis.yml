@@ -41,8 +41,7 @@ after_success:
 deploy:
   - provider: heroku
     skip_cleanup: true
-    api_key:
-      secure: TE6DJdPpAU9bkW9G4+i8uZtegaQ2hCuXl4HcFOVSI+P1VSCuW2ESrQKpkOob4Ym8WEOwfLmCp0bzebModbkbJ1KpzxLS/KAmzr6crBJTPm04seKOKRXOjZeVZlp+nn9QvCA7OIFgdbDWeumH6+4DzR/rjvnfacJ8jvt5wm8nlvL57D7psr3CEIbTvsDdcTaKGlbaFnaXUTRoR3Lrc3ACqvNRAl3sXR1s4RBwKd+3cD3o/606IUeSCV2NUEs07JsJyQY3nTabdyiM5COxiE268aPE+BE3OqDRSESuIMBRhjmO7FW8QJfd+R0E3MDl/t/CPufkvC20OnM49sbDjQgXpijVga/znu32ZTC6a4Nq6bQlEWFiM01GbOKb4ZgGoqQhILxFW7LIJg+yiLz7I0FKc79o4o/hc3NL3z4tHZXjxtV7p7c86Db1W+mbGe1iwrnmxQN4T3hQFs4Nwm6mFEcBWkq1wQQ9F2m7Pm8Bt7Hg9w+90zNmcug8YyU4YdrHW0Uu/hmkGglrZJe/Cl1wM1ONCTOVRideKGMQigBudFXeuH6Ey0pMbp7dxH9y9Q0ZATex07QP/JtBNan+CSO0C0l8zUOs/TV1GSzCeYwc0V0sL4nNygmTArIq/0ZHJIJOLxjWvSDLPA4OqP0UL6TN9Z9QzoNlR74C45GxKbdsqDZBeYw=
+    api_key: $HEROKU_AUTH_TOKEN
     app: psi-dev
     on:
       repo: betterlife/psi
@@ -51,8 +50,7 @@ deploy:
     - restart
   - provider: heroku
     skip_cleanup: true
-    api_key:
-        secure: TE6DJdPpAU9bkW9G4+i8uZtegaQ2hCuXl4HcFOVSI+P1VSCuW2ESrQKpkOob4Ym8WEOwfLmCp0bzebModbkbJ1KpzxLS/KAmzr6crBJTPm04seKOKRXOjZeVZlp+nn9QvCA7OIFgdbDWeumH6+4DzR/rjvnfacJ8jvt5wm8nlvL57D7psr3CEIbTvsDdcTaKGlbaFnaXUTRoR3Lrc3ACqvNRAl3sXR1s4RBwKd+3cD3o/606IUeSCV2NUEs07JsJyQY3nTabdyiM5COxiE268aPE+BE3OqDRSESuIMBRhjmO7FW8QJfd+R0E3MDl/t/CPufkvC20OnM49sbDjQgXpijVga/znu32ZTC6a4Nq6bQlEWFiM01GbOKb4ZgGoqQhILxFW7LIJg+yiLz7I0FKc79o4o/hc3NL3z4tHZXjxtV7p7c86Db1W+mbGe1iwrnmxQN4T3hQFs4Nwm6mFEcBWkq1wQQ9F2m7Pm8Bt7Hg9w+90zNmcug8YyU4YdrHW0Uu/hmkGglrZJe/Cl1wM1ONCTOVRideKGMQigBudFXeuH6Ey0pMbp7dxH9y9Q0ZATex07QP/JtBNan+CSO0C0l8zUOs/TV1GSzCeYwc0V0sL4nNygmTArIq/0ZHJIJOLxjWvSDLPA4OqP0UL6TN9Z9QzoNlR74C45GxKbdsqDZBeYw=
+    api_key: $HEROKU_AUTH_TOKEN
     on:
       repo: betterlife/psi
       tags: true
