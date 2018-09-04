@@ -10,6 +10,8 @@ Intelligent PSI(Purchase, Sales and Inventory) management system
 [![commits since release](https://img.shields.io/github/commits-since/betterlife/psi/V0.6.7.svg?style=flat-square)](http://github.com/betterlife/psi/releases)
 [![Release](https://img.shields.io/github/release/betterlife/psi.svg?style=flat-square)](http://github.com/betterlife/psi/releases) 
 [![All Downloads](https://img.shields.io/github/downloads/betterlife/psi/total.svg?label=Downlaods&style=flat-square)](http://github.com/betterlife/psi/releases)
+[![PyPI](https://img.shields.io/pypi/v/betterlife-psi.svg?style=flat-square)](https://pypi.org/project/betterlife-psi/)
+
 
 ## Try to answer some questions like
 
