@@ -4,7 +4,7 @@ from flask import current_app
 import os
 
 
-default_swtag_file = os.path.dirname(os.path.realpath(__file__)) + '/../../swtag'
+default_swtag_file = os.path.dirname(os.path.realpath(__file__)) + '/../../../swtag'
 
 def is_list_field(model, field):
     """
@@ -71,7 +71,7 @@ def render_version(swtag_file=default_swtag_file):
         if tag == '':
             tag = 'None'
         commit = commit[:7]
-        build_url = "{builder_url}/{commit}".format(builder_url=builder_url, commit=commit)
+        build_url = "{builder_url}/{build_id}".format(builder_url=builder_url, build_id=b_id)
         b_link = '<a href="{build_url}" target="_blank">{b_num}</a>'.format(build_url=build_url, b_num=b_num)
         commit_url = "{git_url}/{commit}".format(git_url=git_url, commit=commit)
         commit_link = '<a href="{commit_url}" target="_blank">{commit}</a>'.format(commit_url=commit_url, commit=commit)

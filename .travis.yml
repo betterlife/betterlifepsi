@@ -43,7 +43,7 @@ after_success:
   - export BUILD_DATE=`date $BUILD_DATE_FORMAT`
   - echo "$TRAVIS_COMMIT $TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_ID $TRAVIS_BRANCH $TRAVIS_TAG $BUILD_DATE"
   - echo "$TRAVIS_COMMIT $TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_ID $TRAVIS_BRANCH $TRAVIS_TAG $BUILD_DATE" > swtag
-  - if [[ $TRAVIS_PYTHON_VERSION == 3.6 ]]; then (codecov); fi
+  - if [[ $TRAVIS_PYTHON_VERSION == 3.4 ]]; then (codecov); fi
 
 deploy:
   - provider: heroku
