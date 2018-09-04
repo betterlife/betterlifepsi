@@ -43,9 +43,9 @@ setup(
     license="MIT",
     keywords="Betterlife, Intelligent, Purchase Order, Sales Order, Inventory Management, Retail",
     url="https://github.com/betterlife/psi",
-    install_reqs=install_reqs,
+    install_requires=install_reqs,
     tests_require=tests_reqs,
-    setup_requires=['nose==1.3.7'],
+    setup_requires=install_reqs,
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'License :: OSI Approved :: MIT License',
