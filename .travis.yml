@@ -20,7 +20,8 @@ env:
     - DATABASE_URL=postgresql://localhost/flask_psi_test
     - TEST_DATABASE_URL=postgresql://localhost/flask_psi_test
     - TESTING="True"
-    - CODECLIMATE_REPO_TOKEN=b66ce794c42bc566d01713825caa2dfd117ba2b8e67e17dcb64ebb85dd2655ba
+    - CI_MODE="True"
+    - DEBUG="False"
 services:
   - postgresql
 before_script:
@@ -66,3 +67,10 @@ deploy:
       master: psi-qa
     run:
     - restart
+  - provider: pypi
+    user: betterlife
+    password: $PYPI_PASSWORD
+    skip_cleanup: true
+    on:
+      tags: true
+      python: 3.6
