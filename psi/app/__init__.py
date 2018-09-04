@@ -10,7 +10,7 @@ from flask_babelex import gettext
 from psi.app import const
 from psi.app.service import Info
 
-__version__ = '0.6.7'
+__version__ = '0.6.7-1'
 
 
 def debug(sig, frame):
