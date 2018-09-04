@@ -3,6 +3,7 @@
 import re
 import ast
 from setuptools import setup
+from os import path
 
 _version_re = re.compile(r'__version__\s+=\s+(.*)')
 
@@ -10,14 +11,24 @@ with open('psi/app/__init__.py', 'rb') as f:
     version = str(ast.literal_eval(_version_re.search(
         f.read().decode('utf-8')).group(1)))
 
-try:
-    import pypandoc
-    long_description = pypandoc.convert('README.md', 'rst')
-    long_description = long_description.replace("\r", "")
-except(IOError, ImportError):
-    import io
-    with io.open('README.md', encoding="utf-8") as f:
-        long_description = f.read()
+with open('requirements/common.txt', 'r') as f:
+    install_reqs = [
+        s for s in [
+            line.strip(' \n') for line in f
+        ] if not s.startswith('#') and s != ''
+    ]
+
+with open('requirements/test.txt', 'r') as f:
+    tests_reqs = [
+        s for s in [
+            line.strip(' \n') for line in f
+        ] if not s.startswith('#') and s != '' and not s.startswith('-r ')
+    ]
+
+# read the contents of your README file
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
 
 setup(
     name="betterlife-psi",
@@ -28,30 +39,12 @@ setup(
     author_email="lawrence@betterlife.io",
     description="Betterlife Intelligent PSI(Purchase, Sales and Inventory) system",
     long_description=long_description,
+    long_description_content_type='text/markdown',
     license="MIT",
     keywords="Betterlife, Intelligent, Purchase Order, Sales Order, Inventory Management, Retail",
     url="https://github.com/betterlife/psi",
-    install_requires=[
-        "Flask==1.0.2",
-        "sqlalchemy==1.1.4",
-        "Flask-SQLAlchemy==2.1",
-        "Flask-SSLify==0.1.5",
-        "MarkupSafe==0.23",
-        "gunicorn==19.6.0",
-        "psycopg2==2.6",
-        "Flask_BabelEx==0.9.2",
-        "Flask-Migrate==2.0.2",
-        "raven==5.32.0",
-        "Flask-Security==1.7.5",
-        "Flask-DebugToolbar==0.10.0",
-        "Flask_Admin==1.4.2"
-    ],
-    tests_require=[
-        "coverage==3.7.1",
-        "nose==1.3.7",
-        "codecov==2.0.5",
-        "fake-factory==0.7.7",
-    ],
+    install_reqs=install_reqs,
+    tests_require=tests_reqs,
     setup_requires=['nose==1.3.7'],
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
