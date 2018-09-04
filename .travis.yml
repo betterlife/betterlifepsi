@@ -52,17 +52,7 @@ deploy:
     app: psi-dev
     on:
       all_branches: true
-      python: 3.6
-    run:
-    - restart
-  - provider: heroku
-    skip_cleanup: true
-    api_key: $HEROKU_AUTH_TOKEN
-    on:
-      tags: true
-      python: 3.6
-    app:
-      master: psi-qa
+      python: 3.5
     run:
     - restart
   - provider: pypi
