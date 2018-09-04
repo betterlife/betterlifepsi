@@ -51,7 +51,6 @@ deploy:
     api_key: $HEROKU_AUTH_TOKEN
     app: psi-dev
     on:
-      repo: betterlife/psi
       all_branches: true
       python: 3.6
     run:
@@ -60,7 +59,6 @@ deploy:
     skip_cleanup: true
     api_key: $HEROKU_AUTH_TOKEN
     on:
-      repo: betterlife/psi
       tags: true
       python: 3.6
     app:
