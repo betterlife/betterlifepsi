@@ -1,10 +1,18 @@
 include README.md
 include manage.py
-include wsgi.py
 include MANIFEST.in
+include LICENSE.txt
 include swtag
-recursive-include app *
-recursive-include migrations * 
+include Procfile
+include app.json
+include requirements.txt
+include requirements-pypy.txt
+include setup.py
+include codecov.yml
+include setup.cfg.template
+recursive-include psi *
 recursive-include requirements * 
 recursive-include tests *
-recursive-include .openshift *
+recursive-exclude psi/static/uploaded *
+prune */__pycache__
+global-exclude *.pyc *~ *.bak *.swp *.pyo
