@@ -35,7 +35,7 @@ install:
   - mv psi/migrations/alembic.ini.template psi/migrations/alembic.ini
   - mkdir -p psi/app/static/uploaded
 script:
-  - if [[ $TRAVIS_PYTHON_VERSION == "pypy3.5" ]]; then (pip install -r requirements/common-pypy.txt); fi
+  - if [[ $TRAVIS_PYTHON_VERSION == "pypy3.5" ]]; then (pip install -r requirements-pypy.txt); fi
   - nosetests tests --with-coverage --cover-erase --cover-branches --with-xunit --xunit-file=nosetests.xml
 after_success:
   - codeclimate-test-reporter
