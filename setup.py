@@ -31,7 +31,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name="betterlife-psi",
+    name="betterlifepsi",
     version=version,
     packages=['psi'],
     include_package_data=True,
