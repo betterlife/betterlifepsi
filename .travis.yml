@@ -67,5 +67,5 @@ deploy:
       tags: true
       python: 3.6
 
- notifications:
+notifications:
     slack: muyantech:$SLACK_TOKEN
