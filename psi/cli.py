@@ -1,34 +1,5 @@
-#!/usr/bin/env python
-# coding=utf-8
-
-from __future__ import print_function
 import sys
-import click
-
-
-try:
-    from psycopg2cffi import compat
-    compat.register()
-except:
-    pass
-
-from psi.app.service import Info
-from psi.app import create_app, init_all
-
-def init_migrate_command(application, db):
-    from flask_migrate import Migrate, MigrateCommand
-    migrate = Migrate(application, db, directory="psi/migrations")
-
-
-# 'python manage.py db migrate'
-#   - generate migration script from current schema version.
-# 'python manage.py db upgrade'
-#   - migrate DB.
-
-application = create_app()
-init_all(application, migrate=False)
-database = Info.get_db()
-init_migrate_command(application, database)
+from psi.wsgi import application
 
 
 @application.cli.command()
@@ -52,6 +23,8 @@ def generate_fake_order():
     from tests.object_faker import object_faker
     from psi.app.models import User
     from random import randint
+    from psi.app.service import Info
+    database = Info.get_db()
     user = database.session.query(User).get(1)
     for i in range(5):
         purchase_order = object_faker.purchase_order(creator=user, number_of_line=randint(1,9))
@@ -67,9 +40,11 @@ def clean_transaction_data():
     Clean all the transaction data, and keep all master data
     """
     # TODO.xqliu Disable clean of database for production
+    from psi.app.service import Info
+    database = Info.get_db()
     database.engine.execute("""
         DELETE FROM related_values;
-        DELETE FROM inventory_in_out_link;        
+        DELETE FROM inventory_in_out_link;
         DELETE FROM incoming;
         DELETE FROM shipping_line;
         DELETE FROM shipping;
@@ -92,6 +67,8 @@ def clean_database():
     This only tested for postgresql at this moment
     """
     # TODO.xqliu Disable clean of database for production
+    from psi.app.service import Info
+    database = Info.get_db()
     database.engine.execute("""
         DROP VIEW sales_order_detail RESTRICT;
         ALTER TABLE related_values DROP CONSTRAINT related_values_relation_type_id_fkey;
@@ -187,9 +164,3 @@ def clean_database():
         DROP TABLE alembic_version;
         commit;
     """)
-
-
-@application.teardown_appcontext
-def shutdown_session(exception=None):
-    database.session.remove()
-
