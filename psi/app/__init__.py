@@ -12,6 +12,12 @@ from psi.app.service import Info
 
 __version__ = '0.6.7-4'
 
+try:
+    from psycopg2cffi import compat
+    compat.register()
+except:
+    pass
+
 
 def debug(sig, frame):
     """Interrupt running process, and provide a python prompt for
