@@ -27,15 +27,17 @@ services:
 before_script:
   - psql -U postgres -c 'CREATE DATABASE flask_psi_test;'
 before_install:
-  - pip install codecov
+  - pip install codecov codeclimate-test-reporter
 install:
-  - pip install -r requirements/test.txt
-  - pip install codeclimate-test-reporter
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.4" ]]; then (pip install -r requirements/test.txt); fi
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.5" ]]; then (pip install -r requirements/test.txt); fi
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.6" ]]; then (pip install -r requirements/test.txt); fi
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.7" ]]; then (pip install -r requirements/test.txt); fi
+  - if [[ $TRAVIS_PYTHON_VERSION == "pypy3.5" ]]; then (pip install -r requirements/test-pypy.txt); fi
   - mv setup.cfg.template setup.cfg
   - mv psi/migrations/alembic.ini.template psi/migrations/alembic.ini
   - mkdir -p psi/app/static/uploaded
 script:
-  - if [[ $TRAVIS_PYTHON_VERSION == "pypy3.5" ]]; then (pip install -r requirements/common-pypy.txt); fi
   - nosetests tests --with-coverage --cover-erase --cover-branches --with-xunit --xunit-file=nosetests.xml
 after_success:
   - codeclimate-test-reporter
@@ -44,6 +46,7 @@ after_success:
   - echo "$TRAVIS_COMMIT $TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_ID $TRAVIS_BRANCH $TRAVIS_TAG $BUILD_DATE"
   - echo "$TRAVIS_COMMIT $TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_ID $TRAVIS_BRANCH $TRAVIS_TAG $BUILD_DATE" > swtag
   - if [[ $TRAVIS_PYTHON_VERSION == 3.4 ]]; then (codecov); fi
+
 
 deploy:
   - provider: heroku
@@ -63,3 +66,6 @@ deploy:
     on:
       tags: true
       python: 3.6
+
+ notifications:
+    slack: muyantech:$SLACK_TOKEN
