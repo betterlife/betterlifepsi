@@ -34,12 +34,11 @@ init_migrate_command(application, database)
 @application.cli.command()
 def test():
     """Run the unit tests.
-    "" python manage.py test
+    >>> export FLASK_APP=manage:application
+    >>> flask test
     """
     import subprocess
-    return_code = subprocess.call("""nosetests tests \
-            --with-coverage --cover-erase --cover-branches \
-            --with-xunit --xunit-file=nosetests.xml""", shell=True)
+    return_code = subprocess.call("pytest -p no:warnings --cov=./", shell=True)
     sys.exit(return_code)
 
 
