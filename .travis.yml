@@ -22,6 +22,7 @@ env:
     - TESTING="True"
     - CI_MODE="True"
     - DEBUG="False"
+    - FLASK_APP=manage:application
 services:
   - postgresql
 before_script:
@@ -34,13 +35,12 @@ install:
   - if [[ $TRAVIS_PYTHON_VERSION == "3.6" ]]; then (pip install -r requirements/test.txt); fi
   - if [[ $TRAVIS_PYTHON_VERSION == "3.7" ]]; then (pip install -r requirements/test.txt); fi
   - if [[ $TRAVIS_PYTHON_VERSION == "pypy3.5" ]]; then (pip install -r requirements/test-pypy.txt); fi
-  - mv setup.cfg.template setup.cfg
   - mv psi/migrations/alembic.ini.template psi/migrations/alembic.ini
   - mkdir -p psi/app/static/uploaded
 script:
-  - nosetests tests --with-coverage --cover-erase --cover-branches --with-xunit --xunit-file=nosetests.xml
+  - flask test 
 after_success:
-  - codeclimate-test-reporter
+  - if [[ $TRAVIS_PYTHON_VERSION == 3.4 ]]; then (codeclimate-test-reporter); fi
   - export BUILD_DATE_FORMAT="+%Y-%m-%d"
   - export BUILD_DATE=`date $BUILD_DATE_FORMAT`
   - echo "$TRAVIS_COMMIT $TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_ID $TRAVIS_BRANCH $TRAVIS_TAG $BUILD_DATE"
