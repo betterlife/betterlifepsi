@@ -1,0 +1,30 @@
+version: '3'
+services:
+  psi:
+    build:
+      context: .
+      dockerfile: etc/psi.dockerfile
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/psi
+      - FLASK_HOST=0.0.0.0
+    command: ["bash", "-c", "flask wait-on-postgres && flask run --host 0.0.0.0"]
+    ports:
+      - "5000:5000"
+      - "9000:9000"
+      - "9010:9010"
+    networks:
+      - psi_net
+    depends_on:
+      - postgres
+  postgres:
+    build:
+      context: .
+      dockerfile: etc/postgres.dockerfile
+    networks:
+      - psi_net
+    restart: on-failure
+    ports:
+      - "5432:5432"
+networks:
+  psi_net:
+    driver: bridge

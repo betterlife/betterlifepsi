@@ -2,16 +2,21 @@
 
 import os
 import code
+import logging
 import traceback
 import signal
 
+import sqlalchemy
 from flask_babelex import gettext
 from flask_migrate import Migrate, upgrade
 
 from psi.app import const
 from psi.app.service import Info
 
+
 __version__ = '0.6.7-4'
+log = logging.getLogger(__name__)
+
 
 try:
     from psycopg2cffi import compat
@@ -74,7 +79,18 @@ def init_flask_security(flask_app, database):
 
 def init_admin_views(flask_app, database):
     from psi.app.views import init_admin_views
-    return init_admin_views(flask_app, database)
+    try:
+        return init_admin_views(flask_app, database)
+    except sqlalchemy.exc.SQLAlchemyError as e:
+        # If we're running the flask utility script and Postgres
+        # isn't available, `init_admin_views` will raise an OperationalError,
+        # blocking the utility script from running. Instead, we catch the
+        # exception and warn the user so the user can invoke some of the
+        # commands that don't require database connections.
+        # TODO: don't require Postgres on app object initialization
+        log.exception(e)
+        log.warn('Cannot register admin views because of a SQLAlchemy error. '
+                 'Skipping...')
 
 
 def init_db(flask_app):

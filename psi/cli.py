@@ -1,10 +1,46 @@
+import functools
+import itertools
+import logging
+import math
+import os
+import random
 import sys
+
+import click
+import flask_migrate
+import psycopg2
+
 from psi.app import create_app, init_all
+from psi.app.utils import retry
 
 
 # Using flask's default `click` command line environment
 application = create_app()
 init_all(application, migrate=False)
+log = logging.getLogger(__name__)
+
+
+@application.cli.command()
+@click.argument('retries', default=5)
+@click.argument('migrate', default=True)
+def wait_on_postgres(retries=5, migrate=True):
+    """Block until Postgres is ready (optionally, run any migrations)
+
+    Shamelessly appropriated from https://github.com/agconti/wait-for-postgres
+    """
+    dsn = os.environ.get('DATABASE_URL')
+
+    @retry(retries, exceptions=(psycopg2.OperationalError,))
+    def wait():
+        con = psycopg2.connect(**psycopg2.extensions.parse_dsn(dsn))
+        con.close()
+        log.info('Postgres is ready!')
+
+    wait()
+    if migrate:
+        log.info('Running database migrations, if any')
+        with application.app_context():
+            flask_migrate.upgrade(directory=os.path.dirname(__file__) + "/../migrations")
 
 
 @application.cli.command()
