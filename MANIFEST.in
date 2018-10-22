@@ -11,7 +11,7 @@ include setup.py
 include codecov.yml
 include setup.cfg.template
 recursive-include psi *
-recursive-include requirements * 
+recursive-include etc/requirements *
 recursive-include tests *
 recursive-exclude psi/static/uploaded *
 prune */__pycache__

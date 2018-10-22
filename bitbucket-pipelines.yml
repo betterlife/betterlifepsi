@@ -21,7 +21,7 @@ pipelines:
             # - sudo -u postgres psql -c "UPDATE pg_database SET datistemplate = TRUE WHERE datname = 'template1';"
             # - sudo -u postgres psql -c "CREATE USER flask_sit WITH ENCRYPTED PASSWORD 'flask_sit' SUPERUSER;" # create superuser
             # - sudo -u postgres psql -c "CREATE DATABASE flask_sit OWNER flask_sit ENCODING='UTF8' template=template1;" # create database
-            - pip install -r requirements/test.txt
+            - pip install -r etc/requirements/test.txt
             - flask test
           services: 
             - postgres 
@@ -31,7 +31,7 @@ pipelines:
           caches:
             - pip
           script: 
-            - pip install -r requirements/test.txt
+            - pip install -r etc/requirements/test.txt
             - flask test
           services: 
             - postgres 
@@ -41,7 +41,7 @@ pipelines:
           caches:
             - pip
           script: 
-            - pip install -r requirements/test.txt
+            - pip install -r etc/requirements/test.txt
             - flask test
             - pip install codecov
             - codecov --token=$CODECOV_KEY

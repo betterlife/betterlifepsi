@@ -30,11 +30,11 @@ before_script:
 before_install:
   - pip install codecov codeclimate-test-reporter
 install:
-  - if [[ $TRAVIS_PYTHON_VERSION == "3.4" ]]; then (pip install -r requirements/test.txt); fi
-  - if [[ $TRAVIS_PYTHON_VERSION == "3.5" ]]; then (pip install -r requirements/test.txt); fi
-  - if [[ $TRAVIS_PYTHON_VERSION == "3.6" ]]; then (pip install -r requirements/test.txt); fi
-  - if [[ $TRAVIS_PYTHON_VERSION == "3.7" ]]; then (pip install -r requirements/test.txt); fi
-  - if [[ $TRAVIS_PYTHON_VERSION == "pypy3.5" ]]; then (pip install -r requirements/test-pypy.txt); fi
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.4" ]]; then (pip install -r etc/requirements/test.txt); fi
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.5" ]]; then (pip install -r etc/requirements/test.txt); fi
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.6" ]]; then (pip install -r etc/requirements/test.txt); fi
+  - if [[ $TRAVIS_PYTHON_VERSION == "3.7" ]]; then (pip install -r etc/requirements/test.txt); fi
+  - if [[ $TRAVIS_PYTHON_VERSION == "pypy3.5" ]]; then (pip install -r etc/requirements/test-pypy.txt); fi
   - mv psi/migrations/alembic.ini.template psi/migrations/alembic.ini
   - mkdir -p psi/app/static/uploaded
 script:
