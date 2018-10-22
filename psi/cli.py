@@ -1,11 +1,15 @@
 import sys
-from psi.wsgi import application
+from psi.app import create_app
+
+
+# Using flask's default `click` command line environment
+application = create_app()
 
 
 @application.cli.command()
 def test():
     """Run the unit tests.
-    >>> export FLASK_APP=manage:application
+    >>> export FLASK_APP=psi.cli:application
     >>> flask test
     """
     import subprocess
