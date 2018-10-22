@@ -8,7 +8,9 @@ import signal
 
 import sqlalchemy
 from flask_babelex import gettext
+from flask_migrate import Migrate, upgrade
 
+from psi import MIGRATION_DIR
 from psi.app import const
 from psi.app.service import Info
 
@@ -101,11 +103,7 @@ def init_db(flask_app):
 
 
 def init_migrate(flask_app, database):
-    from flask_migrate import Migrate, upgrade
-
-    Migrate(app=flask_app, db=database)
-    with flask_app.app_context():
-        upgrade(directory=os.path.dirname(__file__) + "/../migrations")
+    Migrate(app=flask_app, db=database, directory=MIGRATION_DIR)
 
 
 def init_babel(flask_app):
@@ -252,8 +250,11 @@ def init_all(app, migrate=True):
     else:
         database = Info.get_db()
         database.init_app(app)
+    init_migrate(app, database)
     if migrate:
-        init_migrate(app, database)
+        with app.app_context():
+            upgrade(directory=MIGRATION_DIR)
+
     init_https(app)
     security = init_flask_security(app, database)
     init_admin_views(app, database)

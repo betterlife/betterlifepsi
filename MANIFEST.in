@@ -1,5 +1,4 @@
 include README.md
-include manage.py
 include MANIFEST.in
 include LICENSE.txt
 include swtag
