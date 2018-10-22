@@ -11,14 +11,14 @@ with open('psi/app/__init__.py', 'rb') as f:
     version = str(ast.literal_eval(_version_re.search(
         f.read().decode('utf-8')).group(1)))
 
-with open('requirements/common.txt', 'r') as f:
+with open('etc/requirements/common.txt', 'r') as f:
     install_reqs = [
         s for s in [
             line.strip(' \n') for line in f
         ] if not s.startswith('#') and s != ''
     ]
 
-with open('requirements/test.txt', 'r') as f:
+with open('etc/requirements/test.txt', 'r') as f:
     tests_reqs = [
         s for s in [
             line.strip(' \n') for line in f

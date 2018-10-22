@@ -1,1 +1,1 @@
--r requirements/runtime.txt
+-r etc/requirements/runtime.txt

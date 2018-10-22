@@ -5,8 +5,8 @@
    "environments": {
     "test": {
       "scripts": {
-        "test-setup": "pip install -r requirements/test.txt",
-        "test": "python manage.py test"
+        "test-setup": "pip install -r etc/requirements/test.txt",
+        "test": "FLASK_APP=psi.cli:application flask test"
       },
       "env": {
          "DOWNSTREAM_APP": "psi-dev",
