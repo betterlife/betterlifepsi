@@ -22,7 +22,7 @@ env:
     - TESTING="True"
     - CI_MODE="True"
     - DEBUG="False"
-    - FLASK_APP=psi.wsgi:application
+    - FLASK_APP=psi.cli:application
 services:
   - postgresql
 before_script:
