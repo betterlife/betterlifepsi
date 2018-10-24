@@ -236,7 +236,7 @@ def init_all(app, migrate=True):
         database.init_app(app)
     init_migrate(app, database)
     if migrate:
-        with flask_app.app_context():
+        with app.app_context():
             upgrade(directory=MIGRATION_DIR)
 
     init_https(app)
