@@ -23,6 +23,7 @@ env:
     - CI_MODE="True"
     - DEBUG="False"
     - FLASK_APP=psi.cli:application
+    - SECURITY_PASSWORD_SALT=insecure-test-mode
 services:
   - postgresql
 before_script:
