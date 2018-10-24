@@ -3,7 +3,7 @@ omit =
     */python?.?/*
     */site-packages/nose/*
     *__init__*
-    */migrations/*
+    */psi/migrations/*
     */venv/*
     */.virtualenv/*
     */.ropeproject/*

@@ -18,7 +18,3 @@ except ImportError:
 
 application = create_app()
 socket_io = init_all(application, migrate=False)
-
-
-if __name__ == '__main__':
-    application.run(threaded=True, debug=True)

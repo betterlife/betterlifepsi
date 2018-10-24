@@ -1,4 +1,4 @@
-s/psiudo: false
+sudo: false
 language: python
 cache: pip
 # Enable 3.7 without globally enabling sudo and dist: xenial for other build jobs
@@ -35,7 +35,7 @@ install:
   - if [[ $TRAVIS_PYTHON_VERSION == "3.6" ]]; then (pip install -r requirements/test.txt); fi
   - if [[ $TRAVIS_PYTHON_VERSION == "3.7" ]]; then (pip install -r requirements/test.txt); fi
   - if [[ $TRAVIS_PYTHON_VERSION == "pypy3.5" ]]; then (pip install -r requirements/test-pypy.txt); fi
-  - mv migrations/alembic.ini.template migrations/alembic.ini
+  - mv psi/migrations/alembic.ini.template psi/migrations/alembic.ini
   - mkdir -p psi/app/static/uploaded
 script:
   - flask test 
