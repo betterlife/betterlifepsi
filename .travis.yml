@@ -24,6 +24,7 @@ env:
     - DEBUG="False"
     - FLASK_APP=psi.cli:application
     - SECURITY_PASSWORD_SALT=insecure-test-mode
+    - SECRET_KEY=insecure-key
 services:
   - postgresql
 before_script:
