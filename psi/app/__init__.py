@@ -250,13 +250,13 @@ def init_all(app, migrate=True):
     else:
         database = Info.get_db()
         database.init_app(app)
+    security = init_flask_security(app, database)
     init_migrate(app, database)
     if migrate:
         with app.app_context():
             upgrade(directory=MIGRATION_DIR)
 
     init_https(app)
-    security = init_flask_security(app, database)
     init_admin_views(app, database)
     babel = init_babel(app)
     api = init_flask_restful(app)
