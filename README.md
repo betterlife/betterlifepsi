@@ -17,25 +17,38 @@ Intelligent PSI(Purchase, Sales and Inventory) management system
   - When do I need to replenish the stock and how much do I lost if that's not done?
   - What is the optimized quantity/date for replenish the stock?
   
-## Install & Run & Deploy  [![Deploy](https://img.shields.io/badge/Heroku-Deploy-brightgreen.svg?style=flat-square)](https://heroku.com/deploy) 
+## Install & Run & Deploy  
 
-  - Run using Docker 
+  - Run using Docker (Recommend)
 
     * Make sure docker is installed and configured correctly. 
     * Clone the code via `git clone https://github.com/betterlife/betterlifepsi.git`
-    * `cd betterlifepsi`
-    * `docker-compose build` to build the docker image
-    * `docker-compose up` to run the application
+    * `cd betterlifepsi && docker-compose build && docker-compose up` to build and run the docker image
     * Please notice the database data is mounted to a docker volume called psi_data by default.
 
-  - [Installation locally](https://github.com/betterlife/betterlifepsi/wiki/Installation)
-  - [Run application locally](https://github.com/betterlife/betterlifepsi/wiki/Run-the-application)  
+  - Install and run locally
+    * Clone the code via `git clone https://github.com/betterlife/betterlifepsi.git`
+    * `pip install -r requirements.txt` to install runtime dependencies.
+    * `pip install -r etc/requirements/test.txt` to install development dependencies.
+    * Create postgresql database and user for the application.
+    * Set follow environment variables:
+      * DATABASE_URL : Database URL, only postgresql is tested as of now.
+      * FLASK_APP: Should be set to `psi.cli:application`
+      * SECURITY_PASSWORD_SALT : password salt for password generation
+      * SECRET_KEY : secret key for password generation
+      * CLOUDINARY_URL : Cloudinary URL if use cloudinary to store image attachments
+      * SENTRY_DSN : Sentry DSN if use sentry to handle exceptions 
+    * `flask run` to run the application
+    * Set environment variable `TEST_DATABASE_URL` and invoke `flask test` to run tests.
+
+  - Install and run on heroku
+    * Click button [![Deploy](https://img.shields.io/badge/Heroku-Deploy-brightgreen.svg?style=flat-square)](https://heroku.com/deploy)  to deploy current version to heroku.
 
 ## Links
 
   - [Demo environment](https://psi-dev.herokuapp.com/)
-    - Organization user: __super_admin / password__
-    - Business user: __bu__ / __password__
+    - Organization administrator user: super_admin / password
+    - Business user: bu / password
   - [Knowledge Center](https://github.com/betterlife/psi/wiki)    
   - [Story management](https://betterlife.atlassian.net)
 
