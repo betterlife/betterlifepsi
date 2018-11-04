@@ -19,8 +19,17 @@ Intelligent PSI(Purchase, Sales and Inventory) management system
   
 ## Install & Run & Deploy  [![Deploy](https://img.shields.io/badge/Heroku-Deploy-brightgreen.svg?style=flat-square)](https://heroku.com/deploy) 
 
-  -  [Installation locally](https://github.com/betterlife/betterlifepsi/wiki/Installation)
-  -  [Run application locally](https://github.com/betterlife/betterlifepsi/wiki/Run-the-application)  
+  - Run using Docker 
+
+    * Make sure docker is installed and configured correctly. 
+    * Clone the code via `git clone https://github.com/betterlife/betterlifepsi.git`
+    * `cd betterlifepsi`
+    * `docker-compose build` to build the docker image
+    * `docker-compose up` to run the application
+    * Please notice the database data is mounted to a docker volume called psi_data by default.
+
+  - [Installation locally](https://github.com/betterlife/betterlifepsi/wiki/Installation)
+  - [Run application locally](https://github.com/betterlife/betterlifepsi/wiki/Run-the-application)  
 
 ## Links
 
