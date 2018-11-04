@@ -12,6 +12,7 @@ import psycopg2
 
 from psi.app import create_app, init_all
 from psi.app.utils import retry
+from psi import MIGRATION_DIR
 
 
 # Using flask's default `click` command line environment
@@ -40,7 +41,7 @@ def wait_on_postgres(retries=5, migrate=True):
     if migrate:
         log.info('Running database migrations, if any')
         with application.app_context():
-            flask_migrate.upgrade(directory=os.path.dirname(__file__) + "/../migrations")
+            flask_migrate.upgrade(directory=MIGRATION_DIR)
 
 
 @application.cli.command()
