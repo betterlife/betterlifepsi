@@ -15,7 +15,7 @@ from psi.app import const
 from psi.app.service import Info
 
 
-__version__ = '0.6.7-4'
+__version__ = '0.6.8'
 log = logging.getLogger(__name__)
 
 
