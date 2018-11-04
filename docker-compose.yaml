@@ -23,8 +23,12 @@ services:
     networks:
       - psi_net
     restart: on-failure
+    volumes:
+      - psi_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 networks:
   psi_net:
     driver: bridge
+volumes:
+  psi_data:
