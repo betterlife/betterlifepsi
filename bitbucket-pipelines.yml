@@ -9,7 +9,7 @@ pipelines:
     - parallel:
       - step:
           image: python:3.7
-          name: Unit Test Under Python 3.7 
+          name: Python 3.7 Test
           caches:
             - pip
           script: 
@@ -27,7 +27,7 @@ pipelines:
             - postgres 
       - step:
           image: python:3.6
-          name: Unit Test Under Python 3.6 
+          name: Python 3.6 Test
           caches:
             - pip
           script: 
@@ -37,7 +37,7 @@ pipelines:
             - postgres 
       - step:
           image: python:3.5
-          name: Unit Test Under Python 3.5 
+          name: Python 3.5 Test
           caches:
             - pip
           script: 
@@ -57,7 +57,7 @@ pipelines:
           - cat psi/swtag
           - git config --global user.email "lawrence@betterlife.io"
           - git config --global user.name "Lawrence"                    
-          - git add psi/swtag
+          - git add psi/swtag -f
           - git commit -m "Add swtag"
           # Always push to heroku master branch as it will ignore all non master branch push
           - git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git HEAD:master --force
