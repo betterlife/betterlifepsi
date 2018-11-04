@@ -1,7 +1,7 @@
 Flask==1.0.2
 Jinja2==2.10
 Flask-Admin==1.5.2
-sqlalchemy==1.2.12
+sqlalchemy==1.2.13
 Flask-SQLAlchemy==2.3.2
 Flask-SSLify==0.1.5
 MarkupSafe==1.0
@@ -16,5 +16,5 @@ cloudinary==1.14.0
 Flask-RESTful==0.3.6
 flask-socketio==3.0.1
 eventlet==0.24.1
-pypinyin==0.33.1
+pypinyin==0.33.2
 python-dotenv==0.9.1
