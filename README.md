@@ -6,7 +6,7 @@ Intelligent PSI(Purchase, Sales and Inventory) management system
 ![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)
 [![Code Health](https://landscape.io/github/betterlife/betterlifepsi/master/landscape.svg?style=flat-square)](https://landscape.io/github/betterlife/betterlifepsi/master)
 [![Requires.io](https://img.shields.io/requires/github/betterlife/betterlifepsi.svg?style=flat-square)](https://requires.io/github/betterlife/betterlifepsi/requirements/?branch=master)
-[![commits since release](https://img.shields.io/github/commits-since/betterlife/betterlifepsi/V0.6.7.svg?style=flat-square)](http://github.com/betterlife/betterlifepsi/releases)
+[![commits since release](https://img.shields.io/github/commits-since/betterlife/betterlifepsi/V0.6.8.svg?style=flat-square)](http://github.com/betterlife/betterlifepsi/releases)
 [![Release](https://img.shields.io/github/release/betterlife/betterlifepsi.svg?style=flat-square)](http://github.com/betterlife/betterlifepsi/releases) 
 [![PyPI](https://img.shields.io/pypi/v/betterlifepsi.svg?style=flat-square)](https://pypi.org/project/betterlifepsi/)
 
