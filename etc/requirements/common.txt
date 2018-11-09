@@ -1,10 +1,10 @@
 Flask==1.0.2
 Jinja2==2.10
 Flask-Admin==1.5.2
-sqlalchemy==1.2.13
+sqlalchemy==1.2.14
 Flask-SQLAlchemy==2.3.2
 Flask-SSLify==0.1.5
-MarkupSafe==1.0
+MarkupSafe==1.1.0
 Werkzeug==0.14.1
 gunicorn==19.9.0
 Flask_BabelEx==0.9.3
