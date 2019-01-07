@@ -3,4 +3,4 @@ codecov==2.0.15
 Faker==1.0.1
 ipdb==0.11
 pytest==4.0.2
-pytest-cov==2.6.0
+pytest-cov==2.6.1
