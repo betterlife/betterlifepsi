@@ -1,6 +1,6 @@
 coverage==4.5.2
 codecov==2.0.15
-Faker==1.0.1
+Faker==1.0.2
 ipdb==0.11
 pytest-cov==2.6.1
 pytest==4.1.1
