@@ -4,7 +4,7 @@ Flask-Admin==1.5.3
 sqlalchemy==1.2.16
 Flask-SQLAlchemy==2.3.2
 Flask-SSLify==0.1.5
-MarkupSafe==1.1.0
+MarkupSafe==1.1.1
 Werkzeug==0.14.1
 gunicorn==19.9.0
 Flask_BabelEx==0.9.3
