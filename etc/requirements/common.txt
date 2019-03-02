@@ -16,5 +16,5 @@ cloudinary==1.15.0
 Flask-RESTful==0.3.7
 flask-socketio==3.3.1
 eventlet==0.24.1
-pypinyin==0.35.0
+pypinyin==0.35.1
 python-dotenv==0.10.1
