@@ -14,8 +14,7 @@ Flask-Security==3.0.0
 Flask-DebugToolbar==0.10.1
 cloudinary==1.17.0
 Flask-RESTful==0.3.7
-eventlet==0.25.0
+eventlet==0.25.1
 flask-socketio==4.2.1
-eventlet==0.24.1
 python-dotenv==0.10.3
 pypinyin==0.35.3
