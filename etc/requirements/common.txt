@@ -12,7 +12,7 @@ raven==6.10.0
 Flask-Migrate==2.5.2
 Flask-Security==3.0.0
 Flask-DebugToolbar==0.10.1
-cloudinary==1.17.0
+cloudinary==1.18.2
 Flask-RESTful==0.3.7
 eventlet==0.25.1
 python-dotenv==0.10.3
