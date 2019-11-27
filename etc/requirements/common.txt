@@ -6,7 +6,7 @@ Flask-SQLAlchemy==2.4.1
 Flask-SSLify==0.1.5
 MarkupSafe==1.1.1
 Werkzeug==0.16.0
-gunicorn==20.0.3
+gunicorn==20.0.4
 Flask_BabelEx==0.9.3
 raven==6.10.0
 Flask-Migrate==2.5.2
