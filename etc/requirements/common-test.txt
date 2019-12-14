@@ -1,4 +1,4 @@
-coverage==4.5.4
+coverage==5.0
 codecov==2.0.15
 Faker==3.0.0
 ipdb==0.12.3
