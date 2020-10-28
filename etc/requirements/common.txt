@@ -15,5 +15,5 @@ Flask-DebugToolbar==0.11.0
 cloudinary==1.21.1
 Flask-RESTful==0.3.8
 eventlet==0.25.2
-python-dotenv==0.13.0
+python-dotenv==0.15.0
 pypinyin==0.38.0
