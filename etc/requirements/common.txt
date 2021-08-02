@@ -9,7 +9,7 @@ Werkzeug==1.0.1
 gunicorn==20.0.4
 Flask_BabelEx==0.9.4
 raven==6.10.0
-Flask-Migrate==2.5.3
+Flask-Migrate==3.1.0
 Flask-Security==3.0.0
 Flask-DebugToolbar==0.11.0
 cloudinary==1.21.1
