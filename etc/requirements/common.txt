@@ -11,7 +11,7 @@ Flask_BabelEx==0.9.4
 raven==6.10.0
 Flask-Migrate==2.5.3
 Flask-Security==3.0.0
-Flask-DebugToolbar==0.11.0
+Flask-DebugToolbar==0.13.1
 cloudinary==1.21.1
 Flask-RESTful==0.3.8
 eventlet==0.25.2
